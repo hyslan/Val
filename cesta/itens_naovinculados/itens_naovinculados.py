@@ -1,6 +1,6 @@
 #m_itens_naovinculados.py
 import sys
-from SAPConnection import Connect_to_SAP
+from sap_connection import Connect_to_SAP
 session = Connect_to_SAP() 
 
 class RemBaseReposicao:

@@ -4,11 +4,11 @@
 import time
 import datetime
 from tqdm import tqdm # Barra de progresso
-from Excel_tbs import load_worksheets
+from excel_tbs import load_worksheets
 from unitarios import dicionario
-from SAPConnection import Connect_to_SAP
-from ConfereOS import ConsultaOS
-from ZSBMM216 import novasp
+from sap_connection import connect_to_sap
+from confere_os import consulta_os
+from zsbmm2216 import novasp
 from ServicosExecutados import VerificaTSE
 
 
@@ -21,7 +21,7 @@ def main():
         hora_atual = datetime.datetime.now().time() # Obtém a hora atual
         print(f"Hora atual: {hora_atual}")
         # Conexão SAP
-        session = Connect_to_SAP()
+        session = connect_to_sap()
         #Área do Excel, definição das variáveis
         (
         lista,
@@ -35,7 +35,7 @@ def main():
         _,
         _,
         tb_contratada,
-        tb_tse_UN,
+        tb_tse_un,
         *_,
         ) = load_worksheets()
 
@@ -48,139 +48,150 @@ def main():
             num_lordem = input("Insira o número da linha aqui:")
             int_num_lordem = int(num_lordem)
             ordem = planilha.cell(row=int_num_lordem, column=1).value
-        except:
+        except TypeError:
             print("Entrada inválida. Digite um número inteiro válido.")
             print("Reiniciando o programa...")
             main()
-                        
         # Variáveis de Status da Ordem
-        Valorada = "EXEC VALO" or "NEXE VALO"
-        Executado = "EXEC" or "NEXE"
-        Fechada = "LIB" 
+        valorada = "EXEC VALO" or "NEXE VALO"
+        fechada = "LIB"
         print(f"Ordem selecionada: {ordem} \n Linha: {int_num_lordem}")
-        qtdOrdem = 0 # Contador de ordens pagas.
-        for num_lordem in tqdm(range(limite_execucoes), ncols=100): # Loop para pagar as ordens da planilha do Excel
-            MaterialObs = planilha.cell(row = int_num_lordem, column = 3)
-            SelecaoCarimbo = planilha.cell(row = int_num_lordem, column = 2)
-            OrdemObs = planilha.cell(row = int_num_lordem, column = 4)
-            print(f"Linha atual: {int_num_lordem}.")  
+        qtd_ordem = 0 # Contador de ordens pagas.
+        # Loop para pagar as ordens da planilha do Excel
+        for num_lordem in tqdm(range(limite_execucoes), ncols=100):
+            material_obs = planilha.cell(row = int_num_lordem, column = 3)
+            selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
+            ordem_obs = planilha.cell(row = int_num_lordem, column = 4)
+            print(f"Linha atual: {int_num_lordem}.")
             start_time = time.time() # Contador de tempo para valorar.
             print(f"Ordem atual: {ordem}")
             print("Verificando Status da Ordem.")
-            ConsultaOS(ordem) # Função consulta de Ordem.
+            consulta_os(ordem) # Função consulta de Ordem.
             print("Iniciando Consulta.")
-            StatusSistema, StatusUsuario, Corte, Relig, PosicaoRede, Profundidade = ConsultaOS(ordem)
+            status_sistema, status_usuario, corte, relig, _, _ = consulta_os(ordem)
             # Consulta Status da Ordem
-            if StatusSistema == Fechada:
-                print(f"Status do Sistema: {StatusSistema}")
+            if status_sistema == fechada:
+                print(f"Status do Sistema: {status_sistema}")
             else:
                 print(f"OS: {ordem} aberta.")
-                SelecaoCarimbo = planilha.cell(row = int_num_lordem, column = 2)
-                SelecaoCarimbo.value = "OS ABERTA"
-                lista.save('lista.xlsx') # salva Planilha 
+                selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
+                selecao_carimbo.value = "OS ABERTA"
+                # salva Planilha
+                lista.save('lista.xlsx')
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value # Incremento + de Ordem.
                 continue
-                    
-            if StatusUsuario == Valorada:
+            if status_usuario == valorada:
                 print(f"OS: {ordem} já valorada.")
-                SelecaoCarimbo = planilha.cell(row = int_num_lordem, column = 2)
-                SelecaoCarimbo.value = "VALORADA ANTERIORMENTE"
-                lista.save('lista.xlsx') # salva Planilha 
+                selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
+                selecao_carimbo.value = "VALORADA ANTERIORMENTE"
+                lista.save('lista.xlsx') # salva Planilha
                 int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value # Incremento + de Ordem. 
+                ordem = planilha.cell(row=int_num_lordem, column=1).value # Incremento + de Ordem.
                 continue
             else:
             # Ação no SAP
                 print("Iniciando valoração.")
-                SessaoBotoes = session.findById("wnd[0]") # Sessão 0
+                sessao_botoes = session.findById("wnd[0]") # Sessão 0
                 novasp() # Contrato NOVASP
-                SAP_ordem = session.findById("wnd[0]/usr/ctxtP_ORDEM") # Campo ordem
-                SAP_ordem.Text = (ordem)
-                SessaoBotoes.SendVkey(8)# Aperta botão F8 
-                print("*****************************************Processo de Serviços Executados************************************")
+                sap_ordem = session.findById("wnd[0]/usr/ctxtP_ORDEM") # Campo ordem
+                sap_ordem.Text = ordem
+                sessao_botoes.SendVkey(8) # Aperta botão F8
+                print("****Processo de Serviços Executados****")
                 try:
-                    tse = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-                except:
+                    tse = session.findById(
+                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                       + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                       )
+                except TypeError:
                     print(f"Ordem: {ordem} em medição definitiva ou com erro.")
-                    OrdemObs = planilha.cell(row = int_num_lordem, column = 4)
-                    OrdemObs.value = "MEDIÇÃO DEFINITIVA OU COM ERRO."
+                    ordem_obs = planilha.cell(row = int_num_lordem, column = 4)
+                    ordem_obs.value = "MEDIÇÃO DEFINITIVA OU COM ERRO."
+                    # Incremento + de Ordem.
                     int_num_lordem += 1
-                    ordem = planilha.cell(row=int_num_lordem, column=1).value # Incremento + de Ordem.
+                    ordem = planilha.cell(row=int_num_lordem, column=1).value
                     continue
-                
                 tse.GetCellValue(0, "TSE") # Saber qual TSE é
                 if tse is not None:
-                    tse_temp, reposicao = VerificaTSE(tse)  
-                    # Aba Itens de preço 
+                    tse_temp, _ = VerificaTSE(tse)
+                    # Aba Itens de preço
                     session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
-                    print("*****************************************Processo de Precificação************************************")
-                    for Etapa in tse_temp:
-                        print(f"Tse temporária selecionada para pagar: {Etapa}")
-                        if Etapa in tb_tse_UN: # Verifica se está no Conjunto Unitários
-                            print(f"{Etapa} é unitário!")
-                            dicionario.Unitario(Etapa, Corte, Relig)          
+                    print("****Processo de Precificação****")
+                    for etapa in tse_temp:
+                        print(f"Tse temporária selecionada para pagar: {etapa}")
+                        if etapa in tb_tse_un: # Verifica se está no Conjunto Unitários
+                            print(f"{etapa} é unitário!")
+                            dicionario.Unitario(etapa, corte, relig)
                         else:
-                            print(f"{Etapa} não é unitário")
-                            
+                            print(f"{etapa} não é unitário")
                         # Aba Materiais
                         session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
-                        print("*****************************************Processo de Materiais************************************")
-                        tb_materiais = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell")
+                        print("****Processo de Materiais****")
+                        tb_materiais = session.findById(
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
+                        + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell"
+                                                        )
                         try:
-                            SAP_Material = tb_materiais.GetCellValue(0, "MATERIAL") # Valor da célula
-                            if SAP_Material is not None:  # Se existem materiais, irá contar
+                            # Valor da célula
+                            sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
+                            if sap_material is not None:  # Se existem materiais, irá contar
                                 num_material_linhas = tb_materiais.RowCount # Conta as Rows
                                 print(f"Qtd de linhas de materiais: {num_material_linhas}")
-                                n_material = 0 # Número da Row do Grid Materiais do SAP
-                                for n_material in range(num_material_linhas): # Loop do Grid Materiais, verifica se tem material da contratada e marca
-                                    SAP_Material = tb_materiais.GetCellValue(n_material, "MATERIAL") # Pega valor da célula 0
-                                    if SAP_Material in tb_contratada: # Verifica se está na lista tb_contratada
-                                        tb_materiais.modifyCheckbox(n_material, "CONTRATADA", True) # Marca Contratada
-                                        print(f"Linha do material: {n_material}, Material: {SAP_Material}")
+                                # Número da Row do Grid Materiais do SAP
+                                n_material = 0
+                                # Loop do Grid Materiais.
+                                for n_material in range(num_material_linhas):
+                                    # Pega valor da célula 0
+                                    sap_material = tb_materiais.GetCellValue(n_material, "MATERIAL")
+                                    # Verifica se está na lista tb_contratada
+                                    if sap_material in tb_contratada:
+                                        # Marca Contratada
+                                        tb_materiais.modifyCheckbox(
+                                            n_material, "CONTRATADA", True)
+                                        print(f"Linha do material: {n_material}, "
+                                            + "Material: {sap_material}")
                                         continue
-                        except:
-                            MaterialObs = planilha.cell(row = int_num_lordem, column = 3)
-                            MaterialObs.value =  "Sem Material Vinculado"
+                        except TypeError:
+                            material_obs = planilha.cell(row = int_num_lordem, column = 3)
+                            material_obs.value =  "Sem Material Vinculado"
                             print("Sem material vinculado.")
-                                                                                     
                         # Fim dos materiais
-                        SessaoBotoes.sendVKey(11) # Salvar Ordem
+                        sessao_botoes.sendVKey(11) # Salvar Ordem
                         session.findById("wnd[1]/usr/btnBUTTON_1").press()
                         print("Salvando valoração!")
                         # Verificar se Salvou
                         print("Verificando se Ordem foi valorada.")
-                        ConsultaOS(ordem)
+                        consulta_os(ordem)
                         print("Iniciando processo de verificação.")
-                        StatusSistema, StatusUsuario, Corte, Relig, PosicaoRede, Profundidade = ConsultaOS(ordem)
-                        if StatusUsuario == "EXEC VALO":
-                            print(f"Status da Ordem: {StatusSistema}, {StatusUsuario}")
+                        status_sistema, status_usuario, corte, relig, _, _ = consulta_os(ordem)
+                        if status_usuario == "EXEC VALO":
+                            print(f"Status da Ordem: {status_sistema}, {status_usuario}")
                             print("Foi Salvo com sucesso!")
-                            SelecaoCarimbo = planilha.cell(row = int_num_lordem, column = 2)
-                            SelecaoCarimbo.value = "VALORADA"
-                            lista.save('lista.xlsx') # salva Planilha 
-                            qtdOrdem += 1
+                            selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
+                            selecao_carimbo.value = "VALORADA"
+                            lista.save('lista.xlsx') # salva Planilha
+                            qtd_ordem += 1
                         else:
                             print(f"Ordem: {ordem} não foi salva.")
-                            SelecaoCarimbo = planilha.cell(row = int_num_lordem, column = 2)
-                            SelecaoCarimbo.value = "NÃO FOI SALVO"
-                            lista.save('lista.xlsx') # salva Planilha 
-                            
-                        
+                            selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
+                            selecao_carimbo.value = "NÃO FOI SALVO"
+                            lista.save('lista.xlsx') # salva Planilha
                         # Fim do contador de valoração.
                         end_time = time.time()
                         execution_time = end_time - start_time # Tempo de execução.
-                        print(f"Tempo gasto para valorar a Ordem: {ordem}, foi de: {execution_time} segundos.")
-                        print(f"*****************************************Fim da Valoração da Ordem: {ordem} *****************************************")
+                        print(f"Tempo gasto para valorar a Ordem: {ordem}, "
+                              + f"foi de: {execution_time} segundos.")
+                        print(f"****Fim da Valoração da Ordem: {ordem} ****")
+                        # Incremento + de Ordem.
                         int_num_lordem += 1
-                        ordem = planilha.cell(row=int_num_lordem, column=1).value # Incremento + de Ordem.
-                        print(f"Quantidade de ordens valoradas: {qtdOrdem}.")
+                        ordem = planilha.cell(row=int_num_lordem, column=1).value
+                        print(f"Quantidade de ordens valoradas: {qtd_ordem}.")
                         lista.save('lista.xlsx') # salva Planilha
-                                 
+        # Loop de Parada
         if hora_atual >= hora_parada:
             print("A Val foi descansar.")
             print("- Val: até amanhã.")
-            while True: # Loop da parada
+            while True:
                 hora_atual = datetime.datetime.now().time()
                 print(f"Hora atual na parada: {hora_atual}")
                 time.sleep(60)
@@ -189,13 +200,8 @@ def main():
                     print("- Val: Vamos trabalhar!")
                     print(f"- Val: Retomando Ordem: {ordem} \n da linha: {int_num_lordem}")
                     break # Sai do Loop quando atingir a hora de retomada.
-        
-    
-        
-    
+
 #-Main------------------------------------------------------------------
 if __name__ == '__main__':
     main()
-     
 #-End-------------------------------------------------------------------
-

@@ -1,5 +1,5 @@
 #cavalete.py
-from SAPConnection import Connect_to_SAP
+from sap_connection import Connect_to_SAP
 session = Connect_to_SAP() 
 class Cavalete: 
     @staticmethod

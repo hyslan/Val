@@ -1,7 +1,7 @@
 #cavalete.py
 import sys
-from SAPConnection import Connect_to_SAP
-from Excel_tbs import  load_worksheets
+from sap_connection import Connect_to_SAP
+from excel_tbs import  load_worksheets
 session = Connect_to_SAP() 
 
 (

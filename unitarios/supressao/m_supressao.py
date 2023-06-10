@@ -1,8 +1,8 @@
 #supressao.py
 #Incluir etapas nas intruções para classes superiores
 import sys
-from SAPConnection import Connect_to_SAP
-from ConfereOS import ConsultaOS
+from sap_connection import Connect_to_SAP
+from confere_os import ConsultaOS
 session = Connect_to_SAP()
 
 class Corte:
