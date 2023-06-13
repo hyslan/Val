@@ -117,7 +117,8 @@ def main():
                     continue
                 tse.GetCellValue(0, "TSE") # Saber qual TSE é
                 if tse is not None:
-                    tse_temp, _, num_tse_linhas = verifica_tse(tse)
+                    tse_temp, reposicao, num_tse_linhas = verifica_tse(tse)
+                    print(f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao}")
                     # Aba Itens de preço
                     session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
                     print("****Processo de Precificação****")
@@ -128,7 +129,8 @@ def main():
                             print(f"TSE selecionada para pagar: {etapa}")
                             if etapa in tb_tse_un: # Verifica se está no Conjunto Unitários
                                 print(f"{etapa} é unitário!")
-                                dicionario.Unitario(etapa, corte, relig)
+                                #pylint: disable=E1101
+                                dicionario.unitario(etapa, corte, relig, reposicao)
                                 n_tse =+ 1
                             else:
                                 print(f"{etapa} não é unitário!")

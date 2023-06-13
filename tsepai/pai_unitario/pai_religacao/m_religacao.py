@@ -2,7 +2,7 @@
 '''Módulo Família Religação Unitário.'''
 from sap_connection import connect_to_sap
 from excel_tbs import  load_worksheets
-session = connect_to_sap() 
+session = connect_to_sap()
 
 (
         lista,
@@ -55,7 +55,4 @@ class Religacao:
                 continue
         
         if tse_temp_reposicao is not None:
-            return tse_temp_reposicao   
-        
-             
-    
+            return tse_temp_reposicao

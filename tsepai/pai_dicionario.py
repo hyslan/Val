@@ -68,11 +68,12 @@ def pai_servico_unitario(servico_temp):
         print(
             f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
         metodo = dicionario_pai_unitario[servico_temp]
-        metodo()  # Chama o método de uma classe dentro do Dicionário
-        reposicao = dicionario_pai_unitario[servico_temp]
+        reposicao = metodo()  # Chama o método de uma classe dentro do Dicionário
+        # reposicao = dicionario_pai_unitario[servico_temp]
     else:
         print("TSE não Encontrada no Dicionário de Pai Unitário!")
         sys.exit()
+    # Retorno
     return reposicao
 
 
