@@ -1,13 +1,20 @@
+# pai_dicionario.py
+'''Módulo Dicionário Pai.'''
+# Biblotecas
 import sys
+# Módulos Unitários
+from tsepai.pai_unitario.pai_cavalete import m_cavalete
+from tsepai.pai_unitario.pai_supressao import m_supressao
+from tsepai.pai_unitario.pai_religacao import m_religacao
+from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
+# Módulos Remuneração base
+from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 
 
-def PaiservicoUnitario(servico_temp):
-    from tsepai.unitario.cavalete import m_cavalete
-    from tsepai.unitario.supressao import m_supressao
-    from tsepai.unitario.religacao import m_religacao
-    from tsepai.unitario.hidrometro import m_hidrometro
+def pai_servico_unitario(servico_temp):
+    '''Função condicional das chaves do dicionário unitário.'''
 
-    DicionarioPaiUnitario = {
+    dicionario_pai_unitario = {
 
         '142000': m_cavalete.Cavalete.RegularizarCv,
         '148000': m_cavalete.Cavalete.TrocaCvporUMA,
@@ -57,27 +64,25 @@ def PaiservicoUnitario(servico_temp):
         # '713500':
     }
 
-    if servico_temp in DicionarioPaiUnitario:
+    if servico_temp in dicionario_pai_unitario:
         print(
             f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
-        metodo = DicionarioPaiUnitario[servico_temp]
+        metodo = dicionario_pai_unitario[servico_temp]
         metodo()  # Chama o método de uma classe dentro do Dicionário
-        reposicao = DicionarioPaiUnitario[servico_temp]
-        
+        reposicao = dicionario_pai_unitario[servico_temp]
     else:
         print("TSE não Encontrada no Dicionário de Pai Unitário!")
         sys.exit()
-    
     return reposicao
 
-def PaiservicoCesta(servico_temp):
-    from tsepai.cesta.despesa.cavalete import m_cavalete
 
-    DicionarioPaiCesta = {
+def pai_servico_cesta(servico_temp):
+    '''Função condicional das chaves do dicionário Remuneração Base.'''
+    dicionario_pai_cesta = {
 
-        '130000': m_cavalete.Cavalete.ReparoCv,
-        '140000': m_cavalete.Cavalete.ReparodeRegistrodeCv,
-        '140100': m_cavalete.Cavalete.TrocadeRegistrodeCv,
+        '130000': m_cavalete_rb.Cavalete.reparo_cv,
+        '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
+        '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
         # '283000':
         # '287000':
         # '321000':
@@ -98,12 +103,10 @@ def PaiservicoCesta(servico_temp):
 
     }
 
-    if servico_temp in DicionarioPaiCesta:
+    if servico_temp in dicionario_pai_cesta:
         print(f"TSE está inclusa no Dicionário de Pai Cesta: {servico_temp}")
-        metodo = DicionarioPaiCesta[servico_temp]
+        metodo = dicionario_pai_cesta[servico_temp]
         metodo()  # Chama o método de uma classe dentro do Dicionário
     else:
         print("TSE não Encontrada no Dicionário de Pai Cesta!")
         sys.exit()
-
-    

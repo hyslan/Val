@@ -1,15 +1,18 @@
 '''Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz'''
 #main.py
 #Bibliotecas
+#pylint: disable=W0611
+import sys
 import time
 import datetime
+import pywintypes
 from tqdm import tqdm # Barra de progresso
 from excel_tbs import load_worksheets
 from unitarios import dicionario
 from sap_connection import connect_to_sap
 from confere_os import consulta_os
 from zsbmm2216 import novasp
-from ServicosExecutados import VerificaTSE
+from servicos_executados import verifica_tse
 
 
 # Função Principal
@@ -58,7 +61,7 @@ def main():
         print(f"Ordem selecionada: {ordem} \n Linha: {int_num_lordem}")
         qtd_ordem = 0 # Contador de ordens pagas.
         # Loop para pagar as ordens da planilha do Excel
-        for num_lordem in tqdm(range(limite_execucoes), ncols=100):
+        for num_lordem in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
             material_obs = planilha.cell(row = int_num_lordem, column = 3)
             selecao_carimbo = planilha.cell(row = int_num_lordem, column = 2)
             ordem_obs = planilha.cell(row = int_num_lordem, column = 4)
@@ -103,7 +106,8 @@ def main():
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
                        )
-                except TypeError:
+                #pylint: disable=E1101
+                except pywintypes.com_error:
                     print(f"Ordem: {ordem} em medição definitiva ou com erro.")
                     ordem_obs = planilha.cell(row = int_num_lordem, column = 4)
                     ordem_obs.value = "MEDIÇÃO DEFINITIVA OU COM ERRO."
@@ -113,17 +117,21 @@ def main():
                     continue
                 tse.GetCellValue(0, "TSE") # Saber qual TSE é
                 if tse is not None:
-                    tse_temp, _ = VerificaTSE(tse)
+                    tse_temp, _, num_tse_linhas = verifica_tse(tse)
                     # Aba Itens de preço
                     session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
                     print("****Processo de Precificação****")
-                    for etapa in tse_temp:
-                        print(f"Tse temporária selecionada para pagar: {etapa}")
-                        if etapa in tb_tse_un: # Verifica se está no Conjunto Unitários
-                            print(f"{etapa} é unitário!")
-                            dicionario.Unitario(etapa, corte, relig)
-                        else:
-                            print(f"{etapa} não é unitário")
+                    n_tse = 0
+                    for n_tse in range(num_tse_linhas):
+                        for etapa in tse_temp:
+                            print(f"Linha atual de TSE: {n_tse}")
+                            print(f"TSE selecionada para pagar: {etapa}")
+                            if etapa in tb_tse_un: # Verifica se está no Conjunto Unitários
+                                print(f"{etapa} é unitário!")
+                                dicionario.Unitario(etapa, corte, relig)
+                                n_tse =+ 1
+                            else:
+                                print(f"{etapa} não é unitário!")
                         # Aba Materiais
                         session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
                         print("****Processo de Materiais****")
@@ -139,19 +147,41 @@ def main():
                                 print(f"Qtd de linhas de materiais: {num_material_linhas}")
                                 # Número da Row do Grid Materiais do SAP
                                 n_material = 0
+                                ultima_linha_material = num_material_linhas
                                 # Loop do Grid Materiais.
                                 for n_material in range(num_material_linhas):
                                     # Pega valor da célula 0
                                     sap_material = tb_materiais.GetCellValue(n_material, "MATERIAL")
+                                    sap_etapa_material = tb_materiais.GetCellValue(
+                                        n_material, "ETAPA")
                                     # Verifica se está na lista tb_contratada
                                     if sap_material in tb_contratada:
                                         # Marca Contratada
                                         tb_materiais.modifyCheckbox(
                                             n_material, "CONTRATADA", True)
                                         print(f"Linha do material: {n_material}, "
-                                            + "Material: {sap_material}")
+                                            + f"Material: {sap_material}")
                                         continue
-                        except TypeError:
+                                    if sap_material == '50000328':
+                                        tb_materiais.modifyCheckbox(
+                                            n_material, "ELIMINADO", True
+                                        )
+                                        tb_materiais.InsertRows(str(ultima_linha_material))
+                                        tb_materiais.modifyCell(
+                                            ultima_linha_material, "ETAPA", sap_etapa_material
+                                            )
+                                        tb_materiais.modifyCell(
+                                            ultima_linha_material, "MATERIAL", "50001070"
+                                            )
+                                        tb_materiais.modifyCell(
+                                            ultima_linha_material, "QUANT", "1"
+                                            )
+                                        tb_materiais.setCurrentCell(
+                                            ultima_linha_material, "QUANT"
+                                            )
+                                        ultima_linha_material = ultima_linha_material + 1
+                        #pylint: disable=E1101
+                        except pywintypes.com_error:
                             material_obs = planilha.cell(row = int_num_lordem, column = 3)
                             material_obs.value =  "Sem Material Vinculado"
                             print("Sem material vinculado.")

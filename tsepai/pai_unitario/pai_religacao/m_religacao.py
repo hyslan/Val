@@ -1,9 +1,8 @@
-#m_hidrometro.py
-
-import sys
-from sap_connection import Connect_to_SAP
+#m_religacao.py
+'''Módulo Família Religação Unitário.'''
+from sap_connection import connect_to_sap
 from excel_tbs import  load_worksheets
-session = Connect_to_SAP() 
+session = connect_to_sap() 
 
 (
         lista,
@@ -30,11 +29,11 @@ session = Connect_to_SAP()
         tb_tse_Asfalto,
         ) = load_worksheets()
 
-class Hidrometro:
+class Religacao:
      
     @staticmethod
-    def UnitarioHidrometro(): # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
-        print("Iniciando processo Pai de Hidromêtro Unitário - TSE: 201000, 203000, 203500, 204000, 205000, 206000, 207000, 215000")
+    def ReativadaLigacaodeAgua(): # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+        print("Iniciando processo Pai de RELIGAÇÃO DE ÁGUA - TSE: 405000, 414000, 450500, 453000, 455500, 463000, 465000, 467500, 475500")
         servico_temp = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
@@ -44,14 +43,13 @@ class Hidrometro:
             SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
             
             if SAP_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "3") # Pertence ao serviço principal
+                servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(SAP_tse)
                 print(f"Tem reposição TSE: {SAP_tse}")
                 continue
             
             elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n") 
+                servico_temp.modifyCell(n_tse, "PAGAR", "n") # Cesta
                 servico_temp.modifyCell(n_tse, "CODIGO", "3") # Pertence ao serviço principal
                 servico_temp.append(SAP_tse) # Coloca a tse existente na lista temporária
                 continue

@@ -1,19 +1,39 @@
-import sys
-from SAPConnection_n2 import Connect_to_SAP_n2
-session_n2 = Connect_to_SAP_n2()
+from sap_connection import connect_to_sap
+session = connect_to_sap()
 
-
-print("Iniciando processo de Modalide - REM BASE - MOD DESP FECH E REAB LIG - CÓDIGO: 327041 - PE ou 327051 - SM")
-modalidade = session_n2.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:ZSBMM_VALORACAOINV:9035/cntlCC_ITNS_NVINCRB/shellcont/shell")
-modalidade.GetCellValue(0, "NUMERO_EXT")
-if modalidade is not None:
-    num_modalidade_linhas = modalidade.RowCount
-    print(f"Quantidade linhas de modalidade: {num_modalidade_linhas}.")
-    n_modalidade = 0
-    for n_modalidade in range(num_modalidade_linhas):
-        SAP_modalidade = modalidade.GetCellValue(n_modalidade, "NUMERO_EXT")
-        if SAP_modalidade == str(327041) or SAP_modalidade == str(327051):
-            modalidade.modifyCell(n_modalidade, "MEDICAO", True)
-            modalidade.SetCurrentCell(n_modalidade, "MEDICAO")
-            modalidade.pressf4()
-            
+tb_materiais = session.findById(
+    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
+    + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell"
+)
+sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
+if sap_material is not None:  # Se existem materiais, irá contar
+    num_material_linhas = tb_materiais.RowCount  # Conta as Rows
+    print(f"Qtd de linhas de materiais: {num_material_linhas}")
+    # Número da Row do Grid Materiais do SAP
+    n_material = 0
+    ultima_linha_material = num_material_linhas
+    # Loop do Grid Materiais.
+    for n_material in range(num_material_linhas):
+        # Pega valor da célula 0
+        sap_material = tb_materiais.GetCellValue(n_material, "MATERIAL")
+        sap_etapa_material = tb_materiais.GetCellValue(
+            n_material, "ETAPA")
+        # Verifica se está na lista tb_contratada
+        if sap_material == '50000328':
+            tb_materiais.modifyCheckbox(
+                n_material, "ELIMINADO", True
+            )
+            tb_materiais.InsertRows(str(ultima_linha_material))
+            tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", sap_etapa_material
+            )
+            tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "50001070"
+            )
+            tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            ultima_linha_material = ultima_linha_material + 1

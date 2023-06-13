@@ -16,7 +16,7 @@ def load_worksheets():
     st_sistema = plan_st_ordem["StatusSistema"] # Status Sistema
     st_usuario = plan_st_ordem["StatusUsuario"] # Status Usuario
     unitario = plan_tse["unitario"]
-    rem_base = plan_tse["rem_base"]
+    rem_base = plan_tse["rb"]
     naoexecutado = plan_tse["NEXEC"]
     invest = plan_tse["invest"]
     n_motivo3 = plan_tse["n3"]

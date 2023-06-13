@@ -2,6 +2,7 @@
 '''Módulo de check-up no SAP'''
 from sap_connection import connect_to_sap
 
+
 def consulta_os(n_os):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
     session = connect_to_sap()
@@ -16,10 +17,10 @@ def consulta_os(n_os):
     consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
     status_sistema = consulta.GetCellValue(0, "STTXT")
     status_usuario = consulta.GetCellValue(0, "USTXT")
-    corte = consulta.GetCellValue(0, "ZZLOCAL_Corte")  # Supressão
-    relig = consulta.GetCellValue(0, "ZZLOCAL_ReligA")  # religação
+    corte = consulta.GetCellValue(0, "ZZLOCAL_CORTE")  # Supressão
+    relig = consulta.GetCellValue(0, "ZZLOCAL_RELIGA")  # religação
     posicao_rede = consulta.GetCellValue(
         0, "ZZPOSICAO_REDE")  # Posição da Rede
-    profundidade = consulta.GetCellValue(0, "ZZProfundidade")
+    profundidade = consulta.GetCellValue(0, "ZZPROFUNDIDADE")
     session.findById("wnd[0]").sendVKey(3)  # Voltar
     return status_sistema, status_usuario, corte, relig, posicao_rede, profundidade

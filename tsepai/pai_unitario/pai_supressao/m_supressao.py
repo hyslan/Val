@@ -1,9 +1,8 @@
 #m_supressao.py
-
-import sys
-from sap_connection import Connect_to_SAP
+'''Módulo Família Supressão Unitário.'''
+from sap_connection import connect_to_sap
 from excel_tbs import  load_worksheets
-session = Connect_to_SAP() 
+session = connect_to_sap()
 
 (
         lista,

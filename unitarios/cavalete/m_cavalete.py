@@ -1,6 +1,6 @@
 #cavalete.py
-from sap_connection import Connect_to_SAP
-session = Connect_to_SAP() 
+from sap_connection import connect_to_sap
+session = connect_to_sap() 
 class Cavalete: 
     @staticmethod
     def TrocaPeCvPrev(*args): # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()

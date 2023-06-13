@@ -1,11 +1,15 @@
+# dicionario.py
+'''Módulo do Dicionário de Unitários'''
+# Bibliotecas
 import sys
+from unitarios.hidrometro import m_hidrometro
+from unitarios.supressao import m_supressao
+from unitarios.religacao import m_religacao
+from unitarios.cavalete import m_cavalete
 
 
 def Unitario(Etapa, Corte, Relig):
-    from unitarios.hidrometro import m_hidrometro
-    from unitarios.supressao import m_supressao
-    from unitarios.religacao import m_religacao
-    from unitarios.cavalete import m_cavalete
+    '''Dicionário de chaves para etapas de unitário.'''
     DicionarioUN = {
         '201000': m_hidrometro.Hidrometro.THD_456901,
         '203000': m_hidrometro.Hidrometro.THD_456901,
@@ -29,13 +33,14 @@ def Unitario(Etapa, Corte, Relig):
         '149000': m_cavalete.Cavalete.TrocaCvKit,
         '153000': m_cavalete.Cavalete.TrocaPeCvPrev,
 
-        # Adicionar chaves conforme classes e métodos forem adicionados ao diretório e instanciados na main
+
     }
 
     if Etapa in DicionarioUN:
         print(f"Etapa está inclusa no Dicionário de Unitários: {Etapa}")
         metodo = DicionarioUN[Etapa]
-        metodo(Corte, Relig)  # Chama o método de uma classe dentro do Dicionário
+        # Chama o método de uma classe dentro do Dicionário
+        metodo(Corte, Relig)
     else:
         print("TSE não Encontrada no Dicionário!")
         sys.exit()
