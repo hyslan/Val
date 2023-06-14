@@ -36,7 +36,7 @@ def verifica_tse(servico):
     print("Iniciando processo de verificação de TSE")
     servico = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
                                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-    n_tse = 0
+    # n_tse = 0
     tse_temp = []  # Lista temporária para armazenar as tse
     num_tse_linhas = servico.RowCount
     print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
@@ -46,7 +46,9 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            reposicao = pai_dicionario.pai_servico_unitario(sap_tse)
+            # pylint: disable=E1121
+            reposicao = pai_dicionario.pai_servico_unitario(
+                sap_tse, n_tse)
             continue
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta

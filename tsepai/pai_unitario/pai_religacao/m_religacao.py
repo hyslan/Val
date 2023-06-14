@@ -32,7 +32,8 @@ session = connect_to_sap()
 class Religacao:
      
     @staticmethod
-    def ReativadaLigacaodeAgua(): # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+    def ReativadaLigacaodeAgua(n_etapa): 
+        hidrometro = None
         print("Iniciando processo Pai de RELIGAÇÃO DE ÁGUA - TSE: 405000, 414000, 450500, 453000, 455500, 463000, 465000, 467500, 475500")
         servico_temp = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
@@ -55,4 +56,4 @@ class Religacao:
                 continue
         
         if tse_temp_reposicao is not None:
-            return tse_temp_reposicao
+            return tse_temp_reposicao, hidrometro

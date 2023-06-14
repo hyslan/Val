@@ -8,7 +8,7 @@ from unitarios.religacao import m_religacao
 from unitarios.cavalete import m_cavalete
 
 
-def unitario(etapa, corte, relig, reposicao):
+def unitario(etapa, corte, relig, reposicao, num_tse_linhas):
     '''Dicionário de chaves para etapas de unitário.'''
     dicionario_un = {
         '201000': m_hidrometro.Hidrometro.THD_456901,
@@ -40,7 +40,7 @@ def unitario(etapa, corte, relig, reposicao):
         print(f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
         metodo = dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
-        metodo(corte, relig, reposicao)
+        metodo(corte, relig, reposicao, num_tse_linhas)
     else:
         print("TSE não Encontrada no Dicionário!")
         sys.exit()

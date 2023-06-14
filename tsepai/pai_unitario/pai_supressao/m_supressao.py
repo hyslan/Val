@@ -32,7 +32,8 @@ session = connect_to_sap()
 class Supressao:
      
     @staticmethod
-    def SuprimirLigacaodeAgua(): # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+    def SuprimirLigacaodeAgua(n_etapa):
+        hidrometro = None 
         print("Iniciando processo Pai de SUPRIMIR LIG ÁGUA - TSE: 405000 e TSE 414000")
         servico_temp = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
@@ -53,6 +54,6 @@ class Supressao:
                 servico_temp.append(SAP_tse) # Coloca a tse existente na lista temporária
                 continue
             
-        return tse_temp_reposicao
+        return tse_temp_reposicao, hidrometro
              
     
