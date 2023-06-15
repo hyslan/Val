@@ -23,10 +23,12 @@ def consulta_os(n_os):
         0, "ZZPOSICAO_REDE")  # Posição da Rede
     profundidade = consulta.GetCellValue(0, "ZZPROFUNDIDADE")
     num_etapas_linhas = consulta.RowCount
+    for n_etapa, operacao in enumerate(range(0, num_etapas_linhas)):
+        operacao = consulta.GetCellValue(n_etapa, "VORNR")
     for n_etapa, hidro_colocado in enumerate(range(0, num_etapas_linhas)):
         hidro_colocado = consulta.GetCellValue(
             n_etapa, "ZZHIDROMETRO_INSTALADO")
         if hidro_colocado is not None:
             hidro = hidro_colocado
     session.findById("wnd[0]").sendVKey(3)  # Voltar
-    return status_sistema, status_usuario, corte, relig, posicao_rede, profundidade, hidro
+    return status_sistema, status_usuario, corte, relig, posicao_rede, profundidade, hidro, operacao

@@ -6,6 +6,8 @@ import sys
 import time
 import datetime
 import pywintypes
+import numpy as np
+from PIL import Image
 from tqdm import tqdm # Barra de progresso
 from excel_tbs import load_worksheets
 from unitarios import dicionario
@@ -14,15 +16,38 @@ from confere_os import consulta_os
 from zsbmm2216 import novasp
 from servicos_executados import verifica_tse
 
+def val_avatar(caminho):
+    '''Imagem da Val no cli.'''
+
+    imagem = Image.open(caminho)
+    #pylint: disable=W0612
+    imagem_array = np.array(imagem)
+
+    # Redimensiona a imagem para caber no terminal
+    altura_terminal, largura_terminal = 30, 80
+    imagem_redimensionada = imagem.resize((largura_terminal, altura_terminal))
+
+    # Converte a imagem redimensionada para escala de cinza
+    imagem_redimensionada = imagem_redimensionada.convert('L')
+
+    # Exibe a imagem no terminal
+    for linha in range(altura_terminal):
+        for coluna in range(largura_terminal):
+            pixel = imagem_redimensionada.getpixel((coluna, linha))
+            caractere = '@' if pixel < 128 else ' '
+            print(caractere, end='')
+        print()
 
 # Função Principal
 def main():
     '''Sistema principal da Val e inicializador do programa'''
+    caminho = 'C:/Users/irgpapais/Documents/Meus Projetos/val/val.png'
     hora_parada = datetime.time(21, 50) # Ponto de parada às 21h50min
     hora_retomada = datetime.time(6, 0) # Ponto de retomada às 6h
+    val_avatar(caminho)
     while True:
         hora_atual = datetime.datetime.now().time() # Obtém a hora atual
-        print(f"Hora atual: {hora_atual}")
+        print(f"\nHora atual: {hora_atual}")
         # Conexão SAP
         session = connect_to_sap()
         #Área do Excel, definição das variáveis
@@ -43,7 +68,7 @@ def main():
         ) = load_worksheets()
 
         #Início do Sistema
-        print(" - Val:")
+        print("- Val:")
         input("Pressione Enter para iniciar...")
         limite_execucoes = planilha.max_row
         print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
@@ -71,7 +96,7 @@ def main():
             print("Verificando Status da Ordem.")
             consulta_os(ordem) # Função consulta de Ordem.
             print("Iniciando Consulta.")
-            status_sistema, status_usuario, corte, relig, _, _, hidro_instalado = consulta_os(ordem)
+            status_sistema, status_usuario, corte, relig, _, _, hidro_instalado, operacao = consulta_os(ordem)
             # Consulta Status da Ordem
             if status_sistema == fechada:
                 print(f"Status do Sistema: {status_sistema}")
@@ -234,9 +259,49 @@ def main():
                         material_obs = planilha.cell(row = int_num_lordem, column = 3)
                         material_obs.value =  "Sem Material Vinculado"
                         print("Sem material vinculado.")
-                        #inserir materiais aqui.
+                        if hidro_instalado is not None:
+                            print("Tem hidro, mas não foi vinculado!")
+                            ultima_linha_material = 0
+                            hidro_y = 'Y'
+                             # Hidrômetro atual.
+                            hidro_instalado = hidro_instalado.upper()
+                            # Mata-burro pra hidro.
+                            if hidro_instalado.startswith(hidro_y):
+                                cod_hidro_instalado = '50000108'
+                            else:
+                                cod_hidro_instalado = '50000530'
+                            # Colocar lacre.
+                            print(f"Incluindo hidro: {cod_hidro_instalado} e lacre.")
+                            tb_materiais.InsertRows(str(ultima_linha_material))
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "ETAPA", operacao
+                                )
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "MATERIAL", "50000263"
+                                )
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "QUANT", "1"
+                                )
+                            tb_materiais.setCurrentCell(
+                                ultima_linha_material, "QUANT"
+                                )
+                            ultima_linha_material = ultima_linha_material + 1
+                            # Colocar hidrometro
+                            tb_materiais.InsertRows(str(ultima_linha_material))
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "ETAPA", operacao
+                                )
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "MATERIAL", cod_hidro_instalado
+                                )
+                            tb_materiais.modifyCell(
+                                ultima_linha_material, "QUANT", "1"
+                                )
+                            tb_materiais.setCurrentCell(
+                                ultima_linha_material, "QUANT"
+                                )
+                            ultima_linha_material = ultima_linha_material + 1
                     # Fim dos materiais
-                    sys.exit()
                     sessao_botoes.sendVKey(11) # Salvar Ordem
                     session.findById("wnd[1]/usr/btnBUTTON_1").press()
                     print("Salvando valoração!")
@@ -244,7 +309,7 @@ def main():
                     print("Verificando se Ordem foi valorada.")
                     consulta_os(ordem)
                     print("Iniciando processo de verificação.")
-                    status_sistema, status_usuario, corte, relig, _, _, hidro_instalado = consulta_os(ordem)
+                    status_sistema, status_usuario, corte, relig, _, _, hidro_instalado, operacao = consulta_os(ordem)
                     if status_usuario == "EXEC VALO":
                         print(f"Status da Ordem: {status_sistema}, {status_usuario}")
                         print("Foi Salvo com sucesso!")
