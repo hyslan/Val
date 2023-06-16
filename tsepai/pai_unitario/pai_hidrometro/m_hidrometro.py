@@ -31,10 +31,13 @@ session = connect_to_sap()
 
 
 class Hidrometro:
-    '''Pai Hidrômetros.'''
+    '''Classe Pai Hidrômetros.'''
     @staticmethod
-    def UnitarioHidrometro(n_etapa):
+    def un_hidrometro(n_etapa):
         '''Módulo de hidrômetros, setar os parâmetros.'''
+        reposicao_tse_temp = None
+        tse_proibida = None
+        identificador = "hidrometro"
         print("Iniciando processo Pai de Hidromêtro Unitário - "
               + "TSE: 201000, 203000, 203500, 204000, 205000, 206000, 207000, 215000")
         servico_temp = session.findById(
@@ -43,13 +46,13 @@ class Hidrometro:
         n_tse = 0
         num_tse_linhas = servico_temp.RowCount
         n_etapa_hidro = servico_temp.GetCellValue(n_etapa, "ETAPA")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
-
-            if SAP_tse in tb_tse_PertenceAoServicoPrincipal:
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(SAP_tse)
+                servico_temp.append(sap_tse)
                 continue
+        return reposicao_tse_temp, tse_proibida, identificador

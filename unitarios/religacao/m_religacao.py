@@ -35,7 +35,7 @@ class Religacao:
                         print("Pago 1 UN de RELIG CV - CODIGO: 456037")
                         break
 
-        elif relig == 'RAMAL' or reposicao is not None:
+        elif relig == 'RAMAL' or reposicao:
             print(
                 "Iniciando processo de pagar RELIG RAMAL AG S/REP - Código: 456039")
             preco = session.findById(

@@ -30,30 +30,29 @@ session = connect_to_sap()
         ) = load_worksheets()
 
 class Supressao:
-     
+    '''Classe Pai de Supressão Unitário.'''
     @staticmethod
-    def SuprimirLigacaodeAgua(n_etapa):
-        hidrometro = None 
+    def suprimir_ligacao_de_agua(n_etapa):
+        '''Módulo Supressão Unitário.'''
+        tse_proibida = None
+        identificador = "supressao"
         print("Iniciando processo Pai de SUPRIMIR LIG ÁGUA - TSE: 405000 e TSE 414000")
-        servico_temp = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+        servico_temp = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
         print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
-            
-            if SAP_tse in tb_tse_reposicao:
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
-                tse_temp_reposicao.append(SAP_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
-            
-            elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
+            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n") # Cesta
                 servico_temp.modifyCell(n_tse, "CODIGO", "3") # Pertence ao serviço principal
-                servico_temp.append(SAP_tse) # Coloca a tse existente na lista temporária
+                servico_temp.append(sap_tse) # Coloca a tse existente na lista temporária
                 continue
-            
-        return tse_temp_reposicao, hidrometro
-             
+        return tse_temp_reposicao, tse_proibida, identificador
     

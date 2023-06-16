@@ -16,18 +16,18 @@ def pai_servico_unitario(servico_temp, n_etapa):
 
     dicionario_pai_unitario = {
 
-        '142000': m_cavalete.Cavalete.RegularizarCv,
-        '148000': m_cavalete.Cavalete.TrocaCvporUMA,
-        '149000': m_cavalete.Cavalete.TrocaCvKit,
-        '153000': m_cavalete.Cavalete.TrocaPeCvPrev,
-        '201000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '203000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '203500': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '204000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '205000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '206000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '207000': m_hidrometro.Hidrometro.UnitarioHidrometro,
-        '215000': m_hidrometro.Hidrometro.UnitarioHidrometro,
+        '142000': m_cavalete.Cavalete.regularizar_cv,
+        '148000': m_cavalete.Cavalete.troca_cv_por_uma,
+        '149000': m_cavalete.Cavalete.trocar_cv_kit,
+        '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
+        '201000': m_hidrometro.Hidrometro.un_hidrometro,
+        '203000': m_hidrometro.Hidrometro.un_hidrometro,
+        '203500': m_hidrometro.Hidrometro.un_hidrometro,
+        '204000': m_hidrometro.Hidrometro.un_hidrometro,
+        '205000': m_hidrometro.Hidrometro.un_hidrometro,
+        '206000': m_hidrometro.Hidrometro.un_hidrometro,
+        '207000': m_hidrometro.Hidrometro.un_hidrometro,
+        '215000': m_hidrometro.Hidrometro.un_hidrometro,
         # '253000':
         # '254000':
         # '255000':
@@ -39,15 +39,15 @@ def pai_servico_unitario(servico_temp, n_etapa):
         # '284500':
         # '286000':
         # '304000':
-        '405000': m_supressao.Supressao.SuprimirLigacaodeAgua,
-        '414000': m_supressao.Supressao.SuprimirLigacaodeAgua,
-        '450500': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '453000': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '455500': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '463000': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '465000': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '467500': m_religacao.Religacao.ReativadaLigacaodeAgua,
-        '475500': m_religacao.Religacao.ReativadaLigacaodeAgua,
+        '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
+        '414000': m_supressao.Supressao.suprimir_ligacao_de_agua,
+        '450500': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '453000': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '455500': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '463000': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '465000': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '467500': m_religacao.Religacao.reativada_ligacao_de_agua,
+        '475500': m_religacao.Religacao.reativada_ligacao_de_agua,
         # '502000':
         # '505000':
         # '506000':
@@ -69,12 +69,12 @@ def pai_servico_unitario(servico_temp, n_etapa):
             f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
         metodo = dicionario_pai_unitario[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
-        reposicao = metodo(n_etapa)
+        reposicao, tse_proibida, identificador = metodo(n_etapa)
     else:
         print("TSE não Encontrada no Dicionário de Pai Unitário!")
         sys.exit()
     # Retorno
-    return reposicao
+    return reposicao, tse_proibida, identificador
 
 
 def pai_servico_cesta(servico_temp):

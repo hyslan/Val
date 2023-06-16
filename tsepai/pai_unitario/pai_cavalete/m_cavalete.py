@@ -31,111 +31,129 @@ session = connect_to_sap()
 
 
 class Cavalete:
-
+    '''Classe dos Cavaletes Unitários.'''
     @staticmethod
-    def TrocaPeCvPrev():  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+    def troca_pe_cv_prev(*args):
+        '''Módulo Pai troca Pé de Cavalete.'''
+        tse_proibida = None
         print("Iniciando processo Pai de Troca de Pé de Cavalete Preventiva - TSE 153000")
         servico_temp = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
         print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
 
-            if SAP_tse in tb_tse_reposicao:
+            if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                tse_temp_reposicao.append(SAP_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
 
-            elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
+            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(SAP_tse)
+                servico_temp.append(sap_tse)
                 continue
+        return tse_temp_reposicao, tse_proibida
 
     @staticmethod
-    def TrocaCvKit():  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
-        print("Iniciando processo Pai de Troca Cavalete KIT - TSE 149000")
-        servico_temp = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-        n_tse = 0
-        tse_temp_reposicao = []
-        num_tse_linhas = servico_temp.RowCount
-        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
+    def trocar_cv_kit(*args):
+        '''Módulo Pai Troca de Cavalete Kit'''
+        tse_temp_reposicao = None
+        tse_proibida = "TROCA CAVALETE (KIT)"
+        # print("Iniciando processo Pai de Troca Cavalete KIT - TSE 149000")
+        # servico_temp = session.findById(
+        #     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+        #     + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+        # n_tse = 0
+        # tse_temp_reposicao = []
+        # num_tse_linhas = servico_temp.RowCount
+        # print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
+        # for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+        #     sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
 
-            if SAP_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                tse_temp_reposicao.append(SAP_tse)
-                continue
+        #     if sap_tse in tb_tse_reposicao:
+        #         servico_temp.modifyCell(n_tse, "PAGAR", "n")
+        #         # Pertence ao serviço principal
+        #         servico_temp.modifyCell(n_tse, "CODIGO", "3")
+        #         tse_temp_reposicao.append(sap_tse)
+        #         continue
 
-            elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                # Coloca a tse existente na lista temporária
-                servico_temp.append(SAP_tse)
-                continue
-
-    @staticmethod
-    def RegularizarCv():  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
-        print("Iniciando processo Pai de Regularizar Cavalete - TSE 142000")
-        servico_temp = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-        n_tse = 0
-        tse_temp_reposicao = []
-        num_tse_linhas = servico_temp.RowCount
-        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
-
-            if SAP_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                tse_temp_reposicao.append(SAP_tse)
-                continue
-
-            elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                # Coloca a tse existente na lista temporária
-                servico_temp.append(SAP_tse)
-                continue
+        #     elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
+        #         servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+        #         # Pertence ao serviço principal
+        #         servico_temp.modifyCell(n_tse, "CODIGO", "3")
+        #         # Coloca a tse existente na lista temporária
+        #         servico_temp.append(sap_tse)
+        #         continue
+        return tse_temp_reposicao, tse_proibida
 
     @staticmethod
-    def TrocaCvporUMA():  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+    def regularizar_cv(*args):
+        '''Módulo Pai Regularizar Cavalete.'''
+        tse_temp_reposicao = None
+        tse_proibida = "REGULARIZADO CAVALETE"
+        # print("Iniciando processo Pai de Regularizar Cavalete - TSE 142000")
+        # servico_temp = session.findById(
+        #     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+        #     + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+        # n_tse = 0
+        # tse_temp_reposicao = []
+        # num_tse_linhas = servico_temp.RowCount
+        # print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
+        # for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+        #     sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+
+        #     if sap_tse in tb_tse_reposicao:
+        #         servico_temp.modifyCell(n_tse, "PAGAR", "n")
+        #         # Pertence ao serviço principal
+        #         servico_temp.modifyCell(n_tse, "CODIGO", "3")
+        #         tse_temp_reposicao.append(sap_tse)
+        #         continue
+
+        #     elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
+        #         servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+        #         # Pertence ao serviço principal
+        #         servico_temp.modifyCell(n_tse, "CODIGO", "3")
+        #         # Coloca a tse existente na lista temporária
+        #         servico_temp.append(sap_tse)
+        #         continue
+        return tse_temp_reposicao, tse_proibida
+
+    @staticmethod
+    def troca_cv_por_uma(*args):
+        '''Módulo Pai Troca Cavalete por UMA.'''
+        tse_proibida = None
         print("Iniciando processo Pai de Troca de Cavalete por UMA - TSE 148000")
         servico_temp = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
         print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-        for n_tse, SAP_tse in enumerate(range(0, num_tse_linhas)):
-            SAP_tse = servico_temp.GetCellValue(n_tse, "TSE")
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
 
-            if SAP_tse in tb_tse_reposicao:
+            if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                tse_temp_reposicao.append(SAP_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
 
-            elif SAP_tse in tb_tse_PertenceAoServicoPrincipal:
+            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(SAP_tse)
+                servico_temp.append(sap_tse)
                 continue
+        return tse_temp_reposicao, tse_proibida

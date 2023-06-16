@@ -47,7 +47,9 @@ def verifica_tse(servico):
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
             # pylint: disable=E1121
-            reposicao = pai_dicionario.pai_servico_unitario(
+            (reposicao,
+             tse_proibida,
+             identificador) = pai_dicionario.pai_servico_unitario(
                 sap_tse, n_tse)
             continue
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
@@ -88,4 +90,4 @@ def verifica_tse(servico):
             print("TSE não encontrado na planilha do Excel.")
     # Fim da condicional.
     servico.pressEnter()
-    return tse_temp, reposicao, num_tse_linhas
+    return tse_temp, reposicao, num_tse_linhas, tse_proibida, identificador
