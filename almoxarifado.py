@@ -43,6 +43,8 @@ class Almoxarifado:
         '''Módulo de verificar materiais inclusos na ordem.'''
         try:
             sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
+            print(f"Material: {sap_material}")
+            print("Tem material vinculado.")
             return sap_material
         # pylint: disable=E1101
         except pywintypes.com_error:
@@ -66,11 +68,27 @@ class Almoxarifado:
                 print("Aplicando a receita de hidrômetro.")
                 material.receita_hidrometro()
             case "cavalete":
-                print("em construção.")
+                sap_material = self.testa_material_sap(tb_materiais)
+                if sap_material is not None:
+                    self.materiais_contratada(tb_materiais)
+                else:
+                    return
             case "religacao":
-                return None
+                material = ReligacaoMaterial(
+                    self.int_num_lordem,
+                    self.hidro,
+                    self.operacao,
+                    self.identificador,
+                    tb_materiais
+                )
+                print("Aplicando a receita de religação.")
+                material.receita_religacao()
             case "supressao":
-                return None
+                sap_material = self.testa_material_sap(tb_materiais)
+                if sap_material is not None:
+                    self.materiais_contratada(tb_materiais)
+                else:
+                    return
             case _:
                 print("Classe não identificada.")
                 sys.exit()
@@ -124,7 +142,8 @@ class HidrometroMaterial(Almoxarifado):
         self.tb_materiais = tb_materiais
     def receita_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro.'''
-        sap_material = super().testa_material_sap
+        sap_material = super().testa_material_sap(self.tb_materiais)
+        hidro_instalado = self.hidro
         if sap_material is None:
             if hidro_instalado is not None:
                 print("Tem hidro, mas não foi vinculado!")
@@ -170,7 +189,6 @@ class HidrometroMaterial(Almoxarifado):
                 ultima_linha_material = ultima_linha_material + 1
         else:
             num_material_linhas = self.tb_materiais.RowCount
-            print(f"Qtd de linhas de materiais: {num_material_linhas}")
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas
@@ -264,25 +282,68 @@ class HidrometroMaterial(Almoxarifado):
                             ultima_linha_material = ultima_linha_material + 1
                             hidro_adicionado = True  # Hidrômetro foi adicionado
 
-            if self.hidro is not None and hidro_adicionado is False:
-                print(
-                    f"Não foi inserido hidro, incluindo o informado: {cod_hidro_instalado}")
-                self.tb_materiais.InsertRows(str(ultima_linha_material))
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", sap_etapa_material)
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", cod_hidro_instalado)
-                self.tb_materiais.modifyCell(ultima_linha_material, "QUANT", "1")
-                self.tb_materiais.setCurrentCell(ultima_linha_material, "QUANT")
-                ultima_linha_material = ultima_linha_material + 1
-                hidro_adicionado = True  # Hidrômetro foi adicionado
+                if self.hidro is not None and hidro_adicionado is False:
+                    print(
+                        f"Não foi inserido hidro, incluindo o informado: {cod_hidro_instalado}")
+                    self.tb_materiais.InsertRows(str(ultima_linha_material))
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "ETAPA", sap_etapa_material)
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "MATERIAL", cod_hidro_instalado)
+                    self.tb_materiais.modifyCell(ultima_linha_material, "QUANT", "1")
+                    self.tb_materiais.setCurrentCell(ultima_linha_material, "QUANT")
+                    ultima_linha_material = ultima_linha_material + 1
+                    hidro_adicionado = True  # Hidrômetro foi adicionado
+
+class ReligacaoMaterial(Almoxarifado):
+    '''Classe de materiais de religação.'''
+    def __init__(self, int_num_lordem, hidro, operacao, identificador, tb_materiais):
+        super().__init__(int_num_lordem, hidro, operacao, identificador)
+        self.tb_materiais = tb_materiais
+    def receita_religacao(self):
+        '''Padrão de materiais na classe Religação.'''
+        sap_material = super().testa_material_sap(self.tb_materiais)
+        if sap_material is None:
+            ultima_linha_material = 0
+            self.tb_materiais.InserRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.operacao
+            )
+            self.tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", "50000263"
+                )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            ultima_linha_material = ultima_linha_material + 1
+        else:
+            num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
+            print(f"Qtd de linhas de materiais: {num_material_linhas}")
+            # Número da Row do Grid Materiais do SAP
+            n_material = 0
+            ultima_linha_material = num_material_linhas
+            # Loop do Grid Materiais.
+            for n_material in range(num_material_linhas):
+                # Pega valor da célula 0
+                sap_material = self.tb_materiais.GetCellValue(
+                    n_material, "MATERIAL")
+                # Retirar hidro vinculado em religação.
+                if sap_material in ('50000108', '50000530'):
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+            # Materiais do Global.
+            self.materiais_contratada(self.tb_materiais)
 
 def materiais(int_num_lordem, hidro_instalado, operacao, identificador):
     '''Função dos materiais de acordo com a TSE pai.'''
     servico = Almoxarifado(int_num_lordem, hidro_instalado, operacao, identificador)
     tb_materiais = servico.aba_materiais()
     servico.inspecao(tb_materiais)
-    sap_material = servico.testa_material_sap(tb_materiais)
-    if sap_material is not None:
-        servico.materiais_contratada(tb_materiais)
+    # sap_material = servico.testa_material_sap(tb_materiais)
+    # if sap_material is not None:
+    #     servico.materiais_contratada(tb_materiais)
         

@@ -32,9 +32,12 @@ session = connect_to_sap()
 
 class Cavalete:
     '''Classe dos Cavaletes Unitários.'''
+    TIPO = "cavalete"
+
     @staticmethod
     def troca_pe_cv_prev(*args):
         '''Módulo Pai troca Pé de Cavalete.'''
+        identificador = Cavalete.TIPO
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Pé de Cavalete Preventiva - TSE 153000")
         servico_temp = session.findById(
@@ -61,11 +64,12 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
                 continue
-        return tse_temp_reposicao, tse_proibida
+        return tse_temp_reposicao, tse_proibida, identificador
 
     @staticmethod
     def trocar_cv_kit(*args):
         '''Módulo Pai Troca de Cavalete Kit'''
+        identificador = Cavalete.TIPO
         tse_temp_reposicao = None
         tse_proibida = "TROCA CAVALETE (KIT)"
         # print("Iniciando processo Pai de Troca Cavalete KIT - TSE 149000")
@@ -93,11 +97,12 @@ class Cavalete:
         #         # Coloca a tse existente na lista temporária
         #         servico_temp.append(sap_tse)
         #         continue
-        return tse_temp_reposicao, tse_proibida
+        return tse_temp_reposicao, tse_proibida, identificador
 
     @staticmethod
     def regularizar_cv(*args):
         '''Módulo Pai Regularizar Cavalete.'''
+        identificador = Cavalete.TIPO
         tse_temp_reposicao = None
         tse_proibida = "REGULARIZADO CAVALETE"
         # print("Iniciando processo Pai de Regularizar Cavalete - TSE 142000")
@@ -125,11 +130,12 @@ class Cavalete:
         #         # Coloca a tse existente na lista temporária
         #         servico_temp.append(sap_tse)
         #         continue
-        return tse_temp_reposicao, tse_proibida
+        return tse_temp_reposicao, tse_proibida, identificador
 
     @staticmethod
     def troca_cv_por_uma(*args):
         '''Módulo Pai Troca Cavalete por UMA.'''
+        identificador = Cavalete.TIPO
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Cavalete por UMA - TSE 148000")
         servico_temp = session.findById(
@@ -156,4 +162,4 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
                 continue
-        return tse_temp_reposicao, tse_proibida
+        return tse_temp_reposicao, tse_proibida, identificador
