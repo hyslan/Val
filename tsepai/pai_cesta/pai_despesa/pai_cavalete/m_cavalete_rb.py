@@ -35,9 +35,13 @@ session = connect_to_sap()
 
 class Cavalete:
     '''Familia Cavalete'''
+    MODALIDADE = "ligacao_agua"
+
     @staticmethod
     def reparo_cv():
         '''Reparo de Cavalete'''
+        etapa_reposicao = None
+        identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Reparo de Cavalete - TSE 130000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -60,12 +64,15 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(sap_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
+        return tse_temp_reposicao, identificador, etapa_reposicao
 
     @staticmethod
     def reparo_de_registro_de_cv():
         '''Reparo de Registro de Cavalete.'''
+        etapa_reposicao = None
+        identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Reparo de Registro de Cavalete - TSE 140000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -88,12 +95,15 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(sap_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
+        return tse_temp_reposicao, identificador, etapa_reposicao
 
     @staticmethod
     def troca_de_registro_de_cv():
         '''Troca de registro de Cavalete.'''
+        etapa_reposicao = None
+        identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Troca de Registro de Cavalete - TSE 140100")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -116,5 +126,6 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(sap_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
+        return tse_temp_reposicao, identificador, etapa_reposicao

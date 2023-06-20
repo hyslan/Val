@@ -4,6 +4,7 @@ from servicos_executados import verifica_tse
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from unitarios import dicionario
+from cesta import cesta_dicionario
 session = connect_to_sap()
 (
     lista,
@@ -32,20 +33,22 @@ def precificador(tse, corte, relig):
         num_tse_linhas,
         tse_proibida,
         identificador,
-        etapa_reposicao
+        etapa_reposicao,
+        pai
     ) = verifica_tse(
         tse)
     if tse_proibida is not None:
         print("TSE proibida de ser valorada.")
     else:
         print(f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao}")
-        # Aba Itens de preço
-        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
-        print("****Processo de Precificação****")
         for etapa in tse_temp:
             print(f"TSE selecionada para pagar: {etapa}")
             if etapa in tb_tse_un:  # Verifica se está no Conjunto Unitários
                 print(f"{etapa} é unitário!")
+                # Aba Itens de preço
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
+                print("****Processo de Precificação****")
                 # pylint: disable=E1121
                 dicionario.unitario(
                     etapa,
@@ -56,5 +59,14 @@ def precificador(tse, corte, relig):
                     etapa_reposicao
                 )
             else:
-                print(f"{etapa} não é unitário!")
+                print(f"{etapa} Remuneração Base!")
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+                cesta_dicionario.cesta(etapa,
+                                       reposicao,
+                                       etapa_reposicao,
+                                       identificador,
+                                       pai,
+                                       )
+
     return tse_proibida, identificador

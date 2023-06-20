@@ -59,7 +59,9 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            pai_dicionario.pai_servico_cesta(sap_tse)
+            (reposicao,
+             identificador,
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
             continue
           # tirar depois
         elif sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
@@ -98,5 +100,6 @@ def verifica_tse(servico):
         num_tse_linhas,
         tse_proibida,
         identificador,
-        etapa_reposicao
+        etapa_reposicao,
+        pai
     )
