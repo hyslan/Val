@@ -43,7 +43,6 @@ class Almoxarifado:
         '''Módulo de verificar materiais inclusos na ordem.'''
         try:
             sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
-            print(f"Material: {sap_material}")
             print("Tem material vinculado.")
             return sap_material
         # pylint: disable=E1101
@@ -97,7 +96,6 @@ class Almoxarifado:
     def materiais_contratada(self, tb_materiais):
         '''Módulo de materiais da NOVASP.'''
         num_material_linhas = tb_materiais.RowCount  # Conta as Rows
-        print(f"Qtd de linhas de materiais: {num_material_linhas}")
         # Número da Row do Grid Materiais do SAP
         n_material = 0
         ultima_linha_material = num_material_linhas
@@ -236,7 +234,7 @@ class HidrometroMaterial(Almoxarifado):
                     )
                     ultima_linha_material = ultima_linha_material + 1
 
-                if  self.hidro is not None:
+                if self.hidro is not None:
                     if hidro_adicionado is True:
                         print("Hidro já adicionado.")
                     else:
@@ -282,18 +280,19 @@ class HidrometroMaterial(Almoxarifado):
                             ultima_linha_material = ultima_linha_material + 1
                             hidro_adicionado = True  # Hidrômetro foi adicionado
 
-                if self.hidro is not None and hidro_adicionado is False:
-                    print(
-                        f"Não foi inserido hidro, incluindo o informado: {cod_hidro_instalado}")
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", sap_etapa_material)
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", cod_hidro_instalado)
-                    self.tb_materiais.modifyCell(ultima_linha_material, "QUANT", "1")
-                    self.tb_materiais.setCurrentCell(ultima_linha_material, "QUANT")
-                    ultima_linha_material = ultima_linha_material + 1
-                    hidro_adicionado = True  # Hidrômetro foi adicionado
+            if self.hidro is not None and hidro_adicionado is False:
+                print(
+                    "Não foi inserido hidro, "
+                    + f"incluindo o informado: {cod_hidro_instalado}")
+                self.tb_materiais.InsertRows(str(ultima_linha_material))
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "ETAPA", sap_etapa_material)
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", cod_hidro_instalado)
+                self.tb_materiais.modifyCell(ultima_linha_material, "QUANT", "1")
+                self.tb_materiais.setCurrentCell(ultima_linha_material, "QUANT")
+                ultima_linha_material = ultima_linha_material + 1
+                hidro_adicionado = True  # Hidrômetro foi adicionado
 
 class ReligacaoMaterial(Almoxarifado):
     '''Classe de materiais de religação.'''
@@ -321,7 +320,6 @@ class ReligacaoMaterial(Almoxarifado):
             ultima_linha_material = ultima_linha_material + 1
         else:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
-            print(f"Qtd de linhas de materiais: {num_material_linhas}")
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas

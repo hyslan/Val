@@ -26,7 +26,14 @@ session = connect_to_sap()
 def precificador(tse, corte, relig):
     '''Função para apontar os itens de preço e selecionar.'''
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
-    tse_temp, reposicao, num_tse_linhas, tse_proibida, identificador = verifica_tse(
+    (
+        tse_temp,
+        reposicao,
+        num_tse_linhas,
+        tse_proibida,
+        identificador,
+        etapa_reposicao
+    ) = verifica_tse(
         tse)
     if tse_proibida is not None:
         print("TSE proibida de ser valorada.")
@@ -40,8 +47,14 @@ def precificador(tse, corte, relig):
             if etapa in tb_tse_un:  # Verifica se está no Conjunto Unitários
                 print(f"{etapa} é unitário!")
                 # pylint: disable=E1121
-                dicionario.unitario(etapa, corte, relig,
-                                    reposicao, num_tse_linhas)
+                dicionario.unitario(
+                    etapa,
+                    corte,
+                    relig,
+                    reposicao,
+                    num_tse_linhas,
+                    etapa_reposicao
+                )
             else:
                 print(f"{etapa} não é unitário!")
     return tse_proibida, identificador

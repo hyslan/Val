@@ -42,15 +42,17 @@ def verifica_tse(servico):
     print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
     for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
+        etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
         if sap_tse in tb_tse_un:  # Verifica se está no Conjunto Unitários
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
+            pai = etapa_pai
             # pylint: disable=E1121
             (reposicao,
              tse_proibida,
-             identificador) = pai_dicionario.pai_servico_unitario(
-                sap_tse, n_tse)
+             identificador,
+             etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse)
             continue
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
@@ -90,4 +92,11 @@ def verifica_tse(servico):
             print("TSE não encontrado na planilha do Excel.")
     # Fim da condicional.
     servico.pressEnter()
-    return tse_temp, reposicao, num_tse_linhas, tse_proibida, identificador
+    return (
+        tse_temp,
+        reposicao,
+        num_tse_linhas,
+        tse_proibida,
+        identificador,
+        etapa_reposicao
+    )

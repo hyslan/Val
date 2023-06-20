@@ -11,7 +11,7 @@ from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 
 
-def pai_servico_unitario(servico_temp, n_etapa):
+def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
     dicionario_pai_unitario = {
@@ -69,12 +69,12 @@ def pai_servico_unitario(servico_temp, n_etapa):
             f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
         metodo = dicionario_pai_unitario[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
-        reposicao, tse_proibida, identificador = metodo(n_etapa)
+        reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
         print("TSE não Encontrada no Dicionário de Pai Unitário!")
         sys.exit()
     # Retorno
-    return reposicao, tse_proibida, identificador
+    return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
 def pai_servico_cesta(servico_temp):

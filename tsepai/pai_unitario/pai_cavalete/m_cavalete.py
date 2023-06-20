@@ -35,8 +35,9 @@ class Cavalete:
     TIPO = "cavalete"
 
     @staticmethod
-    def troca_pe_cv_prev(*args):
+    def troca_pe_cv_prev():
         '''Módulo Pai troca Pé de Cavalete.'''
+        etapa_reposicao = None
         identificador = Cavalete.TIPO
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Pé de Cavalete Preventiva - TSE 153000")
@@ -62,13 +63,14 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
-                servico_temp.append(sap_tse)
+                tse_temp_reposicao.append(sap_tse)
                 continue
-        return tse_temp_reposicao, tse_proibida, identificador
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
-    def trocar_cv_kit(*args):
+    def trocar_cv_kit():
         '''Módulo Pai Troca de Cavalete Kit'''
+        etapa_reposicao = None
         identificador = Cavalete.TIPO
         tse_temp_reposicao = None
         tse_proibida = "TROCA CAVALETE (KIT)"
@@ -97,11 +99,12 @@ class Cavalete:
         #         # Coloca a tse existente na lista temporária
         #         servico_temp.append(sap_tse)
         #         continue
-        return tse_temp_reposicao, tse_proibida, identificador
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
-    def regularizar_cv(*args):
+    def regularizar_cv():
         '''Módulo Pai Regularizar Cavalete.'''
+        etapa_reposicao = None
         identificador = Cavalete.TIPO
         tse_temp_reposicao = None
         tse_proibida = "REGULARIZADO CAVALETE"
@@ -130,12 +133,13 @@ class Cavalete:
         #         # Coloca a tse existente na lista temporária
         #         servico_temp.append(sap_tse)
         #         continue
-        return tse_temp_reposicao, tse_proibida, identificador
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
-    def troca_cv_por_uma(*args):
+    def troca_cv_por_uma():
         '''Módulo Pai Troca Cavalete por UMA.'''
         identificador = Cavalete.TIPO
+        etapa_reposicao = None
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Cavalete por UMA - TSE 148000")
         servico_temp = session.findById(
@@ -147,12 +151,14 @@ class Cavalete:
         print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao = etapa
                 continue
 
             elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
@@ -162,4 +168,4 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
                 continue
-        return tse_temp_reposicao, tse_proibida, identificador
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

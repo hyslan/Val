@@ -11,7 +11,7 @@ session = connect_to_sap()
 class Corte:
     '''Classe de Reposição Unitário.'''
     @staticmethod
-    def supressao(corte, _, reposicao, num_tse_linhas):
+    def supressao(corte, _, reposicao, num_tse_linhas, etapa_reposicao):
         '''Método para definir de qual forma foi suprimida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''
@@ -52,6 +52,10 @@ class Corte:
                     preco_reposicao = str(456042)
                     txt_reposicao = ("Pago 1 UN de LRP ESP RELIGACAO"
                                      + "DE LIGACAO SUPR - CODIGO: 456042")
+                elif reposicao in dict_reposicao['asfalto_frio']:
+                    preco_reposicao = str(451043)
+                    txt_reposicao = ("Pago 1 UN de LPB ASF SUPRE  LAG COMPX C"
+                                     + " - CODIGO: 456042")
                 if preco is not None:
                     num_precos_linhas = preco.RowCount
                     print(
@@ -65,6 +69,8 @@ class Corte:
                             n_preco, "NUMERO_EXT")
                         item_preco = preco.GetCellValue(
                             n_preco, "ITEM")
+                        n_etapa = preco.GetCellValue(
+                            n_preco, "ETAPA")
                         if sap_preco == str(456035):
                             # Marca pagar na TSE
                             preco.modifyCell(n_preco, "QUANT", "1")
@@ -72,8 +78,15 @@ class Corte:
                             print(
                                 "Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456035")
                             contador_pg += 1
-                        elif sap_preco == preco_reposicao and item_preco == '660':
+                        elif sap_preco == preco_reposicao and item_preco == '660' \
+                                and preco_reposicao != str(451043):
+                            preco.modifyCell(n_preco, "QUANT", "1")
+                            preco.setCurrentCell(n_preco, "QUANT")
+                            print(txt_reposicao)
+                            contador_pg += 1
                             # 660 é módulo despesa.
+                        elif sap_preco == preco_reposicao and item_preco == '660' \
+                                and n_etapa == etapa_reposicao:
                             preco.modifyCell(n_preco, "QUANT", "1")
                             preco.setCurrentCell(n_preco, "QUANT")
                             print(txt_reposicao)

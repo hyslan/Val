@@ -1,6 +1,7 @@
 '''Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz'''
 # main.py
 # Bibliotecas
+import sys
 import time
 import datetime
 from core import val
@@ -27,7 +28,10 @@ def main():
         print(f"- Val: {saudacao}\n- Val: Como vai você hoje?")
         print(f"\n- Val: Hora atual: {hora_atual}")
         # Início do Sistema
-        ordem, int_num_lordem = val()
+        ordem, int_num_lordem, validador = val()
+        if validador is True:
+            print("- Val: Valoração finalizada, encerrando.")
+            sys.exit()
         # Loop de Parada
         if hora_atual >= hora_parada:
             print("A Val foi descansar.")

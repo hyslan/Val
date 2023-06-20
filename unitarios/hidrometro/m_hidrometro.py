@@ -17,9 +17,9 @@ class Hidrometro:
             num_precos_linhas = preco.RowCount
             print(f"Qtd linhas em itens de preço: {num_precos_linhas}")
             n_preco = 0  # índice para itens de preço
-            for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                SAP_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if SAP_preco == str(456902):  # THD  ATE 10M3/H PREV
+            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
+                if sap_preco == str(456902):  # THD  ATE 10M3/H PREV
                     # Marca pagar na TSE
                     preco.modifyCell(n_preco, "QUANT", "1")
                     preco.setCurrentCell(n_preco, "QUANT")
@@ -28,7 +28,7 @@ class Hidrometro:
                     break
                 else:
                     print(
-                        f"Código de preço: {SAP_preco} , Linha: {n_preco} - Não Selecionado")
+                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")
 
     @staticmethod
     def HD_456022(*args):
@@ -40,9 +40,9 @@ class Hidrometro:
             num_precos_linhas = preco.RowCount
             print(f"Qtd linhas em itens de preço: {num_precos_linhas}")
             n_preco = 0  # índice para itens de preço
-            for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                SAP_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if SAP_preco == str(456022):
+            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
+                if sap_preco == str(456022):
                     # Marca pagar na TSE
                     preco.modifyCell(n_preco, "QUANT", "1")
                     preco.setCurrentCell(n_preco, "QUANT")
@@ -51,7 +51,7 @@ class Hidrometro:
                     break
                 else:
                     print(
-                        f"Código de preço: {SAP_preco} , Linha: {n_preco} - Não Selecionado")
+                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")
 
     @staticmethod
     def THD_456901(*args):  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
@@ -63,9 +63,9 @@ class Hidrometro:
             num_precos_linhas = preco.RowCount
             print(f"Qtd linhas em itens de preço: {num_precos_linhas}")
             n_preco = 0  # índice para itens de preço
-            for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                SAP_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if SAP_preco == str(456901):
+            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
+                if sap_preco == str(456901):
                     # Marca pagar na TSE
                     preco.modifyCell(n_preco, "QUANT", "1")
                     preco.setCurrentCell(n_preco, "QUANT")
@@ -74,4 +74,4 @@ class Hidrometro:
                     break
                 else:
                     print(
-                        f"Código de preço: {SAP_preco} , Linha: {n_preco} - Não Selecionado")
+                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")

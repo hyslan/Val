@@ -10,7 +10,7 @@ session = connect_to_sap()
 class Religacao:
     '''Classe de Religação Unitário.'''
     @staticmethod
-    def Restabelecida(_, relig, reposicao, num_tse_linhas):
+    def restabelecida(_, relig, reposicao, num_tse_linhas, etapa_reposicao):
         '''Método para definir de qual forma foi restabelecida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''
@@ -25,9 +25,9 @@ class Religacao:
                 print(
                     f"Qtd linhas em itens de preço: {num_precos_linhas}")
                 n_preco = 0  # índice para itens de preço
-                for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                    SAP_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                    if SAP_preco == str(456037):
+                for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                    sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
+                    if sap_preco == str(456037):
                         # Marca pagar na TSE
                         preco.modifyCell(n_preco, "QUANT", "1")
                         preco.setCurrentCell(n_preco, "QUANT")
@@ -48,28 +48,41 @@ class Religacao:
             elif reposicao in dict_reposicao['especial']:
                 preco_reposicao = str(456042)
                 txt_reposicao = "Pago 1 UN de LRP ESP RELIGACAO DE LIGACAO SUPR - CODIGO: 456042"
+            elif reposicao in dict_reposicao['asfalto_frio']:
+                preco_reposicao = str(451043)
+                txt_reposicao = ("Pago 1 UN de LPB ASF SUPRE  LAG COMPX C"
+                                 + " - CODIGO: 456042")
             if preco is not None:
                 num_precos_linhas = preco.RowCount
                 print(
                     f"Qtd linhas em itens de preço: {num_precos_linhas}")
                 n_preco = 0  # índice para itens de preço
                 contador_pg = 0
-                for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
+                for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
                     if contador_pg >= num_tse_linhas:
                         break
-                    SAP_preco = preco.GetCellValue(
+                    sap_preco = preco.GetCellValue(
                         n_preco, "NUMERO_EXT")
                     item_preco = preco.GetCellValue(
                         n_preco, "ITEM")
-                    if SAP_preco == str(456039):
+                    n_etapa = preco.GetCellValue(
+                        n_preco, "ETAPA")
+                    if sap_preco == str(456039):
                         # Marca pagar na TSE
                         preco.modifyCell(n_preco, "QUANT", "1")
                         preco.setCurrentCell(n_preco, "QUANT")
                         print(
                             "Pago 1 UN de RELIG  RAMAL AG  S/REP - CODIGO: 456039")
                         contador_pg += 1
-                    elif SAP_preco == preco_reposicao and item_preco == '660':
+                    elif sap_preco == preco_reposicao and item_preco == '660' \
+                            and preco_reposicao != str(451043):
+                        preco.modifyCell(n_preco, "QUANT", "1")
+                        preco.setCurrentCell(n_preco, "QUANT")
+                        print(txt_reposicao)
+                        contador_pg += 1
                         # 660 é módulo despesa.
+                    elif sap_preco == preco_reposicao and item_preco == '660' \
+                            and n_etapa == etapa_reposicao:
                         preco.modifyCell(n_preco, "QUANT", "1")
                         preco.setCurrentCell(n_preco, "QUANT")
                         print(txt_reposicao)
@@ -87,10 +100,10 @@ class Religacao:
                 print(
                     f"Qtd linhas em itens de preço: {num_precos_linhas}")
                 n_preco = 0  # índice para itens de preço
-                for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                    SAP_preco = preco.GetCellValue(
+                for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                    sap_preco = preco.GetCellValue(
                         n_preco, "NUMERO_EXT")
-                    if SAP_preco == str(456040):
+                    if sap_preco == str(456040):
                         # Marca pagar na TSE
                         preco.modifyCell(n_preco, "QUANT", "1")
                         preco.setCurrentCell(n_preco, "QUANT")
@@ -100,7 +113,7 @@ class Religacao:
                         break
                     else:
                         print(
-                            f"Código de preço: {SAP_preco} , Linha: {n_preco} - Não Selecionado")
+                            f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")
         else:
             print("Religação não informada. \n Pagando como RELIG CV.")
             preco = session.findById(
@@ -112,9 +125,9 @@ class Religacao:
                 print(
                     f"Qtd linhas em itens de preço: {num_precos_linhas}")
                 n_preco = 0  # índice para itens de preço
-                for n_preco, SAP_preco in enumerate(range(0, num_precos_linhas)):
-                    SAP_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                    if SAP_preco == str(456037):
+                for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+                    sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
+                    if sap_preco == str(456037):
                         # Marca pagar na TSE
                         preco.modifyCell(n_preco, "QUANT", "1")
                         preco.setCurrentCell(n_preco, "QUANT")
@@ -123,6 +136,6 @@ class Religacao:
                         break
                     else:
                         print(
-                            f"Código de preço: {SAP_preco}, Linha: {n_preco} - Não Selecionado")
+                            f"Código de preço: {sap_preco}, Linha: {n_preco} - Não Selecionado")
         # Confirmação da precificação.
         preco.pressEnter()

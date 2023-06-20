@@ -31,6 +31,7 @@ session = connect_to_sap()
 
 def val():
     '''Sistema Val.'''
+    validador = False
     input("- Val: Pressione Enter para iniciar...")
     limite_execucoes = planilha.max_row
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
@@ -120,7 +121,7 @@ def val():
                 materiais(int_num_lordem, hidro, operacao, identificador)
                 # Fim dos materiais
                 # Salvar Ordem
-                salvar(ordem, int_num_lordem, qtd_ordem)
+                qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 # Incremento + de Ordem.
@@ -128,4 +129,5 @@ def val():
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
                 print(f"Quantidade de ordens valoradas: {qtd_ordem}.")
                 lista.save('lista.xlsx')  # salva Planilha
-    return ordem, int_num_lordem
+    validador = True
+    return ordem, int_num_lordem, validador

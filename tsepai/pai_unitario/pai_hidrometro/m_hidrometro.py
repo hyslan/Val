@@ -33,8 +33,9 @@ session = connect_to_sap()
 class Hidrometro:
     '''Classe Pai Hidrômetros.'''
     @staticmethod
-    def un_hidrometro(n_etapa):
+    def un_hidrometro():
         '''Módulo de hidrômetros, setar os parâmetros.'''
+        etapa_reposicao = None
         reposicao_tse_temp = None
         tse_proibida = None
         identificador = "hidrometro"
@@ -45,7 +46,6 @@ class Hidrometro:
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         num_tse_linhas = servico_temp.RowCount
-        n_etapa_hidro = servico_temp.GetCellValue(n_etapa, "ETAPA")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
@@ -55,4 +55,4 @@ class Hidrometro:
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
                 continue
-        return reposicao_tse_temp, tse_proibida, identificador
+        return reposicao_tse_temp, tse_proibida, identificador, etapa_reposicao

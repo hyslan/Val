@@ -32,9 +32,10 @@ session = connect_to_sap()
 class Religacao:
     '''Classe Pai Religação Unitário.'''
     @staticmethod
-    def reativada_ligacao_de_agua(n_etapa):
+    def reativada_ligacao_de_agua():
         '''Módulo Religação Unitário.'''
         tse_proibida = None
+        etapa_reposicao = None
         identificador = "religacao"
         print("Iniciando processo Pai de RELIGAÇÃO DE ÁGUA - TSE: "
               + "405000, 414000, 450500, 453000, 455500, 463000, 465000, 467500, 475500")
@@ -45,9 +46,11 @@ class Religacao:
         num_tse_linhas = servico_temp.RowCount
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
             if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao = etapa
                 print(f"Tem reposição TSE: {sap_tse}")
                 continue
             elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
@@ -56,4 +59,4 @@ class Religacao:
                 servico_temp.append(sap_tse) # Coloca a tse existente na lista temporária
                 continue
 
-        return tse_temp_reposicao, tse_proibida, identificador
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
