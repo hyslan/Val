@@ -38,25 +38,26 @@ class Modalidade:
         '''Selecionador de Pai Rem base.'''
         match self.identificador:
             case "supr_restab":
-                print(1)
                 self.testa_modalidade_sap(itens_nv)
-            case "ligacao_agua":
-                print(2)
+                self.fech_e_reab_lig(itens_nv)
+            case "ligacao_agua" | "cavalete":
                 self.testa_modalidade_sap(itens_nv)
+                self.manut_lig_agua(itens_nv)
             case "rede_agua":
-                print(3)
                 self.testa_modalidade_sap(itens_nv)
+                self.manut_rede_agua(itens_nv)
             case "ligacao_esgoto":
-                print(4)
                 self.testa_modalidade_sap(itens_nv)
+                self.manut_lig_esg(itens_nv)
             case "rede_esgoto":
-                print(5)
                 self.testa_modalidade_sap(itens_nv)
+                self.manut_rede_esg(itens_nv)
             case "tra":
-                print("investimento")
                 self.testa_modalidade_sap(itens_nv)
+                self.troca_de_ramal_de_agua(itens_nv)
             case _:
                 print("Pai não identificado.")
+                print(f"TSE: {self.tse_pai}")
                 sys.exit()
 
     def fech_e_reab_lig(self, itens_nv):
@@ -68,24 +69,92 @@ class Modalidade:
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(
                 n_modalidade, "NUMERO_EXT")
-            if sap_itens_nv == str(327041) or sap_itens_nv == str(327051):
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+                    and sap_itens_nv in ('327041', '327051'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-                break
+            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+                    and sap_itens_nv in ('327041', '327051'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
 
     def manut_lig_esg(self, itens_nv):
+        '''Módulo Ramal de Esgoto - Rem Base.'''
         print("Iniciando processo de Modalidade - "
-              + "REM BASE - MOD DESP MANUT LIG ESG - CÓDIGO: 7042")
+              + "REM BASE - MOD DESP MANUT LIG ESG - CÓDIGO: 327042 - PE ou 327052 - SM")
         n_modalidade = 0
+        num_modalidade_linhas = itens_nv.RowCount
+        for n_modalidade in range(num_modalidade_linhas):
+            sap_itens_nv = itens_nv.GetCellValue(
+                n_modalidade, "NUMERO_EXT")
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+                    and sap_itens_nv in ('327042', '327052'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
+            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+                    and sap_itens_nv in ('327042', '327052'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
 
     def manut_rede_esg(self, itens_nv):
+        '''Módulo Despesa Rede de Esgoto - RB.'''
         print("Iniciando processo de Modalidade - "
-              + "REM BASE - DESP MANUT REDE ESG - CÓDIGO: 7043")
+              + "REM BASE - DESP MANUT REDE ESG - CÓDIGO: 327043 - PE ou 327053 - SM")
+        n_modalidade = 0
+        num_modalidade_linhas = itens_nv.RowCount
+        for n_modalidade in range(num_modalidade_linhas):
+            sap_itens_nv = itens_nv.GetCellValue(
+                n_modalidade, "NUMERO_EXT")
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+                    and sap_itens_nv in ('327043', '327053'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
+            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+                    and sap_itens_nv in ('327043', '327053'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
 
     def manut_rede_agua(self, itens_nv):
+        '''Módulo Despesa Rede de água - RB'''
         print("Iniciando processo de Modalidade - "
-              + "REM BASE - MOD DESP RP MAN RD AGUA - CÓDIGO: 7045")
+              + "REM BASE - MOD DESP RP MAN RD AGUA - CÓDIGO: 327045 - PE ou 327055 - SM")
+        n_modalidade = 0
+        num_modalidade_linhas = itens_nv.RowCount
+        for n_modalidade in range(num_modalidade_linhas):
+            sap_itens_nv = itens_nv.GetCellValue(
+                n_modalidade, "NUMERO_EXT")
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+                    and sap_itens_nv in ('327045', '327055'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
+            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+                    and sap_itens_nv in ('327045', '327055'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
 
     def manut_lig_agua(self, itens_nv):
         '''Módulo de modalidade envolvendo ramal de água e cavalete.'''
@@ -100,9 +169,9 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.tse_pai and sap_etapa in self.etapa_pai \
                     and sap_itens_nv in ('327046', '327056'):
-                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.ModifyCheckBox(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
             elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
@@ -111,6 +180,26 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def troca_de_ramal_de_agua(self, itens_nv, sap_modalidade):
+    def troca_de_ramal_de_agua(self, itens_nv):
+        '''Módulo Investimento TRA - RB.'''
         print("Iniciando processo de Modalidade - "
-              + "REM BASE - MOD INVEST TR LIG AGUA - CÓDIGO: 7050")
+              + "REM BASE - MOD INVEST TR LIG AGUA - CÓDIGO: 327050 - PE ou 327060 - SM")
+        n_modalidade = 0
+        num_modalidade_linhas = itens_nv.RowCount
+        for n_modalidade in range(num_modalidade_linhas):
+            sap_itens_nv = itens_nv.GetCellValue(
+                n_modalidade, "NUMERO_EXT")
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+                    and sap_itens_nv in ('327050', '327060'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
+            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+                    and sap_itens_nv in ('327050', '327060'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()

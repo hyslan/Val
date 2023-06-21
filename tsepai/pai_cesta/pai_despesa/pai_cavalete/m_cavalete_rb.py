@@ -35,12 +35,14 @@ session = connect_to_sap()
 
 class Cavalete:
     '''Familia Cavalete'''
-    MODALIDADE = "ligacao_agua"
+    MODALIDADE = "cavalete"
+    OBS = None
 
     @staticmethod
     def reparo_cv():
         '''Reparo de Cavalete'''
         etapa_reposicao = None
+        tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Reparo de Cavalete - TSE 130000")
         servico_temp = session.findById(
@@ -66,12 +68,13 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 tse_temp_reposicao.append(sap_tse)
                 continue
-        return tse_temp_reposicao, identificador, etapa_reposicao
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
     def reparo_de_registro_de_cv():
         '''Reparo de Registro de Cavalete.'''
         etapa_reposicao = None
+        tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Reparo de Registro de Cavalete - TSE 140000")
         servico_temp = session.findById(
@@ -97,12 +100,13 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 tse_temp_reposicao.append(sap_tse)
                 continue
-        return tse_temp_reposicao, identificador, etapa_reposicao
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
     def troca_de_registro_de_cv():
         '''Troca de registro de Cavalete.'''
         etapa_reposicao = None
+        tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
         print("Iniciando processo Pai de Troca de Registro de Cavalete - TSE 140100")
         servico_temp = session.findById(
@@ -128,4 +132,4 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 tse_temp_reposicao.append(sap_tse)
                 continue
-        return tse_temp_reposicao, identificador, etapa_reposicao
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

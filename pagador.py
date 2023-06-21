@@ -59,7 +59,7 @@ def precificador(tse, corte, relig):
                     etapa_reposicao
                 )
             else:
-                print(f"{etapa} Remuneração Base!")
+                print(f"{etapa} é Remuneração Base!")
                 session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
                 cesta_dicionario.cesta(etapa,

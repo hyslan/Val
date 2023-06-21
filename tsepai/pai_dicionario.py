@@ -108,9 +108,9 @@ def pai_servico_cesta(servico_temp):
         print(f"TSE está inclusa no Dicionário de Pai Cesta: {servico_temp}")
         metodo = dicionario_pai_cesta[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
-        reposicao, identificador, etapa_reposicao = metodo()
+        reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
         print("TSE não Encontrada no Dicionário de Pai Cesta!")
         sys.exit()
     # Retorno
-    return reposicao, identificador, etapa_reposicao
+    return reposicao, tse_proibida, identificador, etapa_reposicao

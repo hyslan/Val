@@ -38,6 +38,7 @@ def verifica_tse(servico):
                                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
     # n_tse = 0
     tse_temp = []  # Lista temporária para armazenar as tse
+    pai = []
     num_tse_linhas = servico.RowCount
     print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
     for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
@@ -47,7 +48,7 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            pai = etapa_pai
+            pai.append(etapa_pai)
             # pylint: disable=E1121
             (reposicao,
              tse_proibida,
@@ -59,7 +60,9 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
+            pai.append(etapa_pai)
             (reposicao,
+             tse_proibida,
              identificador,
              etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
             continue

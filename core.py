@@ -103,6 +103,7 @@ def val():
                 print(f"Ordem: {ordem} em medição definitiva ou com erro.")
                 ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                 ordem_obs.value = "MEDIÇÃO DEFINITIVA OU COM ERRO."
+                lista.save('lista.xlsx')
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value

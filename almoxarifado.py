@@ -98,8 +98,15 @@ class Almoxarifado:
         num_material_linhas = tb_materiais.RowCount  # Conta as Rows
         # Número da Row do Grid Materiais do SAP
         n_material = 0
+        procura_lacre = []
         ultima_linha_material = num_material_linhas
         # Loop do Grid Materiais.
+        for n_material in range(num_material_linhas):
+            # Pega valor da célula 0
+            sap_material = tb_materiais.GetCellValue(
+                n_material, "MATERIAL")
+            procura_lacre.append(sap_material)
+        n_material = 0
         for n_material in range(num_material_linhas):
             # Pega valor da célula 0
             sap_material = tb_materiais.GetCellValue(
@@ -115,6 +122,12 @@ class Almoxarifado:
                         + f"Material: {sap_material}")
                 continue
             if sap_material == '50000328':
+                # Remove o lacre bege antigo.
+                tb_materiais.modifyCheckbox(
+                    n_material, "ELIMINADO", True
+                )
+            if sap_material == '50000328' and '50000263' not in procura_lacre:
+                # Remove o lacre e inclui o lacre novo, apenas se não tiver.
                 tb_materiais.modifyCheckbox(
                     n_material, "ELIMINADO", True
                 )
