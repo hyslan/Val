@@ -31,6 +31,7 @@ def consulta_os(n_os):
         if hidro_colocado is not None:
             hidro = hidro_colocado
     session.findById("wnd[0]").sendVKey(3)  # Voltar
+
     return (
         status_sistema,
         status_usuario,

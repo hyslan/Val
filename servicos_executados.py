@@ -1,5 +1,6 @@
 # ServicosExecutados.py
 '''Módulo de TSE'''
+import numpy as np
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from tsepai import pai_dicionario
@@ -36,10 +37,14 @@ def verifica_tse(servico):
     print("Iniciando processo de verificação de TSE")
     servico = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
                                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-    # n_tse = 0
     tse_temp = []  # Lista temporária para armazenar as tse
-    pai = []
+    identificador_list = []
     num_tse_linhas = servico.RowCount
+    rem_base_reposicao = []
+    mae = False
+    chave_unitario = None
+    chave_rb_despesa = None
+    chave_rb_investimento = None
     print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
     for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
@@ -48,53 +53,78 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            pai.append(etapa_pai)
             # pylint: disable=E1121
             (reposicao,
              tse_proibida,
              identificador,
              etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse)
+            identificador_list.append(identificador)
+            chave_unitario = sap_tse, etapa_pai, identificador
             continue
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            pai.append(etapa_pai)
             (reposicao,
              tse_proibida,
              identificador,
              etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+            rem_base_reposicao.append(reposicao)
+            identificador_list.append(identificador)
+            chave_rb_despesa = sap_tse, etapa_pai, identificador
             continue
-          # tirar depois
+
         elif sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
+            (reposicao,
+             tse_proibida,
+             identificador,
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+            rem_base_reposicao.append(reposicao)
+            identificador_list.append(identificador)
+            chave_rb_investimento = sap_tse, etapa_pai, identificador
+            mae = True
             continue
-            # tirar depois
+
+        # Pulando OS com asfalto incluso.
+        elif sap_tse in tb_tse_asfalto:
+            tse_proibida = "Aslfato na bagaça!"
+            break
+
         elif sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "11")  # Não Executado
-            # Coloca a tse existente na lista temporária
-            tse_temp.append(sap_tse)
             continue
+
         elif sap_tse in tb_tse_pertence_ao_servico_principal:
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Pertence ao Serviço Principal
             servico.modifyCell(n_tse, "CODIGO", "3")
-            # Coloca a tse existente na lista temporária
-            tse_temp.append(sap_tse)
             continue
+
         elif sap_tse in tb_tse_retrabalho:
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "7")  # Retrabalho
-            # Coloca a tse existente na lista temporária
-            tse_temp.append(sap_tse)
             continue
-        else:
-            print("TSE não encontrado na planilha do Excel.")
+
+        elif sap_tse == '730600':
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
+            continue
+
+    rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=0)
+    if mae is True:
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico.GetCellValue(n_tse, "TSE")
+            etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+            # Altera todas as reposições de rb para investimento se tiver tra.
+            if sap_tse in rem_base_reposicao_union:
+                servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
     # Fim da condicional.
     servico.pressEnter()
     return (
@@ -102,7 +132,10 @@ def verifica_tse(servico):
         reposicao,
         num_tse_linhas,
         tse_proibida,
-        identificador,
+        identificador_list,
         etapa_reposicao,
-        pai
+        mae,
+        chave_rb_despesa,
+        chave_rb_investimento,
+        chave_unitario
     )

@@ -1,5 +1,5 @@
-# cavalete.py
-'''Módulo família Cavalete - remuneração base '''
+# m_ligacao_agua_rb.py
+'''Módulo família Ligação de Água (Ramal) - remuneração base '''
 # Bibliotecas
 
 from sap_connection import connect_to_sap
@@ -33,24 +33,25 @@ session = connect_to_sap()
 ) = load_worksheets()
 
 
-class Cavalete:
-    '''Familia Cavalete'''
-    MODALIDADE = "cavalete"
+class LigacaoAgua:
+    '''Familia Ligação de água'''
+    MODALIDADE = "ligacao_agua"
     OBS = None
 
     @staticmethod
-    def reparo_cv():
-        '''Reparo de Cavalete'''
+    def troca_de_conexao_lig_agua():
+        '''TROCA DE CONEXÃO DE LIGAÇÃO DE ÁGUA'''
         etapa_reposicao = []
-        tse_proibida = Cavalete.OBS
-        identificador = Cavalete.MODALIDADE
-        print("Iniciando processo Pai de Reparo de Cavalete - TSE 130000")
+        tse_proibida = LigacaoAgua.OBS
+        identificador = LigacaoAgua.MODALIDADE
+        print("Iniciando processo Pai de TROCA DE CONEXÃO DE LIGAÇÃO DE ÁGUA - TSE 287000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
+        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
@@ -67,21 +68,28 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 continue
+
+            elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod
-    def reparo_de_registro_de_cv():
-        '''Reparo de Registro de Cavalete.'''
+    def suprimido_ramal_de_agua_abandonado():
+        '''SUPRIMIDO RAMAL DE AGUA ABANDONADO'''
         etapa_reposicao = []
-        tse_proibida = Cavalete.OBS
-        identificador = Cavalete.MODALIDADE
-        print("Iniciando processo Pai de Reparo de Registro de Cavalete - TSE 140000")
+        tse_proibida = LigacaoAgua.OBS
+        identificador = "supressao"
+        print("Iniciando processo Pai SUPRIMIDO RAMAL DE AGUA ABANDONADO - TSE 416000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
+        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
@@ -98,35 +106,10 @@ class Cavalete:
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 continue
-        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
-    @staticmethod
-    def troca_de_registro_de_cv():
-        '''Troca de registro de Cavalete.'''
-        etapa_reposicao = []
-        tse_proibida = Cavalete.OBS
-        identificador = Cavalete.MODALIDADE
-        print("Iniciando processo Pai de Troca de Registro de Cavalete - TSE 140100")
-        servico_temp = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-        n_tse = 0
-        tse_temp_reposicao = []
-        num_tse_linhas = servico_temp.RowCount
-        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
-            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
-            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
-
-            if sap_tse in tb_tse_reposicao:
+            elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
-                continue
-
-            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                continue
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

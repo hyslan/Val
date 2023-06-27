@@ -1,5 +1,6 @@
 # core.py
 '''Coração da Val.'''
+import sys
 import time
 import pywintypes
 from tqdm import tqdm
@@ -24,7 +25,10 @@ session = connect_to_sap()
     _,
     _,
     _,
+    tb_tse_un,
+    tb_tse_rem_base,
     _,
+    tb_tse_invest,
     *_,
 ) = load_worksheets()
 
@@ -49,7 +53,7 @@ def val():
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
     qtd_ordem = 0  # Contador de ordens pagas.
     # Loop para pagar as ordens da planilha do Excel
-    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
+    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
@@ -83,12 +87,12 @@ def val():
         if status_usuario == valorada:
             print(f"OS: {ordem} já valorada.")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-            selecao_carimbo.value = "VALORADA ANTERIORMENTE"
+            selecao_carimbo.value = "JÁ VALORADA"
             lista.save('lista.xlsx')  # salva Planilha
             int_num_lordem += 1
             # Incremento + de Ordem.
             ordem = planilha.cell(row=int_num_lordem, column=1).value
-            continue
+
         else:
             # Ação no SAP
             novasp(ordem)
@@ -102,14 +106,21 @@ def val():
             except pywintypes.com_error:
                 print(f"Ordem: {ordem} em medição definitiva ou com erro.")
                 ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-                ordem_obs.value = "MEDIÇÃO DEFINITIVA OU COM ERRO."
+                ordem_obs.value = "MEDIÇÃO DEFINITIVA"
                 lista.save('lista.xlsx')
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
                 continue
             # TSE e Aba Itens de preço
-            tse_proibida, identificador = precificador(tse, corte, relig)
+            (tse_proibida,
+             identificador,
+             chave_rb_despesa,
+             chave_rb_investimento,
+             chave_unitario,
+             etapa_rem_base,
+             etapa_unitario) = precificador(tse, corte, relig)
+            # Se a TSE não estiver no escopo dar Val, vai pular pra próxima OS.
             if tse_proibida is not None:
                 selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
                 selecao_carimbo.value = "Forbidden TSE"
@@ -119,7 +130,16 @@ def val():
                 continue
             else:
                 # Aba Materiais
-                materiais(int_num_lordem, hidro, operacao, identificador)
+                if etapa_rem_base:
+                    for etapa_rb in etapa_rem_base:
+                        if etapa_rb in tb_tse_rem_base:
+                            materiais(int_num_lordem, hidro, operacao, chave_rb_despesa)
+                        else:
+                            materiais(int_num_lordem, hidro, operacao, chave_rb_investimento)
+                if etapa_unitario:
+                    for etapa in etapa_unitario:
+                        if etapa in tb_tse_un:
+                            materiais(int_num_lordem, hidro, operacao, chave_unitario)
                 # Fim dos materiais
                 # Salvar Ordem
                 qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)
@@ -129,6 +149,5 @@ def val():
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
                 print(f"Quantidade de ordens valoradas: {qtd_ordem}.")
-                lista.save('lista.xlsx')  # salva Planilha
     validador = True
     return ordem, int_num_lordem, validador

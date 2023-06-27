@@ -9,6 +9,18 @@ from tsepai.pai_unitario.pai_religacao import m_religacao
 from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 # Módulos Remuneração base
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
+from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
+from tsepai.pai_cesta.pai_investimento import m_tra_rb
+from tsepai.pai_cesta.pai_despesa.pai_redeagua import m_rede_agua_rb
+
+
+def preservacao_interferencia():
+    '''Captador da tse preservação.'''
+    reposicao = None
+    tse_proibida = None
+    identificador = "preservacao"
+    etapa_reposicao = None
+    return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
 def pai_servico_unitario(servico_temp):
@@ -60,8 +72,8 @@ def pai_servico_unitario(servico_temp):
         # '569000':
         # '581000':
         # '585000':
-        # '713000':
-        # '713500':
+        '713000': preservacao_interferencia,
+        '713500': preservacao_interferencia,
     }
 
     if servico_temp in dicionario_pai_unitario:
@@ -85,14 +97,15 @@ def pai_servico_cesta(servico_temp):
         '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
         '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
         # '283000':
-        # '287000':
+        '284000': m_tra_rb.TrocaRamalAgua.troca_de_ramal_de_agua,
+        '287000': m_ligacao_agua_rb.LigacaoAgua.troca_de_conexao_lig_agua,
         # '321000':
         # '325000':
         # '332500':
         # '328000':
         # '330000':
-        # '332000':
-        # '416000':
+        '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
+        '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
         # '560000':
         # '567000':
         # '569000':
@@ -100,7 +113,6 @@ def pai_servico_cesta(servico_temp):
         # '539000':
         # '540000':
         # '591000':
-        # '284000':
 
     }
 

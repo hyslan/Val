@@ -20,6 +20,8 @@ session = connect_to_sap()
     tb_contratada,
     tb_tse_un,
     tb_tse_rem_base,
+    _,
+    tb_tse_invest,
     *_,
 ) = load_worksheets()
 
@@ -34,9 +36,14 @@ def precificador(tse, corte, relig):
         tse_proibida,
         identificador,
         etapa_reposicao,
-        pai
+        mae,
+        chave_rb_despesa,
+        chave_rb_investimento,
+        chave_unitario
     ) = verifica_tse(
         tse)
+    etapa_rem_base = []
+    etapa_unitario = []
     if tse_proibida is not None:
         print("TSE proibida de ser valorada.")
     else:
@@ -56,17 +63,40 @@ def precificador(tse, corte, relig):
                     relig,
                     reposicao,
                     num_tse_linhas,
-                    etapa_reposicao
+                    etapa_reposicao,
+                    identificador
                 )
-            else:
-                print(f"{etapa} é Remuneração Base!")
-                session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-                cesta_dicionario.cesta(etapa,
-                                       reposicao,
-                                       etapa_reposicao,
-                                       identificador,
-                                       pai,
-                                       )
+                etapa_unitario.append(etapa)
 
-    return tse_proibida, identificador
+            elif etapa in tb_tse_rem_base or etapa in tb_tse_invest:
+                print(f"{etapa} é Remuneração Base!")
+                etapa_rem_base.append(etapa)
+
+        if etapa_rem_base:
+            session.findById(
+                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+            for etapa_rb in etapa_rem_base:
+                if etapa_rb in tb_tse_rem_base:
+                    cesta_dicionario.cesta(
+                        reposicao,
+                        etapa_reposicao,
+                        chave_rb_despesa,
+                        mae
+                    )
+                else:
+                    cesta_dicionario.cesta(
+                        reposicao,
+                        etapa_reposicao,
+                        chave_rb_investimento,
+                        mae
+                    )
+
+    return (
+        tse_proibida,
+        identificador,
+        chave_rb_despesa,
+        chave_rb_investimento,
+        chave_unitario,
+        etapa_rem_base,
+        etapa_unitario
+    )

@@ -9,12 +9,13 @@ session = connect_to_sap()
 class Modalidade:
     '''Aba de Modalidade para Remuneração Base.'''
 
-    def __init__(self, tse_pai, etapa_pai, reposicao, etapa_reposicao, identificador) -> None:
-        self.tse_pai = tse_pai
-        self.etapa_pai = etapa_pai
+    def __init__(self, reposicao, etapa_reposicao, identificador, mae) -> None:
         self.reposicao = reposicao
         self.etapa_reposicao = etapa_reposicao
+        # O identificador é uma tupla com três variáveis:
+        # 0: TSE ; 1: Etapa da TSE; 2: Família pro match case;
         self.identificador = identificador
+        self.mae = mae
 
     def aba_nao_vinculados(self):
         '''Abrir aba de itens não vinculados.'''
@@ -36,8 +37,8 @@ class Modalidade:
 
     def inspetor(self, itens_nv):
         '''Selecionador de Pai Rem base.'''
-        match self.identificador:
-            case "supr_restab":
+        match self.identificador[2]:
+            case "supr_restab" | "supressao":
                 self.testa_modalidade_sap(itens_nv)
                 self.fech_e_reab_lig(itens_nv)
             case "ligacao_agua" | "cavalete":
@@ -56,8 +57,8 @@ class Modalidade:
                 self.testa_modalidade_sap(itens_nv)
                 self.troca_de_ramal_de_agua(itens_nv)
             case _:
-                print("Pai não identificado.")
-                print(f"TSE: {self.tse_pai}")
+                print("TSE não identificada.")
+                print(f"TSE: {self.identificador[0]}")
                 sys.exit()
 
     def fech_e_reab_lig(self, itens_nv):
@@ -73,12 +74,12 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
                     and sap_itens_nv in ('327041', '327051'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+            elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327041', '327051'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
@@ -97,12 +98,12 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
                     and sap_itens_nv in ('327042', '327052'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+            elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327042', '327052'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
@@ -121,12 +122,12 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
                     and sap_itens_nv in ('327043', '327053'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+            elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327043', '327053'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
@@ -145,12 +146,12 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
                     and sap_itens_nv in ('327045', '327055'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+            elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327045', '327055'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
@@ -169,14 +170,14 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa in self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa in self.identificador[1] \
                     and sap_itens_nv in ('327046', '327056'):
                 itens_nv.ModifyCheckBox(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
-                    and sap_itens_nv in ('327046', '327056'):
-                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+            if sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
+                    and sap_itens_nv in ('327046', '327056') and self.mae is not True:
+                itens_nv.ModifyCheckBox(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
@@ -193,12 +194,12 @@ class Modalidade:
                 n_modalidade, "ETAPA")
             sap_tse = itens_nv.GetCellValue(
                 n_modalidade, "TSE")
-            if sap_tse == self.tse_pai and sap_etapa == self.etapa_pai \
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
                     and sap_itens_nv in ('327050', '327060'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
-            elif sap_tse == self.reposicao and sap_etapa == self.etapa_reposicao \
+            elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327050', '327060'):
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
