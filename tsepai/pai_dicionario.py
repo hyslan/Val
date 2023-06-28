@@ -12,14 +12,16 @@ from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
 from tsepai.pai_cesta.pai_investimento import m_tra_rb
 from tsepai.pai_cesta.pai_despesa.pai_redeagua import m_rede_agua_rb
+from tsepai.pai_cesta.pai_despesa.pai_ligacaoesgoto import m_ligacao_esgoto_rb
+from tsepai.pai_cesta.pai_despesa.pai_redeesgoto import m_rede_esgoto_rb
 
 
 def preservacao_interferencia():
     '''Captador da tse preservação.'''
-    reposicao = None
+    reposicao = []
     tse_proibida = None
     identificador = "preservacao"
-    etapa_reposicao = None
+    etapa_reposicao = []
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
@@ -106,10 +108,10 @@ def pai_servico_cesta(servico_temp):
         # '330000':
         '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
         '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
-        # '560000':
+        '560000': m_ligacao_esgoto_rb.LigacaoEsgoto.reparo_de_ramal_de_esgoto,
         # '567000':
         # '569000':
-        # '580000':
+        '580000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
         # '539000':
         # '540000':
         # '591000':
@@ -124,5 +126,5 @@ def pai_servico_cesta(servico_temp):
     else:
         print("TSE não Encontrada no Dicionário de Pai Cesta!")
         sys.exit()
-    # Retorno
+
     return reposicao, tse_proibida, identificador, etapa_reposicao

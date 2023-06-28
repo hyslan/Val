@@ -120,6 +120,20 @@ class Almoxarifado:
                 print("Aplicando a receita de Reparo de Rede de Água")
                 material.receita_reparo_de_rede_de_agua()
 
+            case "ligacao_esgoto":
+                sap_material = self.testa_material_sap(tb_materiais)
+                if sap_material is not None:
+                    self.materiais_contratada(tb_materiais)
+                else:
+                    return
+
+            case "rede_esgoto":
+                sap_material = self.testa_material_sap(tb_materiais)
+                if sap_material is not None:
+                    self.materiais_contratada(tb_materiais)
+                else:
+                    return
+
             case "preservacao":
                 return
 
@@ -170,6 +184,16 @@ class Almoxarifado:
             # pylint: disable=E1101
             except pywintypes.com_error:
                 print(f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
+
+            try:
+                if sap_material == '30028856':
+                    # Marca Contratada
+                    tb_materiais.modifyCheckbox(
+                        n_material, "CONTRATADA", True)
+                    print("TUBO ESG DN 100 da NOVASP por enquanto.")
+            # pylint: disable=E1101
+            except pywintypes.com_error:
+                print(f"Etapa: {sap_etapa_material} - TUBO ESG DN 100 já foi retirado.")
 
             if sap_material == '50000328' and '50000263' not in procura_lacre:
                 # Remove o lacre e inclui o lacre novo, apenas se não tiver.
@@ -554,6 +578,7 @@ class RedeAguaMaterial(Almoxarifado):
     def receita_reparo_de_rede_de_agua(self):
         '''Padrão de materiais na classe CRA.'''
         sap_material = super().testa_material_sap(self.tb_materiais)
+        abracadeira_dn75 = False
         if sap_material is None:
             print("sem material.")
 
@@ -569,6 +594,15 @@ class RedeAguaMaterial(Almoxarifado):
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
                 material_lista.append(sap_material)
+            n_material = 0
+            ultima_linha_material = num_material_linhas
+            if "30008103" in material_lista:
+                abracadeira_dn75 = True
+            # Loop do Grid Materiais.
+            for n_material in range(num_material_linhas):
+                # Pega valor da célula 0
+                sap_material = self.tb_materiais.GetCellValue(
+                    n_material, "MATERIAL")
 
                 if sap_material == '30005088':
                     self.tb_materiais.modifyCheckbox(
@@ -578,7 +612,7 @@ class RedeAguaMaterial(Almoxarifado):
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "ETAPA", self.identificador[1]
                     )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
+                    # Adiciona CONEXÕES METALICAS COTOVELO FEMEA DN 3/4.
                     self.tb_materiais.modifyCell(
                             ultima_linha_material, "MATERIAL", "30002394"
                         )
@@ -614,6 +648,33 @@ class RedeAguaMaterial(Almoxarifado):
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
+
+                if sap_material in ('30004097', '30002152', '30002151'):
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
+                if sap_material in ('30004097', '30002152', '30002151') \
+                and abracadeira_dn75 is False:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                    self.tb_materiais.InsertRows(str(ultima_linha_material))
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "ETAPA", self.identificador[1]
+                    )
+                    # Adiciona ABRACADEIR FF REPARO TUBO DN100 LMIN=150.
+                    self.tb_materiais.modifyCell(
+                            ultima_linha_material, "MATERIAL", "30008103"
+                        )
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "QUANT", "1"
+                    )
+                    self.tb_materiais.setCurrentCell(
+                        ultima_linha_material, "QUANT"
+                    )
+                    ultima_linha_material = ultima_linha_material + 1
+                    abracadeira_dn75 = True
 
             # Materiais do Global.
             self.materiais_contratada(self.tb_materiais)
