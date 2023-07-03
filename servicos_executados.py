@@ -34,13 +34,23 @@ session = connect_to_sap()
 
 def verifica_tse(servico):
     '''Agrupador de serviço e indexador de classes.'''
+    sondagem = [
+        '591000',
+        '567000',
+        '321000',
+        '283000'
+    ]
+    pai_tse = 0
     print("Iniciando processo de verificação de TSE")
     servico = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
                                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
-    tse_temp = []  # Lista temporária para armazenar as tse
+    # Lista temporária para armazenar as tse
+    list_chave_rb_despesa = []
+    tse_temp = []
     identificador_list = []
     num_tse_linhas = servico.RowCount
     rem_base_reposicao = []
+    unitario_reposicao = []
     mae = False
     chave_unitario = None
     chave_rb_despesa = None
@@ -59,7 +69,9 @@ def verifica_tse(servico):
              identificador,
              etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse)
             identificador_list.append(identificador)
-            chave_unitario = sap_tse, etapa_pai, identificador
+            chave_unitario = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
+            unitario_reposicao.append(reposicao)
+            pai_tse += 1
             continue
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
@@ -72,7 +84,9 @@ def verifica_tse(servico):
              etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
-            chave_rb_despesa = sap_tse, etapa_pai, identificador
+            chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
+            list_chave_rb_despesa.append(chave_rb_despesa)
+            pai_tse += 1
             continue
 
         elif sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
@@ -86,7 +100,8 @@ def verifica_tse(servico):
              etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
-            chave_rb_investimento = sap_tse, etapa_pai, identificador
+            chave_rb_investimento = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
+            pai_tse += 1
             mae = True
             continue
 
@@ -112,11 +127,26 @@ def verifica_tse(servico):
             continue
 
         elif sap_tse == '730600':
+            # Compactação e Selagem da Base.
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
             continue
 
-    rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=0)
+    rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=None)
+    unitario_reposicao_flat = np.ravel(unitario_reposicao)
+    reposicao_geral = np.unique(np.concatenate(
+        [rem_base_reposicao_union, unitario_reposicao_flat]))
+    if chave_rb_despesa is not None and pai_tse == 1:
+        if chave_rb_despesa[0] in sondagem:
+            for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+                sap_tse = servico.GetCellValue(n_tse, "TSE")
+                etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+                # Altera todas as reposições de rb para investimento se tiver tra.
+                if sap_tse in rem_base_reposicao_union:
+                    servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                    # Pertence ao serviço Principal
+                    servico.modifyCell(n_tse, "CODIGO", "3")
+
     if mae is True:
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
@@ -127,6 +157,7 @@ def verifica_tse(servico):
                 servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
     # Fim da condicional.
     servico.pressEnter()
+
     return (
         tse_temp,
         reposicao,
@@ -135,7 +166,10 @@ def verifica_tse(servico):
         identificador_list,
         etapa_reposicao,
         mae,
-        chave_rb_despesa,
+        list_chave_rb_despesa,
         chave_rb_investimento,
-        chave_unitario
+        chave_unitario,
+        unitario_reposicao,
+        rem_base_reposicao_union,
+        reposicao_geral
     )

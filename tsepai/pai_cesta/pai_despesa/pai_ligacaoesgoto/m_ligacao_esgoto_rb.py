@@ -51,7 +51,6 @@ class LigacaoEsgoto:
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
-        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
@@ -74,4 +73,5 @@ class LigacaoEsgoto:
                 servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
+
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

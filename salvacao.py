@@ -30,7 +30,7 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
     # pylint: disable=E1101
     except pywintypes.com_error:
-        return
+        return qtd_ordem
     print("Salvando valoração!")
     # Verificar se Salvou
     (status_sistema,

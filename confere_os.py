@@ -30,6 +30,14 @@ def consulta_os(n_os):
             n_etapa, "ZZHIDROMETRO_INSTALADO")
         if hidro_colocado is not None:
             hidro = hidro_colocado
+    for n_etapa, diametro_ramal in enumerate(range(0, num_etapas_linhas)):
+        diametro_ramal = consulta.GetCellValue(
+            n_etapa, "ZZDIAMETRO_RAMAL"
+        )
+    for n_etapa, diametro_rede in enumerate(range(0, num_etapas_linhas)):
+        diametro_rede = consulta.GetCellValue(
+            n_etapa, "ZZDIAMETRO_REDE"
+        )
     session.findById("wnd[0]").sendVKey(3)  # Voltar
 
     return (
@@ -40,5 +48,7 @@ def consulta_os(n_os):
         posicao_rede,
         profundidade,
         hidro,
-        operacao
+        operacao,
+        diametro_ramal,
+        diametro_rede
     )

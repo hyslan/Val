@@ -69,7 +69,9 @@ def val():
             _,
             _,
             hidro,
-            operacao
+            operacao,
+            diametro_ramal,
+            diametro_rede
          ) = consulta_os(ordem)
         # Consulta Status da Ordem
         if status_sistema == fechada:
@@ -115,7 +117,7 @@ def val():
             # TSE e Aba Itens de preço
             (tse_proibida,
              identificador,
-             chave_rb_despesa,
+             list_chave_rb_despesa,
              chave_rb_investimento,
              chave_unitario,
              etapa_rem_base,
@@ -130,16 +132,32 @@ def val():
                 continue
             else:
                 # Aba Materiais
-                if etapa_rem_base:
-                    for etapa_rb in etapa_rem_base:
-                        if etapa_rb in tb_tse_rem_base:
-                            materiais(int_num_lordem, hidro, operacao, chave_rb_despesa)
-                        else:
-                            materiais(int_num_lordem, hidro, operacao, chave_rb_investimento)
+                if chave_rb_investimento:
+                    materiais(int_num_lordem,
+                                      hidro,
+                                      operacao,
+                                      chave_rb_investimento,
+                                      diametro_ramal,
+                                      diametro_rede)
+
+                if list_chave_rb_despesa:
+                    for chave_rb_despesa in list_chave_rb_despesa:
+                        materiais(int_num_lordem,
+                                hidro,
+                                operacao,
+                                chave_rb_despesa,
+                                diametro_ramal,
+                                diametro_rede)
+
                 if etapa_unitario:
                     for etapa in etapa_unitario:
                         if etapa in tb_tse_un:
-                            materiais(int_num_lordem, hidro, operacao, chave_unitario)
+                            materiais(int_num_lordem,
+                                      hidro,
+                                      operacao,
+                                      chave_unitario,
+                                      diametro_ramal,
+                                      diametro_rede)
                 # Fim dos materiais
                 # Salvar Ordem
                 qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)

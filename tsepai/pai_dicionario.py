@@ -10,19 +10,22 @@ from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 # Módulos Remuneração base
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
+# Módulo Remuneração Base - Investimento
 from tsepai.pai_cesta.pai_investimento import m_tra_rb
 from tsepai.pai_cesta.pai_despesa.pai_redeagua import m_rede_agua_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoesgoto import m_ligacao_esgoto_rb
 from tsepai.pai_cesta.pai_despesa.pai_redeesgoto import m_rede_esgoto_rb
+# Módulo Remuneração Base - Sondagem
+from tsepai.pai_cesta.pai_sondagem import m_sondagem_rb
 
 
 def preservacao_interferencia():
     '''Captador da tse preservação.'''
-    reposicao = []
+    tse_temp_reposicao = []
     tse_proibida = None
     identificador = "preservacao"
     etapa_reposicao = []
-    return reposicao, tse_proibida, identificador, etapa_reposicao
+    return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
 def pai_servico_unitario(servico_temp):
@@ -98,23 +101,24 @@ def pai_servico_cesta(servico_temp):
         '130000': m_cavalete_rb.Cavalete.reparo_cv,
         '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
         '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
-        # '283000':
+        '283000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,
         '284000': m_tra_rb.TrocaRamalAgua.troca_de_ramal_de_agua,
         '287000': m_ligacao_agua_rb.LigacaoAgua.troca_de_conexao_lig_agua,
-        # '321000':
+        '321000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
         # '325000':
-        # '332500':
         # '328000':
         # '330000':
         '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
         '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
+        # '539000':
+        # '540000':
         '560000': m_ligacao_esgoto_rb.LigacaoEsgoto.reparo_de_ramal_de_esgoto,
-        # '567000':
+        '567000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_esgoto,
         # '569000':
         '580000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
         # '539000':
         # '540000':
-        # '591000':
+        '591000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_esgoto,
 
     }
 

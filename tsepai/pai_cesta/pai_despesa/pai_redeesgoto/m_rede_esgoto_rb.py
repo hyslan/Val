@@ -51,7 +51,6 @@ class RedeEsgoto:
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
-        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
