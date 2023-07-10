@@ -37,7 +37,7 @@ class Cavalete:
     @staticmethod
     def troca_pe_cv_prev():
         '''Módulo Pai troca Pé de Cavalete.'''
-        etapa_reposicao = None
+        etapa_reposicao = []
         identificador = Cavalete.TIPO
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Pé de Cavalete Preventiva - TSE 153000")
@@ -70,9 +70,9 @@ class Cavalete:
     @staticmethod
     def trocar_cv_kit():
         '''Módulo Pai Troca de Cavalete Kit'''
-        etapa_reposicao = None
+        etapa_reposicao = []
         identificador = Cavalete.TIPO
-        tse_temp_reposicao = None
+        tse_temp_reposicao = []
         tse_proibida = "TROCA CAVALETE (KIT)"
         # print("Iniciando processo Pai de Troca Cavalete KIT - TSE 149000")
         # servico_temp = session.findById(
@@ -104,9 +104,9 @@ class Cavalete:
     @staticmethod
     def regularizar_cv():
         '''Módulo Pai Regularizar Cavalete.'''
-        etapa_reposicao = None
+        etapa_reposicao = []
         identificador = Cavalete.TIPO
-        tse_temp_reposicao = None
+        tse_temp_reposicao = []
         tse_proibida = "REGULARIZADO CAVALETE"
         # print("Iniciando processo Pai de Regularizar Cavalete - TSE 142000")
         # servico_temp = session.findById(
@@ -139,7 +139,7 @@ class Cavalete:
     def troca_cv_por_uma():
         '''Módulo Pai Troca Cavalete por UMA.'''
         identificador = Cavalete.TIPO
-        etapa_reposicao = None
+        etapa_reposicao = []
         tse_proibida = None
         print("Iniciando processo Pai de Troca de Cavalete por UMA - TSE 148000")
         servico_temp = session.findById(
@@ -168,4 +168,13 @@ class Cavalete:
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
                 continue
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+    @staticmethod
+    def readequado_cavalete():
+        '''Módulo Pai Regularizar Cavalete.'''
+        etapa_reposicao = []
+        identificador = Cavalete.TIPO
+        tse_temp_reposicao = []
+        tse_proibida = "READEQUADO CAVALETE"
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

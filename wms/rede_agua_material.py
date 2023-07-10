@@ -2,7 +2,8 @@
 '''Módulo dos materiais de família Rede de Água.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-from almoxarifado import Almoxarifado
+from wms import testa_material_sap
+from wms import materiais_contratada
 
 
 session = connect_to_sap()
@@ -22,7 +23,7 @@ session = connect_to_sap()
     *_,
 ) = load_worksheets()
 
-class RedeAguaMaterial(Almoxarifado):
+class RedeAguaMaterial:
     '''Classe de materiais de CRA.'''
     def __init__(self, int_num_lordem,
                  hidro,
@@ -30,17 +31,18 @@ class RedeAguaMaterial(Almoxarifado):
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais):
-        super().__init__(int_num_lordem,
-                         hidro,
-                         operacao,
-                         identificador,
-                         diametro_ramal,
-                         diametro_rede)
+                 tb_materiais) -> None:
+        self.int_num_lordem = int_num_lordem
+        self.hidro = hidro
+        self.operacao = operacao
+        self.identificador = identificador
+        self.diametro_ramal = diametro_ramal
+        self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+
     def receita_reparo_de_rede_de_agua(self):
         '''Padrão de materiais na classe CRA.'''
-        sap_material = super().testa_material_sap(self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(self.int_num_lordem, self.tb_materiais)
         abracadeira_dn75 = False
         if sap_material is None:
             print("sem material.")
@@ -140,4 +142,4 @@ class RedeAguaMaterial(Almoxarifado):
                     abracadeira_dn75 = True
 
             # Materiais do Global.
-            self.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais)

@@ -26,12 +26,12 @@ session = connect_to_sap()
 def salvar(ordem, int_num_lordem, qtd_ordem):
     '''Função para salvar valoração.'''
     try:
+        print("Salvando valoração!")
         session.findById("wnd[0]").sendVKey(11)
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
     # pylint: disable=E1101
     except pywintypes.com_error:
         return qtd_ordem
-    print("Salvando valoração!")
     # Verificar se Salvou
     (status_sistema,
         status_usuario,

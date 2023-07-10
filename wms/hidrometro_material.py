@@ -2,7 +2,8 @@
 '''Módulo dos materiais de família Hidrômetro.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-from almoxarifado import Almoxarifado
+from wms import testa_material_sap
+from wms import materiais_contratada
 
 
 session = connect_to_sap()
@@ -23,7 +24,7 @@ session = connect_to_sap()
 ) = load_worksheets()
 
 
-class HidrometroMaterial(Almoxarifado):
+class HidrometroMaterial:
     '''Classe de materiais do hidrômetro.'''
 
     def __init__(self, int_num_lordem,
@@ -32,18 +33,19 @@ class HidrometroMaterial(Almoxarifado):
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais):
-        super().__init__(int_num_lordem,
-                         hidro,
-                         operacao,
-                         identificador,
-                         diametro_ramal,
-                         diametro_rede)
+                 tb_materiais) -> None:
+        self.int_num_lordem = int_num_lordem
+        self.hidro = hidro
+        self.operacao = operacao
+        self.identificador = identificador
+        self.diametro_ramal = diametro_ramal
+        self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
 
     def receita_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro.'''
-        sap_material = super().testa_material_sap(self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(
+            self.int_num_lordem, self.tb_materiais)
         hidro_instalado = self.hidro
         if sap_material is None:
             if hidro_instalado is not None:
@@ -64,7 +66,7 @@ class HidrometroMaterial(Almoxarifado):
                     ultima_linha_material, "ETAPA", self.operacao
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "50000263"
+                    ultima_linha_material, "MATERIAL", "50001070"
                 )
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "QUANT", "1"
@@ -94,6 +96,7 @@ class HidrometroMaterial(Almoxarifado):
             n_material = 0
             ultima_linha_material = num_material_linhas
             hidro_y = 'Y'
+            sap_hidro = []
             # Hidrômetro atual.
             self.hidro = self.hidro.upper()
             # Mata-burro pra hidro.
@@ -103,6 +106,18 @@ class HidrometroMaterial(Almoxarifado):
                 cod_hidro_instalado = '50000530'
             # Variável para controlar se o hidrômetro já foi adicionado
             hidro_adicionado = False
+            for n_material in range(num_material_linhas):
+                # Pega valor da célula 0
+                sap_material = self.tb_materiais.GetCellValue(
+                    n_material, "MATERIAL")
+                if sap_material == '50000530' and '50000530' != cod_hidro_instalado:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                else:
+                    sap_hidro.append(sap_material)
+            if cod_hidro_instalado in sap_hidro:
+                hidro_adicionado = True
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -118,7 +133,7 @@ class HidrometroMaterial(Almoxarifado):
                     print(f"Linha do material: {n_material}, "
                           + f"Material: {sap_material}")
                     continue
-                if sap_material == ('50000328', '50001070'):
+                if sap_material == ('50000328', '50000263'):
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -127,7 +142,7 @@ class HidrometroMaterial(Almoxarifado):
                         ultima_linha_material, "ETAPA", sap_etapa_material
                     )
                     self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "50000263"
+                        ultima_linha_material, "MATERIAL", "50001070"
                     )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
@@ -200,3 +215,28 @@ class HidrometroMaterial(Almoxarifado):
                     ultima_linha_material, "QUANT")
                 ultima_linha_material = ultima_linha_material + 1
                 hidro_adicionado = True  # Hidrômetro foi adicionado
+        # Materiais do Global.
+            materiais_contratada.materiais_contratada(self.tb_materiais)
+
+    def receita_desinclinado_hidrometro(self):
+        '''Padrão de materiais na classe Hidrômetro Desinclinado.'''
+        sap_material = testa_material_sap.testa_material_sap(
+            self.int_num_lordem, self.tb_materiais)
+        if sap_material is None:
+            ultima_linha_material = 0
+            self.tb_materiais.InsertRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.operacao
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "50001070"
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            ultima_linha_material = ultima_linha_material + 1
+        # Materiais do Global.
+        materiais_contratada.materiais_contratada(self.tb_materiais)

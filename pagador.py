@@ -53,7 +53,7 @@ def precificador(tse, corte, relig):
     else:
         print(f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")
         print(f"Chave unitario: {chave_unitario}")
-        print(f"Chave RB: {list_chave_rb_despesa}")
+        print(f"Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")
         if chave_unitario:  # Verifica se está no Conjunto Unitários
             # Aba Itens de preço
             session.findById(
@@ -71,15 +71,15 @@ def precificador(tse, corte, relig):
             )
             etapa_unitario.append(chave_unitario[0])
 
-            if chave_rb_investimento:
-                session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-                cesta_dicionario.cesta(
-                    chave_rb_investimento[3],
-                    chave_rb_investimento[4],
-                    chave_rb_investimento,
-                    mae
-                )
+        if chave_rb_investimento:
+            session.findById(
+                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+            cesta_dicionario.cesta(
+                chave_rb_investimento[3],
+                chave_rb_investimento[4],
+                chave_rb_investimento,
+                mae
+            )
 
         if list_chave_rb_despesa:
             session.findById(

@@ -5,13 +5,16 @@ session = connect_to_sap()
 
 
 class Hidrometro:
+    '''Classe Unitária de Hidrômetro.'''
 
     @staticmethod
-    def THDPrev_456902(*args):
+    def troca_de_hidro_preventiva_agendada(*args):
+        '''Troca de Hidro Preventiva - Código 456902'''
         print(
             "Iniciando processo de pagar TROCA DE HIDROMETRO PREVENTIVA - Código: 456902")
         preco = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
             num_precos_linhas = preco.RowCount
@@ -26,15 +29,14 @@ class Hidrometro:
                     preco.pressEnter()
                     print("Pago 1 UN de THD  ATE 10M3/H PREV - CODIGO: 456902")
                     break
-                else:
-                    print(
-                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")
 
     @staticmethod
-    def HD_456022(*args):
-        print("Iniciando processo de pagar COLOCADO HIDROMETRO NA POSIÇÃO CORRETA  - Código: 456022")
+    def desinclinado_hidrometro(*args):
+        '''Desinclinado Hidrômetro - Código 456022'''
+        print("Iniciando processo de pagar COLOCADO HIDROMETRO NA POSIÇÃO CORRETA - Código: 456022")
         preco = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
             num_precos_linhas = preco.RowCount
@@ -49,15 +51,14 @@ class Hidrometro:
                     preco.pressEnter()
                     print("Pago 1 UN de DESINCL HD - CODIGO: 456022")
                     break
-                else:
-                    print(
-                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")
 
     @staticmethod
-    def THD_456901(*args):  # Deve Criar uma instância na main já com a instância da classe feita, exemplo: hidrometro_instancia.THDPrev()
+    def troca_de_hidro_corretivo(*args):
+        '''Troca de Hidrômetro Corretivo - Código 456901'''
         print("Iniciando processo de pagar TROCA DE HIDROMETRO CORRETIVO - Código: 456901")
         preco = session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
             num_precos_linhas = preco.RowCount
@@ -72,6 +73,3 @@ class Hidrometro:
                     preco.pressEnter()
                     print("Pago 1 UN de THD  ATE 10M3/H CORR - CODIGO: 456902")
                     break
-                else:
-                    print(
-                        f"Código de preço: {sap_preco} , Linha: {n_preco} - Não Selecionado")

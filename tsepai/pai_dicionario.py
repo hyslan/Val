@@ -28,35 +28,50 @@ def preservacao_interferencia():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
+def transformacao_lig():
+    '''Captador da tse Transformação'''
+    tse_temp_reposicao = []
+    tse_proibida = "Ramo Transformação"
+    identificador = "transformacao"
+    etapa_reposicao = []
+    return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+
 def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
     dicionario_pai_unitario = {
 
+        '138000': m_cavalete.Cavalete.readequado_cavalete,
         '142000': m_cavalete.Cavalete.regularizar_cv,
         '148000': m_cavalete.Cavalete.troca_cv_por_uma,
         '149000': m_cavalete.Cavalete.trocar_cv_kit,
         '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
         '201000': m_hidrometro.Hidrometro.un_hidrometro,
+        '202000': m_hidrometro.Hidrometro.desincl_hidrometro,
         '203000': m_hidrometro.Hidrometro.un_hidrometro,
-        '203500': m_hidrometro.Hidrometro.un_hidrometro,
+        '203500': m_hidrometro.Hidrometro.desincl_hidrometro,
         '204000': m_hidrometro.Hidrometro.un_hidrometro,
         '205000': m_hidrometro.Hidrometro.un_hidrometro,
         '206000': m_hidrometro.Hidrometro.un_hidrometro,
         '207000': m_hidrometro.Hidrometro.un_hidrometro,
+        '211000': m_hidrometro.Hidrometro.hidrometro_alterar_capacidade,
         '215000': m_hidrometro.Hidrometro.un_hidrometro,
         # '253000':
         # '254000':
         # '255000':
         # '262000':
         # '265000':
-        # '266000':
-        # '268000':
-        # '269000':
+        '266000': transformacao_lig,
+        '267000': transformacao_lig,
+        '268000': transformacao_lig,
+        '269000': transformacao_lig,
         # '284500':
         # '286000':
         # '304000':
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
+        '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
+        '407000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '414000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '450500': m_religacao.Religacao.reativada_ligacao_de_agua,
         '453000': m_religacao.Religacao.reativada_ligacao_de_agua,
@@ -102,9 +117,12 @@ def pai_servico_cesta(servico_temp):
         '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
         '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
         '283000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,
+        '283500': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,
         '284000': m_tra_rb.TrocaRamalAgua.troca_de_ramal_de_agua,
         '287000': m_ligacao_agua_rb.LigacaoAgua.troca_de_conexao_lig_agua,
+        '288000': m_ligacao_agua_rb.LigacaoAgua.reparo_de_ramal_de_agua,
         '321000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
+        '321500': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
         # '325000':
         # '328000':
         # '330000':

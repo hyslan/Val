@@ -1,0 +1,85 @@
+'''Módulo de materiais contratada'''
+import pywintypes
+from sap_connection import connect_to_sap
+from excel_tbs import load_worksheets
+
+session = connect_to_sap()
+(
+    lista,
+    _,
+    _,
+    _,
+    planilha,
+    _,
+    _,
+    _,
+    _,
+    _,
+    tb_contratada,
+    _,
+    *_,
+) = load_worksheets()
+
+
+def materiais_contratada(tb_materiais):
+    '''Módulo de materiais da NOVASP.'''
+    num_material_linhas = tb_materiais.RowCount  # Conta as Rows
+    # Número da Row do Grid Materiais do SAP
+    n_material = 0
+    ultima_linha_material = num_material_linhas
+    # Loop do Grid Materiais.
+    for n_material in range(num_material_linhas):
+        # Pega valor da célula 0
+        sap_material = tb_materiais.GetCellValue(
+            n_material, "MATERIAL")
+        sap_etapa_material = tb_materiais.GetCellValue(
+            n_material, "ETAPA")
+        # Verifica se está na lista tb_contratada
+        if sap_material in tb_contratada:
+            # Marca Contratada
+            tb_materiais.modifyCheckbox(
+                n_material, "CONTRATADA", True)
+            print(f"Linha do material: {n_material}, "
+                  + f"Material: {sap_material}")
+            continue
+        if sap_material in ('50000328', '50000263'):
+            # Remove o lacre bege antigo.
+            tb_materiais.modifyCheckbox(
+                n_material, "ELIMINADO", True
+            )
+            tb_materiais.InsertRows(str(ultima_linha_material))
+            tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", sap_etapa_material
+            )
+            tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "50001070"
+            )
+            tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            ultima_linha_material = ultima_linha_material + 1
+
+        try:
+            if sap_material == '10014709':
+                # Marca Contratada
+                tb_materiais.modifyCheckbox(
+                    n_material, "CONTRATADA", True)
+                print("Aslfato frio da NOVASP por enquanto.")
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            print(
+                f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
+
+        try:
+            if sap_material == '30028856':
+                # Marca Contratada
+                tb_materiais.modifyCheckbox(
+                    n_material, "CONTRATADA", True)
+                print("TUBO ESG DN 100 da NOVASP por enquanto.")
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            print(
+                f"Etapa: {sap_etapa_material} - TUBO ESG DN 100 já foi retirado.")

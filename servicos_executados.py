@@ -38,7 +38,9 @@ def verifica_tse(servico):
         '591000',
         '567000',
         '321000',
-        '283000'
+        '321500',
+        '283000',
+        '283500'
     ]
     pai_tse = 0
     print("Iniciando processo de verificação de TSE")
@@ -73,6 +75,23 @@ def verifica_tse(servico):
             unitario_reposicao.append(reposicao)
             pai_tse += 1
             continue
+
+        elif sap_tse in sondagem:  # Caso Contrário, é RB - Sondagem
+            servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+            servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
+            # Coloca a tse existente na lista temporária
+            tse_temp.append(sap_tse)
+            (reposicao,
+             tse_proibida,
+             identificador,
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+            rem_base_reposicao.append(reposicao)
+            identificador_list.append(identificador)
+            chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
+            list_chave_rb_despesa.append(chave_rb_despesa)
+            pai_tse += 1
+            continue
+
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
@@ -110,6 +129,16 @@ def verifica_tse(servico):
             tse_proibida = "Aslfato na bagaça!"
             break
 
+        # Reposição de Guia, fazer manual.
+        elif sap_tse == '755000':
+            tse_proibida = 'Reposicao de Guia!'
+            break
+
+        # Readequado Cavalete, verificar...
+        elif sap_tse == '138000':
+            tse_proibida = 'Readequado Cavalete!'
+            break
+
         elif sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "11")  # Não Executado
@@ -126,7 +155,7 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "CODIGO", "7")  # Retrabalho
             continue
 
-        elif sap_tse == '730600':
+        elif sap_tse in ('730600', '730700'):
             # Compactação e Selagem da Base.
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência

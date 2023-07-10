@@ -41,7 +41,7 @@ class Modalidade:
             case "supr_restab" | "supressao":
                 self.testa_modalidade_sap(itens_nv)
                 self.fech_e_reab_lig(itens_nv)
-            case "ligacao_agua" | "cavalete":
+            case "ligacao_agua" | "cavalete" | "reparo_ramal_agua":
                 self.testa_modalidade_sap(itens_nv)
                 self.manut_lig_agua(itens_nv)
             case "rede_agua":

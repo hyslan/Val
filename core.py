@@ -159,6 +159,7 @@ def val():
                                       diametro_ramal,
                                       diametro_rede)
                 # Fim dos materiais
+
                 # Salvar Ordem
                 qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)
                 # Fim do contador de valoração.
