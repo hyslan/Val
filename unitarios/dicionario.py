@@ -75,9 +75,9 @@ def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, id
         '467500': m_religacao.Religacao.restabelecida,
         '475500': m_religacao.Religacao.restabelecida,
         # '142000': m_cavalete.Cavalete.
-        # '148000': m_cavalete.Cavalete.
-        '149000': m_cavalete.Cavalete.TrocaCvKit,
-        '153000': m_cavalete.Cavalete.TrocaPeCvPrev,
+        '148000': m_cavalete.Cavalete.troca_cv_por_uma,
+        '149000': m_cavalete.Cavalete.troca_cv_kit,
+        '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
 
     }
 

@@ -44,7 +44,7 @@ class RedeEsgoto:
         etapa_reposicao = []
         tse_proibida = RedeEsgoto.OBS
         identificador = RedeEsgoto.MODALIDADE
-        print("Iniciando processo Pai de REPARO DE RAMAL DE ESGOTO - TSE 580000")
+        print("Iniciando processo Pai de REPARO DE REDE DE ESGOTO - TSE 580000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")

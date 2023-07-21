@@ -37,6 +37,15 @@ def transformacao_lig():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
+def troca_de_ramal_esgoto():
+    '''Captador da tse TRE.'''
+    tse_temp_reposicao = []
+    tse_proibida = "TRE"
+    identificador = "tre"
+    etapa_reposicao = []
+    return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+
 def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
@@ -89,7 +98,7 @@ def pai_servico_unitario(servico_temp):
         # '538000':
         # '561000':
         # '565000':
-        # '569000':
+        '569000': troca_de_ramal_esgoto,
         # '581000':
         # '585000':
         '713000': preservacao_interferencia,

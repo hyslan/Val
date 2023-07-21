@@ -4,7 +4,7 @@ from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
-
+from wms import lacre_material
 
 session = connect_to_sap()
 (
@@ -77,8 +77,29 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
+                if sap_material == '30029526':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                    self.tb_materiais.InsertRows(str(ultima_linha_material))
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "ETAPA", self.identificador[1]
+                    )
+                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "QUANT", "1"
+                    )
+                    self.tb_materiais.setCurrentCell(
+                        ultima_linha_material, "QUANT"
+                    )
+                    ultima_linha_material = ultima_linha_material + 1
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
+            # Caça lacre
+            lacre_material.caca_lacre(self.tb_materiais, self.operacao)
 
     def receita_supressao(self):
         '''Padrão de materiais para supressão.'''

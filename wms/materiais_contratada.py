@@ -26,6 +26,7 @@ def materiais_contratada(tb_materiais):
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     # Número da Row do Grid Materiais do SAP
     n_material = 0
+    lacre = False
     ultima_linha_material = num_material_linhas
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
@@ -42,25 +43,39 @@ def materiais_contratada(tb_materiais):
             print(f"Linha do material: {n_material}, "
                   + f"Material: {sap_material}")
             continue
+        if lacre is False:
+            if sap_material in ('50000328', '50000263'):
+                # Remove o lacre bege antigo.
+                tb_materiais.modifyCheckbox(
+                    n_material, "ELIMINADO", True
+                )
+                tb_materiais.InsertRows(str(ultima_linha_material))
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "ETAPA", sap_etapa_material
+                )
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", "50001070"
+                )
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "QUANT", "1"
+                )
+                tb_materiais.setCurrentCell(
+                    ultima_linha_material, "QUANT"
+                )
+                ultima_linha_material = ultima_linha_material + 1
+                lacre = True
+
         if sap_material in ('50000328', '50000263'):
             # Remove o lacre bege antigo.
             tb_materiais.modifyCheckbox(
                 n_material, "ELIMINADO", True
             )
-            tb_materiais.InsertRows(str(ultima_linha_material))
-            tb_materiais.modifyCell(
-                ultima_linha_material, "ETAPA", sap_etapa_material
+
+        if sap_material == '10014780':
+            # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
+            tb_materiais.modifyCheckbox(
+                n_material, "ELIMINADO", True
             )
-            tb_materiais.modifyCell(
-                ultima_linha_material, "MATERIAL", "50001070"
-            )
-            tb_materiais.modifyCell(
-                ultima_linha_material, "QUANT", "1"
-            )
-            tb_materiais.setCurrentCell(
-                ultima_linha_material, "QUANT"
-            )
-            ultima_linha_material = ultima_linha_material + 1
 
         try:
             if sap_material == '10014709':
@@ -83,3 +98,14 @@ def materiais_contratada(tb_materiais):
         except pywintypes.com_error:
             print(
                 f"Etapa: {sap_etapa_material} - TUBO ESG DN 100 já foi retirado.")
+
+        try:
+            if sap_material == '30026319':
+                # Marca Contratada
+                tb_materiais.modifyCheckbox(
+                    n_material, "CONTRATADA", True)
+                print("TUBO PVC RIG PB JEI/JERI DN 100 da NOVASP por enquanto.")
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            print(
+                f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")

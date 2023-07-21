@@ -23,8 +23,10 @@ session = connect_to_sap()
     *_,
 ) = load_worksheets()
 
+
 class LigacaoAguaMaterial:
     '''Classe de materiais de Troca de Conexão de Ligação de Água.'''
+
     def __init__(self, int_num_lordem,
                  hidro,
                  operacao,
@@ -42,7 +44,8 @@ class LigacaoAguaMaterial:
 
     def receita_troca_de_conexao_de_ligacao_de_agua(self):
         '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
-        sap_material = testa_material_sap.testa_material_sap(self.int_num_lordem, self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(
+            self.int_num_lordem, self.tb_materiais)
         if sap_material is None:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
@@ -51,8 +54,8 @@ class LigacaoAguaMaterial:
             )
             # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
             self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30002394"
-                )
+                ultima_linha_material, "MATERIAL", "30002394"
+            )
             self.tb_materiais.modifyCell(
                 ultima_linha_material, "QUANT", "1"
             )
@@ -67,8 +70,8 @@ class LigacaoAguaMaterial:
             )
             # Adiciona REGISTRO METALICO RAMAL PREDIAL DN 20.
             self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30006747"
-                )
+                ultima_linha_material, "MATERIAL", "30006747"
+            )
             self.tb_materiais.modifyCell(
                 ultima_linha_material, "QUANT", "1"
             )
@@ -98,8 +101,8 @@ class LigacaoAguaMaterial:
                     )
                     # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
                     self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30001865"
-                        )
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
                     )
@@ -107,6 +110,33 @@ class LigacaoAguaMaterial:
                         ultima_linha_material, "QUANT"
                     )
                     ultima_linha_material = ultima_linha_material + 1
+
+                if sap_material == '30001122':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                    self.tb_materiais.InsertRows(str(ultima_linha_material))
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "ETAPA", self.identificador[1]
+                    )
+                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "QUANT", "1"
+                    )
+                    self.tb_materiais.setCurrentCell(
+                        ultima_linha_material, "QUANT"
+                    )
+                    ultima_linha_material = ultima_linha_material + 1
+
+                # Remove CURVA 90GR FF FLANGES ESG DN200 PN10 é esgoto.
+                if sap_material == '30002735':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
                 # COTOVELO 90 GR PVC BB JE ESG PRED DN 150 é material de esgoto.
                 if sap_material == '30011136':
                     self.tb_materiais.modifyCheckbox(
@@ -120,8 +150,8 @@ class LigacaoAguaMaterial:
                 )
                 # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
                 self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30002394"
-                    )
+                    ultima_linha_material, "MATERIAL", "30002394"
+                )
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "QUANT", "1"
                 )
@@ -137,8 +167,8 @@ class LigacaoAguaMaterial:
                 )
                 # Adiciona REGISTRO METALICO RAMAL PREDIAL DN 20.
                 self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30006747"
-                    )
+                    ultima_linha_material, "MATERIAL", "30006747"
+                )
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "QUANT", "1"
                 )
@@ -152,9 +182,25 @@ class LigacaoAguaMaterial:
 
     def receita_reparo_de_ramal_de_agua(self):
         '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
-        sap_material = testa_material_sap.testa_material_sap(self.int_num_lordem, self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(
+            self.int_num_lordem, self.tb_materiais)
         if sap_material is None:
-            print("sem material vinculado.")
+            ultima_linha_material = 0
+            self.tb_materiais.InsertRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.identificador[1]
+            )
+            # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "30001848"
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            ultima_linha_material = ultima_linha_material + 1
         else:
             material_lista = []
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
@@ -177,8 +223,8 @@ class LigacaoAguaMaterial:
                     )
                     # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
                     self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30001865"
-                        )
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
                     )
@@ -186,5 +232,43 @@ class LigacaoAguaMaterial:
                         ultima_linha_material, "QUANT"
                     )
                     ultima_linha_material = ultima_linha_material + 1
+
+                if sap_material == '30001122':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                    self.tb_materiais.InsertRows(str(ultima_linha_material))
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "ETAPA", self.identificador[1]
+                    )
+                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
+                    self.tb_materiais.modifyCell(
+                        ultima_linha_material, "QUANT", "1"
+                    )
+                    self.tb_materiais.setCurrentCell(
+                        ultima_linha_material, "QUANT"
+                    )
+                    ultima_linha_material = ultima_linha_material + 1
+
+            if '30001848' not in material_lista:
+                self.tb_materiais.InsertRows(str(ultima_linha_material))
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "ETAPA", self.identificador[1]
+                )
+                # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", "30001848"
+                )
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "QUANT", "1"
+                )
+                self.tb_materiais.setCurrentCell(
+                    ultima_linha_material, "QUANT"
+                )
+                ultima_linha_material = ultima_linha_material + 1
+                # Adiciona TUBO PEAD DN 20
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)

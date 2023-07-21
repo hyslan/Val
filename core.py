@@ -122,6 +122,7 @@ def val():
              chave_unitario,
              etapa_rem_base,
              etapa_unitario) = precificador(tse, corte, relig)
+
             # Se a TSE não estiver no escopo dar Val, vai pular pra próxima OS.
             if tse_proibida is not None:
                 selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
@@ -134,20 +135,20 @@ def val():
                 # Aba Materiais
                 if chave_rb_investimento:
                     materiais(int_num_lordem,
-                                      hidro,
-                                      operacao,
-                                      chave_rb_investimento,
-                                      diametro_ramal,
-                                      diametro_rede)
+                              hidro,
+                              operacao,
+                              chave_rb_investimento,
+                              diametro_ramal,
+                              diametro_rede)
 
                 if list_chave_rb_despesa:
                     for chave_rb_despesa in list_chave_rb_despesa:
                         materiais(int_num_lordem,
-                                hidro,
-                                operacao,
-                                chave_rb_despesa,
-                                diametro_ramal,
-                                diametro_rede)
+                                  hidro,
+                                  operacao,
+                                  chave_rb_despesa,
+                                  diametro_ramal,
+                                  diametro_rede)
 
                 if etapa_unitario:
                     for etapa in etapa_unitario:
@@ -159,7 +160,7 @@ def val():
                                       diametro_ramal,
                                       diametro_rede)
                 # Fim dos materiais
-
+                # sys.exit()
                 # Salvar Ordem
                 qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)
                 # Fim do contador de valoração.

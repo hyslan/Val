@@ -5,6 +5,8 @@ from sap_connection import connect_to_sap
 
 def consulta_os(n_os):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
+    diametro_ramal = None
+    diametro_rede = None
     session = connect_to_sap()
     session.StartTransaction("ZSBPM020")
     status_usuario = "USTXT"
@@ -30,14 +32,20 @@ def consulta_os(n_os):
             n_etapa, "ZZHIDROMETRO_INSTALADO")
         if hidro_colocado is not None:
             hidro = hidro_colocado
-    for n_etapa, diametro_ramal in enumerate(range(0, num_etapas_linhas)):
-        diametro_ramal = consulta.GetCellValue(
+    for n_etapa in range(0, num_etapas_linhas):
+        sap_diametro_ramal = consulta.GetCellValue(
             n_etapa, "ZZDIAMETRO_RAMAL"
         )
-    for n_etapa, diametro_rede in enumerate(range(0, num_etapas_linhas)):
-        diametro_rede = consulta.GetCellValue(
+        if sap_diametro_ramal in ('100', '150', '200', '250', '300'):
+            diametro_ramal = sap_diametro_ramal
+            break
+    for n_etapa in range(0, num_etapas_linhas):
+        sap_diametro_rede = consulta.GetCellValue(
             n_etapa, "ZZDIAMETRO_REDE"
         )
+        if sap_diametro_rede in ('100', '150', '200', '250', '300'):
+            diametro_rede = sap_diametro_rede
+            break
     session.findById("wnd[0]").sendVKey(3)  # Voltar
 
     return (

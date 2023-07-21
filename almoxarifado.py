@@ -9,6 +9,7 @@ from wms import ramal_agua_material
 from wms import rede_agua_material
 from wms import rede_esgoto_material
 from wms import cavalete_material
+from wms import materiais_contratada
 
 session = connect_to_sap()
 (
@@ -27,8 +28,10 @@ session = connect_to_sap()
     *_,
 ) = load_worksheets()
 
+
 class Almoxarifado:
     '''Área de todos materiais obrigatórios por TSE.'''
+
     def __init__(self,
                  int_num_lordem,
                  hidro,
@@ -56,13 +59,13 @@ class Almoxarifado:
     def inspecao(self, tb_materiais):
         '''Seleciona a Classe da TSE correta.'''
         sondagem = [
-        '591000',
-        '567000',
-        '321000',
-        '283000'
+            '591000',
+            '567000',
+            '321000',
+            '283000'
         ]
         if self.identificador[0] in sondagem:
-            pass
+            materiais_contratada.materiais_contratada(tb_materiais)
         else:
             match self.identificador[2]:
                 case "hidrometro":
@@ -74,7 +77,7 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais
-                        )
+                    )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_hidrometro()
 
@@ -87,7 +90,7 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais
-                        )
+                    )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_desinclinado_hidrometro()
 
@@ -100,7 +103,7 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais
-                        )
+                    )
                     print("Aplicando a receita de Cavalete.")
                     material.receita_cavalete()
 
@@ -141,7 +144,7 @@ class Almoxarifado:
                         tb_materiais
                     )
                     print("Aplicando a receita "
-                            + "de Ligação (Ramal) de Água.")
+                          + "de Ligação (Ramal) de Água.")
                     material.receita_troca_de_conexao_de_ligacao_de_agua()
 
                 case "reparo_ramal_agua":
@@ -203,6 +206,7 @@ class Almoxarifado:
                     print("Classe não identificada.")
                     sys.exit()
         return
+
 
 def materiais(int_num_lordem,
               hidro_instalado,

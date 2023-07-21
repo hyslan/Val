@@ -6,6 +6,7 @@ import time
 import datetime
 from core import val
 from avatar import val_avatar
+from etl import extract_from_sql
 
 
 def main():
@@ -13,7 +14,9 @@ def main():
     caminho_avatar = 'C:/Users/irgpapais/Documents/Meus Projetos/val/val.png'
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
     hora_retomada = datetime.time(6, 0)  # Ponto de retomada às 6h
+    # Avatar.
     val_avatar(caminho_avatar)
+
     while True:
         print("\nSistema Val.")
         # Obtém a hora atual
@@ -27,11 +30,20 @@ def main():
             saudacao = "Boa noite!"
         print(f"- Val: {saudacao}\n- Val: Como vai você hoje?")
         print(f"\n- Val: Hora atual: {hora_atual}")
+
+        # Atualização de Ordens
+        resposta = input(
+            "- Val: Deseja atualizar a lista de ordens pendentes? \n")
+        if resposta == "s":
+            extract_from_sql()
+
         # Início do Sistema
         ordem, int_num_lordem, validador = val()
+
         if validador is True:
             print("- Val: Valoração finalizada, encerrando.")
             sys.exit()
+
         # Loop de Parada
         if hora_atual >= hora_parada:
             print("A Val foi descansar.")

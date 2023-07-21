@@ -23,8 +23,10 @@ session = connect_to_sap()
     *_,
 ) = load_worksheets()
 
+
 class RedeAguaMaterial:
     '''Classe de materiais de CRA.'''
+
     def __init__(self, int_num_lordem,
                  hidro,
                  operacao,
@@ -42,8 +44,10 @@ class RedeAguaMaterial:
 
     def receita_reparo_de_rede_de_agua(self):
         '''Padrão de materiais na classe CRA.'''
-        sap_material = testa_material_sap.testa_material_sap(self.int_num_lordem, self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(
+            self.int_num_lordem, self.tb_materiais)
         abracadeira_dn75 = False
+        tubo_pba_dn50 = False
         if sap_material is None:
             print("sem material.")
 
@@ -63,6 +67,8 @@ class RedeAguaMaterial:
             ultima_linha_material = num_material_linhas
             if "30008103" in material_lista:
                 abracadeira_dn75 = True
+            if "30028862" in material_lista:
+                tubo_pba_dn50 = True
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -79,8 +85,8 @@ class RedeAguaMaterial:
                     )
                     # Adiciona CONEXÕES METALICAS COTOVELO FEMEA DN 3/4.
                     self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30002394"
-                        )
+                        ultima_linha_material, "MATERIAL", "30002394"
+                    )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
                     )
@@ -99,8 +105,8 @@ class RedeAguaMaterial:
                     )
                     # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
                     self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30001865"
-                        )
+                        ultima_linha_material, "MATERIAL", "30001865"
+                    )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
                     )
@@ -119,8 +125,20 @@ class RedeAguaMaterial:
                         n_material, "ELIMINADO", True
                     )
 
+                # Removendo ABRACADEIRA FF REPARO TUBO DN75 LMIN=150
+                if sap_material == '30001122':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
+                # Removendo LUVA CORRER FF BOL JE 0100.450-E32 DN50
+                if sap_material == '30002802':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
                 if sap_material in ('30004097', '30002152', '30002151') \
-                and abracadeira_dn75 is False:
+                        and abracadeira_dn75 is False and self.diametro_rede == '100':
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -128,10 +146,10 @@ class RedeAguaMaterial:
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "ETAPA", self.identificador[1]
                     )
-                    # Adiciona ABRACADEIR FF REPARO TUBO DN100 LMIN=150.
+                    # Adiciona ABRACADEIRA FF REPARO TUBO DN100 LMIN=150.
                     self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30008103"
-                        )
+                        ultima_linha_material, "MATERIAL", "30008103"
+                    )
                     self.tb_materiais.modifyCell(
                         ultima_linha_material, "QUANT", "1"
                     )
@@ -140,6 +158,28 @@ class RedeAguaMaterial:
                     )
                     ultima_linha_material = ultima_linha_material + 1
                     abracadeira_dn75 = True
+
+                if sap_material == '30007931':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
+            if tubo_pba_dn50 is False and self.diametro_rede == '50':
+                self.tb_materiais.InsertRows(str(ultima_linha_material))
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "ETAPA", self.identificador[1]
+                )
+                # Adiciona TUBO PBA DN 50 1,00 MPA JEI/JERI CM 6M.
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", "30028862"
+                )
+                self.tb_materiais.modifyCell(
+                    ultima_linha_material, "QUANT", "1"
+                )
+                self.tb_materiais.setCurrentCell(
+                    ultima_linha_material, "QUANT"
+                )
+                ultima_linha_material = ultima_linha_material + 1
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
