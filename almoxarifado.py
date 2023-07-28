@@ -9,6 +9,7 @@ from wms import ramal_agua_material
 from wms import rede_agua_material
 from wms import rede_esgoto_material
 from wms import cavalete_material
+from wms import poco_material
 from wms import materiais_contratada
 
 session = connect_to_sap()
@@ -201,6 +202,22 @@ class Almoxarifado:
 
                 case "preservacao":
                     pass
+
+                case "poço":
+                    pass
+
+                case "cx_parada":
+                    material = poco_material.PocoMaterial(
+                        self.int_num_lordem,
+                        self.hidro,
+                        self.operacao,
+                        self.identificador,
+                        self.diametro_ramal,
+                        self.diametro_rede,
+                        tb_materiais
+                    )
+                    print("Aplicando a receita de Caixa de Parada")
+                    material.receita_caixa_de_parada()
 
                 case _:
                     print("Classe não identificada.")

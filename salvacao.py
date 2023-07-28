@@ -1,5 +1,7 @@
 # salvacao.py
 '''Módulo de salvar valoração.'''
+import sys
+from tkinter import messagebox
 import pywintypes
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
@@ -31,7 +33,14 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
     # pylint: disable=E1101
     except pywintypes.com_error:
-        return qtd_ordem
+        print(f"Ordem: {ordem} não foi salva.")
+        selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
+        selecao_carimbo.value = "NÃO FOI SALVO"
+        lista.save('lista.xlsx')  # salva Planilha
+        messagebox.showerror("Ordem não foi salva.",
+                             f"Verificar ordem: {ordem}")
+        sys.exit()
+
     # Verificar se Salvou
     (status_sistema,
         status_usuario,
@@ -49,4 +58,5 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         selecao_carimbo.value = "NÃO FOI SALVO"
         lista.save('lista.xlsx')  # salva Planilha
+
     return qtd_ordem

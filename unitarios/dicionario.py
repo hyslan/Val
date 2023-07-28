@@ -7,6 +7,7 @@ from unitarios.hidrometro import m_hidrometro
 from unitarios.supressao import m_supressao
 from unitarios.religacao import m_religacao
 from unitarios.cavalete import m_cavalete
+from unitarios.poco import m_poco
 
 session = connect_to_sap()
 
@@ -54,6 +55,10 @@ def preserv_inter_serv(identificador):
 def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador):
     '''Dicionário de chaves para etapas de unitário.'''
     dicionario_un = {
+        # '142000': m_cavalete.Cavalete.
+        '148000': m_cavalete.Cavalete.troca_cv_por_uma,
+        '149000': m_cavalete.Cavalete.troca_cv_kit,
+        '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
         '201000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '202000': m_hidrometro.Hidrometro.desinclinado_hidrometro,
         '203000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
@@ -63,6 +68,7 @@ def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, id
         '206000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '207000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '215000': m_hidrometro.Hidrometro.troca_de_hidro_preventiva_agendada,
+        '322000': m_poco.Poco.troca_de_caixa_de_parada,
         '405000': m_supressao.Corte.supressao,
         '406000': m_supressao.Corte.supressao,
         '407000': m_supressao.Corte.supressao,
@@ -74,10 +80,6 @@ def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, id
         '465000': m_religacao.Religacao.restabelecida,
         '467500': m_religacao.Religacao.restabelecida,
         '475500': m_religacao.Religacao.restabelecida,
-        # '142000': m_cavalete.Cavalete.
-        '148000': m_cavalete.Cavalete.troca_cv_por_uma,
-        '149000': m_cavalete.Cavalete.troca_cv_kit,
-        '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
 
     }
 

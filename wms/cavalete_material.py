@@ -73,45 +73,12 @@ class CavaleteMaterial:
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                # Retirar lacre antigo vinculado.
-                if sap_material in ('50000328', '50000263'):
-                    self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True
-                    )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.operacao
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "50001070"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
                 if sap_material == '30029526':
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.operacao
-                    )
-                    # UNIAO P/ TUBO PEAD DE 20MM
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
             lacre_material.caca_lacre(self.tb_materiais, self.operacao)

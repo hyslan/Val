@@ -85,6 +85,7 @@ class LigacaoAguaMaterial:
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -95,41 +96,11 @@ class LigacaoAguaMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
                 if sap_material == '30001122':
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
                 # Remove CURVA 90GR FF FLANGES ESG DN200 PN10 é esgoto.
                 if sap_material == '30002735':
@@ -190,7 +161,7 @@ class LigacaoAguaMaterial:
             self.tb_materiais.modifyCell(
                 ultima_linha_material, "ETAPA", self.identificador[1]
             )
-            # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
+            # Adiciona TUDO PEAD DN 20.
             self.tb_materiais.modifyCell(
                 ultima_linha_material, "MATERIAL", "30001848"
             )
@@ -207,6 +178,7 @@ class LigacaoAguaMaterial:
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -217,41 +189,11 @@ class LigacaoAguaMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
                 if sap_material == '30001122':
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
             if '30001848' not in material_lista:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
@@ -270,5 +212,6 @@ class LigacaoAguaMaterial:
                 )
                 ultima_linha_material = ultima_linha_material + 1
                 # Adiciona TUBO PEAD DN 20
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)

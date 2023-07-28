@@ -7,14 +7,17 @@ from tsepai.pai_unitario.pai_cavalete import m_cavalete
 from tsepai.pai_unitario.pai_supressao import m_supressao
 from tsepai.pai_unitario.pai_religacao import m_religacao
 from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
+from tsepai.pai_unitario.pai_poco import m_poco
 # Módulos Remuneração base
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
-# Módulo Remuneração Base - Investimento
-from tsepai.pai_cesta.pai_investimento import m_tra_rb
 from tsepai.pai_cesta.pai_despesa.pai_redeagua import m_rede_agua_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoesgoto import m_ligacao_esgoto_rb
 from tsepai.pai_cesta.pai_despesa.pai_redeesgoto import m_rede_esgoto_rb
+from tsepai.pai_cesta.pai_despesa.pai_poco import m_poco_rb
+# Módulo Remuneração Base - Investimento
+from tsepai.pai_cesta.pai_investimento import m_tra_rb
+
 # Módulo Remuneração Base - Sondagem
 from tsepai.pai_cesta.pai_sondagem import m_sondagem_rb
 
@@ -46,11 +49,21 @@ def troca_de_ramal_esgoto():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
+def troca_de_ramal_agua_un():
+    '''Captador da tse TRA.'''
+    tse_temp_reposicao = []
+    tse_proibida = "TRA"
+    identificador = "tra"
+    etapa_reposicao = []
+    return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+
 def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
     dicionario_pai_unitario = {
-
+        # '134000':
+        # '135000':
         '138000': m_cavalete.Cavalete.readequado_cavalete,
         '142000': m_cavalete.Cavalete.regularizar_cv,
         '148000': m_cavalete.Cavalete.troca_cv_por_uma,
@@ -66,18 +79,19 @@ def pai_servico_unitario(servico_temp):
         '207000': m_hidrometro.Hidrometro.un_hidrometro,
         '211000': m_hidrometro.Hidrometro.hidrometro_alterar_capacidade,
         '215000': m_hidrometro.Hidrometro.un_hidrometro,
-        # '253000':
-        # '254000':
-        # '255000':
-        # '262000':
-        # '265000':
+        '253000': troca_de_ramal_agua_un,
+        '254000': troca_de_ramal_agua_un,
+        '255000': troca_de_ramal_agua_un,
+        '262000': troca_de_ramal_agua_un,
+        '265000': troca_de_ramal_agua_un,
         '266000': transformacao_lig,
         '267000': transformacao_lig,
         '268000': transformacao_lig,
         '269000': transformacao_lig,
-        # '284500':
-        # '286000':
+        '284500': troca_de_ramal_agua_un,
+        '286000': troca_de_ramal_agua_un,
         # '304000':
+        '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '407000': m_supressao.Supressao.suprimir_ligacao_de_agua,
@@ -89,10 +103,10 @@ def pai_servico_unitario(servico_temp):
         '465000': m_religacao.Religacao.reativada_ligacao_de_agua,
         '467500': m_religacao.Religacao.reativada_ligacao_de_agua,
         '475500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        # '502000':
-        # '505000':
-        # '506000':
-        # '508000':
+        '502000': troca_de_ramal_esgoto,
+        '505000': troca_de_ramal_esgoto,
+        '506000': troca_de_ramal_esgoto,
+        '508000': troca_de_ramal_esgoto,
         # '537000':
         # '537100':
         # '538000':
@@ -143,8 +157,8 @@ def pai_servico_cesta(servico_temp):
         '567000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_esgoto,
         # '569000':
         '580000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
-        # '539000':
-        # '540000':
+        '539000': m_poco_rb.Poco.reconstruido_poco,
+        '540000': m_poco_rb.Poco.reconstruido_poco,
         '591000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_esgoto,
 
     }

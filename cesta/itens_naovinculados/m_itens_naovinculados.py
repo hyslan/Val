@@ -50,7 +50,7 @@ class Modalidade:
             case "ligacao_esgoto":
                 self.testa_modalidade_sap(itens_nv)
                 self.manut_lig_esg(itens_nv)
-            case "rede_esgoto":
+            case "rede_esgoto" | "poço":
                 self.testa_modalidade_sap(itens_nv)
                 self.manut_rede_esg(itens_nv)
             case "tra":

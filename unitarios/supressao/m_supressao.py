@@ -55,6 +55,8 @@ class Corte:
 
                     for pavimento in rep_com_etapa:
                         operacao_rep = pavimento[1]
+                        if operacao_rep == '0':
+                            operacao_rep = '0010'
                         # 0 é tse da reposição;
                         # 1 é etapa da tse da reposição;
                         if pavimento[0] in dict_reposicao['cimentado']:
@@ -99,10 +101,19 @@ class Corte:
                             print(txt_reposicao)
                             contador_pg += 1
 
+                        # 1820 é módulo despesa para cimentado e especial.
+                        if preco_reposicao in ('456041', '456042'):
+                            if sap_preco == preco_reposicao and item_preco == '1820' \
+                                    and n_etapa == operacao_rep:
+                                preco.modifyCell(n_preco, "QUANT", "1")
+                                preco.setCurrentCell(n_preco, "QUANT")
+                                print(txt_reposicao)
+                                contador_pg += 1
+
                         # Rola uma página para baixo para carregar mais rows.
-                        if n_preco >= num_linhas_visiveis:
+                        if n_preco >= num_linhas_visiveis and num_precos_linhas > 96:
                             preco.currentCellRow = num_linhas_visiveis = 48 * 2
-                        if n_preco > num_linhas_visiveis * 2:
+                        if n_preco > num_linhas_visiveis * 2 and num_precos_linhas > 192:
                             preco.currentCellRow = num_linhas_visiveis = 48 * 4
 
                 if ramal is False:

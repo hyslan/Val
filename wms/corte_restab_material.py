@@ -67,11 +67,13 @@ class CorteRestabMaterial:
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
+
                 # Retirar hidro vinculado em religação.
                 if sap_material in ('50000108', '50000530'):
                     self.tb_materiais.modifyCheckbox(
@@ -81,21 +83,7 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
             # Caça lacre
@@ -121,20 +109,6 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", self.identificador[1]
-                    )
-                    # Adiciona o UNIAO P/TUBO PEAD DE 20 MM.
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "30001865"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)

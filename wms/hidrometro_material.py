@@ -4,6 +4,7 @@ from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
+from wms import lacre_material
 
 
 session = connect_to_sap()
@@ -99,11 +100,13 @@ class HidrometroMaterial:
             sap_hidro = []
             # Hidrômetro atual.
             self.hidro = self.hidro.upper()
+
             # Mata-burro pra hidro.
             if self.hidro.startswith(hidro_y):
                 cod_hidro_instalado = '50000108'
             else:
                 cod_hidro_instalado = '50000530'
+
             # Variável para controlar se o hidrômetro já foi adicionado
             hidro_adicionado = False
             for n_material in range(num_material_linhas):
@@ -116,8 +119,10 @@ class HidrometroMaterial:
                     )
                 else:
                     sap_hidro.append(sap_material)
+
             if cod_hidro_instalado in sap_hidro:
                 hidro_adicionado = True
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -137,20 +142,6 @@ class HidrometroMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    self.tb_materiais.InsertRows(str(ultima_linha_material))
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "ETAPA", sap_etapa_material
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "MATERIAL", "50001070"
-                    )
-                    self.tb_materiais.modifyCell(
-                        ultima_linha_material, "QUANT", "1"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        ultima_linha_material, "QUANT"
-                    )
-                    ultima_linha_material = ultima_linha_material + 1
 
                 if self.hidro is not None:
                     if hidro_adicionado is True:
@@ -215,8 +206,10 @@ class HidrometroMaterial:
                     ultima_linha_material, "QUANT")
                 ultima_linha_material = ultima_linha_material + 1
                 hidro_adicionado = True  # Hidrômetro foi adicionado
-        # Materiais do Global.
+
+            # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
+            lacre_material.caca_lacre(self.tb_materiais, self.operacao)
 
     def receita_desinclinado_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro Desinclinado.'''
