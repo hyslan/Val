@@ -27,7 +27,7 @@ session = connect_to_sap()
 ) = load_worksheets()
 
 
-def precificador(tse, corte, relig):
+def precificador(tse, corte, relig, posicao_rede, profundidade):
     '''Função para apontar os itens de preço e selecionar.'''
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
@@ -39,6 +39,7 @@ def precificador(tse, corte, relig):
         etapa_reposicao,
         mae,
         list_chave_rb_despesa,
+        list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
         unitario_reposicao,
@@ -52,24 +53,27 @@ def precificador(tse, corte, relig):
         print("TSE proibida de ser valorada.")
     else:
         print(f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")
-        print(f"Chave unitario: {chave_unitario}")
+        print(f"Chave unitario: {list_chave_unitario}")
         print(f"Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")
-        if chave_unitario:  # Verifica se está no Conjunto Unitários
+        if list_chave_unitario:  # Verifica se está no Conjunto Unitários
             # Aba Itens de preço
             session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
             print("****Processo de Precificação****")
-            # pylint: disable=E1121
-            dicionario.unitario(
-                chave_unitario[0],
-                corte,
-                relig,
-                chave_unitario[3],
-                num_tse_linhas,
-                chave_unitario[4],
-                identificador
-            )
-            etapa_unitario.append(chave_unitario[0])
+            for chave_unitario in list_chave_unitario:
+                # pylint: disable=E1121
+                dicionario.unitario(
+                    chave_unitario[0],
+                    corte,
+                    relig,
+                    chave_unitario[3],
+                    num_tse_linhas,
+                    chave_unitario[4],
+                    identificador,
+                    posicao_rede,
+                    profundidade
+                )
+                etapa_unitario.append(chave_unitario[0])
 
         if chave_rb_investimento:
             session.findById(
@@ -98,6 +102,7 @@ def precificador(tse, corte, relig):
         tse_proibida,
         identificador,
         list_chave_rb_despesa,
+        list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
         etapa_rem_base,

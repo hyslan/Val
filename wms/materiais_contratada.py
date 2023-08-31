@@ -41,8 +41,6 @@ def materiais_contratada(tb_materiais):
             # Marca Contratada
             tb_materiais.modifyCheckbox(
                 n_material, "CONTRATADA", True)
-            print(f"Linha do material: {n_material}, "
-                  + f"Material: {sap_material}")
             continue
 
         if lacre is False:

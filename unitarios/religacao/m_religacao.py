@@ -10,7 +10,14 @@ session = connect_to_sap()
 class Religacao:
     '''Classe de Religação Unitário.'''
     @staticmethod
-    def restabelecida(_, relig, reposicao, num_tse_linhas, etapa_reposicao):
+    def restabelecida(_,
+                      relig,
+                      reposicao,
+                      num_tse_linhas,
+                      etapa_reposicao,
+                      posicao_rede,
+                      profundidade,
+                      ):
         '''Método para definir de qual forma foi restabelecida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''
@@ -184,8 +191,6 @@ class Religacao:
                         preco.pressEnter()
                         print("Pago 1 UN de RELIG CV - CODIGO: 456037")
                         break
-                    else:
-                        print(
-                            f"Código de preço: {sap_preco}, Linha: {n_preco} - Não Selecionado")
+
         # Confirmação da precificação.
         preco.pressEnter()

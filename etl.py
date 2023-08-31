@@ -88,7 +88,7 @@ def extract_from_sql():
 
     # Construção da cláusula IN como uma string separada por vírgulas
     carteira_str = ','.join([f"'{tse}'" for tse in carteira])
-    SERVER = '10.66.9.46'
+    SERVER = '10.66.42.188'
     DATABASE = 'BD_MLG'
     cnxn = pyodbc.connect('DRIVER={SQL SERVER};SERVER='+SERVER +
                           ';DATABASE='+DATABASE+";Integrated Security=SSPI;")
@@ -97,8 +97,8 @@ def extract_from_sql():
     # Queries para SQL.
 
     # pylint disable=W1401
-    QUERY = f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE [TSEOperacaoZSCP] IN ({carteira_str});"
+    QUERY = f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
+            WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str});"
     df = pd.read_sql(QUERY, cnxn)
     pendentes = pd.DataFrame(df)
     ORDENS = 'lista.xlsx'

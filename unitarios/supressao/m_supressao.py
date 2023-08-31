@@ -11,7 +11,14 @@ session = connect_to_sap()
 class Corte:
     '''Classe de Reposição Unitário.'''
     @staticmethod
-    def supressao(corte, _, reposicao, num_tse_linhas, etapa_reposicao):
+    def supressao(corte,
+                  _,
+                  reposicao,
+                  num_tse_linhas,
+                  etapa_reposicao,
+                  posicao_rede,
+                  profundidade
+                  ):
         '''Método para definir de qual forma foi suprimida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''

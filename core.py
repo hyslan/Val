@@ -1,5 +1,6 @@
 # core.py
 '''Coração da Val.'''
+# pylint: disable=W0611
 import sys
 import time
 import pywintypes
@@ -66,8 +67,8 @@ def val():
             status_usuario,
             corte,
             relig,
-            _,
-            _,
+            posicao_rede,
+            profundidade,
             hidro,
             operacao,
             diametro_ramal,
@@ -106,7 +107,7 @@ def val():
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
-                print(f"Ordem: {ordem} em medição definitiva ou com erro.")
+                print(f"Ordem: {ordem} em medição definitiva.")
                 ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                 ordem_obs.value = "MEDIÇÃO DEFINITIVA"
                 lista.save('lista.xlsx')
@@ -114,24 +115,70 @@ def val():
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
                 continue
+
+            try:
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                grid_historico = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                data_valorado = grid_historico.GetCellValue(0, "DATA")
+                if data_valorado is not None:
+                    print(f"OS: {ordem} já valorada.")
+                    print(f"Data: {data_valorado}")
+                    selecao_carimbo = planilha.cell(
+                        row=int_num_lordem, column=2)
+                    selecao_carimbo.value = "JÁ VALORADA"
+                    lista.save('lista.xlsx')  # salva Planilha
+                    int_num_lordem += 1
+                    # Incremento + de Ordem.
+                    ordem = planilha.cell(row=int_num_lordem, column=1).value
+                    continue
+
+            # pylint: disable=E1101
+            except pywintypes.com_error:
+                print("OS Livre para valorar.")
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
+                tse = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                )
+
             # TSE e Aba Itens de preço
             (tse_proibida,
-             identificador,
-             list_chave_rb_despesa,
-             chave_rb_investimento,
-             chave_unitario,
-             etapa_rem_base,
-             etapa_unitario) = precificador(tse, corte, relig)
+                identificador,
+                list_chave_rb_despesa,
+                list_chave_unitario,
+                chave_rb_investimento,
+                chave_unitario,
+                etapa_rem_base,
+                etapa_unitario) = precificador(tse, corte, relig, posicao_rede, profundidade)
 
             # Se a TSE não estiver no escopo dar Val, vai pular pra próxima OS.
             if tse_proibida is not None:
-                selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
+                selecao_carimbo = planilha.cell(
+                    row=int_num_lordem, column=2)
                 selecao_carimbo.value = "Forbidden TSE"
                 lista.save('lista.xlsx')  # salva Planilha
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
                 continue
             else:
+                # if list_chave_unitario:
+                #     valor_valorado = session.findById(
+                #         "wnd[0]/usr/txtGS_HEADER-VAL_VALORACAO")
+                #     valorado_atual = valor_valorado.DisplayedText
+                #     if not valorado_atual.strip():
+                #         selecao_carimbo = planilha.cell(
+                #             row=int_num_lordem, column=2)
+                #         selecao_carimbo.value = "Unitário não valorado"
+                #         lista.save('lista.xlsx')  # salva Planilha
+                #         int_num_lordem += 1
+                #         ordem = planilha.cell(
+                #             row=int_num_lordem, column=1).value
+                #         continue
+
                 # Aba Materiais
                 if chave_rb_investimento:
                     materiais(int_num_lordem,
@@ -150,15 +197,14 @@ def val():
                                   diametro_ramal,
                                   diametro_rede)
 
-                if etapa_unitario:
-                    for etapa in etapa_unitario:
-                        if etapa in tb_tse_un:
-                            materiais(int_num_lordem,
-                                      hidro,
-                                      operacao,
-                                      chave_unitario,
-                                      diametro_ramal,
-                                      diametro_rede)
+                if list_chave_unitario:
+                    for chave_unitario in list_chave_unitario:
+                        materiais(int_num_lordem,
+                                  hidro,
+                                  operacao,
+                                  chave_unitario,
+                                  diametro_ramal,
+                                  diametro_rede)
                 # Fim dos materiais
                 # sys.exit()
                 # Salvar Ordem

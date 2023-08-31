@@ -8,6 +8,7 @@ from tsepai.pai_unitario.pai_supressao import m_supressao
 from tsepai.pai_unitario.pai_religacao import m_religacao
 from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 from tsepai.pai_unitario.pai_poco import m_poco
+from tsepai.pai_unitario.pai_ligacaoesgoto import m_ligacao_esgoto_un
 # Módulos Remuneração base
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
@@ -105,7 +106,7 @@ def pai_servico_unitario(servico_temp):
         '475500': m_religacao.Religacao.reativada_ligacao_de_agua,
         '502000': troca_de_ramal_esgoto,
         '505000': troca_de_ramal_esgoto,
-        '506000': troca_de_ramal_esgoto,
+        '506000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
         '508000': troca_de_ramal_esgoto,
         # '537000':
         # '537100':

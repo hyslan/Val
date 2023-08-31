@@ -137,6 +137,12 @@ class RedeAguaMaterial:
                         n_material, "ELIMINADO", True
                     )
 
+                # Removendo ABRACADEIRA INOX REPARO TUBO DN75 L=200
+                if sap_material == '30004104':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
                 if sap_material in ('30004097', '30002152', '30002151') \
                         and abracadeira_dn75 is False and self.diametro_rede == '100':
                     self.tb_materiais.modifyCheckbox(

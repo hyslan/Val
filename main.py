@@ -7,6 +7,7 @@ import datetime
 from core import val
 from avatar import val_avatar
 from etl import extract_from_sql
+from desvalorador import desvalorador
 
 
 def main():
@@ -31,10 +32,16 @@ def main():
         print(f"- Val: {saudacao}\n- Val: Como vai você hoje?")
         print(f"\n- Val: Hora atual: {hora_atual}")
 
+        # Função desfazer valoração
+        resposta = input(
+            "- Val: Deseja desvalorar a lista de ordens da planilha? \n")
+        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
+            desvalorador()
+
         # Atualização de Ordens
         resposta = input(
             "- Val: Deseja atualizar a lista de ordens pendentes? \n")
-        if resposta == "s":
+        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
             extract_from_sql()
 
         # Início do Sistema

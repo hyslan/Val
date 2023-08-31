@@ -37,9 +37,9 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         selecao_carimbo.value = "NÃO FOI SALVO"
         lista.save('lista.xlsx')  # salva Planilha
-        messagebox.showerror("Ordem não foi salva.",
-                             f"Verificar ordem: {ordem}")
-        sys.exit()
+        # messagebox.showerror("Ordem não foi salva.",
+        #                      f"Verificar ordem: {ordem}")
+        # sys.exit()
 
     # Verificar se Salvou
     (status_sistema,

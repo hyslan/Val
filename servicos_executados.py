@@ -48,6 +48,7 @@ def verifica_tse(servico):
                                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
     # Lista temporária para armazenar as tse
     list_chave_rb_despesa = []
+    list_chave_unitario = []
     tse_temp = []
     identificador_list = []
     num_tse_linhas = servico.RowCount
@@ -61,6 +62,7 @@ def verifica_tse(servico):
     for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+
         if sap_tse in tb_tse_un:  # Verifica se está no Conjunto Unitários
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
@@ -73,6 +75,7 @@ def verifica_tse(servico):
             identificador_list.append(identificador)
             chave_unitario = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             unitario_reposicao.append(reposicao)
+            list_chave_unitario.append(chave_unitario)
             pai_tse += 1
             continue
 
@@ -196,6 +199,7 @@ def verifica_tse(servico):
         etapa_reposicao,
         mae,
         list_chave_rb_despesa,
+        list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
         unitario_reposicao,

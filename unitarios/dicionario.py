@@ -8,6 +8,7 @@ from unitarios.supressao import m_supressao
 from unitarios.religacao import m_religacao
 from unitarios.cavalete import m_cavalete
 from unitarios.poco import m_poco
+from unitarios.ligacao_esgoto import m_ligacao_esgoto
 
 session = connect_to_sap()
 
@@ -52,7 +53,16 @@ def preserv_inter_serv(identificador):
                 break
 
 
-def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador):
+def unitario(etapa,
+             corte,
+             relig,
+             reposicao,
+             num_tse_linhas,
+             etapa_reposicao,
+             identificador,
+             posicao_rede,
+             profundidade
+             ):
     '''Dicionário de chaves para etapas de unitário.'''
     dicionario_un = {
         # '142000': m_cavalete.Cavalete.
@@ -80,6 +90,7 @@ def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, id
         '465000': m_religacao.Religacao.restabelecida,
         '467500': m_religacao.Religacao.restabelecida,
         '475500': m_religacao.Religacao.restabelecida,
+        '506000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
 
     }
 
@@ -90,7 +101,14 @@ def unitario(etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, id
             print(f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
             metodo = dicionario_un[etapa]
             # Chama o método de uma classe dentro do Dicionário
-            metodo(corte, relig, reposicao, num_tse_linhas, etapa_reposicao)
+            metodo(corte,
+                   relig,
+                   reposicao,
+                   num_tse_linhas,
+                   etapa_reposicao,
+                   posicao_rede,
+                   profundidade
+                   )
         else:
             print("TSE não Encontrada no Dicionário!")
             sys.exit()

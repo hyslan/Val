@@ -487,5 +487,11 @@ class RedeEsgotoMaterial:
                     )
                     ultima_linha_material = ultima_linha_material + 1
 
+                # Removendo JUNTA FLEX ESGOTO ADAP DN 100MMX100MM porque acabou.
+                if sap_material == '30005615':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
