@@ -4,6 +4,7 @@
 import sys
 import time
 import datetime
+import sql_view
 from core import val
 from avatar import val_avatar
 from etl import extract_from_sql
@@ -42,10 +43,28 @@ def main():
         resposta = input(
             "- Val: Deseja atualizar a lista de ordens pendentes? \n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            extract_from_sql()
+            pendentes_list = extract_from_sql()
+
+        # Escolha de TSE para valorar.
+        resposta = input(
+            "- Val: Ou Deseja escolher mais de uma TSE expecífica para valorar? \n")
+        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
+            tse_expec = input(
+                "- Val: Digite as TSE separadas por vírgula, por favor.\n")
+            lista_tse = tse_expec.split(', ')
+            pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
+            pendentes_list = pendentes.tse_escolhida()
+
+        resposta = input(
+            "- Val: Ou Deseja escolher uma TSE expecífica para valorar? \n")
+        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
+            tse_expec = input(
+                "- Val: Digite a TSE expecífica, por favor.\n")
+            pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
+            pendentes_list = pendentes.tse_expecifica()
 
         # Início do Sistema
-        ordem, int_num_lordem, validador = val()
+        ordem, int_num_lordem, validador = val(pendentes_list)
 
         if validador is True:
             print("- Val: Valoração finalizada, encerrando.")

@@ -143,6 +143,11 @@ class HidrometroMaterial:
                         n_material, "ELIMINADO", True
                     )
 
+                if sap_material == '50000350':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
                 if self.hidro is not None:
                     if hidro_adicionado is True:
                         print("Hidro já adicionado.")
@@ -173,6 +178,25 @@ class HidrometroMaterial:
                             hidro_adicionado = True  # Hidrômetro foi adicionado
 
                         elif sap_material == '50000530' and sap_material != cod_hidro_instalado:
+                            print(
+                                "Hidro inserido incorretamente."
+                                + f"\nIncluindo o informado: {cod_hidro_instalado}")
+                            self.tb_materiais.modifyCheckbox(
+                                n_material, "ELIMINADO", True)
+                            self.tb_materiais.InsertRows(
+                                str(ultima_linha_material))
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "ETAPA", sap_etapa_material)
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "MATERIAL", cod_hidro_instalado)
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "QUANT", "1")
+                            self.tb_materiais.setCurrentCell(
+                                ultima_linha_material, "QUANT")
+                            ultima_linha_material = ultima_linha_material + 1
+                            hidro_adicionado = True  # Hidrômetro foi adicionado
+
+                        elif sap_material == '50000350' and sap_material != cod_hidro_instalado:
                             print(
                                 "Hidro inserido incorretamente."
                                 + f"\nIncluindo o informado: {cod_hidro_instalado}")

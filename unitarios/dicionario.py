@@ -9,6 +9,7 @@ from unitarios.religacao import m_religacao
 from unitarios.cavalete import m_cavalete
 from unitarios.poco import m_poco
 from unitarios.ligacao_esgoto import m_ligacao_esgoto
+from unitarios.ligacao_agua import m_ligacao_agua
 
 session = connect_to_sap()
 
@@ -78,6 +79,8 @@ def unitario(etapa,
         '206000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '207000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '215000': m_hidrometro.Hidrometro.troca_de_hidro_preventiva_agendada,
+        '254000': m_ligacao_agua.LigacaoAgua.ligacao_agua,
+        '284500': m_ligacao_agua.LigacaoAgua.tra_nv,
         '322000': m_poco.Poco.troca_de_caixa_de_parada,
         '405000': m_supressao.Corte.supressao,
         '406000': m_supressao.Corte.supressao,
@@ -90,7 +93,15 @@ def unitario(etapa,
         '465000': m_religacao.Religacao.restabelecida,
         '467500': m_religacao.Religacao.restabelecida,
         '475500': m_religacao.Religacao.restabelecida,
+        '502000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
+        '505000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
         '506000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
+        '508000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
+        '537000': m_poco.Poco.nivelamento,
+        '537100': m_poco.Poco.nivelamento,
+        '538000': m_poco.Poco.nivelamento,
+        '565000': m_ligacao_esgoto.LigacaoEsgoto.png_esgoto,
+        '569000': m_ligacao_esgoto.LigacaoEsgoto.tre
 
     }
 

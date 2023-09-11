@@ -50,8 +50,14 @@ class Cavalete:
                     break
 
     @staticmethod
-    def troca_cv_por_uma(corte, relig,
-                         reposicao, num_tse_linhas, etapa_reposicao):
+    def troca_cv_por_uma(corte,
+                         relig,
+                         reposicao,
+                         num_tse_linhas,
+                         etapa_reposicao,
+                         posicao_rede,
+                         profundidade
+                         ):
         '''Método Troca de Cavalete Preventivo'''
         print("Iniciando processo de pagar SUBST CV POR UMA")
         preco = session.findById(

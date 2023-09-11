@@ -4,6 +4,7 @@
 import sys
 import time
 import pywintypes
+import sql_view
 from tqdm import tqdm
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
@@ -13,6 +14,8 @@ from pagador import precificador
 from almoxarifado import materiais
 from salvacao import salvar
 from temporizador import cronometro_val
+
+
 session = connect_to_sap()
 (
     lista,
@@ -34,29 +37,27 @@ session = connect_to_sap()
 ) = load_worksheets()
 
 
-def val():
+def val(pendentes_list):
     '''Sistema Val.'''
     validador = False
     input("- Val: Pressione Enter para iniciar...")
-    limite_execucoes = planilha.max_row
+    limite_execucoes = len(pendentes_list)
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:
         num_lordem = input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
-        ordem = planilha.cell(row=int_num_lordem, column=1).value
+        int_num_lordem = int_num_lordem
+        ordem = pendentes_list[int_num_lordem]
     except TypeError:
         print("Entrada inválida. Digite um número inteiro válido.")
-        print("Reiniciando o programa...")
-        val()
+
     # Variáveis de Status da Ordem
     valorada = "EXEC VALO" or "NEXE VALO"
     fechada = "LIB"
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
     qtd_ordem = 0  # Contador de ordens pagas.
     # Loop para pagar as ordens da planilha do Excel
-    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
-        selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-        ordem_obs = planilha.cell(row=int_num_lordem, column=4)
+    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes-1), ncols=100):
         print(f"Linha atual: {int_num_lordem}.")
         start_time = time.time()  # Contador de tempo para valorar.
         print(f"Ordem atual: {ordem}")
@@ -79,22 +80,18 @@ def val():
             print(f"Status do Sistema: {status_sistema}")
         else:
             print(f"OS: {ordem} aberta.")
-            selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-            selecao_carimbo.value = "OS ABERTA"
-            # salva Planilha
-            lista.save('lista.xlsx')
             int_num_lordem += 1
             # Incremento + de Ordem.
-            ordem = planilha.cell(row=int_num_lordem, column=1).value
+            ordem = pendentes_list[int_num_lordem]
             continue
+
         if status_usuario == valorada:
             print(f"OS: {ordem} já valorada.")
-            selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-            selecao_carimbo.value = "JÁ VALORADA"
-            lista.save('lista.xlsx')  # salva Planilha
+            ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+            ja_valorado.valorada("SIM")
             int_num_lordem += 1
             # Incremento + de Ordem.
-            ordem = planilha.cell(row=int_num_lordem, column=1).value
+            ordem = pendentes_list[int_num_lordem]
 
         else:
             # Ação no SAP
@@ -108,12 +105,11 @@ def val():
             # pylint: disable=E1101
             except pywintypes.com_error:
                 print(f"Ordem: {ordem} em medição definitiva.")
-                ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-                ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-                lista.save('lista.xlsx')
-                # Incremento de Ordem.
+                ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                ja_valorado.valorada(obs="Definitiva")
                 int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
+                # Incremento + de Ordem.
+                ordem = pendentes_list[int_num_lordem]
                 continue
 
             try:
@@ -126,13 +122,11 @@ def val():
                 if data_valorado is not None:
                     print(f"OS: {ordem} já valorada.")
                     print(f"Data: {data_valorado}")
-                    selecao_carimbo = planilha.cell(
-                        row=int_num_lordem, column=2)
-                    selecao_carimbo.value = "JÁ VALORADA"
-                    lista.save('lista.xlsx')  # salva Planilha
+                    ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="SIM")
                     int_num_lordem += 1
                     # Incremento + de Ordem.
-                    ordem = planilha.cell(row=int_num_lordem, column=1).value
+                    ordem = pendentes_list[int_num_lordem]
                     continue
 
             # pylint: disable=E1101
@@ -157,12 +151,10 @@ def val():
 
             # Se a TSE não estiver no escopo dar Val, vai pular pra próxima OS.
             if tse_proibida is not None:
-                selecao_carimbo = planilha.cell(
-                    row=int_num_lordem, column=2)
-                selecao_carimbo.value = "Forbidden TSE"
-                lista.save('lista.xlsx')  # salva Planilha
+                ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                ja_valorado.valorada(obs="Num Pode")
                 int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
+                ordem = pendentes_list[int_num_lordem]
                 continue
             else:
                 # if list_chave_unitario:
@@ -208,12 +200,12 @@ def val():
                 # Fim dos materiais
                 # sys.exit()
                 # Salvar Ordem
-                qtd_ordem = salvar(ordem, int_num_lordem, qtd_ordem)
+                qtd_ordem = salvar(ordem, qtd_ordem)
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 # Incremento + de Ordem.
                 int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
+                ordem = pendentes_list[int_num_lordem]
                 print(f"Quantidade de ordens valoradas: {qtd_ordem}.")
     validador = True
     return ordem, int_num_lordem, validador

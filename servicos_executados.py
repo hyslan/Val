@@ -130,11 +130,20 @@ def verifica_tse(servico):
         # Pulando OS com asfalto incluso.
         elif sap_tse in tb_tse_asfalto:
             tse_proibida = "Aslfato na bagaça!"
+            reposicao = sap_tse
+            etapa_reposicao = etapa_pai
             break
 
         # Reposição de Guia, fazer manual.
         elif sap_tse == '755000':
             tse_proibida = 'Reposicao de Guia!'
+            break
+
+        # Reposição de Sarjeta, fazer manual.
+        elif sap_tse == '782500':
+            tse_proibida = "REPOSIÇÃO DE SARJETA INV"
+            reposicao = sap_tse
+            etapa_reposicao = etapa_pai
             break
 
         # Readequado Cavalete, verificar...
@@ -160,6 +169,12 @@ def verifica_tse(servico):
 
         elif sap_tse in ('730600', '730700'):
             # Compactação e Selagem da Base.
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
+            continue
+
+        elif sap_tse in ('761000', '762000'):
+            # REPOSIÇÃO DE PAREDE/MURO INV.
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
             continue

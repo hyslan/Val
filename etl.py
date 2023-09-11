@@ -93,14 +93,14 @@ def extract_from_sql():
     cnxn = pyodbc.connect('DRIVER={SQL SERVER};SERVER='+SERVER +
                           ';DATABASE='+DATABASE+";Integrated Security=SSPI;")
     print("\nConexão com SQL bem sucedida.\n")
-    cursor = cnxn.cursor()
+
     # Queries para SQL.
 
     # pylint disable=W1401
     QUERY = f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str});"
+            WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) AND [Feito?] IS NUll ;"
     df = pd.read_sql(QUERY, cnxn)
     pendentes = pd.DataFrame(df)
-    ORDENS = 'lista.xlsx'
-    pendentes.to_excel(ORDENS, index=False, header=False)
+    pendentes_list = pendentes['Ordem'].tolist()
     print("\nExtração de ordens feita com sucesso!")
+    return pendentes_list

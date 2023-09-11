@@ -17,3 +17,17 @@ def novasp(ordem):
     sap_ordem = session.findById("wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
     sap_ordem.Text = ordem
     session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
+
+
+def recape(ordem):
+    '''Transação preenchida ZSBMM216 - Sessão 0'''
+    print("Iniciando valoração.")
+    session.StartTransaction("ZSBMM216")
+    # Unidade Administrativa
+    session.findById("wnd[0]/usr/ctxtP_UND").Text = "344"
+    # Contrato RECAPE
+    session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600044782"
+    session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
+    sap_ordem = session.findById("wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+    sap_ordem.Text = ordem
+    session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8

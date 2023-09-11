@@ -30,8 +30,5 @@ def testa_material_sap(int_num_lordem, tb_materiais):
         return sap_material
     # pylint: disable=E1101
     except pywintypes.com_error:
-        material_obs = planilha.cell(row=int_num_lordem, column=3)
-        material_obs.value = "Sem Material Vinculado"
         print("Sem material vinculado.")
-        lista.save('lista.xlsx')  # salva Planilha
         return None

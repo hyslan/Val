@@ -9,6 +9,7 @@ from tsepai.pai_unitario.pai_religacao import m_religacao
 from tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 from tsepai.pai_unitario.pai_poco import m_poco
 from tsepai.pai_unitario.pai_ligacaoesgoto import m_ligacao_esgoto_un
+from tsepai.pai_unitario.pai_ligacaoagua import m_ligacao_agua_un
 # Módulos Remuneração base
 from tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
 from tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
@@ -63,8 +64,8 @@ def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
     dicionario_pai_unitario = {
-        # '134000':
-        # '135000':
+        # '134000': INSTALADO LACRE DIVERSOS
+        # '135000': INSTALADO LACRE NUMERADO
         '138000': m_cavalete.Cavalete.readequado_cavalete,
         '142000': m_cavalete.Cavalete.regularizar_cv,
         '148000': m_cavalete.Cavalete.troca_cv_por_uma,
@@ -81,7 +82,7 @@ def pai_servico_unitario(servico_temp):
         '211000': m_hidrometro.Hidrometro.hidrometro_alterar_capacidade,
         '215000': m_hidrometro.Hidrometro.un_hidrometro,
         '253000': troca_de_ramal_agua_un,
-        '254000': troca_de_ramal_agua_un,
+        '254000': m_ligacao_agua_un.LigacaoAgua.ligacao_agua_avulsa,
         '255000': troca_de_ramal_agua_un,
         '262000': troca_de_ramal_agua_un,
         '265000': troca_de_ramal_agua_un,
@@ -89,9 +90,9 @@ def pai_servico_unitario(servico_temp):
         '267000': transformacao_lig,
         '268000': transformacao_lig,
         '269000': transformacao_lig,
-        '284500': troca_de_ramal_agua_un,
+        '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv,
         '286000': troca_de_ramal_agua_un,
-        # '304000':
+        # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
         '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
@@ -104,18 +105,18 @@ def pai_servico_unitario(servico_temp):
         '465000': m_religacao.Religacao.reativada_ligacao_de_agua,
         '467500': m_religacao.Religacao.reativada_ligacao_de_agua,
         '475500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '502000': troca_de_ramal_esgoto,
-        '505000': troca_de_ramal_esgoto,
+        '502000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
+        '505000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
         '506000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
-        '508000': troca_de_ramal_esgoto,
-        # '537000':
-        # '537100':
-        # '538000':
-        # '561000':
-        # '565000':
-        '569000': troca_de_ramal_esgoto,
-        # '581000':
-        # '585000':
+        '508000': m_ligacao_esgoto_un.LigacaoEsgoto.tre,
+        '537000': m_poco.Poco.nivelamento,
+        '537100': m_poco.Poco.nivelamento,
+        '538000': m_poco.Poco.nivelamento,
+        # '561000': DESOBSTRUIDO RAMAL DE ESGOTO
+        '565000': m_ligacao_esgoto_un.LigacaoEsgoto.png,
+        '569000': m_ligacao_esgoto_un.LigacaoEsgoto.tre,
+        # '581000': DESOBSTRUIDA REDE DE ESGOTO
+        # '585000': LAVAGEM DE REDE DE ESGOTO PREVENTIVA
         '713000': preservacao_interferencia,
         '713500': preservacao_interferencia,
     }

@@ -1,8 +1,7 @@
 # salvacao.py
 '''Módulo de salvar valoração.'''
-import sys
-from tkinter import messagebox
 import pywintypes
+import sql_view
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from confere_os import consulta_os
@@ -25,7 +24,7 @@ session = connect_to_sap()
 ) = load_worksheets()
 
 
-def salvar(ordem, int_num_lordem, qtd_ordem):
+def salvar(ordem, qtd_ordem):
     '''Função para salvar valoração.'''
     try:
         print("Salvando valoração!")
@@ -34,12 +33,8 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
     # pylint: disable=E1101
     except pywintypes.com_error:
         print(f"Ordem: {ordem} não foi salva.")
-        selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-        selecao_carimbo.value = "NÃO FOI SALVO"
-        lista.save('lista.xlsx')  # salva Planilha
-        # messagebox.showerror("Ordem não foi salva.",
-        #                      f"Verificar ordem: {ordem}")
-        # sys.exit()
+        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+        ja_valorado.valorada(obs="Não foi salvo")
 
     # Verificar se Salvou
     (status_sistema,
@@ -49,14 +44,13 @@ def salvar(ordem, int_num_lordem, qtd_ordem):
     if status_usuario == "EXEC VALO":
         print(f"Status da Ordem: {status_sistema}, {status_usuario}")
         print("Foi Salvo com sucesso!")
-        selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-        selecao_carimbo.value = "VALORADA"
-        lista.save('lista.xlsx')  # salva Planilha
+        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+        ja_valorado.valorada("SIM")
+        # Incremento + de Ordem.
         qtd_ordem += 1
     else:
         print(f"Ordem: {ordem} não foi salva.")
-        selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-        selecao_carimbo.value = "NÃO FOI SALVO"
-        lista.save('lista.xlsx')  # salva Planilha
+        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+        ja_valorado.valorada(obs="Não foi salvo")
 
     return qtd_ordem

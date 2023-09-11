@@ -64,38 +64,38 @@ def materiais_contratada(tb_materiais):
                 n_material, "ELIMINADO", True
             )
 
-        try:
-            if sap_material == '10014709':
-                # Marca Contratada
-                tb_materiais.modifyCheckbox(
-                    n_material, "CONTRATADA", True)
-                print("Aslfato frio da NOVASP por enquanto.")
-        # pylint: disable=E1101
-        except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
+        # try:
+        #     if sap_material == '10014709':
+        #         # Marca Contratada
+        #         tb_materiais.modifyCheckbox(
+        #             n_material, "CONTRATADA", True)
+        #         print("Aslfato frio da NOVASP por enquanto.")
+        # # pylint: disable=E1101
+        # except pywintypes.com_error:
+        #     print(
+        #         f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
 
-        try:
-            if sap_material == '30028856':
-                # Marca Contratada
-                tb_materiais.modifyCheckbox(
-                    n_material, "CONTRATADA", True)
-                print("TUBO ESG DN 100 da NOVASP por enquanto.")
-        # pylint: disable=E1101
-        except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - TUBO ESG DN 100 já foi retirado.")
+        # try:
+        #     if sap_material == '30028856':
+        #         # Marca Contratada
+        #         tb_materiais.modifyCheckbox(
+        #             n_material, "CONTRATADA", True)
+        #         print("TUBO ESG DN 100 da NOVASP por enquanto.")
+        # # pylint: disable=E1101
+        # except pywintypes.com_error:
+        #     print(
+        #         f"Etapa: {sap_etapa_material} - TUBO ESG DN 100 já foi retirado.")
 
-        try:
-            if sap_material == '30026319':
-                # Marca Contratada
-                tb_materiais.modifyCheckbox(
-                    n_material, "CONTRATADA", True)
-                print("TUBO PVC RIG PB JEI/JERI DN 100 da NOVASP por enquanto.")
-        # pylint: disable=E1101
-        except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")
+        # try:
+        #     if sap_material == '30026319':
+        #         # Marca Contratada
+        #         tb_materiais.modifyCheckbox(
+        #             n_material, "CONTRATADA", True)
+        #         print("TUBO PVC RIG PB JEI/JERI DN 100 da NOVASP por enquanto.")
+        # # pylint: disable=E1101
+        # except pywintypes.com_error:
+        #     print(
+        #         f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")
 
         try:
             if sap_material == '30001865':
