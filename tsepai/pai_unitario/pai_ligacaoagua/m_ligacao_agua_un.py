@@ -108,3 +108,39 @@ class LigacaoAgua:
                 etapa_reposicao.append(etapa)
 
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+    @staticmethod
+    def png():
+        '''PNG água'''
+        etapa_reposicao = []
+        tse_proibida = LigacaoAgua.OBS
+        identificador = LigacaoAgua.MODALIDADE
+        print("Iniciando processo Pai de PNG Água - TSE 280000")
+        servico_temp = session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+        n_tse = 0
+        tse_temp_reposicao = []
+        num_tse_linhas = servico_temp.RowCount
+        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
+
+            if sap_tse in tb_tse_reposicao:
+                servico_temp.modifyCell(n_tse, "PAGAR", "s")
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+                continue
+
+            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                # Pertence ao serviço principal
+                servico_temp.modifyCell(n_tse, "CODIGO", "3")
+                continue
+
+            elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
+                servico_temp.modifyCell(n_tse, "PAGAR", "s")
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

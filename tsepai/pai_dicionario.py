@@ -90,6 +90,7 @@ def pai_servico_unitario(servico_temp):
         '267000': transformacao_lig,
         '268000': transformacao_lig,
         '269000': transformacao_lig,
+        '280000': m_ligacao_agua_un.LigacaoAgua.png,
         '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv,
         '286000': troca_de_ramal_agua_un,
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA

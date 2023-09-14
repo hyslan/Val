@@ -198,7 +198,7 @@ def val(pendentes_list):
                                   diametro_ramal,
                                   diametro_rede)
                 # Fim dos materiais
-                # sys.exit()
+                sys.exit()
                 # Salvar Ordem
                 qtd_ordem = salvar(ordem, qtd_ordem)
                 # Fim do contador de valoração.

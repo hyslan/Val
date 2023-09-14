@@ -64,16 +64,16 @@ def materiais_contratada(tb_materiais):
                 n_material, "ELIMINADO", True
             )
 
-        # try:
-        #     if sap_material == '10014709':
-        #         # Marca Contratada
-        #         tb_materiais.modifyCheckbox(
-        #             n_material, "CONTRATADA", True)
-        #         print("Aslfato frio da NOVASP por enquanto.")
-        # # pylint: disable=E1101
-        # except pywintypes.com_error:
-        #     print(
-        #         f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
+        try:
+            if sap_material == '10014709':
+                # Marca Contratada
+                tb_materiais.modifyCheckbox(
+                    n_material, "CONTRATADA", True)
+                print("Aslfato frio da NOVASP por enquanto.")
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            print(
+                f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
 
         # try:
         #     if sap_material == '30028856':

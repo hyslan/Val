@@ -77,6 +77,8 @@ def verifica_tse(servico):
             unitario_reposicao.append(reposicao)
             list_chave_unitario.append(chave_unitario)
             pai_tse += 1
+            if tse_proibida is not None:
+                break
             continue
 
         elif sap_tse in sondagem:  # Caso Contrário, é RB - Sondagem
@@ -93,6 +95,8 @@ def verifica_tse(servico):
             chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             list_chave_rb_despesa.append(chave_rb_despesa)
             pai_tse += 1
+            if tse_proibida is not None:
+                break
             continue
 
         elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
@@ -109,6 +113,8 @@ def verifica_tse(servico):
             chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             list_chave_rb_despesa.append(chave_rb_despesa)
             pai_tse += 1
+            if tse_proibida is not None:
+                break
             continue
 
         elif sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
@@ -125,6 +131,8 @@ def verifica_tse(servico):
             chave_rb_investimento = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             pai_tse += 1
             mae = True
+            if tse_proibida is not None:
+                break
             continue
 
         # Pulando OS com asfalto incluso.

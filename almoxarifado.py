@@ -134,7 +134,7 @@ class Almoxarifado:
                     print("Aplicando a receita de Supressão.")
 
                     material.receita_supressao()
-                case "ramal_agua" | "tra" | "ligacao_agua":
+                case "ramal_agua" | "tra":
                     material = ramal_agua_material.LigacaoAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
@@ -148,7 +148,7 @@ class Almoxarifado:
                           + "de Ligação (Ramal) de Água.")
                     material.receita_troca_de_conexao_de_ligacao_de_agua()
 
-                case "reparo_ramal_agua":
+                case "reparo_ramal_agua" | "ligacao_agua":
                     material = ramal_agua_material.LigacaoAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
@@ -158,7 +158,7 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais
                     )
-                    print("Aplicando a receita - reparo ramal de água")
+                    print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
 
                 case "rede_agua":

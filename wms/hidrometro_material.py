@@ -121,6 +121,25 @@ class HidrometroMaterial:
                     sap_hidro.append(sap_material)
 
             if cod_hidro_instalado in sap_hidro:
+                self.tb_materiais.pressToolbarButton("&FIND")
+                session.findById(
+                    "wnd[1]/usr/txtGS_SEARCH-VALUE").text = cod_hidro_instalado
+                session.findById(
+                    "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                session.findById("wnd[1]").sendVKey(0)
+                session.findById("wnd[1]").sendVKey(12)
+                quantidade = self.tb_materiais.GetCellValue(
+                    self.tb_materiais.CurrentCellRow, "QUANT"
+                )
+                qtd_float = float(quantidade.replace(",", "."))
+
+                if qtd_float >= 2.00:
+                    print("Quantidade de hidro errada, consertando.")
+                    self.tb_materiais.modifyCell(
+                        self.tb_materiais.CurrentCellRow, "QUANT", "1")
+                    self.tb_materiais.setCurrentCell(
+                        self.tb_materiais.CurrentCellRow, "QUANT")
+
                 hidro_adicionado = True
 
             # Loop do Grid Materiais.
@@ -155,6 +174,24 @@ class HidrometroMaterial:
                         if sap_material == cod_hidro_instalado:
                             print(
                                 f"Hidro foi incluso corretamente: {cod_hidro_instalado}")
+                            self.tb_materiais.pressToolbarButton("&FIND")
+                            session.findById(
+                                "wnd[1]/usr/txtGS_SEARCH-VALUE").text = cod_hidro_instalado
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(12)
+                            quantidade = self.tb_materiais.GetCellValue(
+                                self.tb_materiais.CurrentCellRow, "QUANT"
+                            )
+                            qtd_float = float(quantidade.replace(",", "."))
+
+                            if qtd_float >= 2.00:
+                                print("Quantidade de hidro errada, consertando.")
+                                self.tb_materiais.modifyCell(
+                                    self.tb_materiais.CurrentCellRow, "QUANT", "1")
+                                self.tb_materiais.setCurrentCell(
+                                    self.tb_materiais.CurrentCellRow, "QUANT")
                             # Hidrômetro foi adicionado
                             hidro_adicionado = True
 

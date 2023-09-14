@@ -61,6 +61,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456451"
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
                             preco.modifyCell(
@@ -81,6 +83,8 @@ class LigacaoAgua:
                         preco.pressToolbarButton("&FIND")
                         session.findById(
                             "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                         session.findById("wnd[1]").sendVKey(0)
                         session.findById("wnd[1]").sendVKey(12)
                         n_etapa = preco.GetCellValue(
@@ -90,6 +94,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
@@ -107,6 +113,8 @@ class LigacaoAgua:
                     preco.pressToolbarButton("&FIND")
                     session.findById(
                         "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456451"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                     session.findById("wnd[1]").sendVKey(0)
                     session.findById("wnd[1]").sendVKey(12)
                     preco.modifyCell(
@@ -163,6 +171,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456491"
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
                             preco.modifyCell(
@@ -183,6 +193,8 @@ class LigacaoAgua:
                         preco.pressToolbarButton("&FIND")
                         session.findById(
                             "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                         session.findById("wnd[1]").sendVKey(0)
                         session.findById("wnd[1]").sendVKey(12)
                         n_etapa = preco.GetCellValue(
@@ -192,6 +204,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
@@ -209,6 +223,8 @@ class LigacaoAgua:
                     preco.pressToolbarButton("&FIND")
                     session.findById(
                         "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456491"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                     session.findById("wnd[1]").sendVKey(0)
                     session.findById("wnd[1]").sendVKey(12)
                     preco.modifyCell(
@@ -281,6 +297,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456801"
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
                             preco.modifyCell(
@@ -301,6 +319,8 @@ class LigacaoAgua:
                         preco.pressToolbarButton("&FIND")
                         session.findById(
                             "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                         session.findById("wnd[1]").sendVKey(0)
                         session.findById("wnd[1]").sendVKey(12)
                         n_etapa = preco.GetCellValue(
@@ -310,6 +330,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
@@ -327,6 +349,8 @@ class LigacaoAgua:
                     preco.pressToolbarButton("&FIND")
                     session.findById(
                         "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456801"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                     session.findById("wnd[1]").sendVKey(0)
                     session.findById("wnd[1]").sendVKey(12)
                     preco.modifyCell(
@@ -403,6 +427,8 @@ class LigacaoAgua:
                         preco.pressToolbarButton("&FIND")
                         session.findById(
                             "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                         session.findById("wnd[1]").sendVKey(0)
                         session.findById("wnd[1]").sendVKey(12)
                         n_etapa = preco.GetCellValue(
@@ -412,6 +438,8 @@ class LigacaoAgua:
                             preco.pressToolbarButton("&FIND")
                             session.findById(
                                 "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(0)
                             session.findById("wnd[1]").sendVKey(12)
@@ -429,6 +457,8 @@ class LigacaoAgua:
                     preco.pressToolbarButton("&FIND")
                     session.findById(
                         "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456881"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                     session.findById("wnd[1]").sendVKey(0)
                     session.findById("wnd[1]").sendVKey(12)
                     preco.modifyCell(
@@ -441,6 +471,240 @@ class LigacaoAgua:
                     print(
                         "Pago 1 UN de TRA ATE 32MM"
                         + " CORR MND AVUL S/REP - CODIGO: 456881")
+                    contador_pg += 1
+                    ramal = True
+
+        if posicao_rede is None:
+            print("Sem posição de rede informada")
+            return
+
+    @staticmethod
+    def png(corte,
+            relig,
+            reposicao,
+            num_tse_linhas,
+            etapa_reposicao,
+            posicao_rede,
+            profundidade
+            ):
+        '''Método para definir de qual forma foi a PNG e 
+        pagar de acordo com as informações dadas, caso contrário,
+        não pagar a PNG.'''
+
+        if posicao_rede == 'PA':
+            print(
+                "Iniciando processo de pagar PNG Água Posição: PA"
+            )
+            preco = session.findById(
+                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+                + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            preco.GetCellValue(0, "NUMERO_EXT")
+            if preco is not None:
+                ramal = False
+                contador_pg = 0
+                # Function lambda com list compreenhension para matriz de reposições.
+                if reposicao:
+                    rep_com_etapa = [(x, y)
+                                     for x, y in zip(reposicao, etapa_reposicao)]
+
+                    for pavimento in rep_com_etapa:
+                        operacao_rep = pavimento[1]
+                        if operacao_rep == '0':
+                            operacao_rep = '0010'
+                        # 0 é tse da reposição;
+                        # 1 é etapa da tse da reposição;
+                        if pavimento[0] in dict_reposicao['cimentado']:
+                            preco_reposicao = str(456391)
+                            txt_reposicao = (
+                                "Pago 1 UN de LRP CIM  - CODIGO: 456391")
+                        if pavimento[0] in dict_reposicao['especial']:
+                            preco_reposicao = str(456392)
+                            txt_reposicao = (
+                                "Pago 1 UN de LRP ESP  - CODIGO: 456392")
+                        if pavimento[0] in dict_reposicao['asfalto_frio']:
+                            preco_reposicao = str(451415)
+                            txt_reposicao = ("Pago 1 UN de LPB ASF MND LAG AVUL COMPX C"
+                                             + " - CODIGO: 451415")
+
+                        if ramal is False:
+                            # Botão localizar
+                            preco.pressToolbarButton("&FIND")
+                            session.findById(
+                                "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456371"
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(12)
+                            preco.modifyCell(
+                                preco.CurrentCellRow, "QUANT", "1")
+                            preco.setCurrentCell(
+                                preco.CurrentCellRow, "QUANT")
+                            preco.pressEnter()
+                            # PNG sem fornecimento Código: 456371
+                            # PNG com fornecimento Código: 456381
+                            print(
+                                "Pago 1 UN de LAG"
+                                + "PA SUCES S/REP - CODIGO: 456801")
+                            contador_pg += 1
+                            ramal = True
+
+                        # 3980 é módulo Investimento.
+
+                        preco.pressToolbarButton("&FIND")
+                        session.findById(
+                            "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                        session.findById("wnd[1]").sendVKey(0)
+                        session.findById("wnd[1]").sendVKey(12)
+                        n_etapa = preco.GetCellValue(
+                            preco.CurrentCellRow, "ETAPA")
+
+                        if not n_etapa == operacao_rep:
+                            preco.pressToolbarButton("&FIND")
+                            session.findById(
+                                "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(12)
+
+                        preco.modifyCell(
+                            preco.CurrentCellRow, "QUANT", "1")
+                        preco.setCurrentCell(
+                            preco.CurrentCellRow, "QUANT")
+                        preco.pressEnter()
+                        print(txt_reposicao)
+                        contador_pg += 1
+
+                if ramal is False:
+                    # Botão localizar
+                    preco.pressToolbarButton("&FIND")
+                    session.findById(
+                        "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456371"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                    session.findById("wnd[1]").sendVKey(0)
+                    session.findById("wnd[1]").sendVKey(12)
+                    preco.modifyCell(
+                        preco.CurrentCellRow, "QUANT", "1")
+                    preco.setCurrentCell(
+                        preco.CurrentCellRow, "QUANT")
+                    preco.pressEnter()
+                    # PNG sem fornecimento Código: 456371
+                    # PNG com fornecimento Código: 456381
+                    print(
+                        "Pago 1 UN de LAG"
+                        + "CORR PA SUCES S/REP - CODIGO: 456371")
+                    contador_pg += 1
+                    ramal = True
+
+        # MND
+        if posicao_rede in ('TA', 'EI', 'TO', 'PO'):
+            print(
+                "Iniciando processo de pagar PNG Água Posição: PA"
+            )
+            preco = session.findById(
+                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+                + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            preco.GetCellValue(0, "NUMERO_EXT")
+            if preco is not None:
+                ramal = False
+                contador_pg = 0
+                # Function lambda com list compreenhension para matriz de reposições.
+                if reposicao:
+                    rep_com_etapa = [(x, y)
+                                     for x, y in zip(reposicao, etapa_reposicao)]
+
+                    for pavimento in rep_com_etapa:
+                        operacao_rep = pavimento[1]
+                        if operacao_rep == '0':
+                            operacao_rep = '0010'
+                        # 0 é tse da reposição;
+                        # 1 é etapa da tse da reposição;
+                        if pavimento[0] in dict_reposicao['cimentado']:
+                            preco_reposicao = str(456413)
+                            txt_reposicao = (
+                                "Pago 1 UN de LRP CIM MND  - CODIGO: 456413")
+                        if pavimento[0] in dict_reposicao['especial']:
+                            preco_reposicao = str(456414)
+                            txt_reposicao = (
+                                "Pago 1 UN de LRP ESP MND  - CODIGO: 456414")
+                        if pavimento[0] in dict_reposicao['asfalto_frio']:
+                            preco_reposicao = str(451415)
+                            txt_reposicao = ("Pago 1 UN de LPB ASF MND LAG AVUL COMPX C"
+                                             + " - CODIGO: 451415")
+
+                        if ramal is False:
+                            # Botão localizar
+                            preco.pressToolbarButton("&FIND")
+                            session.findById(
+                                "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456411"
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(12)
+                            preco.modifyCell(
+                                preco.CurrentCellRow, "QUANT", "1")
+                            preco.setCurrentCell(
+                                preco.CurrentCellRow, "QUANT")
+                            preco.pressEnter()
+                            # PNG sem fornecimento Código: 456411
+                            print(
+                                "Pago 1 UN de LAG ATE 32MM"
+                                + " MND AVUL S/REP - CODIGO: 456411")
+                            contador_pg += 1
+                            ramal = True
+
+                        # 4100 é módulo Investimento.
+
+                        preco.pressToolbarButton("&FIND")
+                        session.findById(
+                            "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                        session.findById(
+                            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                        session.findById("wnd[1]").sendVKey(0)
+                        session.findById("wnd[1]").sendVKey(12)
+                        n_etapa = preco.GetCellValue(
+                            preco.CurrentCellRow, "ETAPA")
+
+                        if not n_etapa == operacao_rep:
+                            preco.pressToolbarButton("&FIND")
+                            session.findById(
+                                "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                            session.findById(
+                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(0)
+                            session.findById("wnd[1]").sendVKey(12)
+
+                        preco.modifyCell(
+                            preco.CurrentCellRow, "QUANT", "1")
+                        preco.setCurrentCell(
+                            preco.CurrentCellRow, "QUANT")
+                        preco.pressEnter()
+                        print(txt_reposicao)
+                        contador_pg += 1
+
+                if ramal is False:
+                    # Botão localizar
+                    preco.pressToolbarButton("&FIND")
+                    session.findById(
+                        "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = "456411"
+                    session.findById(
+                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                    session.findById("wnd[1]").sendVKey(0)
+                    session.findById("wnd[1]").sendVKey(12)
+                    preco.modifyCell(
+                        preco.CurrentCellRow, "QUANT", "1")
+                    preco.setCurrentCell(
+                        preco.CurrentCellRow, "QUANT")
+                    preco.pressEnter()
+                    # PNG sem fornecimento Código: 456411
+                    print(
+                        "Pago 1 UN de LAG"
+                        + " MND SUCES S/REP - CODIGO: 456411")
                     contador_pg += 1
                     ramal = True
 

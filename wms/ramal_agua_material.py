@@ -200,7 +200,7 @@ class LigacaoAguaMaterial:
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "ETAPA", self.identificador[1]
                 )
-                # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
+                # Adiciona TUBO PEAD DN 20 - PE 80 - 1.0 MPA.
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "MATERIAL", "30001848"
                 )
@@ -211,7 +211,6 @@ class LigacaoAguaMaterial:
                     ultima_linha_material, "QUANT"
                 )
                 ultima_linha_material = ultima_linha_material + 1
-                # Adiciona TUBO PEAD DN 20
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(self.tb_materiais)
