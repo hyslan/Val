@@ -206,6 +206,9 @@ class Almoxarifado:
                 case "poço":
                     pass
 
+                case "gaxeta":
+                    pass
+
                 case "cx_parada":
                     material = poco_material.PocoMaterial(
                         self.int_num_lordem,

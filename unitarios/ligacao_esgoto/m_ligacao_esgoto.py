@@ -2275,7 +2275,7 @@ class LigacaoEsgoto:
                 case _:
                     print("Profundidade não informada.")
                     return
-        elif profundidade_float > 2.00 & profundidade_float <= 3.00:
+        elif 2.00 < profundidade_float <= 3.00:
             # Profundidade de 2M a 3M.
             match posicao_rede:
                 case 'PA':
@@ -2837,7 +2837,7 @@ class LigacaoEsgoto:
                             ramal = True
                 case _:
                     return
-        elif profundidade_float > 3.00 & profundidade_float <= 4.00:
+        elif 3.00 < profundidade_float <= 4.00:
             # Profundidade de 2M a 3M.
             match posicao_rede:
                 case 'PA':

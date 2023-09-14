@@ -150,7 +150,7 @@ def pai_servico_cesta(servico_temp):
         '321000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
         '321500': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
         # '325000':
-        # '328000':
+        '328000': m_rede_agua_rb.RedeAgua.aperto_gaxeta_valvula,
         # '330000':
         '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
         '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
