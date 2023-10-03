@@ -44,9 +44,9 @@ def desvalorador():
     contrato_recape = "4600044782"
     contrato_novasp = "4600041302"
     contrato = input("- Val: Qual o contrato?\n")
-    if contrato == contrato_recape:
+    if contrato == contrato_recape or contrato in ("RECAPE", "recape"):
         transacao = recape
-    elif contrato == contrato_novasp:
+    elif contrato == contrato_novasp or contrato in ("NOVASP", "novasp"):
         transacao = novasp
     # Loop para pagar as ordens da planilha do Excel
     for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):

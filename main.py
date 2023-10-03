@@ -9,6 +9,7 @@ from core import val
 from avatar import val_avatar
 from etl import extract_from_sql
 from desvalorador import desvalorador
+from retrabalhador import retrabalho
 
 
 def main():
@@ -38,6 +39,12 @@ def main():
             "- Val: Deseja desvalorar a lista de ordens da planilha? \n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
             desvalorador()
+
+        # Função Retrabalho da valoração
+        resposta = input(
+            "- Val: Deseja marcar a lista de ordens da planilha como Retrabalho? \n")
+        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
+            retrabalho()
 
         # Atualização de Ordens
         resposta = input(

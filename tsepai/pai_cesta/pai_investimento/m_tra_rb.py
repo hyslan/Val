@@ -58,13 +58,20 @@ class TrocaRamalAgua:
 
             if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "6")  # Despesa
+                servico_temp.modifyCell(n_tse, "CODIGO", "6")  # Investimento
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
 
-            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                servico_temp.modifyCell(n_tse, "CODIGO", "6")  # Investimento
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+                continue
+
+            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 continue

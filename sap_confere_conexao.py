@@ -21,7 +21,29 @@ def listar_sessoes():
     sessions = connection.Children
 
     print("Sessões ativas:")
-    for idx, session in enumerate(sessions):
+    for idx in enumerate(sessions):
         # pylint: disable=W0212
         print(
-            f"Sessão {idx}: {session.Info.SystemName} - {session.Info._username_}")
+            f"Sessão {idx}")
+    return sessions
+
+
+def criar_sessao(sessions):
+    '''Função para criar sessões'''
+    sapguiauto = win32com.client.GetObject("SAPGUI")
+    application = sapguiauto.GetScriptingEngine
+    connection = application.Children(0)
+
+    # Obtendo o índice da última sessão ativa
+    ultimo_indice = len(sessions) - 1
+    print(len(sessions))
+
+    # Criando uma nova sessão com base na última sessão ativa
+    nova_sessao = connection.Children(ultimo_indice).CreateSession()
+    while ultimo_indice >= len(sessions) - 1:
+        sessions = connection.Children
+        print(len(sessions))
+
+    # Acessando a nova sessão
+    session = connection.Children(len(sessions) - 1)
+    return session
