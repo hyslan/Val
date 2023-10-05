@@ -1,39 +1,41 @@
-#m_religacao.py
+# m_religacao.py
 '''Módulo Família Religação Unitário.'''
 from sap_connection import connect_to_sap
-from excel_tbs import  load_worksheets
-session = connect_to_sap()
+from excel_tbs import load_worksheets
+
 
 (
-        lista,
-        materiais,
-        plan_tse,
-        plan_precos,
-        planilha,
-        contratada,
-        unitario,
-        rb,
-        naoexecutado,
-        invest,
-        tb_contratada,
-        tb_tse_UN,
-        tb_tse_rb,
-        tb_tse_nexec,
-        tb_tse_invest,
-        tb_StSistema,
-        tb_StUsuario,
-        tb_tse_PertenceAoServicoPrincipal,
-        tb_tse_ServicoNaoExistenoContrato,
-        tb_tse_reposicao,
-        tb_tse_Retrabalho,
-        tb_tse_Asfalto,
-        ) = load_worksheets()
+    lista,
+    materiais,
+    plan_tse,
+    plan_precos,
+    planilha,
+    contratada,
+    unitario,
+    rb,
+    naoexecutado,
+    invest,
+    tb_contratada,
+    tb_tse_UN,
+    tb_tse_rb,
+    tb_tse_nexec,
+    tb_tse_invest,
+    tb_StSistema,
+    tb_StUsuario,
+    tb_tse_PertenceAoServicoPrincipal,
+    tb_tse_ServicoNaoExistenoContrato,
+    tb_tse_reposicao,
+    tb_tse_Retrabalho,
+    tb_tse_Asfalto,
+) = load_worksheets()
+
 
 class Religacao:
     '''Classe Pai Religação Unitário.'''
     @staticmethod
     def reativada_ligacao_de_agua():
         '''Módulo Religação Unitário.'''
+        session = connect_to_sap()
         tse_proibida = None
         etapa_reposicao = None
         identificador = "religacao"
@@ -54,9 +56,11 @@ class Religacao:
                 print(f"Tem reposição TSE: {sap_tse}")
                 continue
             elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n") # Cesta
-                servico_temp.modifyCell(n_tse, "CODIGO", "3") # Pertence ao serviço principal
-                servico_temp.append(sap_tse) # Coloca a tse existente na lista temporária
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                # Pertence ao serviço principal
+                servico_temp.modifyCell(n_tse, "CODIGO", "3")
+                # Coloca a tse existente na lista temporária
+                servico_temp.append(sap_tse)
                 continue
 
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

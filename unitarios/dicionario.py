@@ -11,11 +11,10 @@ from unitarios.poco import m_poco
 from unitarios.ligacao_esgoto import m_ligacao_esgoto
 from unitarios.ligacao_agua import m_ligacao_agua
 
-session = connect_to_sap()
-
 
 def preserv_inter_serv(identificador):
     '''Etapa de preservação de Interferência'''
+    session = connect_to_sap()
     ramo_agua = [
         ["hidrometro"],
         ["cavalete"],

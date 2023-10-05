@@ -1,7 +1,7 @@
 '''Módulo Família Poço Unitário.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-session = connect_to_sap()
+
 
 (
     lista,
@@ -34,6 +34,7 @@ class Poco:
     @staticmethod
     def det_descoberto_nivelado_reg_cx_parada():
         '''Módulo de  Descobrir, Trocar Caixa de Parada'''
+        session = connect_to_sap()
         etapa_reposicao = []
         reposicao_tse_temp = []
         tse_proibida = None
@@ -60,6 +61,7 @@ class Poco:
     @staticmethod
     def nivelamento():
         '''Módulo de Nivelamento'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = None
         identificador = "poço"

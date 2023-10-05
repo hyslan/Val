@@ -1,11 +1,9 @@
 # m_rede_agua_rb.py
 '''Módulo família Rede de Água (Ramal) - remuneração base '''
 # Bibliotecas
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -41,6 +39,7 @@ class RedeAgua:
     @staticmethod
     def reparo_de_rede_de_agua():
         '''REPARO DE REDE DE ÁGUA'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = RedeAgua.OBS
         identificador = RedeAgua.MODALIDADE
@@ -79,6 +78,7 @@ class RedeAgua:
     @staticmethod
     def aperto_gaxeta_valvula():
         '''APERTO DE GAXETA VALVULA REDE DE AGUA'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = RedeAgua.OBS
         identificador = "gaxeta"

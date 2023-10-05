@@ -4,7 +4,6 @@
 import sys
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class Religacao:
@@ -21,6 +20,7 @@ class Religacao:
         '''Método para definir de qual forma foi restabelecida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''
+        session = connect_to_sap()
         if relig == 'CAVALETE':
             print("Iniciando processo de pagar RELIG CV - Código: 456037")
             preco = session.findById(

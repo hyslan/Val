@@ -1,9 +1,8 @@
 '''Módulo de materiais contratada'''
 import pywintypes
-from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import lacre_material
-session = connect_to_sap()
+
 (
     lista,
     _,

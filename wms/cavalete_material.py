@@ -1,13 +1,11 @@
 # cavalete_material.py
 '''Módulo dos materiais de família Cavalete.'''
-from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
 from wms import lacre_material
 
 
-session = connect_to_sap()
 (
     lista,
     _,

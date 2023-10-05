@@ -2,7 +2,6 @@
 '''Módulo Família Supressão Unitário.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-session = connect_to_sap()
 
 (
     lista,
@@ -35,6 +34,7 @@ class Supressao:
     @staticmethod
     def suprimir_ligacao_de_agua():
         '''Módulo Supressão Unitário.'''
+        session = connect_to_sap()
         tse_proibida = None
         etapa_reposicao = []
         identificador = "supressao"

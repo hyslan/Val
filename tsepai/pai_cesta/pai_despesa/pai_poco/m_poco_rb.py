@@ -1,10 +1,8 @@
 # m_rede_esgoto_rb.py
 '''Módulo família Poço - remuneração base '''
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -40,6 +38,7 @@ class Poco:
     @staticmethod
     def reconstruido_poco():
         '''Reconstruído Poço - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Poco.OBS
         identificador = Poco.MODALIDADE

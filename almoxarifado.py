@@ -12,7 +12,7 @@ from wms import cavalete_material
 from wms import poco_material
 from wms import materiais_contratada
 
-session = connect_to_sap()
+
 (
     lista,
     _,
@@ -51,6 +51,7 @@ class Almoxarifado:
     def aba_materiais(self):
         '''Função habilita aba de materiais no sap'''
         print("****Processo de Materiais****")
+        session = connect_to_sap()
         session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
         tb_materiais = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"

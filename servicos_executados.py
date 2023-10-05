@@ -5,7 +5,7 @@ from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from tsepai import pai_dicionario
 
-session = connect_to_sap()
+
 (
     lista,
     materiais,
@@ -34,6 +34,7 @@ session = connect_to_sap()
 
 def verifica_tse(servico):
     '''Agrupador de serviço e indexador de classes.'''
+    session = connect_to_sap()
     sondagem = [
         '591000',
         '567000',

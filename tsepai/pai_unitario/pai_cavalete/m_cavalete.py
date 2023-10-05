@@ -2,7 +2,7 @@
 '''Módulo Família Cavalete Unitário.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-session = connect_to_sap()
+
 
 (
     lista,
@@ -37,6 +37,7 @@ class Cavalete:
     @staticmethod
     def troca_pe_cv_prev():
         '''Módulo Pai troca Pé de Cavalete.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         identificador = Cavalete.TIPO
         tse_proibida = None
@@ -138,6 +139,7 @@ class Cavalete:
     @staticmethod
     def troca_cv_por_uma():
         '''Módulo Pai Troca Cavalete por UMA.'''
+        session = connect_to_sap()
         identificador = Cavalete.TIPO
         etapa_reposicao = []
         tse_proibida = None

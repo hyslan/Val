@@ -5,7 +5,6 @@
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -41,6 +40,7 @@ class LigacaoAgua:
     @staticmethod
     def troca_de_conexao_lig_agua():
         '''TROCA DE CONEXÃO DE LIGAÇÃO DE ÁGUA'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE
@@ -78,6 +78,7 @@ class LigacaoAgua:
     @staticmethod
     def suprimido_ramal_de_agua_abandonado():
         '''SUPRIMIDO RAMAL DE AGUA ABANDONADO'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = "supressao"
@@ -115,6 +116,7 @@ class LigacaoAgua:
     @staticmethod
     def reparo_de_ramal_de_agua():
         '''Reparo de Ramal de água.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = "reparo_ramal_agua"

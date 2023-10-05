@@ -6,7 +6,6 @@ Investimento - remuneração base '''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -42,6 +41,7 @@ class TrocaRamalAgua:
     @staticmethod
     def troca_de_ramal_de_agua():
         '''Troca de Ramal de Água.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = TrocaRamalAgua.OBS
         identificador = TrocaRamalAgua.MODALIDADE

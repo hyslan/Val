@@ -3,7 +3,6 @@
 import sys
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class LigacaoEsgoto:
@@ -21,6 +20,7 @@ class LigacaoEsgoto:
         '''Método para definir de qual forma foi a Ligação de esgoto e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a L.E .'''
+        session = connect_to_sap()
         profundidade_float = float(profundidade.replace(",", "."))
         if profundidade_float <= 2.00:
             match posicao_rede:
@@ -1157,6 +1157,7 @@ class LigacaoEsgoto:
         '''Método para definir de qual forma foi a png e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a  PNG.'''
+        session = connect_to_sap()
         match posicao_rede:
             case 'PA':
                 print(
@@ -1716,6 +1717,7 @@ class LigacaoEsgoto:
         '''Método para definir de qual forma foi a TRE e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a TRE .'''
+        session = connect_to_sap()
         profundidade_float = float(profundidade.replace(",", "."))
         if profundidade_float <= 2.00:
             match posicao_rede:

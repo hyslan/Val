@@ -7,7 +7,6 @@ from wms import materiais_contratada
 from wms import lacre_material
 
 
-session = connect_to_sap()
 (
     lista,
     _,
@@ -45,6 +44,7 @@ class HidrometroMaterial:
 
     def receita_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro.'''
+        session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
             self.int_num_lordem, self.tb_materiais)
         hidro_instalado = self.hidro

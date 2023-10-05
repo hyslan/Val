@@ -5,7 +5,6 @@
 import sys
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class Corte:
@@ -22,6 +21,7 @@ class Corte:
         '''Método para definir de qual forma foi suprimida e 
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.'''
+        session = connect_to_sap()
         if corte is not None:
             if corte == 'CAVALETE':
                 print("Iniciando processo de pagar SUPR CV - Código: 456033")

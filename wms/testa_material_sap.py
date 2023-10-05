@@ -1,10 +1,9 @@
 # testa_material_sap.py
 '''Módulo verifica GRID SAP de materiais se está vazio.'''
 import pywintypes
-from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
+
 (
     lista,
     _,

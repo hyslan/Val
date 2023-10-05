@@ -3,7 +3,6 @@
 import sys
 import pywintypes
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class Modalidade:
@@ -19,6 +18,7 @@ class Modalidade:
 
     def aba_nao_vinculados(self):
         '''Abrir aba de itens não vinculados.'''
+        session = connect_to_sap()
         print("****Processo de Itens não vinculados****")
         session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         itens_nv = session.findById(

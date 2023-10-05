@@ -2,7 +2,7 @@
 '''Módulo Família Hidrômetro Unitário.'''
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
-session = connect_to_sap()
+
 
 (
     lista,
@@ -35,6 +35,7 @@ class Hidrometro:
     @staticmethod
     def un_hidrometro():
         '''Módulo de hidrômetros'''
+        session = connect_to_sap()
         etapa_reposicao = []
         reposicao_tse_temp = []
         tse_proibida = None
@@ -60,6 +61,7 @@ class Hidrometro:
     @staticmethod
     def desincl_hidrometro():
         '''Módulo de desinclinado hidrômetro '''
+        session = connect_to_sap()
         etapa_reposicao = []
         reposicao_tse_temp = []
         tse_proibida = None
@@ -84,6 +86,7 @@ class Hidrometro:
     @staticmethod
     def hidrometro_alterar_capacidade():
         '''Módulo de Alteração de Capacidade, não executar.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         reposicao_tse_temp = []
         tse_proibida = "TROCA DE HIDROMETRO ALTERAÇÃO CAPACIDADE"

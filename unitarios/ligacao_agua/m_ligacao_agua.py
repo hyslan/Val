@@ -3,7 +3,6 @@
 import sys
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class LigacaoAgua:
@@ -20,6 +19,7 @@ class LigacaoAgua:
         '''Método para definir de qual forma foi a Ligação de água e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a L.A .'''
+        session = connect_to_sap()
 
         if posicao_rede == 'PA':
             print(
@@ -256,6 +256,7 @@ class LigacaoAgua:
         '''Método para definir de qual forma foi a TRA não visível e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a TRA NV .'''
+        session = connect_to_sap()
 
         if posicao_rede == 'PA':
             print(
@@ -490,6 +491,7 @@ class LigacaoAgua:
         '''Método para definir de qual forma foi a PNG e 
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a PNG.'''
+        session = connect_to_sap()
 
         if posicao_rede == 'PA':
             print(

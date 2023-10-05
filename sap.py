@@ -12,6 +12,8 @@ def listar_conexoes():
     for idx, connection in enumerate(connections):
         print(f"Conexão {idx}: {connection.Name}")
 
+    return connections
+
 
 def listar_sessoes():
     '''Função para listar as sessions ativas'''
@@ -47,3 +49,11 @@ def criar_sessao(sessions):
     # Acessando a nova sessão
     session = connection.Children(len(sessions) - 1)
     return session
+
+
+def fechar_conexao():
+    '''Função para fechar o SAP.'''
+    sapguiauto = win32com.client.GetObject("SAPGUI")
+    application = sapguiauto.GetScriptingEngine
+    connection = application.Children(0)
+    connection.CloseConnection()

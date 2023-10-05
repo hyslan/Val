@@ -6,7 +6,7 @@ from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from unitarios import dicionario
 from cesta import cesta_dicionario
-session = connect_to_sap()
+
 (
     lista,
     _,
@@ -29,6 +29,7 @@ session = connect_to_sap()
 
 def precificador(tse, corte, relig, posicao_rede, profundidade):
     '''Função para apontar os itens de preço e selecionar.'''
+    session = connect_to_sap()
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
         tse_temp,

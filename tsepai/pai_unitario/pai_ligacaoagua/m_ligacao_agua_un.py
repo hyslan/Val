@@ -1,10 +1,8 @@
 '''Módulo família Ligação de Água (Ramal) - Unitário '''
 # Bibliotecas
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -40,6 +38,7 @@ class LigacaoAgua:
     @staticmethod
     def ligacao_agua_avulsa():
         '''LIGAÇÃO DE ÁGUA AVULSA'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE
@@ -76,6 +75,7 @@ class LigacaoAgua:
     @staticmethod
     def tra_nv():
         '''TRA Não Visível'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE
@@ -112,6 +112,7 @@ class LigacaoAgua:
     @staticmethod
     def png():
         '''PNG água'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE

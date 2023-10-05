@@ -1,7 +1,6 @@
 '''Módulo Família Poço Unitário.'''
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class Poco:
@@ -10,6 +9,7 @@ class Poco:
     @staticmethod
     def troca_de_caixa_de_parada(*args):
         '''Troca de Caixa de Parada - Código 456112'''
+        session = connect_to_sap()
         print(
             "Iniciando processo de pagar TROCA DE CAIXA DE PARADA - Código: 456112")
         preco = session.findById(
@@ -42,6 +42,7 @@ class Poco:
                     profundidade
                     ):
         '''Nivelamentos com e sem reposição.'''
+        session = connect_to_sap()
         print(
             "Iniciando processo de pagar Nivelamentos."
         )

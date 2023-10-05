@@ -1,13 +1,12 @@
 '''Módulo para desfazer valoração.'''
 import pywintypes
+from tqdm import tqdm
 from sap_connection import connect_to_sap
 from transact_zsbmm216 import novasp
 from transact_zsbmm216 import recape
 from excel_tbs import load_worksheets
-from tqdm import tqdm
-from core import val
 
-session = connect_to_sap()
+
 (
     lista,
     _,
@@ -30,6 +29,7 @@ session = connect_to_sap()
 
 def desvalorador():
     '''Função desvalorador'''
+    session = connect_to_sap()
     limite_execucoes = planilha.max_row
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:

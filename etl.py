@@ -1,6 +1,7 @@
 '''Módulo para extração de ordens do SQL para a lista xlsx da Val.'''
 import pandas as pd
-import pyodbc
+from urllib.parse import quote_plus
+from sqlalchemy import create_engine, text
 
 
 def extract_from_sql():
@@ -88,10 +89,13 @@ def extract_from_sql():
 
     # Construção da cláusula IN como uma string separada por vírgulas
     carteira_str = ','.join([f"'{tse}'" for tse in carteira])
-    SERVER = '10.66.42.188'
-    DATABASE = 'BD_MLG'
-    cnxn = pyodbc.connect('DRIVER={SQL SERVER};SERVER='+SERVER +
-                          ';DATABASE='+DATABASE+";Integrated Security=SSPI;")
+    server_name = '10.66.42.188'
+    database_name = 'BD_MLG'
+    connection_string = f'DRIVER={{SQL Server Native Client 11.0}};SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;'
+    encoded_connection_string = quote_plus(connection_string)
+    connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
+    engine = create_engine(connection_url)
+    cnxn = engine.connect()
     print("\nConexão com SQL bem sucedida.\n")
 
     # Queries para SQL.

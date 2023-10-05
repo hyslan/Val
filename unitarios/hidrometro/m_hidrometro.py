@@ -1,7 +1,6 @@
 # hidrometro.py
 '''Módulo Família Hidrômetro Unitário.'''
 from sap_connection import connect_to_sap
-session = connect_to_sap()
 
 
 class Hidrometro:
@@ -10,6 +9,7 @@ class Hidrometro:
     @staticmethod
     def troca_de_hidro_preventiva_agendada(*args):
         '''Troca de Hidro Preventiva - Código 456902'''
+        session = connect_to_sap()
         print(
             "Iniciando processo de pagar TROCA DE HIDROMETRO PREVENTIVA - Código: 456902")
         preco = session.findById(
@@ -33,6 +33,7 @@ class Hidrometro:
     @staticmethod
     def desinclinado_hidrometro(*args):
         '''Desinclinado Hidrômetro - Código 456022'''
+        session = connect_to_sap()
         print("Iniciando processo de pagar COLOCADO HIDROMETRO NA POSIÇÃO CORRETA - Código: 456022")
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
@@ -55,6 +56,7 @@ class Hidrometro:
     @staticmethod
     def troca_de_hidro_corretivo(*args):
         '''Troca de Hidrômetro Corretivo - Código 456901'''
+        session = connect_to_sap()
         print("Iniciando processo de pagar TROCA DE HIDROMETRO CORRETIVO - Código: 456901")
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"

@@ -1,11 +1,9 @@
 # m_sondagem_rb.py
 '''Módulo família Sondagem de Ramal de Esgoto - remuneração base '''
 # Bibliotecas
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -40,6 +38,7 @@ class Sondagem:
     @staticmethod
     def sondagem_de_ramal_de_agua():
         '''Sondagem de Ramal de Água - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Sondagem.OBS
         identificador = "ligacao_agua"
@@ -79,6 +78,7 @@ class Sondagem:
     @staticmethod
     def sondagem_de_rede_de_agua():
         '''Sondagem de Rede de Água - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Sondagem.OBS
         identificador = "rede_agua"
@@ -118,6 +118,7 @@ class Sondagem:
     @staticmethod
     def sondagem_de_ramal_de_esgoto():
         '''Sondagem de Ramal de Esgoto - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Sondagem.OBS
         identificador = "rede_esgoto"
@@ -157,6 +158,7 @@ class Sondagem:
     @staticmethod
     def sondagem_de_rede_de_esgoto():
         '''Sondagem de Rede de Esgoto - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Sondagem.OBS
         identificador = "ligacao_esgoto"

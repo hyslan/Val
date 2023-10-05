@@ -1,11 +1,9 @@
 # m_rede_esgoto_rb.py
 '''Módulo família Rede de Esgoto - remuneração base '''
 # Bibliotecas
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -41,6 +39,7 @@ class RedeEsgoto:
     @staticmethod
     def reparo_de_rede_de_esgoto():
         '''REPARO DE Rede DE ESGOTO - RB'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = RedeEsgoto.OBS
         identificador = RedeEsgoto.MODALIDADE

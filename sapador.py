@@ -40,6 +40,7 @@ def down_sap():
     # Tenta executar o comando
     try:
         subprocess.run(["powershell", "start", caminho_arquivo], shell=True)
+        time.sleep(60)
     except subprocess.CalledProcessError as e:
         print(f"Erro ao iniciar o arquivo tx.sap: {e}")
     except Exception as e:

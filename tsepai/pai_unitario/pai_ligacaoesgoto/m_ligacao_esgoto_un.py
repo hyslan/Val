@@ -1,10 +1,8 @@
 '''Módulo família Ligação de Esgoto (Ramal) - Unitário '''
 # Bibliotecas
-
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -40,6 +38,7 @@ class LigacaoEsgoto:
     @staticmethod
     def ligacao_esgoto_avulsa():
         '''LIGAÇÃO DE ESGOTO ESGOTO'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoEsgoto.OBS
         identificador = LigacaoEsgoto.MODALIDADE
@@ -76,10 +75,11 @@ class LigacaoEsgoto:
     @staticmethod
     def png():
         '''PNG Esgoto'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoEsgoto.OBS
         identificador = LigacaoEsgoto.MODALIDADE
-        print("Iniciando processo Pai de" +
+        print("Iniciando processo Pai de " +
               "PASSADO RAMAL DE ESGOTO PARA NOVA REDE - TSE 565000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -113,10 +113,11 @@ class LigacaoEsgoto:
     @staticmethod
     def tre():
         '''TRE'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoEsgoto.OBS
         identificador = LigacaoEsgoto.MODALIDADE
-        print("Iniciando processo Pai de" +
+        print("Iniciando processo Pai de " +
               "TROCA DE RAMAL DE ESGOTO - TSE 569000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"

@@ -1,7 +1,7 @@
 '''Módulo Unitário de cavalete'''
 # cavalete.py
 from sap_connection import connect_to_sap
-session = connect_to_sap()
+
 
 
 class Cavalete:
@@ -10,6 +10,7 @@ class Cavalete:
     @staticmethod
     def troca_pe_cv_prev(*_):
         '''Método Troca de Cavalete Preventivo'''
+        session = connect_to_sap()
         print("Iniciando processo de pagar ADC  TRC PREV PE CV - Código: 456856")
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
@@ -31,6 +32,7 @@ class Cavalete:
     @staticmethod
     def troca_cv_kit(*_):
         '''Método Troca de cavalete KIT'''
+        session = connect_to_sap()
         print("Iniciando processo de pagar TROCA DE CAVALETE (KIT)  - Código: 456011")
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
@@ -59,6 +61,7 @@ class Cavalete:
                          profundidade
                          ):
         '''Método Troca de Cavalete Preventivo'''
+        session = connect_to_sap()
         print("Iniciando processo de pagar SUBST CV POR UMA")
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"

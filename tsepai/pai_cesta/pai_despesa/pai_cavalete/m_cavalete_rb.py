@@ -5,7 +5,6 @@
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
-session = connect_to_sap()
 
 (
     lista,
@@ -41,6 +40,7 @@ class Cavalete:
     @staticmethod
     def reparo_cv():
         '''Reparo de Cavalete'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
@@ -72,6 +72,7 @@ class Cavalete:
     @staticmethod
     def reparo_de_registro_de_cv():
         '''Reparo de Registro de Cavalete.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
@@ -103,6 +104,7 @@ class Cavalete:
     @staticmethod
     def troca_de_registro_de_cv():
         '''Troca de registro de Cavalete.'''
+        session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
