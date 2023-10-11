@@ -48,6 +48,10 @@ class Supressao:
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
             if sap_tse in tb_tse_reposicao:
+                if sap_tse == '758000':
+                    servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                    servico_temp.modifyCell(n_tse, "CODIGO", "10")
+
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)

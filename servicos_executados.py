@@ -160,6 +160,10 @@ def verifica_tse(servico):
             tse_proibida = 'Readequado Cavalete!'
             break
 
+        elif sap_tse in ('313000', '315000', '588000', '590000'):
+            tse_proibida = 'Obra.'
+            break
+
         elif sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "11")  # Não Executado

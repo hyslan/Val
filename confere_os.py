@@ -1,5 +1,6 @@
 # ConfereOS.py
 '''Módulo de check-up no SAP'''
+import sys
 from sap_connection import connect_to_sap
 
 
@@ -61,12 +62,11 @@ def consulta_os(n_os):
             '539000',
             '585000',
         ):
-            # Profundidade
+            # Posição da Rede
             posicao_rede = consulta.GetCellValue(n_etapa, "ZZPOSICAO_REDE")
             break
         else:
             posicao_rede = None
-            break
 
     for n_etapa in range(0, num_etapas_linhas):
         tipo_tse = consulta.GetCellValue(
@@ -103,7 +103,7 @@ def consulta_os(n_os):
         sap_diametro_ramal = consulta.GetCellValue(
             n_etapa, "ZZDIAMETRO_RAMAL"
         )
-        if sap_diametro_ramal in ('100', '150', '200', '250', '300'):
+        if sap_diametro_ramal in ('DN_100', 'DN_150', 'DN_200', 'DN_250', 'DN_300'):
             diametro_ramal = sap_diametro_ramal
             break
 

@@ -1,4 +1,5 @@
-'''Módulo para expor conexões e sessões ativas do SAP GUI'''
+'''Módulo para interagir com o SAP GUI'''
+import subprocess
 import win32com.client
 
 
@@ -6,11 +7,7 @@ def listar_conexoes():
     '''Função para listar as conexões ativas.'''
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
-    connections = application.Children
-
-    print("Conexões ativas:")
-    for idx, connection in enumerate(connections):
-        print(f"Conexão {idx}: {connection.Name}")
+    connections = application.Children(0)
 
     return connections
 
@@ -22,11 +19,6 @@ def listar_sessoes():
     connection = application.Children(0)
     sessions = connection.Children
 
-    print("Sessões ativas:")
-    for idx in enumerate(sessions):
-        # pylint: disable=W0212
-        print(
-            f"Sessão {idx}")
     return sessions
 
 
@@ -38,13 +30,11 @@ def criar_sessao(sessions):
 
     # Obtendo o índice da última sessão ativa
     ultimo_indice = len(sessions) - 1
-    print(len(sessions))
 
     # Criando uma nova sessão com base na última sessão ativa
-    nova_sessao = connection.Children(ultimo_indice).CreateSession()
+    connection.Children(ultimo_indice).CreateSession()
     while ultimo_indice >= len(sessions) - 1:
         sessions = connection.Children
-        print(len(sessions))
 
     # Acessando a nova sessão
     session = connection.Children(len(sessions) - 1)
@@ -57,3 +47,13 @@ def fechar_conexao():
     application = sapguiauto.GetScriptingEngine
     connection = application.Children(0)
     connection.CloseConnection()
+
+
+def encerrar_sap():
+    '''Encerra o app SAP'''
+    processo = 'saplogon.exe'
+    try:
+        subprocess.run(['taskkill', '/F', '/IM', processo], check=True)
+        print(f'O processo {processo} foi encerrado com sucesso.')
+    except subprocess.CalledProcessError:
+        print(f'Não foi possível encerrar o processo {processo}.')

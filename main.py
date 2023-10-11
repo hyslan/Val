@@ -34,44 +34,43 @@ def main():
         print(f"- Val: {saudacao}\n- Val: Como vai você hoje?")
         print(f"\n- Val: Hora atual: {hora_atual}")
 
-        # Função desfazer valoração
-        resposta = input(
-            "- Val: Deseja desvalorar a lista de ordens da planilha? \n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            desvalorador()
+        print("\nMenu de Opções")
+        print("\n1 - Desvalorador"
+              + "\n2 - Retrabalho"
+              + "\n3 - TSE geral"
+              + "\n4 - TSEs Expecíficas"
+              + "\n5 - TSE Expecífica")
+        try:
+            resposta = input(
+                "\n- Val: Escolha uma opção:\n "
+            )
+            match resposta:
+                case "1":
+                    desvalorador()
+                    validador = True
+                case "2":
+                    retrabalho()
+                    validador = True
+                case "3":
+                    pendentes_list = extract_from_sql()
+                    ordem, int_num_lordem, validador = val(pendentes_list)
+                case "4":
+                    tse_expec = input(
+                        "- Val: Digite as TSE separadas por vírgula, por favor.\n")
+                    lista_tse = tse_expec.split(', ')
+                    pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
+                    pendentes_list = pendentes.tse_escolhida()
+                    ordem, int_num_lordem, validador = val(pendentes_list)
+                case "5":
+                    tse_expec = input(
+                        "- Val: Digite a TSE expecífica, por favor.\n")
+                    pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
+                    pendentes_list = pendentes.tse_expecifica()
+                    ordem, int_num_lordem, validador = val(pendentes_list)
 
-        # Função Retrabalho da valoração
-        resposta = input(
-            "- Val: Deseja marcar a lista de ordens da planilha como Retrabalho? \n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            retrabalho()
-
-        # Atualização de Ordens
-        resposta = input(
-            "- Val: Deseja atualizar a lista de ordens pendentes? \n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            pendentes_list = extract_from_sql()
-
-        # Escolha de TSE para valorar.
-        resposta = input(
-            "- Val: Ou Deseja escolher mais de uma TSE expecífica para valorar? \n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            tse_expec = input(
-                "- Val: Digite as TSE separadas por vírgula, por favor.\n")
-            lista_tse = tse_expec.split(', ')
-            pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-            pendentes_list = pendentes.tse_escolhida()
-
-        resposta = input(
-            "- Val: Ou Deseja escolher uma TSE expecífica para valorar? \n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            tse_expec = input(
-                "- Val: Digite a TSE expecífica, por favor.\n")
-            pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-            pendentes_list = pendentes.tse_expecifica()
-
-        # Início do Sistema
-        ordem, int_num_lordem, validador = val(pendentes_list)
+        except TypeError as erro:
+            print(f"Erro: {erro}")
+            return
 
         if validador is True:
             print("- Val: Valoração finalizada, encerrando.")

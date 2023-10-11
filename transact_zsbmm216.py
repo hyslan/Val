@@ -3,7 +3,7 @@
 # Conexão SAP
 import threading
 from sap_connection import connect_to_sap
-from sap import fechar_conexao
+from sap import encerrar_sap
 
 
 def novasp(ordem):
@@ -61,4 +61,4 @@ def recape(ordem):
     # Verificar se está em execução.
     if thread_recape.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
-        fechar_conexao()
+        encerrar_sap()

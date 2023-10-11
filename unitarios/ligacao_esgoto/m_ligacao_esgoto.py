@@ -2275,7 +2275,7 @@ class LigacaoEsgoto:
                             contador_pg += 1
                             ramal = True
                 case _:
-                    print("Profundidade não informada.")
+                    print("Posição da Rede não informada.")
                     return
         elif 2.00 < profundidade_float <= 3.00:
             # Profundidade de 2M a 3M.

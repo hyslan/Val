@@ -1,12 +1,13 @@
 # salvacao.py
 '''Módulo de salvar valoração.'''
+import sys
 import threading
 import pywintypes
 import sql_view
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from confere_os import consulta_os
-from sap import fechar_conexao
+from sap import encerrar_sap
 
 (
     lista,
@@ -68,6 +69,6 @@ def salvar(ordem, qtd_ordem):
     # Verificar se está em execução.
     if thread_salvar.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
-        fechar_conexao()
+        encerrar_sap()
 
     return qtd_ordem

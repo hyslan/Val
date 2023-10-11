@@ -10,7 +10,6 @@ import win32com.client
 def connect_to_sap():
     '''Função para conexão SAP'''
     sapguiauto = win32com.client.GetObject("SAPGUI")
-    # sapguiauto = win32com.client.GetObject("SAPGUI")
     if not isinstance(sapguiauto, win32com.client.CDispatch):
         return
 

@@ -78,7 +78,7 @@ class LigacaoEsgoto:
         session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoEsgoto.OBS
-        identificador = LigacaoEsgoto.MODALIDADE
+        identificador = "png_esgoto"
         print("Iniciando processo Pai de " +
               "PASSADO RAMAL DE ESGOTO PARA NOVA REDE - TSE 565000")
         servico_temp = session.findById(
@@ -130,7 +130,7 @@ class LigacaoEsgoto:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                if sap_tse in ('170301', '749000'):
+                if sap_tse in ('170301', '749000', '758500'):
                     servico_temp.modifyCell(n_tse, "PAGAR", "n")
                     servico_temp.modifyCell(n_tse, "CODIGO", "10")
 

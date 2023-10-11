@@ -1,6 +1,7 @@
 # almoxarifado.py
 '''Módulo dos materiais contratada e SABESP.'''
 import sys
+import sap
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import corte_restab_material
@@ -11,7 +12,7 @@ from wms import rede_esgoto_material
 from wms import cavalete_material
 from wms import poco_material
 from wms import materiais_contratada
-
+from wms.consulta_estoque import estoque_novasp
 
 (
     lista,
@@ -56,6 +57,10 @@ class Almoxarifado:
         tb_materiais = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell")
+
+        # sessoes = sap.listar_sessoes()
+        # session_estoque = sap.criar_sessao(sessoes)
+        # estoque = estoque_novasp(session_estoque, sessoes)
         return tb_materiais
 
     def inspecao(self, tb_materiais):
@@ -201,6 +206,19 @@ class Almoxarifado:
                     print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
 
+                case "png_esgoto":
+                    material = rede_esgoto_material.RedeEsgotoMaterial(
+                        self.int_num_lordem,
+                        self.hidro,
+                        self.operacao,
+                        self.identificador,
+                        self.diametro_ramal,
+                        self.diametro_rede,
+                        tb_materiais
+                    )
+                    print("Aplicando a receita de PNG Esgoto")
+                    material.png()
+
                 case "preservacao":
                     pass
 
@@ -245,4 +263,5 @@ def materiais(int_num_lordem,
                            diametro_rede
                            )
     tb_materiais = servico.aba_materiais()
+
     servico.inspecao(tb_materiais)
