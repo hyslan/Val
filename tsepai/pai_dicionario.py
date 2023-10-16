@@ -55,13 +55,14 @@ def pai_servico_unitario(servico_temp):
     '''Função condicional das chaves do dicionário unitário.'''
 
     dicionario_pai_unitario = {
-        # '134000': INSTALADO LACRE DIVERSOS
-        # '135000': INSTALADO LACRE NUMERADO
+        '134000': m_cavalete.Cavalete.instalado_lacre,
+        '135000': m_cavalete.Cavalete.instalado_lacre,
         '138000': m_cavalete.Cavalete.readequado_cavalete,
         '142000': m_cavalete.Cavalete.regularizar_cv,
         '148000': m_cavalete.Cavalete.troca_cv_por_uma,
         '149000': m_cavalete.Cavalete.trocar_cv_kit,
         '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
+        '153500': m_cavalete.Cavalete.troca_pe_cv_prev,
         '201000': m_hidrometro.Hidrometro.un_hidrometro,
         '202000': m_hidrometro.Hidrometro.desincl_hidrometro,
         '203000': m_hidrometro.Hidrometro.un_hidrometro,
@@ -85,6 +86,7 @@ def pai_servico_unitario(servico_temp):
         '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv,
         '286000': troca_de_ramal_agua_un,
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
+        '312000': m_poco.Poco.nivelamento,
         '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
@@ -140,16 +142,14 @@ def pai_servico_cesta(servico_temp):
         '288000': m_ligacao_agua_rb.LigacaoAgua.reparo_de_ramal_de_agua,
         '321000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
         '321500': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
-        # '325000':
+        '325000': m_rede_agua_rb.RedeAgua.troca_valvula_rede_agua,
         '328000': m_rede_agua_rb.RedeAgua.aperto_gaxeta_valvula,
-        # '330000':
+        '330000': m_rede_agua_rb.RedeAgua.rebatido_chumbo_junta,
         '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
         '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
-        # '539000':
-        # '540000':
         '560000': m_ligacao_esgoto_rb.LigacaoEsgoto.reparo_de_ramal_de_esgoto,
         '567000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_esgoto,
-        # '569000':
+        '569000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
         '580000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
         '539000': m_poco_rb.Poco.reconstruido_poco,
         '540000': m_poco_rb.Poco.reconstruido_poco,

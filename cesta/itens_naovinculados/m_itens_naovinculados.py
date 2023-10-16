@@ -44,7 +44,7 @@ class Modalidade:
             case "ligacao_agua" | "cavalete" | "reparo_ramal_agua":
                 self.testa_modalidade_sap(itens_nv)
                 self.manut_lig_agua(itens_nv)
-            case "rede_agua" | "gaxeta":
+            case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                 self.testa_modalidade_sap(itens_nv)
                 self.manut_rede_agua(itens_nv)
             case "ligacao_esgoto":

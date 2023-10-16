@@ -1,13 +1,31 @@
 '''Módulo Família Poço Unitário.'''
 from lista_reposicao import dict_reposicao
 from sap_connection import connect_to_sap
+from unitarios.localizador import btn_localizador
 
 
 class Poco:
     '''Classe Unitária de Poço.'''
 
     @staticmethod
-    def troca_de_caixa_de_parada(*args):
+    def niv_cx_parada(*_):
+        '''Método Nivelamento de Caixa de Parada'''
+        session = connect_to_sap()
+        print("Iniciando processo de pagar NIVCX REGISTRO DE PARADA - Código: 456111")
+        codigo = "456111"
+        preco = session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+        preco.GetCellValue(0, "NUMERO_EXT")
+        if preco is not None:
+            btn_localizador(preco, session, codigo)
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de NIVCX REGISTRO DE PARADA - CODIGO: 456111")
+
+    @staticmethod
+    def troca_de_caixa_de_parada(*_):
         '''Troca de Caixa de Parada - Código 456112'''
         session = connect_to_sap()
         print(

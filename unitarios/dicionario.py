@@ -65,10 +65,13 @@ def unitario(etapa,
              ):
     '''Dicionário de chaves para etapas de unitário.'''
     dicionario_un = {
+        '134000': m_cavalete.Cavalete.instalado_lacre,
+        '135000': m_cavalete.Cavalete.instalado_lacre,
         # '142000': m_cavalete.Cavalete.
         '148000': m_cavalete.Cavalete.troca_cv_por_uma,
         '149000': m_cavalete.Cavalete.troca_cv_kit,
         '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
+        '153500': m_cavalete.Cavalete.troca_pe_cv_prev,
         '201000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
         '202000': m_hidrometro.Hidrometro.desinclinado_hidrometro,
         '203000': m_hidrometro.Hidrometro.troca_de_hidro_corretivo,
@@ -81,6 +84,7 @@ def unitario(etapa,
         '254000': m_ligacao_agua.LigacaoAgua.ligacao_agua,
         '280000': m_ligacao_agua.LigacaoAgua.png,
         '284500': m_ligacao_agua.LigacaoAgua.tra_nv,
+        '312000': m_poco.Poco.niv_cx_parada,
         '322000': m_poco.Poco.troca_de_caixa_de_parada,
         '405000': m_supressao.Corte.supressao,
         '406000': m_supressao.Corte.supressao,

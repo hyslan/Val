@@ -30,7 +30,7 @@ from excel_tbs import load_worksheets
 
 
 class Poco:
-    '''Classe Pai Hidrômetros.'''
+    '''Classe Pai Poço.'''
     @staticmethod
     def det_descoberto_nivelado_reg_cx_parada():
         '''Módulo de  Descobrir, Trocar Caixa de Parada'''

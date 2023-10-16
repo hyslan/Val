@@ -35,6 +35,17 @@ class Cavalete:
     TIPO = "cavalete"
 
     @staticmethod
+    def instalado_lacre():
+        '''Módulo Pai Instalado lacre.'''
+        etapa_reposicao = []
+        identificador = Cavalete.TIPO
+        tse_proibida = None
+        print(
+            "Iniciando processo Pai de Troca de Pé de Instalado Lacre - TSE 134000, 135000")
+        tse_temp_reposicao = []
+        return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
+
+    @staticmethod
     def troca_pe_cv_prev():
         '''Módulo Pai troca Pé de Cavalete.'''
         session = connect_to_sap()
@@ -48,7 +59,6 @@ class Cavalete:
         n_tse = 0
         tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
-        print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
 

@@ -6,7 +6,6 @@ from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import corte_restab_material
 from wms import hidrometro_material
-from wms import ramal_agua_material
 from wms import rede_agua_material
 from wms import rede_esgoto_material
 from wms import cavalete_material
@@ -141,7 +140,7 @@ class Almoxarifado:
 
                     material.receita_supressao()
                 case "ramal_agua" | "tra":
-                    material = ramal_agua_material.LigacaoAguaMaterial(
+                    material = rede_agua_material.RedeAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
                         self.operacao,
@@ -155,7 +154,7 @@ class Almoxarifado:
                     material.receita_troca_de_conexao_de_ligacao_de_agua()
 
                 case "reparo_ramal_agua" | "ligacao_agua":
-                    material = ramal_agua_material.LigacaoAguaMaterial(
+                    material = rede_agua_material.RedeAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
                         self.operacao,
@@ -167,7 +166,7 @@ class Almoxarifado:
                     print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
 
-                case "rede_agua":
+                case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                     material = rede_agua_material.RedeAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
@@ -223,9 +222,6 @@ class Almoxarifado:
                     pass
 
                 case "poço":
-                    pass
-
-                case "gaxeta":
                     pass
 
                 case "cx_parada":

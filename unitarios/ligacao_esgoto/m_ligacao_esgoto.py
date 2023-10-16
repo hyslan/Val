@@ -21,7 +21,10 @@ class LigacaoEsgoto:
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a L.E .'''
         session = connect_to_sap()
-        profundidade_float = float(profundidade.replace(",", "."))
+        try:
+            profundidade_float = float(profundidade.replace(",", "."))
+        except:
+            return
         if profundidade_float <= 2.00:
             match posicao_rede:
                 case 'PA':
@@ -1718,7 +1721,10 @@ class LigacaoEsgoto:
         pagar de acordo com as informações dadas, caso contrário,
         não pagar a TRE .'''
         session = connect_to_sap()
-        profundidade_float = float(profundidade.replace(",", "."))
+        try:
+            profundidade_float = float(profundidade.replace(",", "."))
+        except:
+            return
         if profundidade_float <= 2.00:
             match posicao_rede:
                 case 'PA':
