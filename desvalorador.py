@@ -1,4 +1,5 @@
 '''Módulo para desfazer valoração.'''
+import asyncio
 import pywintypes
 from tqdm import tqdm
 from sap_connection import connect_to_sap
@@ -54,7 +55,8 @@ def desvalorador():
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
-        transacao(ordem)
+        loop_transact = asyncio.get_event_loop()
+        loop_transact.run_until_complete(transacao(ordem))
         try:
             tse = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"

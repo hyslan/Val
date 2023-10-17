@@ -1,4 +1,6 @@
 '''Módulo dos retrabalho da valoração.'''
+import sys
+import asyncio
 import pywintypes
 from tqdm import tqdm
 import salvacao
@@ -57,7 +59,8 @@ def retrabalho():
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
-        transacao(ordem)
+        loop_transact = asyncio.get_event_loop()
+        loop_transact.run_until_complete(transacao(ordem))
         try:
             servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -69,7 +72,9 @@ def retrabalho():
                 servico.modifyCell(n_tse, "CODIGO", "7")  # Retrabalho
 
             servico.pressEnter()
-            qtd_ordem = salvacao.salvar(ordem, qtd_ordem)
+            loop_save = asyncio.get_event_loop()
+            qtd_ordem = loop_save.run_until_complete(
+                salvacao.salvar(ordem, qtd_ordem))
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Salvo"
             lista.save('lista.xlsx')

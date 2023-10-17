@@ -1,7 +1,7 @@
 # salvacao.py
 '''Módulo de salvar valoração.'''
 import sys
-import threading
+import asyncio
 import pywintypes
 import sql_view
 from sap_connection import connect_to_sap
@@ -26,10 +26,10 @@ from sap import encerrar_sap
 ) = load_worksheets()
 
 
-def salvar(ordem, qtd_ordem):
+async def salvar(ordem, qtd_ordem):
     '''Salvar e verificar se está salvando.'''
 
-    def salvar_valoracao():
+    async def salvar_valoracao():
         '''Função para salvar valoração.'''
         nonlocal ordem
         nonlocal qtd_ordem
@@ -61,13 +61,11 @@ def salvar(ordem, qtd_ordem):
             ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
             ja_valorado.valorada(obs="Não foi salvo")
 
-    # Thread para função aninhada.
-    thread_salvar = threading.Thread(target=salvar_valoracao)
-    thread_salvar.start()
-    # Aguardar até o limite de 5min.
-    thread_salvar.join(timeout=300)
-    # Verificar se está em execução.
-    if thread_salvar.is_alive():
+    # função aninhada.
+    try:
+        # Timeout = 5min
+        await asyncio.wait_for(salvar_valoracao(), timeout=300)
+    except asyncio.TimeoutError:
         print("SAP demorando mais que o esperado, encerrando.")
         encerrar_sap()
 

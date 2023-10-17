@@ -1,15 +1,15 @@
 # transact_zsbmm216.py
 '''Módulo de Contrato'''
 # Conexão SAP
-import threading
+import asyncio
 from sap_connection import connect_to_sap
 from sap import encerrar_sap
 
 
-def novasp(ordem):
-    '''Threading NOVAS SP'''
+async def novasp(ordem):
+    '''Async NOVAS SP'''
 
-    def t_novasp():
+    async def t_novasp():
         '''Transação preenchida ZSBMM216 - Contrato NOVASP'''
         nonlocal ordem
         session = connect_to_sap()
@@ -24,21 +24,19 @@ def novasp(ordem):
         sap_ordem.Text = ordem
         session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
-    # Thread para função aninhada.
-    thread_novasp = threading.Thread(target=t_novasp)
-    thread_novasp.start()
-    # Aguardar até o limite de 5min.
-    thread_novasp.join(timeout=300)
-    # Verificar se está em execução.
-    if thread_novasp.is_alive():
+    # função aninhada.
+    try:
+        # Timeout = 5min
+        await asyncio.wait_for(t_novasp(), timeout=300)
+    except asyncio.TimeoutError:
         print("SAP demorando mais que o esperado, encerrando.")
-        fechar_conexao()
+        encerrar_sap()
 
 
-def recape(ordem):
-    '''Threading RECAPE'''
+async def recape(ordem):
+    '''Async RECAPE'''
 
-    def t_recape():
+    async def t_recape():
         '''Transação preenchida ZSBMM216 - Contrato RECAPE'''
         nonlocal ordem
         session = connect_to_sap()
@@ -53,12 +51,10 @@ def recape(ordem):
         sap_ordem.Text = ordem
         session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
-    # Thread para função aninhada.
-    thread_recape = threading.Thread(target=t_recape)
-    thread_recape.start()
-    # Aguardar até o limite de 5min.
-    thread_recape.join(timeout=300)
-    # Verificar se está em execução.
-    if thread_recape.is_alive():
+    # função aninhada.
+    try:
+        # Timeout = 5min
+        await asyncio.wait_for(t_recape(), timeout=300)
+    except asyncio.TimeoutError:
         print("SAP demorando mais que o esperado, encerrando.")
         encerrar_sap()
