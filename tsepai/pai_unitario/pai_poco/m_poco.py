@@ -45,15 +45,28 @@ class Poco:
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
         n_tse = 0
+        tse_temp_reposicao = []
         num_tse_linhas = servico_temp.RowCount
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
+
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 # Coloca a tse existente na lista temporária
                 servico_temp.append(sap_tse)
+                continue
+
+            if sap_tse in tb_tse_reposicao:
+                if sap_tse in ('170301', '749000', '758500'):
+                    servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                    servico_temp.modifyCell(n_tse, "CODIGO", "10")
+
+                servico_temp.modifyCell(n_tse, "PAGAR", "s")
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
                 continue
 
         return reposicao_tse_temp, tse_proibida, identificador, etapa_reposicao

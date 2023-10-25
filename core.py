@@ -2,7 +2,6 @@
 '''Coração da Val.'''
 # pylint: disable=W0611
 import sys
-import asyncio
 import time
 import pywintypes
 from tqdm import tqdm
@@ -79,8 +78,7 @@ def val(pendentes_list):
 
             else:
                 # Ação no SAP
-                loop_async = asyncio.get_event_loop()
-                loop_async.run_until_complete(novasp(ordem))
+                novasp(ordem)
                 print("****Processo de Serviços Executados****")
                 try:
                     tse = session.findById(
@@ -171,9 +169,7 @@ def val(pendentes_list):
                     # Fim dos materiais
                     # sys.exit()
                     # Salvar Ordem
-                    loop_save = asyncio.get_event_loop()
-                    qtd_ordem = loop_save.run_until_complete(
-                        salvar(ordem, qtd_ordem))
+                    qtd_ordem = salvar(ordem, qtd_ordem)
                     # Fim do contador de valoração.
                     cronometro_val(start_time, ordem)
                     # Incremento + de Ordem.

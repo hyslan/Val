@@ -86,7 +86,7 @@ def pai_servico_unitario(servico_temp):
         '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv,
         '286000': troca_de_ramal_agua_un,
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
-        '312000': m_poco.Poco.nivelamento,
+        '312000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,

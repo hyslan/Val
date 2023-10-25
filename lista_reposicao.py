@@ -25,5 +25,6 @@ dict_reposicao = {
     'asfalto': [
         "731000",  # REPOSIÇÃO DE ASFALTO
         "733000"  # REPOSIÇÃO DE ASFALTO INV
-    ]
+    ],
+    'bloquete_inv': ["738000"]  # REPOSIÇÃO DE BLOQUETE INV
 }

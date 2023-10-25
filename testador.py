@@ -1,6 +1,13 @@
-import asyncio
-from transact_zsbmm216 import novasp
+from sap_connection import connect_to_sap
+
+session = connect_to_sap()
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(novasp("123"))
+def teste(session):
+    def abc():
+        # nonlocal session
+        session.StartTransaction("mblb")
+    abc()
+
+
+# teste(session)

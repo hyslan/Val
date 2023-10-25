@@ -1,23 +1,42 @@
 # ConfereOS.py
 '''Módulo de check-up no SAP'''
-import sys
+import threading
 from sap_connection import connect_to_sap
+from sap import encerrar_sap
+
+# Adicionando um Lock
+lock = threading.Lock()
 
 
 def consulta_os(n_os):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
     diametro_ramal = None
     diametro_rede = None
-    session = connect_to_sap()
-    session.StartTransaction("ZSBPM020")
-    status_usuario = "USTXT"
-    status_sistema = "STTXT"
-    campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
-    campo_os.Text = n_os
-    session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = "4600041302"
-    session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = "344"
-    session.findById("wnd[0]").sendVKey(8)
 
+    def zsbpm020():
+        '''Transact 020'''
+        nonlocal n_os
+
+        # Seção Crítica - uso do Lock
+        with lock:
+            session = connect_to_sap()
+            session.StartTransaction("ZSBPM020")
+            campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
+            campo_os.Text = n_os
+            session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = "4600041302"
+            session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = "344"
+            session.findById("wnd[0]").sendVKey(8)
+
+    # Start thread save.
+    thread = threading.Thread(target=zsbpm020)
+    thread.start()
+    # Timeout 5min
+    thread.join(timeout=300)
+    if thread.is_alive():
+        print("SAP demorando mais que o esperado, encerrando.")
+        encerrar_sap()
+
+    session = connect_to_sap()
     consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
     status_sistema = consulta.GetCellValue(0, "STTXT")
     status_usuario = consulta.GetCellValue(0, "USTXT")

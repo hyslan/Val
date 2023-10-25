@@ -52,7 +52,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456711)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456711")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456712)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456712")
@@ -159,7 +160,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456711)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456711")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456712)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456712")
@@ -269,7 +271,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456711)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456711")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456712)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456712")
@@ -381,7 +384,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456711)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456711")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456712)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456712")
@@ -493,7 +497,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456711)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456711")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456712)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456712")
@@ -611,7 +616,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456722)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456722")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456723")
@@ -723,7 +729,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456722)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456722")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456723")
@@ -835,7 +842,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456722)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456722")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456723")
@@ -945,7 +953,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456722)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456722")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456723")
@@ -1056,7 +1065,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(456722)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 456722")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 456723")
@@ -1187,7 +1197,8 @@ class LigacaoEsgoto:
                                 preco_reposicao = str(456631)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP CIM  - CODIGO: 456631")
-                            if pavimento[0] in dict_reposicao['especial']:
+                            if pavimento[0] in dict_reposicao['especial'] \
+                                    or pavimento[0] in dict_reposicao['bloquete_inv']:
                                 preco_reposicao = str(456632)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP ESP  - CODIGO: 456632")
@@ -1291,7 +1302,8 @@ class LigacaoEsgoto:
                                 preco_reposicao = str(456631)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP CIM  - CODIGO: 456631")
-                            if pavimento[0] in dict_reposicao['especial']:
+                            if pavimento[0] in dict_reposicao['especial'] \
+                                    or pavimento[0] in dict_reposicao['bloquete_inv']:
                                 preco_reposicao = str(456632)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP ESP  - CODIGO: 456632")
@@ -1399,7 +1411,8 @@ class LigacaoEsgoto:
                                 preco_reposicao = str(456631)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP CIM  - CODIGO: 456631")
-                            if pavimento[0] in dict_reposicao['especial']:
+                            if pavimento[0] in dict_reposicao['especial'] \
+                                    or pavimento[0] in dict_reposicao['bloquete_inv']:
                                 preco_reposicao = str(456632)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP ESP  - CODIGO: 456632")
@@ -1509,7 +1522,8 @@ class LigacaoEsgoto:
                                 preco_reposicao = str(456631)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP CIM  - CODIGO: 456631")
-                            if pavimento[0] in dict_reposicao['especial']:
+                            if pavimento[0] in dict_reposicao['especial'] \
+                                    or pavimento[0] in dict_reposicao['bloquete_inv']:
                                 preco_reposicao = str(456632)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP ESP  - CODIGO: 456632")
@@ -1619,7 +1633,8 @@ class LigacaoEsgoto:
                                 preco_reposicao = str(456631)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP CIM  - CODIGO: 456631")
-                            if pavimento[0] in dict_reposicao['especial']:
+                            if pavimento[0] in dict_reposicao['especial'] \
+                                    or pavimento[0] in dict_reposicao['bloquete_inv']:
                                 preco_reposicao = str(456632)
                                 txt_reposicao = (
                                     "Pago 1 UN de LRP ESP  - CODIGO: 456632")
@@ -1752,7 +1767,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457101)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457101")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457104)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457104")
@@ -1859,7 +1875,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457101)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457101")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457104)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457104")
@@ -1969,7 +1986,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457101)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457101")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457104)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457104")
@@ -2081,7 +2099,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457101)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457101")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457104)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457104")
@@ -2193,7 +2212,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457101)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457101")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457104)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457104")
@@ -2311,7 +2331,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457102)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457102")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457105)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457105")
@@ -2423,7 +2444,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457102)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457102")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457105)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457105")
@@ -2535,7 +2557,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457102)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457102")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457105)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457105")
@@ -2645,7 +2668,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457102)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457102")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457105)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457105")
@@ -2756,7 +2780,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457102)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457102")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(457105)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457105")
@@ -2873,7 +2898,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457103)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457103")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456457106723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457106")
@@ -2985,7 +3011,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457103)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457103")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456457106723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457106")
@@ -3097,7 +3124,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457103)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457103")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456457106723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457106")
@@ -3207,7 +3235,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457103)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457103")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456457106723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457106")
@@ -3318,7 +3347,8 @@ class LigacaoEsgoto:
                                     preco_reposicao = str(457103)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP CIM  - CODIGO: 457103")
-                                if pavimento[0] in dict_reposicao['especial']:
+                                if pavimento[0] in dict_reposicao['especial'] \
+                                        or pavimento[0] in dict_reposicao['bloquete_inv']:
                                     preco_reposicao = str(456457106723)
                                     txt_reposicao = (
                                         "Pago 1 UN de LRP ESP  - CODIGO: 457106")
