@@ -8,7 +8,7 @@ from sap import encerrar_sap
 lock = threading.Lock()
 
 
-def consulta_os(n_os):
+def consulta_os(n_os, contrato, unadm):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
     diametro_ramal = None
     diametro_rede = None
@@ -16,6 +16,8 @@ def consulta_os(n_os):
     def zsbpm020():
         '''Transact 020'''
         nonlocal n_os
+        nonlocal contrato
+        nonlocal unadm
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -23,8 +25,8 @@ def consulta_os(n_os):
             session.StartTransaction("ZSBPM020")
             campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
             campo_os.Text = n_os
-            session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = "4600041302"
-            session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = "344"
+            session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
+            session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
             session.findById("wnd[0]").sendVKey(8)
 
     # Start thread save.

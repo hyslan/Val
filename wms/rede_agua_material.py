@@ -31,7 +31,8 @@ class RedeAguaMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais) -> None:
+                 tb_materiais,
+                 contrato) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -39,6 +40,7 @@ class RedeAguaMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def materiais_vigentes(self):
         '''Materiais com estoque.'''
@@ -201,7 +203,8 @@ class RedeAguaMaterial:
 
             self.materiais_vigentes()
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato)
 
     def receita_troca_de_conexao_de_ligacao_de_agua(self):
         '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
@@ -290,7 +293,8 @@ class RedeAguaMaterial:
 
             self.materiais_vigentes()
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato)
 
     def receita_reparo_de_ramal_de_agua(self):
         '''Padrão de materiais no reparo de Ligação de Água.'''
@@ -346,4 +350,5 @@ class RedeAguaMaterial:
 
             self.materiais_vigentes()
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato)

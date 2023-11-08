@@ -28,13 +28,15 @@ from sap import encerrar_sap
 lock = threading.Lock()
 
 
-def salvar(ordem, qtd_ordem):
+def salvar(ordem, qtd_ordem, contrato, unadm):
     '''Salvar e verificar se está salvando.'''
 
     def salvar_valoracao():
         '''Função para salvar valoração.'''
         nonlocal ordem
         nonlocal qtd_ordem
+        nonlocal contrato
+        nonlocal unadm
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -52,7 +54,7 @@ def salvar(ordem, qtd_ordem):
         # Verificar se Salvou
         (status_sistema,
             status_usuario,
-            *_) = consulta_os(ordem)
+            *_) = consulta_os(ordem, contrato, unadm)
         print("Verificando se Ordem foi valorada.")
         if status_usuario == "EXEC VALO":
             print(f"Status da Ordem: {status_sistema}, {status_usuario}")

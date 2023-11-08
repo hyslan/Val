@@ -32,7 +32,8 @@ class CavaleteMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais) -> None:
+                 tb_materiais,
+                 contrato) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -40,6 +41,7 @@ class CavaleteMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def receita_cavalete(self):
         '''Padrão de materiais na classe Religação.'''
@@ -78,5 +80,5 @@ class CavaleteMaterial:
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
             lacre_material.caca_lacre(self.tb_materiais, self.operacao)

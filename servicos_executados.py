@@ -153,7 +153,7 @@ def verifica_tse(servico):
             tse_proibida = 'Retirado Entulho'
             break
 
-        # Reposição de Sarjeta, fazer manual.
+        # REPOSIÇÃO DE PARALELO , fazer manual.
         elif sap_tse == '782500':
             tse_proibida = "REPOSIÇÃO DE SARJETA INV"
             reposicao = sap_tse
@@ -161,13 +161,18 @@ def verifica_tse(servico):
             break
 
         # Compactação e selagem da base.
-        elif sap_tse in ('730600', '730700'):
-            tse_proibida = 'Compactar e Selar base'
+        elif sap_tse in ('758500', '758000'):
+            tse_proibida = 'PARALELO'
             break
 
         # Readequado Cavalete, verificar...
         elif sap_tse == '138000':
             tse_proibida = 'Readequado Cavalete!'
+            break
+
+        # Suprimido Ramal anterior
+        elif sap_tse == '415000':
+            tse_proibida = 'Ramal anterior'
             break
 
         # Serviços relacionados a obra.

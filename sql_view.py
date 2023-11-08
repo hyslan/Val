@@ -16,7 +16,7 @@ class Tabela:
         encoded_connection_string = quote_plus(connection_string)
         self.connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
 
-    def tse_escolhida(self):
+    def tse_escolhida(self, contrato):
         '''Dados da tabela do SQL'''
         engine = create_engine(self.connection_url)
         cnn = engine.connect()
@@ -29,12 +29,12 @@ class Tabela:
                 "- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input(
                 "- Val: Digite o Ano/Mês final, por favor.\n")
-            sql_command = f"SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll \
+            sql_command = f"SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll AND Contrato = '{contrato}' \
                 AND MESREF >= {data_inicio} AND MESREF <= {data_fim}"
         else:
-            sql_command = f"SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll"
+            sql_command = f"SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll AND Contrato = '{contrato}'"
 
         df = pd.read_sql(sql_command, cnn)
         df = df.reset_index()
@@ -42,7 +42,7 @@ class Tabela:
         cnn.close()
         return df_list
 
-    def tse_expecifica(self):
+    def tse_expecifica(self, contrato):
         '''Dados da tabela do SQL'''
         engine = create_engine(self.connection_url)
         cnn = engine.connect()
@@ -53,12 +53,13 @@ class Tabela:
                 "- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input(
                 "- Val: Digite o Ano/Mês final, por favor.\n")
-            sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP = '{}' AND [Feito?] IS NUll \
-            AND MESREF >= '{}' AND MESREF <= '{}'").format(self.cod_tse, data_inicio, data_fim)
+            sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE TSE_OPERACAO_ZSCP = '{}' AND [Feito?] IS NUll AND Contrato = '{}' \
+            AND MESREF >= '{}' AND MESREF <= '{}'").format(self.cod_tse, contrato, data_inicio, data_fim)
         else:
-            sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP = '{}' AND [Feito?] IS NUll").format(self.cod_tse)
+            sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE TSE_OPERACAO_ZSCP = '{}' AND [Feito?] IS NUll AND Contrato = '{}'").format(self.cod_tse, contrato)
+
         df = pd.read_sql(sql_command, cnn)
         df = df.reset_index()
         df_list = df['Ordem'].tolist()
@@ -76,7 +77,7 @@ class Tabela:
             cnn = engine.connect()
 
         quem = "Val"
-        sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_ENGETAMI_Valoradas]" +
+        sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas]" +
                        "(Ordem, [VALORADO?], [POR QUEM?])" +
                        "VALUES ('{}', '{}', '{}')").format(str(self.ordem), obs, quem)
         cnn.execute(text(sql_command))

@@ -30,7 +30,8 @@ class PocoMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais) -> None:
+                 tb_materiais,
+                 contrato) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -38,6 +39,7 @@ class PocoMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def receita_caixa_de_parada(self):
         '''Padrão de materiais no módulo caixa de parada.'''
@@ -76,4 +78,4 @@ class PocoMaterial:
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)

@@ -31,7 +31,8 @@ class RedeEsgotoMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais
+                 tb_materiais,
+                 contrato
                  ) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
@@ -40,6 +41,7 @@ class RedeEsgotoMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def materiais_disponiveis(self):
         '''Estoque disponível'''
@@ -390,16 +392,16 @@ class RedeEsgotoMaterial:
         '''Padrão de materiais na classe CRE.'''
         self.materiais_vigentes()
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(self.tb_materiais)
+        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
 
     def receita_reparo_de_ramal_de_esgoto(self):
         '''Padrão de materiais na classe Ramal de Esgoto.'''
         self.materiais_vigentes()
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(self.tb_materiais)
+        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
 
     def png(self):
         '''Método para PNG Esgoto'''
         self.materiais_vigentes()
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(self.tb_materiais)
+        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)

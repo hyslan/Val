@@ -32,7 +32,8 @@ class CorteRestabMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais) -> None:
+                 tb_materiais,
+                 contrato) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -40,6 +41,7 @@ class CorteRestabMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def receita_religacao(self):
         '''Padrão de materiais na classe Religação.'''
@@ -84,7 +86,7 @@ class CorteRestabMaterial:
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
             # Caça lacre
             lacre_material.caca_lacre(self.tb_materiais, self.operacao)
 
@@ -110,4 +112,4 @@ class CorteRestabMaterial:
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)

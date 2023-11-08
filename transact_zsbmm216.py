@@ -44,7 +44,7 @@ def novasp(ordem):
 def recape(ordem):
     '''Run thread RECAPE'''
 
-    async def t_recape():
+    def t_recape():
         '''Transação preenchida ZSBMM216 - Contrato RECAPE'''
         nonlocal ordem
 
@@ -65,6 +65,38 @@ def recape(ordem):
 
     # Start thread recape.
     thread = threading.Thread(target=t_recape)
+    thread.start()
+    # Timeout 5min
+    thread.join(timeout=300)
+    if thread.is_alive():
+        print("SAP demorando mais que o esperado, encerrando.")
+        encerrar_sap()
+
+
+def gbitaquera(ordem):
+    '''Run thread GB Itaquera'''
+
+    def t_gbitaquera():
+        '''Transação preenchida ZSBMM216 - Contrato GB Itaquera - MLQ'''
+        nonlocal ordem
+
+        # Seção Crítica - uso do Lock
+        with lock:
+            session = connect_to_sap()
+            print("Iniciando valoração.")
+            session.StartTransaction("ZSBMM216")
+            # Unidade Administrativa
+            session.findById("wnd[0]/usr/ctxtP_UND").Text = "340"
+            # Contrato GB
+            session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600042888"
+            session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
+            sap_ordem = session.findById(
+                "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+            sap_ordem.Text = ordem
+            session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
+
+    # Start thread novasp.
+    thread = threading.Thread(target=t_gbitaquera)
     thread.start()
     # Timeout 5min
     thread.join(timeout=300)

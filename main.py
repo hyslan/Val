@@ -10,6 +10,25 @@ from avatar import val_avatar
 from etl import extract_from_sql
 from desvalorador import desvalorador
 from retrabalhador import retrabalho
+from osn3 import pertencedor
+
+
+def contratada():
+    '''input de contrato.'''
+    contrato_gbitaquera = "4600042888"
+    contrato_novasp = "4600041302"
+    entrada = input("- Val: Qual o contrato?\n")
+    if entrada == contrato_gbitaquera or entrada in ("GB", "GBITAQUERA", "gb"):
+        contrato = contrato_gbitaquera
+        unadm = "340"
+    elif entrada == contrato_novasp or entrada in ("NOVASP", "novasp"):
+        contrato = contrato_novasp
+        unadm = "344"
+    else:
+        print("Contrato não informado, encerrando.")
+        sys.exit()
+
+    return contrato, unadm
 
 
 def main():
@@ -37,9 +56,10 @@ def main():
         print("\nMenu de Opções")
         print("\n1 - Desvalorador"
               + "\n2 - Retrabalho"
-              + "\n3 - TSE geral"
-              + "\n4 - TSEs Expecíficas"
-              + "\n5 - TSE Expecífica")
+              + "\n3 - Pertencedor"
+              + "\n4 - TSE geral"
+              + "\n5 - TSEs Expecíficas"
+              + "\n6 - TSE Expecífica")
         try:
             resposta = input(
                 "\n- Val: Escolha uma opção:\n "
@@ -52,21 +72,30 @@ def main():
                     retrabalho()
                     validador = True
                 case "3":
-                    pendentes_list = extract_from_sql()
-                    ordem, int_num_lordem, validador = val(pendentes_list)
+                    pertencedor()
+                    validador = True
                 case "4":
+                    contrato, unadm = contratada()
+                    pendentes_list = extract_from_sql(contrato)
+                    ordem, int_num_lordem, validador = val(
+                        pendentes_list, contrato, unadm)
+                case "5":
+                    contrato, unadm = contratada()
                     tse_expec = input(
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-                    pendentes_list = pendentes.tse_escolhida()
-                    ordem, int_num_lordem, validador = val(pendentes_list)
-                case "5":
+                    pendentes_list = pendentes.tse_escolhida(contrato)
+                    ordem, int_num_lordem, validador = val(
+                        pendentes_list, contrato, unadm)
+                case "6":
+                    contrato, unadm = contratada()
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-                    pendentes_list = pendentes.tse_expecifica()
-                    ordem, int_num_lordem, validador = val(pendentes_list)
+                    pendentes_list = pendentes.tse_expecifica(contrato)
+                    ordem, int_num_lordem, validador = val(
+                        pendentes_list, contrato, unadm)
 
         except TypeError as erro:
             print(f"Erro: {erro}")

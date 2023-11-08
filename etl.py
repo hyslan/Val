@@ -4,7 +4,7 @@ from urllib.parse import quote_plus
 from sqlalchemy import create_engine, text
 
 
-def extract_from_sql():
+def extract_from_sql(contrato):
     '''Extração de ordens do contrato NOVASP do banco SQL Penha.'''
     carteira = [
         '134000',
@@ -100,8 +100,8 @@ def extract_from_sql():
     # Queries para SQL.
 
     # pylint disable=W1401
-    QUERY = f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\\hcruz_novasp].[v_Hyslan_Engetami_Valoracao] \
-            WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) AND [Feito?] IS NUll ;"
+    QUERY = f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) AND [Feito?] IS NUll AND Contrato = '{contrato}';"
     df = pd.read_sql(QUERY, cnxn)
     pendentes = pd.DataFrame(df)
     pendentes_list = pendentes['Ordem'].tolist()

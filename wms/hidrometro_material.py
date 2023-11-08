@@ -33,7 +33,8 @@ class HidrometroMaterial:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 tb_materiais) -> None:
+                 tb_materiais,
+                 contrato) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -41,6 +42,7 @@ class HidrometroMaterial:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
+        self.contrato = contrato
 
     def receita_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro.'''
@@ -269,7 +271,7 @@ class HidrometroMaterial:
                 hidro_adicionado = True  # Hidrômetro foi adicionado
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
             lacre_material.caca_lacre(self.tb_materiais, self.operacao)
 
     def receita_desinclinado_hidrometro(self):
@@ -293,4 +295,4 @@ class HidrometroMaterial:
             )
             ultima_linha_material = ultima_linha_material + 1
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(self.tb_materiais)
+        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)

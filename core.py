@@ -9,6 +9,7 @@ import sql_view
 from sap_connection import connect_to_sap
 from confere_os import consulta_os
 from transact_zsbmm216 import novasp
+from transact_zsbmm216 import gbitaquera
 from pagador import precificador
 from almoxarifado import materiais
 from salvacao import salvar
@@ -16,7 +17,7 @@ from temporizador import cronometro_val
 from sapador import down_sap
 
 
-def val(pendentes_list):
+def val(pendentes_list, contrato, unadm):
     '''Sistema Val.'''
     validador = False
     input("- Val: Pressione Enter para iniciar...")
@@ -57,7 +58,7 @@ def val(pendentes_list):
                 operacao,
                 diametro_ramal,
                 diametro_rede
-             ) = consulta_os(ordem)
+             ) = consulta_os(ordem, contrato, unadm)
             # Consulta Status da Ordem
             if status_sistema == fechada:
                 print(f"Status do Sistema: {status_sistema}")
@@ -78,7 +79,16 @@ def val(pendentes_list):
 
             else:
                 # Ação no SAP
-                novasp(ordem)
+                contrato_gbitaquera = "4600042888"
+                contrato_novasp = "4600041302"
+                if contrato == contrato_gbitaquera:
+                    gbitaquera(ordem)
+                elif contrato == contrato_novasp:
+                    novasp(ordem)
+                else:
+                    print("Contrato não informado, encerrando.")
+                    sys.exit()
+
                 print("****Processo de Serviços Executados****")
                 try:
                     tse = session.findById(
@@ -147,7 +157,8 @@ def val(pendentes_list):
                                   operacao,
                                   chave_rb_investimento,
                                   diametro_ramal,
-                                  diametro_rede)
+                                  diametro_rede,
+                                  contrato)
 
                     if list_chave_rb_despesa:
                         for chave_rb_despesa in list_chave_rb_despesa:
@@ -156,7 +167,8 @@ def val(pendentes_list):
                                       operacao,
                                       chave_rb_despesa,
                                       diametro_ramal,
-                                      diametro_rede)
+                                      diametro_rede,
+                                      contrato)
 
                     if list_chave_unitario:
                         for chave_unitario in list_chave_unitario:
@@ -165,11 +177,12 @@ def val(pendentes_list):
                                       operacao,
                                       chave_unitario,
                                       diametro_ramal,
-                                      diametro_rede)
+                                      diametro_rede,
+                                      contrato)
                     # Fim dos materiais
                     # sys.exit()
                     # Salvar Ordem
-                    qtd_ordem = salvar(ordem, qtd_ordem)
+                    qtd_ordem = salvar(ordem, qtd_ordem, contrato, unadm)
                     # Fim do contador de valoração.
                     cronometro_val(start_time, ordem)
                     # Incremento + de Ordem.

@@ -1,6 +1,5 @@
 '''Módulo dos retrabalho da valoração.'''
 import sys
-import asyncio
 import pywintypes
 from tqdm import tqdm
 import salvacao
@@ -51,16 +50,17 @@ def retrabalho():
     contrato = input("- Val: Qual o contrato?\n")
     if contrato == contrato_recape or contrato in ("RECAPE", "recape"):
         transacao = recape
+        unadm = "344"
     elif contrato == contrato_novasp or contrato in ("NOVASP", "novasp"):
         transacao = novasp
+        unadm = "344"
     # Loop para pagar as ordens da planilha do Excel
     for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
-        loop_transact = asyncio.get_event_loop()
-        loop_transact.run_until_complete(transacao(ordem))
+        transacao(ordem)
         try:
             servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -72,9 +72,7 @@ def retrabalho():
                 servico.modifyCell(n_tse, "CODIGO", "7")  # Retrabalho
 
             servico.pressEnter()
-            loop_save = asyncio.get_event_loop()
-            qtd_ordem = loop_save.run_until_complete(
-                salvacao.salvar(ordem, qtd_ordem))
+            salvacao.salvar(ordem, qtd_ordem, contrato, unadm)
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Salvo"
             lista.save('lista.xlsx')
