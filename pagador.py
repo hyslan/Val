@@ -19,6 +19,7 @@ from cesta import cesta_dicionario
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     tb_tse_un,
     tb_tse_rem_base,
     _,

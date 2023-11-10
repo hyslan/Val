@@ -18,6 +18,7 @@ from tsepai import pai_dicionario
     naoexecutado,
     invest,
     tb_contratada,
+    tb_contratada_gb,
     tb_tse_un,
     tb_tse_rem_base,
     tb_tse_nexec,

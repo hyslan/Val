@@ -15,6 +15,7 @@ from wms import lacre_material
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     _,
     *_,
 ) = load_worksheets()
@@ -122,7 +123,7 @@ def materiais_gb_itaquera(tb_materiais,
             n_material, "ETAPA")
 
         # Verifica se está na lista tb_contratada
-        if sap_material in tb_contratada:
+        if sap_material in tb_contratada_gb:
             # Marca Contratada
             tb_materiais.modifyCheckbox(
                 n_material, "CONTRATADA", True)
@@ -170,16 +171,16 @@ def materiais_gb_itaquera(tb_materiais,
             )
             ultima_linha_material = ultima_linha_material + 1
 
-        try:
-            if sap_material == '10014709':
-                # Marca Contratada
-                tb_materiais.modifyCheckbox(
-                    n_material, "CONTRATADA", True)
-                print("Aslfato frio da NOVASP por enquanto.")
-        # pylint: disable=E1101
-        except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
+        # try:
+        #     if sap_material == '10014709':
+        #         # Marca Contratada
+        #         tb_materiais.modifyCheckbox(
+        #             n_material, "CONTRATADA", True)
+        #         print("Aslfato frio da NOVASP por enquanto.")
+        # # pylint: disable=E1101
+        # except pywintypes.com_error:
+        #     print(
+        #         f"Etapa: {sap_etapa_material} - Asfalto frio já foi retirado.")
 
         # try:
         #     if sap_material == '30028856':
@@ -204,11 +205,26 @@ def materiais_gb_itaquera(tb_materiais,
         #         f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")
 
         try:
-            if sap_material == '30001865':
-                # Marca Contratada
+            if sap_material in ('30001865', '30000882'):
+                # Remove UNIAO P/TUBO PEAD DE 20 MM.
                 tb_materiais.modifyCheckbox(
-                    n_material, "CONTRATADA", True)
-                print("UNIAO P/TUBO PEAD DE 20 MM da NOVASP por enquanto.")
+                    n_material, "ELIMINADO", True
+                )
+                tb_materiais.InsertRows(str(ultima_linha_material))
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "ETAPA", sap_etapa_material
+                )
+                # Adiciona União PEAD vigente.
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "MATERIAL", "30029526"
+                )
+                tb_materiais.modifyCell(
+                    ultima_linha_material, "QUANT", "1"
+                )
+                tb_materiais.setCurrentCell(
+                    ultima_linha_material, "QUANT"
+                )
+                ultima_linha_material = ultima_linha_material + 1
         # pylint: disable=E1101
         except pywintypes.com_error:
             print(

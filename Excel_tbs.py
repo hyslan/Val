@@ -1,20 +1,26 @@
-#excel_tbs.py by Author: Hyslan Silva Cruz
+# excel_tbs.py by Author: Hyslan Silva Cruz
 '''Módulo de acessar arquivos .xlsx'''
-#Bibliotecas
-from openpyxl import load_workbook # Carregar função load
+# Bibliotecas
+from openpyxl import load_workbook  # Carregar função load
 
-#Área do Excel
+# Área do Excel
+
+
 def load_worksheets():
-    '''Função para carregar os arquivos dos Excel e futuramente do SQL Server.'''    
-    lista = load_workbook('lista.xlsx') # Carregando arquivo para valorar
-    materiais = load_workbook('MateriaisContratada.xlsx') # Tabela de materiais da Contratada
-    plan_tse = load_workbook('TSE.xlsx') # Tabela de TSE
-    plan_precos = load_workbook('ItensPreco.xlsx') # Tabela Itens de preço
-    plan_st_ordem = load_workbook('StatusOrdem.xlsx') # Tabela Status da Ordem
-    planilha = lista.active # Planilha de Ordem
+    '''Função para carregar os arquivos dos Excel e futuramente do SQL Server.'''
+    lista = load_workbook('lista.xlsx')  # Carregando arquivo para valorar
+    # Tabela de materiais da Contratada
+    materiais = load_workbook('MateriaisContratada.xlsx')
+    # Tabela de materiais da Contratada
+    materiais_gb = load_workbook('Contratada_GB.xlsx')
+    plan_tse = load_workbook('TSE.xlsx')  # Tabela de TSE
+    plan_precos = load_workbook('ItensPreco.xlsx')  # Tabela Itens de preço
+    plan_st_ordem = load_workbook('StatusOrdem.xlsx')  # Tabela Status da Ordem
+    planilha = lista.active  # Planilha de Ordem
     contratada = materiais.active  # Materiais Contratada
-    st_sistema = plan_st_ordem["StatusSistema"] # Status Sistema
-    st_usuario = plan_st_ordem["StatusUsuario"] # Status Usuario
+    contratada_gb = materiais_gb.active  # Materiais Contratada
+    st_sistema = plan_st_ordem["StatusSistema"]  # Status Sistema
+    st_usuario = plan_st_ordem["StatusUsuario"]  # Status Usuario
     unitario = plan_tse["unitario"]
     rem_base = plan_tse["rb"]
     naoexecutado = plan_tse["NEXEC"]
@@ -29,6 +35,8 @@ def load_worksheets():
     coluna_status = 'A'
 
     tb_contratada = [cell.value for cell in contratada[coluna_contratada]]
+    tb_contratada_gb = [
+        cell.value for cell in contratada_gb[coluna_contratada]]
 
     plan_st_ordem.active = st_sistema
     tb_st_sistema = [cell.value for cell in st_sistema[coluna_status]]
@@ -49,10 +57,12 @@ def load_worksheets():
     tb_tse_invest = [cell.value for cell in invest[coluna_tse]]
 
     plan_tse.active = n_motivo3
-    tb_tse_pertence_ao_servico_principal = [cell.value for cell in n_motivo3[coluna_tse]]
+    tb_tse_pertence_ao_servico_principal = [
+        cell.value for cell in n_motivo3[coluna_tse]]
 
     plan_tse.active = n10
-    tb_tse_servico_nao_existe_no_contrato = [cell.value for cell in n10[coluna_tse]]
+    tb_tse_servico_nao_existe_no_contrato = [
+        cell.value for cell in n10[coluna_tse]]
 
     plan_tse.active = reposicao
     tb_tse_reposicao = [cell.value for cell in reposicao[coluna_tse]]
@@ -75,6 +85,7 @@ def load_worksheets():
         naoexecutado,
         invest,
         tb_contratada,
+        tb_contratada_gb,
         tb_tse_un,
         tb_tse_rem_base,
         tb_tse_nexec,
@@ -85,6 +96,6 @@ def load_worksheets():
         tb_tse_servico_nao_existe_no_contrato,
         tb_tse_reposicao,
         tb_tse_retrabalho,
-        tb_tse_asfalto,
-            )
-    
+        tb_tse_asfalto
+        
+    )

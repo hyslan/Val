@@ -25,6 +25,7 @@ from wms.consulta_estoque import estoque_novasp
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     _,
     *_,
 ) = load_worksheets()

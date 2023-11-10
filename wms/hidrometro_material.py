@@ -19,6 +19,7 @@ from wms import lacre_material
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     _,
     *_,
 ) = load_worksheets()
@@ -151,20 +152,9 @@ class HidrometroMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                # Verifica se está na lista tb_contratada
-                if sap_material in tb_contratada:
-                    # Marca Contratada
-                    self.tb_materiais.modifyCheckbox(
-                        n_material, "CONTRATADA", True)
-                    print(f"Linha do material: {n_material}, "
-                          + f"Material: {sap_material}")
-                    continue
-                if sap_material == ('50000328', '50000263'):
-                    self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True
-                    )
 
-                if sap_material == '50000350':
+                if sap_material == ('50000328', '50000263', '50000350',
+                                    '50000064', '50000260', '50000261'):
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -271,7 +261,8 @@ class HidrometroMaterial:
                 hidro_adicionado = True  # Hidrômetro foi adicionado
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato)
             lacre_material.caca_lacre(self.tb_materiais, self.operacao)
 
     def receita_desinclinado_hidrometro(self):
@@ -295,4 +286,5 @@ class HidrometroMaterial:
             )
             ultima_linha_material = ultima_linha_material + 1
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
+        materiais_contratada.materiais_contratada(
+            self.tb_materiais, self.contrato)

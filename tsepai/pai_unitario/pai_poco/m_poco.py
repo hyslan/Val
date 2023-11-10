@@ -15,6 +15,7 @@ from excel_tbs import load_worksheets
     naoexecutado,
     invest,
     tb_contratada,
+    tb_contratada_gb,
     tb_tse_UN,
     tb_tse_rb,
     tb_tse_nexec,

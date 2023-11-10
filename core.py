@@ -180,7 +180,7 @@ def val(pendentes_list, contrato, unadm):
                                       diametro_rede,
                                       contrato)
                     # Fim dos materiais
-                    # sys.exit()
+                    sys.exit()
                     # Salvar Ordem
                     qtd_ordem = salvar(ordem, qtd_ordem, contrato, unadm)
                     # Fim do contador de valoração.

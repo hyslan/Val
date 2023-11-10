@@ -18,6 +18,7 @@ from wms import lacre_material
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     _,
     *_,
 ) = load_worksheets()
@@ -74,7 +75,8 @@ class CavaleteMaterial:
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
 
-                if sap_material == '30029526':
+                if sap_material == '30029526' \
+                    and self.contrato == "4600041302":
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

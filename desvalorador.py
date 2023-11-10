@@ -1,9 +1,8 @@
 '''Módulo para desfazer valoração.'''
+import sys
 import pywintypes
 from tqdm import tqdm
 from sap_connection import connect_to_sap
-from transact_zsbmm216 import novasp
-from transact_zsbmm216 import recape
 from excel_tbs import load_worksheets
 
 
@@ -27,6 +26,38 @@ from excel_tbs import load_worksheets
 ) = load_worksheets()
 
 
+def novasp(ordem):
+    '''Contrato NOVASP'''
+    session = connect_to_sap()
+    print("Iniciando valoração.")
+    session.StartTransaction("ZSBMM216")
+    # Unidade Administrativa
+    session.findById("wnd[0]/usr/ctxtP_UND").Text = "344"
+    # Contrato NOVASP
+    session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600041302"
+    session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
+    sap_ordem = session.findById(
+        "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+    sap_ordem.Text = ordem
+    session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
+
+
+def recape(ordem):
+    '''Contrato NOVASP'''
+    session = connect_to_sap()
+    print("Iniciando valoração.")
+    session.StartTransaction("ZSBMM216")
+    # Unidade Administrativa
+    session.findById("wnd[0]/usr/ctxtP_UND").Text = "344"
+    # Contrato NOVASP
+    session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600044782"
+    session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
+    sap_ordem = session.findById(
+        "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+    sap_ordem.Text = ordem
+    session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
+
+
 def desvalorador():
     '''Função desvalorador'''
     session = connect_to_sap()
@@ -40,14 +71,19 @@ def desvalorador():
         print("Entrada inválida. Digite um número inteiro válido.")
         print("Reiniciando o programa...")
         desvalorador()
+
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
     contrato_recape = "4600044782"
     contrato_novasp = "4600041302"
     contrato = input("- Val: Qual o contrato?\n")
     if contrato == contrato_recape or contrato in ("RECAPE", "recape"):
         transacao = recape
+        contrato = contrato_recape
+        unadm = "344"
     elif contrato == contrato_novasp or contrato in ("NOVASP", "novasp"):
         transacao = novasp
+        contrato = contrato_novasp
+        unadm = "344"
     # Loop para pagar as ordens da planilha do Excel
     for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
@@ -56,7 +92,7 @@ def desvalorador():
         print(f"Ordem atual: {ordem}")
         transacao(ordem)
         try:
-            tse = session.findById(
+            servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
                 + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
             )
@@ -86,5 +122,6 @@ def desvalorador():
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
             continue
+
     # Fim da desvaloração
     print("- Val: Desvalorador concluído.")

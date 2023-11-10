@@ -17,6 +17,7 @@ from wms import materiais_contratada
     _,
     _,
     tb_contratada,
+    tb_contratada_gb,
     _,
     *_,
 ) = load_worksheets()
@@ -60,14 +61,15 @@ class RedeAguaMaterial:
 
                 match sap_material:
                     case '30029526':
-                        self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
-                        )
+                        if self.contrato == '4600041302':
+                            self.tb_materiais.modifyCheckbox(
+                                n_material, "ELIMINADO", True
+                            )
 
-                    case '30001122':
-                        self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
-                        )
+                    # case '30001122':
+                    #     self.tb_materiais.modifyCheckbox(
+                    #         n_material, "ELIMINADO", True
+                    #     )
 
                     case '30002735':
                         self.tb_materiais.modifyCheckbox(

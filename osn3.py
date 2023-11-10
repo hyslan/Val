@@ -1,4 +1,4 @@
-'''Módulo dos retrabalho da valoração.'''
+'''Módulo dos N3 da valoração.'''
 import sys
 import pywintypes
 from tqdm import tqdm
@@ -183,5 +183,5 @@ def pertencedor():
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
 
-    # Fim do retrabalhador
-    print("- Val: Retrabalhador concluído.")
+    # Fim dos N3
+    print("- Val: Pertencedor concluído.")
