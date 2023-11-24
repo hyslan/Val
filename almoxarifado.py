@@ -1,7 +1,6 @@
 # almoxarifado.py
 '''Módulo dos materiais contratada e SABESP.'''
 import sys
-import sap
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 from wms import corte_restab_material
@@ -11,7 +10,6 @@ from wms import rede_esgoto_material
 from wms import cavalete_material
 from wms import poco_material
 from wms import materiais_contratada
-from wms.consulta_estoque import estoque_novasp
 
 (
     lista,

@@ -6,6 +6,7 @@ import time
 import pywintypes
 from tqdm import tqdm
 import sql_view
+import sap
 from sap_connection import connect_to_sap
 from confere_os import consulta_os
 from transact_zsbmm216 import novasp
@@ -15,12 +16,16 @@ from almoxarifado import materiais
 from salvacao import salvar
 from temporizador import cronometro_val
 from sapador import down_sap
+from wms.consulta_estoque import estoque
 
 
 def val(pendentes_list, contrato, unadm):
     '''Sistema Val.'''
     validador = False
-    input("- Val: Pressione Enter para iniciar...")
+    sessions = sap.listar_sessoes()
+    new_session = sap.criar_sessao(sessions)
+    input("- Val: Pressione Enter para iniciar...\n")
+    estoque_hj = estoque(new_session, sessions, contrato)
     limite_execucoes = len(pendentes_list)
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:

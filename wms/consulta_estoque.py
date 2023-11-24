@@ -1,28 +1,46 @@
 '''Módulo de consulta estoque de materiais'''
+import time
+import xlwings as xw
+import pandas as pd
 import sap
 
 
-def estoque_novasp(session, sessions):
-    '''Função para consultar estoque NOVASP'''
-    estoque = set()
+def estoque(session, sessions, contrato):
+    '''Função para consultar estoque'''
+    caminho = "C:\\Users\\irgpapais\\Documents\\Meus Projetos\\val\\"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
-    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = "4600041302"
-    print("Consultando Estoque NOVASP.")
+    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
+    print("Consultando Estoque de Materiais")
     frame.SendVkey(8)
     frame.sendVKey(42)  # Lista Detalhada
     grid = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
-    grid.selectColumn("MATNR")
-    grid.currentCellRow = 0
-    total = grid.RowCount
-    print("Obtendo os materiais disponiveis.")
-    for i in range(0, total):
-        material = grid.GetCellValue(i, "MATNR")
-        estoque.add(material)
-
-    print("Consulta concluída.")
+    grid.contextMenu()
+    grid.selectContextMenuItem("&XXL")
+    session.findById("wnd[1]/tbar[0]/btn[0]").press()
+    session.findById(
+        "wnd[1]/usr/ctxtDY_PATH").text = caminho
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = "estoque.XLSX"
+    session.findById("wnd[1]").sendVKey(11)  # Substituir
+    print("Planilha de estoque gerada com sucesso.")
+    estoque = pd.read_excel(caminho + "estoque.XLSX",
+                            sheet_name="Sheet1", usecols=["Material",
+                                                          "Texto breve material",
+                                                          "Utilização livre"
+                                                          ]
+                            )
+    estoque = estoque.dropna()
+    estoque['Material'] = estoque['Material'].astype(int).astype(str)
     con = sap.listar_conexoes()
     # session.EndTransaction()
+    print("Encerrando Sessão.")
     con.CloseSession(f"/app/con[0]/ses[{len(sessions)}]")
+    time.sleep(3)
+    print("Fechando Arquivo Excel.\n")
+    try:
+        book = xw.Book('estoque.xlsx')
+        book.close()
+    except Exception as e:
+        print(e)
 
     return estoque

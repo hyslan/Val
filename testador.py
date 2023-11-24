@@ -1,13 +1,7 @@
-from sap_connection import connect_to_sap
+from wms.consulta_estoque import estoque_novasp
+import sap
 
-session = connect_to_sap()
+sessions = sap.listar_sessoes()
+session = sap.criar_sessao(sessions)
+estoque = estoque_novasp(session, sessions)
 
-
-def teste(session):
-    def abc():
-        # nonlocal session
-        session.StartTransaction("mblb")
-    abc()
-
-
-# teste(session)
