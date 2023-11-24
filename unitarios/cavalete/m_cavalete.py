@@ -26,25 +26,20 @@ class Cavalete:
 
     @staticmethod
     def troca_pe_cv_prev(*_):
-        '''Método Troca de Cavalete Preventivo'''
+        '''Método Troca de Pé de Cavalete Preventivo'''
         session = connect_to_sap()
         print("Iniciando processo de pagar ADC  TRC PREV PE CV - Código: 456856")
+        codigo = "456856"
         preco = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            num_precos_linhas = preco.RowCount
-            n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
-                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if sap_preco == str(456856):  # THD  ATE 10M3/H PREV
-                    # Marca pagar na TSE
-                    preco.modifyCell(n_preco, "QUANT", "1")
-                    preco.setCurrentCell(n_preco, "QUANT")
-                    preco.pressEnter()
-                    print("Pago 1 UN de ADC  TRC PREV PE CV - CODIGO: 456856")
-                    break
+            btn_localizador(preco, session, codigo)
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de ADC  TRC PREV PE CV - CODIGO: 456856")
 
     @staticmethod
     def troca_cv_kit(*_):

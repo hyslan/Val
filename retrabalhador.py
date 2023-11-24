@@ -74,8 +74,13 @@ def recape(ordem):
     session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
 
-def pertencedor():
-    '''Função N3'''
+def retrabalho():
+    '''Função Retrabalhador'''
+    revalorar = False
+    resposta = input("São Ordens desvaloradas?")
+    if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
+        revalorar = True
+
     session = connect_to_sap()
     limite_execucoes = planilha.max_row
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
@@ -86,7 +91,7 @@ def pertencedor():
     except TypeError:
         print("Entrada inválida. Digite um número inteiro válido.")
         print("Reiniciando o programa...")
-        pertencedor()
+        retrabalho()
 
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
     contrato_recape = "4600044782"
@@ -123,33 +128,34 @@ def pertencedor():
             ordem = planilha.cell(row=int_num_lordem, column=1).value
             continue
 
-        try:
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-            grid_historico = session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
-            data_valorado = grid_historico.GetCellValue(0, "DATA")
-            if data_valorado is not None:
-                print(f"OS: {ordem} já valorada.")
-                print(f"Data: {data_valorado}")
-                ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-                ordem_obs.value = "Já Salvo"
-                lista.save('lista.xlsx')
-                # Incremento de Ordem.
-                int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
-                continue
+        if revalorar is False:
+            try:
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                grid_historico = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                data_valorado = grid_historico.GetCellValue(0, "DATA")
+                if data_valorado is not None:
+                    print(f"OS: {ordem} já valorada.")
+                    print(f"Data: {data_valorado}")
+                    ordem_obs = planilha.cell(row=int_num_lordem, column=4)
+                    ordem_obs.value = "Já Salvo"
+                    lista.save('lista.xlsx')
+                    # Incremento de Ordem.
+                    int_num_lordem += 1
+                    ordem = planilha.cell(row=int_num_lordem, column=1).value
+                    continue
 
-        # pylint: disable=E1101
-        except pywintypes.com_error:
-            print("OS Livre para valorar.")
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
-            servico = session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
-            )
+            # pylint: disable=E1101
+            except pywintypes.com_error:
+                print("OS Livre para valorar.")
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
+                servico = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                )
 
         num_tse_linhas = servico.RowCount
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):

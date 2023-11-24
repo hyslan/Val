@@ -43,7 +43,7 @@ class LigacaoAgua:
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE
-        print("Iniciando processo Pai de Ligação de Esgoto - TSE 254000")
+        print("Iniciando processo Pai de Ligação de Água Avulsa - TSE 254000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
@@ -80,7 +80,7 @@ class LigacaoAgua:
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
         identificador = LigacaoAgua.MODALIDADE
-        print("Iniciando processo Pai de Ligação de Esgoto - TSE 284500")
+        print("Iniciando processo Pai de TROCA DE RAMAL DE AGUA NÃO VISIVEL - TSE 284500")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")

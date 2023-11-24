@@ -211,6 +211,12 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
             continue
 
+        elif sap_tse == '666000':
+            # VISTORIADO LOCAL E IDENTIFICADA SITUAÇÃO
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
+            continue
+
     rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=None)
     unitario_reposicao_flat = np.ravel(unitario_reposicao)
     reposicao_geral = np.unique(np.concatenate(
