@@ -1,8 +1,9 @@
 # almoxarifado.py
 '''Módulo dos materiais contratada e SABESP.'''
 import sys
+import pywintypes
+import pandas as pd
 from sap_connection import connect_to_sap
-from excel_tbs import load_worksheets
 from wms import corte_restab_material
 from wms import hidrometro_material
 from wms import rede_agua_material
@@ -10,23 +11,6 @@ from wms import rede_esgoto_material
 from wms import cavalete_material
 from wms import poco_material
 from wms import materiais_contratada
-
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_contratada,
-    tb_contratada_gb,
-    _,
-    *_,
-) = load_worksheets()
 
 
 class Almoxarifado:
@@ -39,7 +23,8 @@ class Almoxarifado:
                  identificador,
                  diametro_ramal,
                  diametro_rede,
-                 contrato
+                 contrato,
+                 estoque
                  ) -> None:
         self.hidro = hidro
         self.int_num_lordem = int_num_lordem
@@ -49,6 +34,7 @@ class Almoxarifado:
         self.diametro_ramal = diametro_ramal
         self.diametro_rede = diametro_rede
         self.contrato = contrato
+        self.estoque = estoque
 
     def aba_materiais(self):
         '''Função habilita aba de materiais no sap'''
@@ -59,12 +45,41 @@ class Almoxarifado:
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell")
 
-        # sessoes = sap.listar_sessoes()
-        # session_estoque = sap.criar_sessao(sessoes)
-        # estoque = estoque_novasp(session_estoque, sessoes)
         return tb_materiais
 
-    def inspecao(self, tb_materiais):
+    def materiais_vinculados(self, tb_materiais):
+        '''Retorna um DataFrame com os materiais incluídos na ordem.'''
+        try:
+            sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
+            print("Tem material vinculado.")
+            num_material_linhas = tb_materiais.RowCount
+            lista_data = []
+            for i in range(num_material_linhas):
+                sap_material = tb_materiais.GetCellValue(
+                    i, "MATERIAL")
+                sap_etapa_material = tb_materiais.GetCellValue(
+                    i, "ETAPA")
+                sap_desc_material = tb_materiais.GetCellValue(
+                    i, "DESC_MAT")
+                sap_qtde_material = tb_materiais.GetCellValue(
+                    i, "QUANT")
+                data = {'Etapa': sap_etapa_material,
+                        'Material': sap_material,
+                        'Descrição': sap_desc_material,
+                        'Quantidade': sap_qtde_material}
+                lista_data.append(data)
+            df_materiais = pd.DataFrame(lista_data)
+            df_materiais['Quantidade'] = df_materiais['Quantidade'].replace(
+                ',', '.', regex=True).astype(float)
+
+            return df_materiais
+
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            print("Sem material vinculado.")
+            return None
+
+    def inspecao(self, tb_materiais, df_materiais):
         '''Seleciona a Classe da TSE correta.'''
         sondagem = [
             '591000',
@@ -74,7 +89,7 @@ class Almoxarifado:
         ]
         if self.identificador[0] in sondagem:
             materiais_contratada.materiais_contratada(
-                tb_materiais, self.contrato)
+                tb_materiais, self.contrato, self.estoque)
         else:
             match self.identificador[2]:
                 case "hidrometro":
@@ -86,7 +101,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_hidrometro()
@@ -100,7 +116,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_desinclinado_hidrometro()
@@ -114,7 +131,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de Cavalete.")
                     material.receita_cavalete()
@@ -128,7 +146,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de religação.")
                     material.receita_religacao()
@@ -142,7 +161,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de Supressão.")
 
@@ -156,7 +176,9 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque,
+                        df_materiais
                     )
                     print("Aplicando a receita "
                           + "de Ligação (Ramal) de Água.")
@@ -171,7 +193,9 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque,
+                        df_materiais
                     )
                     print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
@@ -185,7 +209,9 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque,
+                        df_materiais
                     )
                     print("Aplicando a receita de Rede de Água")
                     material.receita_reparo_de_rede_de_agua()
@@ -199,7 +225,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de Ramal de Esgoto")
                     material.receita_reparo_de_ramal_de_esgoto()
@@ -213,7 +240,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
@@ -227,7 +255,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de PNG Esgoto")
                     material.png()
@@ -247,7 +276,8 @@ class Almoxarifado:
                         self.diametro_ramal,
                         self.diametro_rede,
                         tb_materiais,
-                        self.contrato
+                        self.contrato,
+                        self.estoque
                     )
                     print("Aplicando a receita de Caixa de Parada")
                     material.receita_caixa_de_parada()
@@ -264,7 +294,8 @@ def materiais(int_num_lordem,
               identificador,
               diametro_ramal,
               diametro_rede,
-              contrato
+              contrato,
+              estoque
               ):
     '''Função dos materiais de acordo com a TSE pai.'''
     servico = Almoxarifado(int_num_lordem,
@@ -273,8 +304,10 @@ def materiais(int_num_lordem,
                            identificador,
                            diametro_ramal,
                            diametro_rede,
-                           contrato
+                           contrato,
+                           estoque
                            )
     tb_materiais = servico.aba_materiais()
+    df_materiais = servico.materiais_vinculados(tb_materiais)
 
-    servico.inspecao(tb_materiais)
+    servico.inspecao(tb_materiais, df_materiais)

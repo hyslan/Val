@@ -1,27 +1,8 @@
 # hidrometro_material.py
 '''Módulo dos materiais de família Corte/Relig.'''
-from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
 from wms import lacre_material
-
-
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_contratada,
-    tb_contratada_gb,
-    _,
-    *_,
-) = load_worksheets()
 
 
 class CorteRestabMaterial:
@@ -34,7 +15,8 @@ class CorteRestabMaterial:
                  diametro_ramal,
                  diametro_rede,
                  tb_materiais,
-                 contrato) -> None:
+                 contrato,
+                 estoque) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -43,6 +25,7 @@ class CorteRestabMaterial:
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
         self.contrato = contrato
+        self.estoque = estoque
 
     def receita_religacao(self):
         '''Padrão de materiais na classe Religação.'''
@@ -66,10 +49,7 @@ class CorteRestabMaterial:
             ultima_linha_material = ultima_linha_material + 1
         else:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
-            # Número da Row do Grid Materiais do SAP
-            n_material = 0
             ultima_linha_material = num_material_linhas
-
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -82,15 +62,17 @@ class CorteRestabMaterial:
                         n_material, "ELIMINADO", True
                     )
                 if sap_material == '30029526' \
-                    and self.contrato == "4600041302":
+                        and self.contrato == "4600041302":
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato, self.estoque)
             # Caça lacre
-            lacre_material.caca_lacre(self.tb_materiais, self.operacao)
+            lacre_material.caca_lacre(
+                self.tb_materiais, self.operacao, self.estoque)
 
     def receita_supressao(self):
         '''Padrão de materiais para supressão.'''
@@ -99,8 +81,6 @@ class CorteRestabMaterial:
         if sap_material is not None:
             material_lista = []
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
-            # Número da Row do Grid Materiais do SAP
-            n_material = 0
             ultima_linha_material = num_material_linhas
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
@@ -109,10 +89,11 @@ class CorteRestabMaterial:
                     n_material, "MATERIAL")
                 material_lista.append(sap_material)
                 if sap_material == '30029526' \
-                    and self.contrato == "4600041302":
+                        and self.contrato == "4600041302":
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato, self.estoque)

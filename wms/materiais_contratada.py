@@ -4,11 +4,11 @@ from excel_tbs import load_worksheets
 from wms import lacre_material
 
 (
-    lista,
     _,
     _,
     _,
-    planilha,
+    _,
+    _,
     _,
     _,
     _,
@@ -23,9 +23,9 @@ from wms import lacre_material
 
 def materiais_novasp(tb_materiais,
                      num_material_linhas,
-                     n_material,
                      lacre,
-                     ultima_linha_material):
+                     ultima_linha_material,
+                     estoque):
     '''Contratada NOVASP - MLG'''
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
@@ -48,14 +48,13 @@ def materiais_novasp(tb_materiais,
                 tb_materiais.modifyCheckbox(
                     n_material, "ELIMINADO", True
                 )
-                lacre_material.caca_lacre(tb_materiais, sap_etapa_material)
+                lacre_material.caca_lacre(
+                    tb_materiais, sap_etapa_material, estoque)
                 lacre = True
-
-        if sap_material in ('50000328', '50000263'):
-            # Remove o lacre bege antigo.
-            tb_materiais.modifyCheckbox(
-                n_material, "ELIMINADO", True
-            )
+            if sap_material == '50001070':
+                lacre_material.caca_lacre(
+                    tb_materiais, sap_etapa_material, estoque)
+                lacre = True
 
         if sap_material == '10014780':
             # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
@@ -110,9 +109,9 @@ def materiais_novasp(tb_materiais,
 
 def materiais_gb_itaquera(tb_materiais,
                           num_material_linhas,
-                          n_material,
                           lacre,
-                          ultima_linha_material):
+                          ultima_linha_material,
+                          estoque):
     '''Contratada GB - MLN'''
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
@@ -135,14 +134,9 @@ def materiais_gb_itaquera(tb_materiais,
                 tb_materiais.modifyCheckbox(
                     n_material, "ELIMINADO", True
                 )
-                lacre_material.caca_lacre(tb_materiais, sap_etapa_material)
+                lacre_material.caca_lacre(
+                    tb_materiais, sap_etapa_material, estoque)
                 lacre = True
-
-        if sap_material in ('50000328', '50000263'):
-            # Remove o lacre bege antigo.
-            tb_materiais.modifyCheckbox(
-                n_material, "ELIMINADO", True
-            )
 
         if sap_material == '10014780':
             # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
@@ -231,25 +225,24 @@ def materiais_gb_itaquera(tb_materiais,
                 f"Etapa: {sap_etapa_material} - UNIAO P/TUBO PEAD DE 20 MM já foi retirado.")
 
 
-def materiais_contratada(tb_materiais, contrato):
+def materiais_contratada(tb_materiais, contrato, estoque):
     '''Módulo de materiais da NOVASP.'''
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     # Número da Row do Grid Materiais do SAP
-    n_material = 0
     lacre = False
     ultima_linha_material = num_material_linhas
     match contrato:
         case "4600041302":
             materiais_novasp(tb_materiais,
                              num_material_linhas,
-                             n_material,
                              lacre,
-                             ultima_linha_material)
+                             ultima_linha_material,
+                             estoque)
         case "4600042888":
             materiais_gb_itaquera(tb_materiais,
                                   num_material_linhas,
-                                  n_material,
                                   lacre,
-                                  ultima_linha_material)
+                                  ultima_linha_material,
+                                  estoque)
         case _:
             return

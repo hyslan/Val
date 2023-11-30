@@ -1,29 +1,12 @@
 '''Módulo Lacre SABESP.'''
-from excel_tbs import load_worksheets
+from sap_connection import connect_to_sap
 
 
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_contratada,
-    _,
-    *_,
-) = load_worksheets()
-
-
-def caca_lacre(tb_materiais, etapa):
+def caca_lacre(tb_materiais, etapa, estoque):
     '''Módulo de procurar lacres no grid de materiais.'''
+    session = connect_to_sap()
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
-    # Número da Row do Grid Materiais do SAP
-    n_material = 0
+    lacre_estoque = estoque[estoque['Material'] == '50001070']
     procura_lacre = []
     ultima_linha_material = num_material_linhas
     # Loop do Grid Materiais.
@@ -32,7 +15,28 @@ def caca_lacre(tb_materiais, etapa):
         sap_material = tb_materiais.GetCellValue(
             n_material, "MATERIAL")
         procura_lacre.append(sap_material)
-    if '50001070' not in procura_lacre:
+
+    if '50001070' in procura_lacre:
+        tb_materiais.pressToolbarButton("&FIND")
+        session.findById(
+            "wnd[1]/usr/txtGS_SEARCH-VALUE").text = '50001070'
+        session.findById(
+            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+        session.findById("wnd[1]").sendVKey(0)
+        session.findById("wnd[1]").sendVKey(12)
+        quantidade = tb_materiais.GetCellValue(
+            tb_materiais.CurrentCellRow, "QUANT"
+        )
+        qtd_float = float(quantidade.replace(",", "."))
+        if qtd_float >= 2.00 and not lacre_estoque.empty:
+            tb_materiais.modifyCell(
+                tb_materiais.CurrentCellRow, "QUANT", "1"
+            )
+            tb_materiais.setCurrentCell(
+                tb_materiais.CurrentCellRow, "QUANT"
+            )
+
+    if '50001070' not in procura_lacre and not lacre_estoque.empty:
 
         tb_materiais.InsertRows(str(ultima_linha_material))
         tb_materiais.modifyCell(

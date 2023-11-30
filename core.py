@@ -147,7 +147,7 @@ def val(pendentes_list, contrato, unadm):
                     etapa_rem_base,
                     etapa_unitario) = precificador(tse, corte, relig, posicao_rede, profundidade)
 
-                # Se a TSE não estiver no escopo dar Val, vai pular pra próxima OS.
+                # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
                 if tse_proibida is not None:
                     ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Num Pode")
@@ -156,6 +156,7 @@ def val(pendentes_list, contrato, unadm):
                     continue
                 else:
                     # Aba Materiais
+                    # RB - Investimento
                     if chave_rb_investimento:
                         materiais(int_num_lordem,
                                   hidro,
@@ -163,8 +164,9 @@ def val(pendentes_list, contrato, unadm):
                                   chave_rb_investimento,
                                   diametro_ramal,
                                   diametro_rede,
-                                  contrato)
-
+                                  contrato,
+                                  estoque_hj)
+                    # RB - Despesa
                     if list_chave_rb_despesa:
                         for chave_rb_despesa in list_chave_rb_despesa:
                             materiais(int_num_lordem,
@@ -173,8 +175,9 @@ def val(pendentes_list, contrato, unadm):
                                       chave_rb_despesa,
                                       diametro_ramal,
                                       diametro_rede,
-                                      contrato)
-
+                                      contrato,
+                                      estoque_hj)
+                    # Unitários
                     if list_chave_unitario:
                         for chave_unitario in list_chave_unitario:
                             materiais(int_num_lordem,
@@ -183,7 +186,8 @@ def val(pendentes_list, contrato, unadm):
                                       chave_unitario,
                                       diametro_ramal,
                                       diametro_rede,
-                                      contrato)
+                                      contrato,
+                                      estoque_hj)
                     # Fim dos materiais
                     # sys.exit()
                     # Salvar Ordem

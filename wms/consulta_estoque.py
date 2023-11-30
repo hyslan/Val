@@ -23,19 +23,19 @@ def estoque(session, sessions, contrato):
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = "estoque.XLSX"
     session.findById("wnd[1]").sendVKey(11)  # Substituir
     print("Planilha de estoque gerada com sucesso.")
-    estoque = pd.read_excel(caminho + "estoque.XLSX",
-                            sheet_name="Sheet1", usecols=["Material",
-                                                          "Texto breve material",
-                                                          "Utilização livre"
-                                                          ]
-                            )
-    estoque = estoque.dropna()
-    estoque['Material'] = estoque['Material'].astype(int).astype(str)
+    materiais = pd.read_excel(caminho + "estoque.XLSX",
+                              sheet_name="Sheet1", usecols=["Material",
+                                                            "Texto breve material",
+                                                            "Utilização livre"
+                                                            ]
+                              )
+    materiais = materiais.dropna()
+    materiais['Material'] = materiais['Material'].astype(int).astype(str)
     con = sap.listar_conexoes()
     # session.EndTransaction()
     print("Encerrando Sessão.")
     con.CloseSession(f"/app/con[0]/ses[{len(sessions)}]")
-    time.sleep(3)
+    time.sleep(6)
     print("Fechando Arquivo Excel.\n")
     try:
         book = xw.Book('estoque.xlsx')
@@ -43,4 +43,4 @@ def estoque(session, sessions, contrato):
     except Exception as e:
         print(e)
 
-    return estoque
+    return materiais

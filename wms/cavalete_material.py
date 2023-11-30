@@ -34,7 +34,8 @@ class CavaleteMaterial:
                  diametro_ramal,
                  diametro_rede,
                  tb_materiais,
-                 contrato) -> None:
+                 contrato,
+                 estoque) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -43,12 +44,14 @@ class CavaleteMaterial:
         self.diametro_rede = diametro_rede
         self.tb_materiais = tb_materiais
         self.contrato = contrato
+        self.estoque = estoque
 
     def receita_cavalete(self):
         '''Padrão de materiais na classe Religação.'''
         sap_material = testa_material_sap.testa_material_sap(
             self.int_num_lordem, self.tb_materiais)
-        if sap_material is None:
+        lacre_estoque = self.estoque[self.estoque['Material'] == '50001070']
+        if sap_material is None and not lacre_estoque.empty:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(
@@ -66,8 +69,6 @@ class CavaleteMaterial:
             ultima_linha_material = ultima_linha_material + 1
         else:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
-            # Número da Row do Grid Materiais do SAP
-            n_material = 0
             ultima_linha_material = num_material_linhas
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
@@ -76,11 +77,13 @@ class CavaleteMaterial:
                     n_material, "MATERIAL")
 
                 if sap_material == '30029526' \
-                    and self.contrato == "4600041302":
+                        and self.contrato == "4600041302":
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
 
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato)
-            lacre_material.caca_lacre(self.tb_materiais, self.operacao)
+            materiais_contratada.materiais_contratada(
+                self.tb_materiais, self.contrato, self.estoque)
+            lacre_material.caca_lacre(
+                self.tb_materiais, self.operacao, self.estoque)
