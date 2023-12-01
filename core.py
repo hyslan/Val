@@ -165,7 +165,8 @@ def val(pendentes_list, contrato, unadm):
                                   diametro_ramal,
                                   diametro_rede,
                                   contrato,
-                                  estoque_hj)
+                                  estoque_hj,
+                                  posicao_rede)
                     # RB - Despesa
                     if list_chave_rb_despesa:
                         for chave_rb_despesa in list_chave_rb_despesa:
@@ -176,7 +177,8 @@ def val(pendentes_list, contrato, unadm):
                                       diametro_ramal,
                                       diametro_rede,
                                       contrato,
-                                      estoque_hj)
+                                      estoque_hj,
+                                      posicao_rede)
                     # Unitários
                     if list_chave_unitario:
                         for chave_unitario in list_chave_unitario:
@@ -187,9 +189,10 @@ def val(pendentes_list, contrato, unadm):
                                       diametro_ramal,
                                       diametro_rede,
                                       contrato,
-                                      estoque_hj)
+                                      estoque_hj,
+                                      posicao_rede)
                     # Fim dos materiais
-                    # sys.exit()
+                    sys.exit()
                     # Salvar Ordem
                     qtd_ordem = salvar(ordem, qtd_ordem, contrato, unadm)
                     # Fim do contador de valoração.

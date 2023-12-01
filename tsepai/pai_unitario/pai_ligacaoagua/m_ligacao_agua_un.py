@@ -42,7 +42,7 @@ class LigacaoAgua:
         session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = LigacaoAgua.OBS
-        identificador = LigacaoAgua.MODALIDADE
+        identificador = "ligacao_agua_nova"
         print("Iniciando processo Pai de Ligação de Água Avulsa - TSE 254000")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"

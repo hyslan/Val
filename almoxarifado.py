@@ -24,7 +24,8 @@ class Almoxarifado:
                  diametro_ramal,
                  diametro_rede,
                  contrato,
-                 estoque
+                 estoque,
+                 posicao_rede
                  ) -> None:
         self.hidro = hidro
         self.int_num_lordem = int_num_lordem
@@ -35,6 +36,7 @@ class Almoxarifado:
         self.diametro_rede = diametro_rede
         self.contrato = contrato
         self.estoque = estoque
+        self.posicao_rede = posicao_rede
 
     def aba_materiais(self):
         '''Função habilita aba de materiais no sap'''
@@ -178,13 +180,14 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        df_materiais
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita "
                           + "de Ligação (Ramal) de Água.")
                     material.receita_troca_de_conexao_de_ligacao_de_agua()
 
-                case "reparo_ramal_agua" | "ligacao_agua":
+                case "reparo_ramal_agua" | "ligacao_agua" | "ligacao_agua_nova":
                     material = rede_agua_material.RedeAguaMaterial(
                         self.int_num_lordem,
                         self.hidro,
@@ -195,10 +198,26 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        df_materiais
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
+                    # Olhar hidrômetro e lacre em ligações novas.
+                    if self.identificador[2] == "ligacao_agua_nova":
+                        material = hidrometro_material.HidrometroMaterial(
+                            self.int_num_lordem,
+                            self.hidro,
+                            self.operacao,
+                            self.identificador,
+                            self.diametro_ramal,
+                            self.diametro_rede,
+                            tb_materiais,
+                            self.contrato,
+                            self.estoque
+                        )
+                    print("Aplicando a receita de hidrômetro em ligação de água nova.")
+                    material.receita_hidrometro()
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                     material = rede_agua_material.RedeAguaMaterial(
@@ -211,7 +230,8 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        df_materiais
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita de Rede de Água")
                     material.receita_reparo_de_rede_de_agua()
@@ -295,7 +315,8 @@ def materiais(int_num_lordem,
               diametro_ramal,
               diametro_rede,
               contrato,
-              estoque
+              estoque,
+              posicao_rede
               ):
     '''Função dos materiais de acordo com a TSE pai.'''
     servico = Almoxarifado(int_num_lordem,
@@ -305,7 +326,8 @@ def materiais(int_num_lordem,
                            diametro_ramal,
                            diametro_rede,
                            contrato,
-                           estoque
+                           estoque,
+                           posicao_rede
                            )
     tb_materiais = servico.aba_materiais()
     df_materiais = servico.materiais_vinculados(tb_materiais)

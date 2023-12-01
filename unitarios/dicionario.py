@@ -23,6 +23,7 @@ def preserv_inter_serv(identificador):
         ["ramal_agua"],
         ["tra"],
         ["ligacao_agua"],
+        ["ligacao_agua_nova"],
         ["rede_agua"],
         ["supr_restab"]
     ]

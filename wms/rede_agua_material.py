@@ -2,6 +2,7 @@
 '''Módulo dos materiais de família Rede de Água.'''
 from wms import testa_material_sap
 from wms import materiais_contratada
+from wms import localiza_material
 from sap_connection import connect_to_sap
 
 
@@ -17,7 +18,8 @@ class RedeAguaMaterial:
                  tb_materiais,
                  contrato,
                  estoque,
-                 df_materiais) -> None:
+                 df_materiais,
+                 posicao_rede) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -28,14 +30,33 @@ class RedeAguaMaterial:
         self.contrato = contrato
         self.estoque = estoque
         self.df_materiais = df_materiais
+        self.posicao_rede = posicao_rede
 
     def materiais_vigentes(self):
         '''Materiais com estoque.'''
         session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
             self.int_num_lordem, self.tb_materiais)
-        # CONEXÕES METALICAS COTOVELO FEMEA DN 3/4
+        # CONEXOES MET LIGACOES  FÊMEA DN 20
         con_met_femea_estoque = self.estoque[self.estoque['Material'] == '30002394']
+        # CONEXOES MET ADAP MACHO DN 20
+        con_met_macho_estoque = self.estoque[self.estoque['Material'] == '30001346']
+        # DISPOSITIVO MED PLASTICO DN 20
+        disp_med_plastico_estoque = self.estoque[self.estoque['Material'] == '50000178']
+        # REGISTRO METALICO RAMAL PREDIAL DN 20
+        reg_met_predial_dn20_estoque = self.estoque[self.estoque['Material'] == '30006747']
+        # COLAR TOM P/TUBO PE DE 32XDN 20 TE INTEG
+        colar_tom_tubo_pe_dn32xdn20_estoque = self.estoque[
+            self.estoque['Material'] == '30000287']
+        # COLAR TOMADA ACO INOX DN50A150 X DNR20
+        colar_tom_aco_inox__dn50a150xdnr20_estoque = self.estoque[
+            self.estoque['Material'] == '30004702']
+        # COLAR TOMADA ACO INOX DN200A300 X DNR20
+        colar_tom_aco_inox__dn200a300xdnr20_estoque = self.estoque[
+            self.estoque['Material'] == '30004701']
+        # COLAR TOMADA FF C.INOX DN200A300 X DNR20
+        colar_tom_ff_cinox__dn200a300xdnr20_estoque = self.estoque[
+            self.estoque['Material'] == '30004703']
         # ABRACADEIRA FF REPARO TUBO DN75 LMIN=150
         abrac_ff_reparo_dn75_lmin150_estoque = self.estoque[self.estoque['Material'] == '30001122']
         # ABRACADEIRA INOX REPARO TUBO DN50 L=300
@@ -47,23 +68,81 @@ class RedeAguaMaterial:
             num_material_linhas = self.tb_materiais.RowCount
             ultima_linha_material = num_material_linhas
             tubo_pead_dn20 = self.df_materiais[self.df_materiais['Material'] == '30001848']
-            if tubo_pead_dn20:
+            con_met_femea = self.df_materiais[self.df_materiais['Material'] == '30002394']
+            con_met_macho = self.df_materiais[self.df_materiais['Material'] == '30001346']
+            disp_med_plastico = self.df_materiais[self.df_materiais['Material'] == '50000178']
+            reg_met_predial_dn20 = self.df_materiais[self.df_materiais['Material'] == '30006747']
+            colar_tom_tubo_pe_dn32xdn20 = self.df_materiais[
+                self.df_materiais['Material'] == '30000287']
+            colar_tom_aco_inox__dn50a150xdnr20 = self.df_materiais[
+                self.df_materiais['Material'] == '30004702']
+            colar_tom_aco_inox__dn200a300xdnr20 = self.df_materiais[
+                self.df_materiais['Material'] == '30004701']
+            colar_tom_ff_cinox__dn200a300xdnr20 = self.df_materiais[
+                self.df_materiais['Material'] == '30004703']
+
+            for material in self.df_materiais['Material']:
+                match material:
+                    case '30002394':
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, '30002394')
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
+                    case '30001346':
+                        pass
+                    case '50000178':
+                        pass
+                    case '30006747':
+                        pass
+
+            if tubo_pead_dn20 and not tubo_pead_dn20_estoque.empty:
                 # Conserta qtd tubo pead
-                qtd_pead20 = tubo_pead_dn20.query('`Quantidade` > 20')
-                if not qtd_pead20.empty and not tubo_pead_dn20_estoque.empty:
-                    self.tb_materiais.pressToolbarButton("&FIND")
-                    session.findById(
-                        "wnd[1]/usr/txtGS_SEARCH-VALUE").text = '30001848'
-                    session.findById(
-                        "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
-                    session.findById("wnd[1]").sendVKey(0)
-                    session.findById("wnd[1]").sendVKey(12)
-                    self.tb_materiais.modifyCell(
-                        self.tb_materiais.CurrentCellRow, "QUANT", "2"
-                    )
-                    self.tb_materiais.setCurrentCell(
-                        self.tb_materiais.CurrentCellRow, "QUANT"
-                    )
+                codigo = '30001848'
+                match self.posicao_rede:
+                    case 'PA':
+                        qtd_pead20_max = tubo_pead_dn20.query(
+                            '`Quantidade` > 2.5')
+                        if not qtd_pead20_max.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, codigo)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "2")
+                    case 'TA':
+                        qtd_pead20_max = tubo_pead_dn20.query(
+                            '`Quantidade` > 4')
+                        if not qtd_pead20_max.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, codigo)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "4")
+                    case 'EX':
+                        qtd_pead20_max = tubo_pead_dn20.query(
+                            '`Quantidade` > 10')
+                        if not qtd_pead20_max.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, codigo)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "5")
+                    case 'TO':
+                        qtd_pead20_max = tubo_pead_dn20.query(
+                            '`Quantidade` > 15')
+                        if not qtd_pead20_max.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, codigo)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "7")
+                    case 'PO':
+                        qtd_pead20_max = tubo_pead_dn20.query(
+                            '`Quantidade` > 15')
+                        if not qtd_pead20_max.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, codigo)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "10")
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
