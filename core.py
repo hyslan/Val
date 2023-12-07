@@ -145,7 +145,24 @@ def val(pendentes_list, contrato, unadm):
                     chave_rb_investimento,
                     chave_unitario,
                     etapa_rem_base,
-                    etapa_unitario) = precificador(tse, corte, relig, posicao_rede, profundidade)
+                    etapa_unitario,
+                    ligacao_errada,
+                    profundidade_errada
+                 ) = precificador(tse, corte, relig, posicao_rede, profundidade)
+
+                if ligacao_errada is True:
+                    ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="Sem posição de rede.")
+                    int_num_lordem += 1
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
+
+                if profundidade_errada is True:
+                    ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="Sem profundidade do ramal.")
+                    int_num_lordem += 1
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
 
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
                 if tse_proibida is not None:
@@ -192,7 +209,7 @@ def val(pendentes_list, contrato, unadm):
                                       estoque_hj,
                                       posicao_rede)
                     # Fim dos materiais
-                    sys.exit()
+                    # sys.exit()
                     # Salvar Ordem
                     qtd_ordem = salvar(ordem, qtd_ordem, contrato, unadm)
                     # Fim do contador de valoração.
@@ -206,6 +223,8 @@ def val(pendentes_list, contrato, unadm):
         except pywintypes.com_error as erro:
             # Baixa e abre novo arquivo do SAP
             print(f"Erro: {erro}")
+            sys.exit()
+            sap.encerrar_sap()
             down_sap()
             print("Reiniciando programa")
 

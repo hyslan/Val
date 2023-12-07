@@ -1,7 +1,6 @@
 # hidrometro_material.py
 '''Módulo dos materiais de família Hidrômetro.'''
 from sap_connection import connect_to_sap
-from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
 from wms import lacre_material
@@ -34,18 +33,21 @@ class HidrometroMaterial:
         session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
             self.int_num_lordem, self.tb_materiais)
+        if self.hidro is None:
+            return
         hidro_instalado = self.hidro
         if sap_material is None:
             if hidro_instalado is not None:
                 print("Tem hidro, mas não foi vinculado!")
                 ultima_linha_material = 0
                 hidro_y = 'Y'
+                hidro_a = 'A'
                 # Hidrômetro atual.
                 hidro_instalado = hidro_instalado.upper()
                 # Mata-burro pra hidro.
                 if hidro_instalado.startswith(hidro_y):
                     cod_hidro_instalado = '50000108'
-                else:
+                if hidro_instalado.startswith(hidro_a):
                     cod_hidro_instalado = '50000530'
                 # Colocar lacre.
                 hidro_estoque = self.estoque[self.estoque['Material']
@@ -89,14 +91,15 @@ class HidrometroMaterial:
             n_material = 0
             ultima_linha_material = num_material_linhas
             hidro_y = 'Y'
+            hidro_a = 'A'
             sap_hidro = []
             # Hidrômetro atual.
-            self.hidro = self.hidro.upper()
+            hidro_instalado = hidro_instalado.upper()
 
             # Mata-burro pra hidro.
-            if self.hidro.startswith(hidro_y):
+            if hidro_instalado.startswith(hidro_y):
                 cod_hidro_instalado = '50000108'
-            else:
+            if hidro_instalado.startswith(hidro_a):
                 cod_hidro_instalado = '50000530'
 
             hidro_estoque = self.estoque[self.estoque['Material']

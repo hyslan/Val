@@ -59,7 +59,8 @@ def main():
               + "\n3 - Pertencedor"
               + "\n4 - TSE geral"
               + "\n5 - TSEs Expecíficas"
-              + "\n6 - TSE Expecífica")
+              + "\n6 - TSE Expecífica"
+              + "\n7 - Teste de Ordem única.")
         try:
             resposta = input(
                 "\n- Val: Escolha uma opção:\n "
@@ -96,6 +97,16 @@ def main():
                     pendentes_list = pendentes.tse_expecifica(contrato)
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, contrato, unadm)
+                case "7":
+                    contrato, unadm = contratada()
+                    ordem_expec = input(
+                        "- Val: Digite o Nº da Ordem, por favor.\n"
+                    )
+                    teste = sql_view.Tabela(ordem_expec, "")
+                    teste_list = teste.ordem_especifica()
+                    ordem, int_num_lordem, validador = val(
+                        teste_list, contrato, unadm
+                    )
 
         except TypeError as erro:
             print(f"Erro: {erro}")

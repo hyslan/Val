@@ -216,8 +216,8 @@ class Almoxarifado:
                             self.contrato,
                             self.estoque
                         )
-                    print("Aplicando a receita de hidrômetro em ligação de água nova.")
-                    material.receita_hidrometro()
+                        print("Aplicando a receita de hidrômetro em ligação de água nova.")
+                        material.receita_hidrometro()
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                     material = rede_agua_material.RedeAguaMaterial(

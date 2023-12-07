@@ -40,12 +40,12 @@ class Cavalete:
 
     @staticmethod
     def reparo_cv():
-        '''Reparo de Cavalete'''
+        '''Reparo de Cavalete ou readequado cavalete'''
         session = connect_to_sap()
         etapa_reposicao = []
         tse_proibida = Cavalete.OBS
         identificador = Cavalete.MODALIDADE
-        print("Iniciando processo Pai de Reparo de Cavalete - TSE 130000")
+        print("Iniciando processo Pai de Reparo/Readequado CV")
         servico_temp = session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
@@ -64,7 +64,7 @@ class Cavalete:
                 continue
 
             elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 continue

@@ -83,3 +83,15 @@ class Tabela:
         cnn.execute(text(sql_command))
         cnn.commit()
         cnn.close()
+
+    def ordem_especifica(self):
+        '''Teste de Ordem única.'''
+        engine = create_engine(self.connection_url)
+        cnn = engine.connect()
+        sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE ORDEM = '{}'").format(str(self.ordem))
+        df = pd.read_sql(sql_command, cnn)
+        df = df.reset_index()
+        df_list = df['Ordem'].tolist()
+        cnn.close()
+        return df_list

@@ -12,6 +12,7 @@ def consulta_os(n_os, contrato, unadm):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
     diametro_ramal = None
     diametro_rede = None
+    hidro = None
 
     def zsbpm020():
         '''Transact 020'''
@@ -117,8 +118,9 @@ def consulta_os(n_os, contrato, unadm):
     for n_etapa, hidro_colocado in enumerate(range(0, num_etapas_linhas)):
         hidro_colocado = consulta.GetCellValue(
             n_etapa, "ZZHIDROMETRO_INSTALADO")
-        if hidro_colocado is not None:
+        if hidro_colocado:
             hidro = hidro_colocado
+            break
 
     for n_etapa in range(0, num_etapas_linhas):
         sap_diametro_ramal = consulta.GetCellValue(

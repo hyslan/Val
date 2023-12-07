@@ -73,18 +73,18 @@ def pai_servico_unitario(servico_temp):
         '207000': m_hidrometro.Hidrometro.un_hidrometro,
         '211000': m_hidrometro.Hidrometro.hidrometro_alterar_capacidade,
         '215000': m_hidrometro.Hidrometro.un_hidrometro,
-        '253000': troca_de_ramal_agua_un,
+        '253000': troca_de_ramal_agua_un,  # Inclusão
         '254000': m_ligacao_agua_un.LigacaoAgua.ligacao_agua_avulsa,
-        '255000': troca_de_ramal_agua_un,
-        '262000': troca_de_ramal_agua_un,
-        '265000': troca_de_ramal_agua_un,
+        '255000': troca_de_ramal_agua_un,  # Ligação Cv múltiplo
+        '262000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '265000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
         '266000': transformacao_lig,
         '267000': transformacao_lig,
         '268000': transformacao_lig,
         '269000': transformacao_lig,
-        '280000': m_ligacao_agua_un.LigacaoAgua.png,
-        '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv,
-        '286000': troca_de_ramal_agua_un,
+        '280000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '286000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
         '312000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
@@ -133,6 +133,7 @@ def pai_servico_cesta(servico_temp):
     dicionario_pai_cesta = {
 
         '130000': m_cavalete_rb.Cavalete.reparo_cv,
+        '138000': m_cavalete_rb.Cavalete.reparo_cv,
         '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
         '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
         '283000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,

@@ -92,56 +92,105 @@ class RedeAguaMaterial:
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30001346':
-                        pass
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, '30001346')
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
                     case '50000178':
-                        pass
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, '50000178')
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
                     case '30006747':
-                        pass
-
-            if tubo_pead_dn20 and not tubo_pead_dn20_estoque.empty:
-                # Conserta qtd tubo pead
-                codigo = '30001848'
-                match self.posicao_rede:
-                    case 'PA':
-                        qtd_pead20_max = tubo_pead_dn20.query(
-                            '`Quantidade` > 2.5')
-                        if not qtd_pead20_max.empty:
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, codigo)
+                                self.tb_materiais, session, '30006747')
                             localiza_material.qtd_correta(
-                                self.tb_materiais, "2")
-                    case 'TA':
-                        qtd_pead20_max = tubo_pead_dn20.query(
-                            '`Quantidade` > 4')
-                        if not qtd_pead20_max.empty:
+                                self.tb_materiais, "1")
+                    case '30000287':
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, codigo)
+                                self.tb_materiais, session, '30000287')
                             localiza_material.qtd_correta(
-                                self.tb_materiais, "4")
-                    case 'EX':
-                        qtd_pead20_max = tubo_pead_dn20.query(
-                            '`Quantidade` > 10')
-                        if not qtd_pead20_max.empty:
+                                self.tb_materiais, "1")
+                    case '30004702':
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, codigo)
+                                self.tb_materiais, session, '30004702')
                             localiza_material.qtd_correta(
-                                self.tb_materiais, "5")
-                    case 'TO':
-                        qtd_pead20_max = tubo_pead_dn20.query(
-                            '`Quantidade` > 15')
-                        if not qtd_pead20_max.empty:
+                                self.tb_materiais, "1")
+                    case '30004701':
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, codigo)
+                                self.tb_materiais, session, '30004701')
                             localiza_material.qtd_correta(
-                                self.tb_materiais, "7")
-                    case 'PO':
-                        qtd_pead20_max = tubo_pead_dn20.query(
-                            '`Quantidade` > 15')
-                        if not qtd_pead20_max.empty:
+                                self.tb_materiais, "1")
+                    case '30004703':
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, codigo)
+                                self.tb_materiais, session, '30004703')
                             localiza_material.qtd_correta(
-                                self.tb_materiais, "10")
+                                self.tb_materiais, "1")
+                    # TUBO PEAD DN20
+                    case '30001848':
+                        codigo = '30001848'
+                        match self.posicao_rede:
+                            case 'PA':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 2.5, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "2")
+                            case 'TA':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 4.5, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "4")
+                            case 'EX':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 10, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "5")
+                            case 'TO':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 15, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "7")
+                            case 'PO':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 15, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "10")
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
@@ -179,7 +228,7 @@ class RedeAguaMaterial:
                         self.tb_materiais.modifyCheckbox(
                             n_material, "ELIMINADO", True
                         )
-                        if not con_met_femea_estoque:
+                        if not con_met_femea_estoque.empty:
                             self.tb_materiais.InsertRows(
                                 str(ultima_linha_material))
                             self.tb_materiais.modifyCell(
@@ -227,6 +276,28 @@ class RedeAguaMaterial:
                         self.tb_materiais.modifyCheckbox(
                             n_material, "ELIMINADO", True
                         )
+
+                    case '30002202':
+                        self.tb_materiais.modifyCheckbox(
+                            n_material, "ELIMINADO", True
+                        )
+                        if not colar_tom_aco_inox__dn50a150xdnr20_estoque.empty:
+                            self.tb_materiais.InsertRows(
+                                str(ultima_linha_material))
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "ETAPA", sap_etapa_material
+                            )
+                            # Adiciona COLAR TOMADA ACO INOX DN50A150 X DNR20.
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "MATERIAL", "30004702"
+                            )
+                            self.tb_materiais.modifyCell(
+                                ultima_linha_material, "QUANT", "1"
+                            )
+                            self.tb_materiais.setCurrentCell(
+                                ultima_linha_material, "QUANT"
+                            )
+                            ultima_linha_material = ultima_linha_material + 1
 
     def receita_reparo_de_rede_de_agua(self):
         '''Padrão de materiais na classe CRA.'''

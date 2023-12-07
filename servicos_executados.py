@@ -140,8 +140,6 @@ def verifica_tse(servico):
         # Pulando OS com asfalto incluso.
         elif sap_tse in tb_tse_asfalto:
             tse_proibida = "Aslfato na bagaça!"
-            reposicao = sap_tse
-            etapa_reposicao = etapa_pai
             break
 
         # Reposição de Guia, fazer manual.
@@ -167,9 +165,9 @@ def verifica_tse(servico):
             break
 
         # Readequado Cavalete, verificar...
-        elif sap_tse == '138000':
-            tse_proibida = 'Readequado Cavalete!'
-            break
+        # elif sap_tse == '138000':
+        #     tse_proibida = 'Readequado Cavalete!'
+        #     break
 
         # Suprimido Ramal anterior
         elif sap_tse == '415000':
@@ -216,6 +214,28 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue
+
+    if tse_proibida is not None:
+        reposicao = None
+        etapa_reposicao = None
+        rem_base_reposicao_union = None
+        reposicao_geral = None
+        return (
+            tse_temp,
+            reposicao,
+            num_tse_linhas,
+            tse_proibida,
+            identificador_list,
+            etapa_reposicao,
+            mae,
+            list_chave_rb_despesa,
+            list_chave_unitario,
+            chave_rb_investimento,
+            chave_unitario,
+            unitario_reposicao,
+            rem_base_reposicao_union,
+            reposicao_geral
+        )
 
     rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=None)
     unitario_reposicao_flat = np.ravel(unitario_reposicao)

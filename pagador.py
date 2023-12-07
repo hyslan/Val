@@ -3,29 +3,8 @@
 import sys
 from servicos_executados import verifica_tse
 from sap_connection import connect_to_sap
-from excel_tbs import load_worksheets
 from unitarios import dicionario
 from cesta import cesta_dicionario
-
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_contratada,
-    tb_contratada_gb,
-    tb_tse_un,
-    tb_tse_rem_base,
-    _,
-    tb_tse_invest,
-    *_,
-) = load_worksheets()
 
 
 def precificador(tse, corte, relig, posicao_rede, profundidade):
@@ -51,54 +30,125 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         tse)
     etapa_rem_base = []
     etapa_unitario = []
+    ligacao_errada = False
+    profundidade_errada = False
+
     if tse_proibida is not None:
         print("TSE proibida de ser valorada.")
-    else:
-        print(f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")
-        print(f"Chave unitario: {list_chave_unitario}")
-        print(f"Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")
-        if list_chave_unitario:  # Verifica se está no Conjunto Unitários
-            # Aba Itens de preço
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
-            print("****Processo de Precificação****")
-            for chave_unitario in list_chave_unitario:
-                # pylint: disable=E1121
-                dicionario.unitario(
-                    chave_unitario[0],
-                    corte,
-                    relig,
-                    chave_unitario[3],
-                    num_tse_linhas,
-                    chave_unitario[4],
-                    identificador,
-                    posicao_rede,
-                    profundidade
-                )
-                etapa_unitario.append(chave_unitario[0])
+        return (
+            tse_proibida,
+            identificador,
+            list_chave_rb_despesa,
+            list_chave_unitario,
+            chave_rb_investimento,
+            chave_unitario,
+            etapa_rem_base,
+            etapa_unitario,
+            ligacao_errada,
+            profundidade_errada
+        )
 
-        if chave_rb_investimento:
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+    if chave_unitario is not None and chave_unitario[0] in (
+            '253000',
+            '254000',
+            '255000',
+            '262000',
+            '265000',
+            '266000',
+            '268000',
+            '269000',
+            '280000',
+            '284500',
+            '286000',
+            '502000',
+            '505000',
+            '508000',
+            '561000',
+            '565000',
+            '569000',
+            '581000',
+            '539000',
+            '539000',
+            '585000',
+    ) and not posicao_rede:
+        ligacao_errada = True
+
+    if chave_unitario is not None and chave_unitario[0] in (
+            '502000',
+            '505000',
+            '508000',
+            '561000',
+            '565000',
+            '569000',
+            '581000',
+            '539000',
+            '539000',
+            '585000',
+    ) and not profundidade:
+        profundidade_errada = True
+
+    if ligacao_errada or profundidade_errada is True:
+        print("Sem informação de rede.")
+        return (
+            tse_proibida,
+            identificador,
+            list_chave_rb_despesa,
+            list_chave_unitario,
+            chave_rb_investimento,
+            chave_unitario,
+            etapa_rem_base,
+            etapa_unitario,
+            ligacao_errada,
+            profundidade_errada
+        )
+
+    print(
+        f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")
+    print(f"Chave unitario: {list_chave_unitario}")
+    print(
+        f"Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")
+    if list_chave_unitario:  # Verifica se está no Conjunto Unitários
+        # Aba Itens de preço
+        session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
+        print("****Processo de Precificação****")
+        for chave_unitario in list_chave_unitario:
+            # pylint: disable=E1121
+            dicionario.unitario(
+                chave_unitario[0],
+                corte,
+                relig,
+                chave_unitario[3],
+                num_tse_linhas,
+                chave_unitario[4],
+                identificador,
+                posicao_rede,
+                profundidade
+            )
+            etapa_unitario.append(chave_unitario[0])
+
+    if chave_rb_investimento:
+        session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        cesta_dicionario.cesta(
+            chave_rb_investimento[3],
+            chave_rb_investimento[4],
+            chave_rb_investimento,
+            mae
+        )
+
+    if list_chave_rb_despesa:
+        session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        for chave_rb_despesa in list_chave_rb_despesa:
+            print(f"reosicao rb: {reposicao}")
+            print(f"etapa rep rb: {etapa_reposicao}")
             cesta_dicionario.cesta(
-                chave_rb_investimento[3],
-                chave_rb_investimento[4],
-                chave_rb_investimento,
+                chave_rb_despesa[3],
+                chave_rb_despesa[4],
+                chave_rb_despesa,
                 mae
             )
-
-        if list_chave_rb_despesa:
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-            for chave_rb_despesa in list_chave_rb_despesa:
-                print(f"reosicao rb: {reposicao}")
-                print(f"etapa rep rb: {etapa_reposicao}")
-                cesta_dicionario.cesta(
-                    chave_rb_despesa[3],
-                    chave_rb_despesa[4],
-                    chave_rb_despesa,
-                    mae
-                )
 
     return (
         tse_proibida,
@@ -108,5 +158,7 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         chave_rb_investimento,
         chave_unitario,
         etapa_rem_base,
-        etapa_unitario
+        etapa_unitario,
+        ligacao_errada,
+        profundidade_errada
     )
