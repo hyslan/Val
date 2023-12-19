@@ -216,7 +216,8 @@ class Almoxarifado:
                             self.contrato,
                             self.estoque
                         )
-                        print("Aplicando a receita de hidrômetro em ligação de água nova.")
+                        print(
+                            "Aplicando a receita de hidrômetro em ligação de água nova.")
                         material.receita_hidrometro()
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
@@ -246,7 +247,9 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita de Ramal de Esgoto")
                     material.receita_reparo_de_ramal_de_esgoto()
@@ -261,7 +264,9 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
@@ -276,7 +281,9 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        df_materiais,
+                        self.posicao_rede
                     )
                     print("Aplicando a receita de PNG Esgoto")
                     material.png()

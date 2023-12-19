@@ -77,6 +77,7 @@ def pai_servico_unitario(servico_temp):
         '254000': m_ligacao_agua_un.LigacaoAgua.ligacao_agua_avulsa,
         '255000': troca_de_ramal_agua_un,  # Ligação Cv múltiplo
         '262000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '263000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
         '265000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
         '266000': transformacao_lig,
         '267000': transformacao_lig,

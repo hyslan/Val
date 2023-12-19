@@ -131,10 +131,6 @@ class LigacaoEsgoto:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                if sap_tse in ('170301', '749000', '758500'):
-                    servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                    servico_temp.modifyCell(n_tse, "CODIGO", "10")
-
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
@@ -150,5 +146,10 @@ class LigacaoEsgoto:
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
+                continue
+
+            if sap_tse in ('170301', '749000', '758500', '740000'):
+                servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                servico_temp.modifyCell(n_tse, "CODIGO", "10")
 
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao

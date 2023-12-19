@@ -209,7 +209,7 @@ def val(pendentes_list, contrato, unadm):
                                       estoque_hj,
                                       posicao_rede)
                     # Fim dos materiais
-                    # sys.exit()
+                    sys.exit()
                     # Salvar Ordem
                     qtd_ordem = salvar(ordem, qtd_ordem, contrato, unadm)
                     # Fim do contador de valoração.

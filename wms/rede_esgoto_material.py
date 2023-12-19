@@ -1,8 +1,9 @@
 # hidrometro_material.py
 '''Módulo dos materiais de família Rede de Esgoto.'''
-from excel_tbs import load_worksheets
 from wms import testa_material_sap
 from wms import materiais_contratada
+from wms import localiza_material
+from sap_connection import connect_to_sap
 
 
 class RedeEsgotoMaterial:
@@ -16,7 +17,9 @@ class RedeEsgotoMaterial:
                  diametro_rede,
                  tb_materiais,
                  contrato,
-                 estoque
+                 estoque,
+                 df_materiais,
+                 posicao_rede
                  ) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
@@ -27,10 +30,8 @@ class RedeEsgotoMaterial:
         self.tb_materiais = tb_materiais
         self.contrato = contrato
         self.estoque = estoque
-
-    def materiais_disponiveis(self):
-        '''Estoque disponível'''
-        pass
+        self.df_materiais = df_materiais
+        self.posicao_rede = posicao_rede
 
     def ramal_luva_correr(self):
         '''Saber diâmetro do ramal para luva correr'''
@@ -115,12 +116,87 @@ class RedeEsgotoMaterial:
 
     def materiais_vigentes(self):
         '''Materiais com estoque'''
+        session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
             self.int_num_lordem, self.tb_materiais)
         if sap_material is not None:
+            luva_correr = self.ramal_luva_correr()
+            curva45, curva90 = self.curva()
             num_material_linhas = self.tb_materiais.RowCount
             n_material = 0
             ultima_linha_material = num_material_linhas
+
+            for material in self.df_materiais['Material']:
+                match material:
+                    case [curva90]:
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, curva90)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
+                    case [curva45]:
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, curva45)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
+                    case [luva_correr]:
+                        resultado = localiza_material.qtd_max(
+                            material, self.estoque, 1, self.df_materiais)
+                        if not resultado.empty:
+                            localiza_material.btn_busca_material(
+                                self.tb_materiais, session, luva_correr)
+                            localiza_material.qtd_correta(
+                                self.tb_materiais, "1")
+                    # TUBO PVC RIG JEI/JERI ESG DN 100 CM 6M
+                    case '30028856':
+                        codigo = '30028856'
+                        match self.posicao_rede:
+                            case 'PA':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 2.5, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "2")
+                            case 'TA':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 4.5, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "4")
+                            case 'EX':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 10, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "5")
+                            case 'TO':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 15, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "7")
+                            case 'PO':
+                                resultado = localiza_material.qtd_max(
+                                    material, self.estoque, 15, self.df_materiais)
+                                if not resultado.empty:
+                                    localiza_material.btn_busca_material(
+                                        self.tb_materiais, session, codigo)
+                                    localiza_material.qtd_correta(
+                                        self.tb_materiais, "10")
+
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0

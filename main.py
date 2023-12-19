@@ -5,6 +5,7 @@ import sys
 import time
 import datetime
 import sql_view
+import pendentes_excel
 from core import val
 from avatar import val_avatar
 from etl import extract_from_sql
@@ -60,7 +61,8 @@ def main():
               + "\n4 - TSE geral"
               + "\n5 - TSEs Expecíficas"
               + "\n6 - TSE Expecífica"
-              + "\n7 - Teste de Ordem única.")
+              + "\n7 - Teste de Ordem única."
+              + "\n8 - Planilha de pendentes.")
         try:
             resposta = input(
                 "\n- Val: Escolha uma opção:\n "
@@ -107,6 +109,11 @@ def main():
                     ordem, int_num_lordem, validador = val(
                         teste_list, contrato, unadm
                     )
+                case "8":
+                    contrato, unadm = contratada()
+                    planilha = pendentes_excel.pendentes()
+                    ordem, int_num_lordem, validador = val(
+                        planilha, contrato, unadm)
 
         except TypeError as erro:
             print(f"Erro: {erro}")

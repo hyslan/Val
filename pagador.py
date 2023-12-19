@@ -28,6 +28,7 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         reposicao_geral
     ) = verifica_tse(
         tse)
+
     etapa_rem_base = []
     etapa_unitario = []
     ligacao_errada = False
@@ -53,6 +54,7 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
             '254000',
             '255000',
             '262000',
+            '263000',
             '265000',
             '266000',
             '268000',
