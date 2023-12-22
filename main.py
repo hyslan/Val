@@ -2,12 +2,18 @@
 # main.py
 # Bibliotecas
 import sys
+import os
 import time
 import datetime
+import getpass
+from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
 import sql_view
 import pendentes_excel
 from core import val
 from avatar import val_avatar
+from face_the_gandalf import you_cant_pass
 from etl import extract_from_sql
 from desvalorador import desvalorador
 from retrabalhador import retrabalho
@@ -37,6 +43,9 @@ def main():
     caminho_avatar = 'C:/Users/irgpapais/Documents/Meus Projetos/val/val.png'
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
     hora_retomada = datetime.time(6, 0)  # Ponto de retomada às 6h
+    console = Console()
+    table = Table(show_header=True, header_style="bold magenta",
+                  title=":star: Menu de Opçôes :star:", style="bold")
     # Avatar.
     val_avatar(caminho_avatar)
 
@@ -51,18 +60,29 @@ def main():
             saudacao = "Boa tarde!"
         else:
             saudacao = "Boa noite!"
-        print(f"- Val: {saudacao}\n- Val: Como vai você hoje?")
-        print(f"\n- Val: Hora atual: {hora_atual}")
+        console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
+        console.print(f"\n- Val: Hora atual: {hora_atual} :alarm_clock:")
+        load_dotenv()
+        init = getpass.getpass("Digite a senha por favor.\n")
+        if not init == os.environ["pwd"]:
+            console.print(
+                "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
+            you_cant_pass()
+            sys.exit()
 
-        print("\nMenu de Opções")
-        print("\n1 - Desvalorador"
-              + "\n2 - Retrabalho"
-              + "\n3 - Pertencedor"
-              + "\n4 - TSE geral"
-              + "\n5 - TSEs Expecíficas"
-              + "\n6 - TSE Expecífica"
-              + "\n7 - Teste de Ordem única."
-              + "\n8 - Planilha de pendentes.")
+        table.add_column("Seletor", style="dim", width=12)
+        table.add_column("Tipo")
+        table.add_row("1", "Desvalorador")
+        table.add_row("2", "Retrabalho")
+        table.add_row("3", "Pertencedor")
+        table.add_row("4", "TSE geral")
+        table.add_row("5", "TSEs Expecíficas")
+        table.add_row("6", "TSE Expecífica")
+        table.add_row("7", "Teste de Ordem única")
+        table.add_row("8", "Planilha de pendentes")
+
+        console.print(table)
+
         try:
             resposta = input(
                 "\n- Val: Escolha uma opção:\n "

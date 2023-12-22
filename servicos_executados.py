@@ -44,6 +44,7 @@ def verifica_tse(servico):
         '283000',
         '283500'
     ]
+    troca_pe_cv_prev = ['153000', '153500']
     pai_tse = 0
     print("Iniciando processo de verificação de TSE")
     servico = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -176,8 +177,8 @@ def verifica_tse(servico):
 
         # Serviços relacionados a obra.
         elif sap_tse in ('300000', '308000', '310000', '311000', '313000',
-                         '315000', '532000', '540000', '564000',
-                         '588000', '590000', '709000', '700000', '593000'):
+                         '315000', '532000', '564000', '588000', '590000',
+                         '709000', '700000', '593000'):
             tse_proibida = 'Obra.'
             break
 
@@ -237,16 +238,30 @@ def verifica_tse(servico):
             reposicao_geral
         )
 
+    # Manipulação das matrizes
     rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=None)
     unitario_reposicao_flat = np.ravel(unitario_reposicao)
     reposicao_geral = np.unique(np.concatenate(
         [rem_base_reposicao_union, unitario_reposicao_flat]))
+
+    # TSEs situacionais.
+    if chave_unitario is not None and pai_tse == 1:
+        if chave_unitario[0] in troca_pe_cv_prev:
+            for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+                sap_tse = servico.GetCellValue(n_tse, "TSE")
+                etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+                # Altera todas as reposições para N3 de Troca Pé Preventivo.
+                if sap_tse in rem_base_reposicao_union:
+                    servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                    # Pertence ao serviço Principal
+                    servico.modifyCell(n_tse, "CODIGO", "3")
+
     if chave_rb_despesa is not None and pai_tse == 1:
         if chave_rb_despesa[0] in sondagem:
             for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
                 sap_tse = servico.GetCellValue(n_tse, "TSE")
                 etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
-                # Altera todas as reposições de rb para investimento se tiver tra.
+                # Altera todas as reposições de rb para N3 de Sondagem.
                 if sap_tse in rem_base_reposicao_union:
                     servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                     # Pertence ao serviço Principal

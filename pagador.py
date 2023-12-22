@@ -1,6 +1,9 @@
 # pagador.py
 '''Módulo para precificar na aba itens de preço.'''
 import sys
+from rich.console import Console
+from rich.columns import Columns
+from rich.panel import Panel
 from servicos_executados import verifica_tse
 from sap_connection import connect_to_sap
 from unitarios import dicionario
@@ -9,6 +12,7 @@ from cesta import cesta_dicionario
 
 def precificador(tse, corte, relig, posicao_rede, profundidade):
     '''Função para apontar os itens de preço e selecionar.'''
+    console = Console()
     session = connect_to_sap()
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
@@ -104,16 +108,18 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
             profundidade_errada
         )
 
-    print(
-        f"TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")
-    print(f"Chave unitario: {list_chave_unitario}")
-    print(
-        f"Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")
+    console.print(Columns([Panel(
+        f"[b]TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")]))
+    console.print(
+        Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
+    console.print(
+        Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
     if list_chave_unitario:  # Verifica se está no Conjunto Unitários
         # Aba Itens de preço
         session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
-        print("****Processo de Precificação****")
+        console.print("Processo de Precificação",
+                      style="bold red underline", justify="center")
         for chave_unitario in list_chave_unitario:
             # pylint: disable=E1121
             dicionario.unitario(
@@ -143,8 +149,6 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         for chave_rb_despesa in list_chave_rb_despesa:
-            print(f"reosicao rb: {reposicao}")
-            print(f"etapa rep rb: {etapa_reposicao}")
             cesta_dicionario.cesta(
                 chave_rb_despesa[3],
                 chave_rb_despesa[4],

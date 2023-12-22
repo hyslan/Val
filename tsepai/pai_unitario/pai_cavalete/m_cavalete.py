@@ -62,21 +62,23 @@ class Cavalete:
         num_tse_linhas = servico_temp.RowCount
         for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
+            etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Pertence ao serviço principal
-                servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
                 continue
 
-            elif sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 # Pertence ao serviço principal
                 servico_temp.modifyCell(n_tse, "CODIGO", "3")
-                # Coloca a tse existente na lista temporária
-                tse_temp_reposicao.append(sap_tse)
                 continue
+
+            elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+
         return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
     @staticmethod

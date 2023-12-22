@@ -3,6 +3,8 @@
 import sys
 import pywintypes
 import pandas as pd
+from rich.console import Console
+from rich.progress import track
 from sap_connection import connect_to_sap
 from wms import corte_restab_material
 from wms import hidrometro_material
@@ -40,7 +42,9 @@ class Almoxarifado:
 
     def aba_materiais(self):
         '''Função habilita aba de materiais no sap'''
-        print("****Processo de Materiais****")
+        console = Console()
+        console.print("Processo de Materiais",
+                      style="bold red underline", justify="center")
         session = connect_to_sap()
         session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
         tb_materiais = session.findById(
@@ -56,7 +60,7 @@ class Almoxarifado:
             print("Tem material vinculado.")
             num_material_linhas = tb_materiais.RowCount
             lista_data = []
-            for i in range(num_material_linhas):
+            for i in track(range(num_material_linhas), description="[yellow]Obtendo Materiais..."):
                 sap_material = tb_materiais.GetCellValue(
                     i, "MATERIAL")
                 sap_etapa_material = tb_materiais.GetCellValue(

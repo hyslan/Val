@@ -96,6 +96,9 @@ class LigacaoAgua:
                 servico_temp.modifyCell(n_tse, "PAGAR", "s")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
+                if sap_tse == '732000':
+                    servico_temp.modifyCell(n_tse, "PAGAR", "n")
+                    servico_temp.modifyCell(n_tse, "CODIGO", "3")
                 continue
 
             elif sap_tse in tb_tse_PertenceAoServicoPrincipal:

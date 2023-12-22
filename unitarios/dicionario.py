@@ -39,8 +39,6 @@ def preserv_inter_serv(identificador):
     preco.GetCellValue(0, "NUMERO_EXT")
     if preco is not None:
         num_precos_linhas = preco.RowCount
-        print(
-            f"Qtd linhas em itens de preço: {num_precos_linhas}")
         n_preco = 0  # índice para itens de preço
         for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
             sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")

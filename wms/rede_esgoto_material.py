@@ -67,6 +67,9 @@ class RedeEsgotoMaterial:
                 curva90 = "30005148"
             case _:
                 print("Diâmetro do ramal não informado, retornando.")
+                curva45 = None
+                curva90 = None
+                return curva45, curva90
 
         return curva45, curva90
 

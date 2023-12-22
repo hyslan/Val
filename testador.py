@@ -1,7 +1,9 @@
-from wms.consulta_estoque import estoque_novasp
-import sap
+import time
+from rich.console import Console
 
-sessions = sap.listar_sessoes()
-session = sap.criar_sessao(sessions)
-estoque = estoque_novasp(session, sessions)
+console = Console()
 
+with console.status("[bold blue]Trabalhando..."):
+    for i in range(100):
+        print(f"Prints: {i}")
+        time.sleep(1)

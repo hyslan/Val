@@ -26,7 +26,7 @@ from tsepai.pai_cesta.pai_sondagem import m_sondagem_rb
 
 def preservacao_interferencia():
     '''Captador da tse preservação.'''
-    tse_temp_reposicao = []
+    tse_temp_reposicao = ['']
     tse_proibida = None
     identificador = "preservacao"
     etapa_reposicao = []

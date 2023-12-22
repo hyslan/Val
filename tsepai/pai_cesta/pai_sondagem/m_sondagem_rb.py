@@ -55,9 +55,6 @@ class Sondagem:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Despesa
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
@@ -69,8 +66,6 @@ class Sondagem:
                 continue
 
             elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 
@@ -95,9 +90,6 @@ class Sondagem:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Despesa
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
@@ -109,8 +101,6 @@ class Sondagem:
                 continue
 
             elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 
@@ -135,9 +125,6 @@ class Sondagem:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Despesa
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
@@ -149,8 +136,6 @@ class Sondagem:
                 continue
 
             elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 
@@ -175,9 +160,6 @@ class Sondagem:
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
             if sap_tse in tb_tse_reposicao:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                # Despesa
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
@@ -189,8 +171,6 @@ class Sondagem:
                 continue
 
             elif sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", "n")
-                servico_temp.modifyCell(n_tse, "CODIGO", "5")  # Despesa
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 

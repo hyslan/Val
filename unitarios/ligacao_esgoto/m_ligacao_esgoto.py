@@ -3438,5 +3438,10 @@ class LigacaoEsgoto:
                 case _:
                     return
 
-        if posicao_rede or profundidade is None:
+        elif profundidade_float > 4.00:
+            print("Profundidade anormal.")
+            return
+
+        if not posicao_rede or profundidade:
+            print("Sem posição ou profundidade informada.")
             return
