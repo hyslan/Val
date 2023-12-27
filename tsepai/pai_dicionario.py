@@ -89,6 +89,7 @@ def pai_servico_unitario(servico_temp):
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
         '312000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
         '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
+        '404200': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
         '407000': m_supressao.Supressao.suprimir_ligacao_de_agua,

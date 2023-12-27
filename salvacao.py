@@ -78,10 +78,10 @@ def salvar(ordem, qtd_ordem, contrato, unadm):
             ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
             ja_valorado.valorada(obs="Não foi salvo")
 
-    # Start thread save.
+    # Start
     thread = threading.Thread(target=salvar_valoracao)
     thread.start()
-    # Timeout 5min
+    # Aguarde a thread concluir
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")

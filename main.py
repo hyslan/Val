@@ -9,12 +9,12 @@ import getpass
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
 import sql_view
-import pendentes_excel
 from core import val
 from avatar import val_avatar
 from face_the_gandalf import you_cant_pass
-from etl import extract_from_sql
+from etl import extract_from_sql, pendentes_excel
 from desvalorador import desvalorador
 from retrabalhador import retrabalho
 from osn3 import pertencedor
@@ -40,7 +40,7 @@ def contratada():
 
 def main():
     '''Sistema principal da Val e inicializador do programa'''
-    caminho_avatar = 'C:/Users/irgpapais/Documents/Meus Projetos/val/val.png'
+    caminho_avatar = 'val.png'
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
     hora_retomada = datetime.time(6, 0)  # Ponto de retomada às 6h
     console = Console()
@@ -61,7 +61,8 @@ def main():
         else:
             saudacao = "Boa noite!"
         console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
-        console.print(f"\n- Val: Hora atual: {hora_atual} :alarm_clock:")
+        console.print(
+            f"\n- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
         init = getpass.getpass("Digite a senha por favor.\n")
         if not init == os.environ["pwd"]:
@@ -80,6 +81,7 @@ def main():
         table.add_row("6", "TSE Expecífica")
         table.add_row("7", "Teste de Ordem única")
         table.add_row("8", "Planilha de pendentes")
+        table.add_row("9", "Família de serviço")
 
         console.print(table)
 
@@ -104,6 +106,9 @@ def main():
                         pendentes_list, contrato, unadm)
                 case "5":
                     contrato, unadm = contratada()
+                    tses_existentes = sql_view.Tabela("", "")
+                    console.print("\n", tses_existentes.show_tses(),
+                                  style="italic blue", justify="full")
                     tse_expec = input(
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
@@ -113,6 +118,9 @@ def main():
                         pendentes_list, contrato, unadm)
                 case "6":
                     contrato, unadm = contratada()
+                    tses_existentes = sql_view.Tabela("", "")
+                    console.print("\n", tses_existentes.show_tses(),
+                                  style="italic blue", justify="full")
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
@@ -131,9 +139,21 @@ def main():
                     )
                 case "8":
                     contrato, unadm = contratada()
-                    planilha = pendentes_excel.pendentes()
+                    planilha = pendentes_excel()
                     ordem, int_num_lordem, validador = val(
                         planilha, contrato, unadm)
+                case "9":
+                    contrato, unadm = contratada()
+                    pendentes = sql_view.Tabela("", "_")
+                    console.print(Panel.fit(
+                        pendentes.show_family()), style="italic yellow" "\n")
+                    familia = input(
+                        "- Val: Digite o nome da família, por favor.\n"
+                    )
+                    pendentes_list = pendentes.familia(familia)
+                    ordem, int_num_lordem, validador = val(
+                        pendentes_list, contrato, unadm
+                    )
 
         except TypeError as erro:
             print(f"Erro: {erro}")

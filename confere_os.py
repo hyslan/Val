@@ -1,11 +1,13 @@
 # ConfereOS.py
 '''Módulo de check-up no SAP'''
 import threading
+from rich.console import Console
 from sap_connection import connect_to_sap
 from sap import encerrar_sap
 
 # Adicionando um Lock
 lock = threading.Lock()
+console = Console()
 
 
 def consulta_os(n_os, contrato, unadm):
@@ -22,18 +24,26 @@ def consulta_os(n_os, contrato, unadm):
 
         # Seção Crítica - uso do Lock
         with lock:
-            session = connect_to_sap()
-            session.StartTransaction("ZSBPM020")
-            campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
-            campo_os.Text = n_os
-            session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
-            session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
-            session.findById("wnd[0]").sendVKey(8)
+            try:
+                session = connect_to_sap()
+                if session is None:
+                    console.print("Não foi possível obter a sessão SAP.")
+                    return
+                session.StartTransaction("ZSBPM020")
+                campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
+                campo_os.Text = n_os
+                session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
+                session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
+                session.findById("wnd[0]").sendVKey(8)
+            except Exception as transaction_error:
+                console.print(f"Erro durante a transação: {transaction_error}")
+                console.print_exception(show_locals=True)
+                encerrar_sap()
 
-    # Start thread save.
+    # Start
     thread = threading.Thread(target=zsbpm020)
     thread.start()
-    # Timeout 5min
+    # Aguarde a thread concluir
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")

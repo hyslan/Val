@@ -1,9 +1,5 @@
-import time
-from rich.console import Console
+import sapador
+import sap
 
-console = Console()
-
-with console.status("[bold blue]Trabalhando..."):
-    for i in range(100):
-        print(f"Prints: {i}")
-        time.sleep(1)
+sapador.down_sap()
+sessions = sap.listar_sessoes()

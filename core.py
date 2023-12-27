@@ -22,7 +22,7 @@ from sapador import down_sap
 from wms.consulta_estoque import estoque
 
 
-def get_input(prompt):
+def get_input(prompt:int) -> int:
     '''Fuction de inputs'''
     return Prompt.ask(prompt)
 
@@ -31,9 +31,15 @@ def val(pendentes_list, contrato, unadm):
     '''Sistema Val.'''
     console = Console()
     validador = False
-    sessions = sap.listar_sessoes()
+    try:
+        sessions = sap.listar_sessoes()
+    except:
+        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+        console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+        sessions = sap.listar_sessoes()
+
     new_session = sap.criar_sessao(sessions)
-    get_input("- Val: Pressione Enter para iniciar...")
+    input("- Val: Pressione Enter para iniciar...")
     estoque_hj = estoque(new_session, sessions, contrato)
     limite_execucoes = len(pendentes_list)
     print(
@@ -44,7 +50,7 @@ def val(pendentes_list, contrato, unadm):
         ordem = pendentes_list[int_num_lordem]
     except TypeError:
         print("Entrada inválida. Digite um número inteiro válido.")
-        num_lordem = input("Insira o número da linha aqui: ")
+        num_lordem = get_input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
         ordem = pendentes_list[int_num_lordem]
 
@@ -242,10 +248,11 @@ def val(pendentes_list, contrato, unadm):
                             style="italic yellow")
 
             # pylint: disable=E1101
-            except Exception:
+            except Exception as errocritico:
                 # Baixa e abre novo arquivo do SAP
                 console.print(
-                    "[bold red underline]Aconteceu um Erro com a Val!")
+                    "[bold red underline]Aconteceu um Erro com a Val!"
+                    + f"\n Fatal Error: {errocritico}")
                 console.print_exception(show_locals=True)
                 sys.exit()
                 sap.encerrar_sap()

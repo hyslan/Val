@@ -97,5 +97,4 @@ def load_worksheets():
         tb_tse_reposicao,
         tb_tse_retrabalho,
         tb_tse_asfalto
-        
     )

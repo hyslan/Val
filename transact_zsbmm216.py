@@ -31,10 +31,10 @@ def novasp(ordem):
             sap_ordem.Text = ordem
             session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
-    # Start thread novasp.
+    # Start
     thread = threading.Thread(target=t_novasp)
     thread.start()
-    # Timeout 5min
+    # Aguarde a thread concluir
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
@@ -66,7 +66,7 @@ def recape(ordem):
     # Start thread recape.
     thread = threading.Thread(target=t_recape)
     thread.start()
-    # Timeout 5min
+    # Aguarde a thread concluir
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
@@ -95,10 +95,10 @@ def gbitaquera(ordem):
             sap_ordem.Text = ordem
             session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
-    # Start thread novasp.
+    # Start
     thread = threading.Thread(target=t_gbitaquera)
     thread.start()
-    # Timeout 5min
+    # Aguarde a thread concluir
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")

@@ -1,5 +1,6 @@
 '''Módulo de start do SAP'''
 import time
+import os
 import subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -31,7 +32,7 @@ def down_sap():
         '//div[@title="SiiS"]'
     )
     btn_siis.click()
-    time.sleep(60)
+    wait.until(file_downloaded("tx.sap"))
     print("Arquivo baixado.")
     driver.quit()
     # Caminho para o arquivo "tx.sap"
@@ -39,9 +40,32 @@ def down_sap():
 
     # Tenta executar o comando
     try:
-        subprocess.run(["powershell", "start", caminho_arquivo], shell=True)
-        time.sleep(60)
+        subprocess.run(["powershell", "start", caminho_arquivo],
+                       shell=True, check=False)
+        time.sleep(5)
+        # Verifica se o processo está em execução
+        if not is_process_running("powershell.exe"):
+            print("Erro: O arquivo não foi aberto corretamente.")
     except subprocess.CalledProcessError as e:
         print(f"Erro ao iniciar o arquivo tx.sap: {e}")
     except Exception as e:
         print(f"Ocorreu um erro: {e}")
+
+
+def file_downloaded(filename):
+    '''Verifica se o arquivo foi baixado completamente'''
+    def predicate(driver):
+        files = os.listdir("C:\\Users\\irgpapais\\Downloads")
+        return any(file.endswith(filename) for file in files)
+
+    return predicate
+
+
+def is_process_running(process_name):
+    '''Verifica se o processo está em execução'''
+    try:
+        subprocess.check_output(
+            f'tasklist /FI "IMAGENAME eq {process_name}"', shell=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False

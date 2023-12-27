@@ -4,6 +4,16 @@ from urllib.parse import quote_plus
 from sqlalchemy import create_engine, text
 
 
+def pendentes_excel():
+    '''Load de ordens em uma planilha expecífica'''
+    caminho = input(
+        "Digite o caminho da planilha.\n A planilha deve conter uma coluna Ordem\n")
+    planilha = pd.read_excel(str(caminho))
+    planilha = planilha.reset_index()
+    lista = planilha['Ordem'].to_list()
+    return lista
+
+
 def extract_from_sql(contrato):
     '''Extração de ordens do contrato NOVASP do banco SQL Penha.'''
     carteira = [

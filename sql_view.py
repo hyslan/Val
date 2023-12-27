@@ -95,3 +95,39 @@ class Tabela:
         df_list = df['Ordem'].tolist()
         cnn.close()
         return df_list
+
+    def familia(self, familia):
+        '''Escolher família.'''
+        engine = create_engine(self.connection_url)
+        cnn = engine.connect()
+        sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
+            WHERE FAMILIA = '{}'").format(str(familia))
+        df = pd.read_sql(sql_command, cnn)
+        df = df.reset_index()
+        df_list = df['Ordem'].tolist()
+        cnn.close()
+        return df_list
+
+    def show_family(self):
+        '''Print the family list.'''
+        engine = create_engine(self.connection_url)
+        cnn = engine.connect()
+        sql_command = "SELECT [FAMILIA] FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
+            WHERE FAMILIA IS NOT NULL GROUP BY FAMILIA ORDER BY FAMILIA ASC "
+        df = pd.read_sql(sql_command, cnn)
+        # df = df.reset_index()
+        df = df['FAMILIA'].to_string(index=False)
+        cnn.close()
+        return df
+
+    def show_tses(self):
+        '''Print the TSEs list.'''
+        engine = create_engine(self.connection_url)
+        cnn = engine.connect()
+        sql_command = "SELECT COD_TSE, DESCRICAO FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
+            WHERE TP_PAGTO <> 'CANCELADO' AND COD_TSE IS NOT NULL ORDER BY COD_TSE ASC "
+        df = pd.read_sql(sql_command, cnn)
+        # df = df.reset_index()
+        df = df.to_string(index=False)
+        cnn.close()
+        return df

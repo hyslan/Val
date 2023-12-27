@@ -3,15 +3,22 @@
 '''Módulo SAP'''
 # -Bibliotecas--------------------------------------------------------------
 import win32com.client
-
+import pythoncom
 # -Sub Main--------------------------------------------------------------
 
 
 def connect_to_sap():
     '''Função para conexão SAP'''
-    sapguiauto = win32com.client.GetObject("SAPGUI")
-    if not isinstance(sapguiauto, win32com.client.CDispatch):
-        return
+    try:
+        #pylint: disable=E1101
+        pythoncom.CoInitialize()
+        sapguiauto = win32com.client.GetObject("SAPGUI")
+        if not isinstance(sapguiauto, win32com.client.CDispatch):
+            return
+
+        application = sapguiauto.GetScriptingEngine
+    except NameError:
+        print(NameError)
 
     application = sapguiauto.GetScriptingEngine
     if not isinstance(application, win32com.client.CDispatch):
