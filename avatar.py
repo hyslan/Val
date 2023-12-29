@@ -5,7 +5,14 @@ from PIL import Image
 
 
 def val_avatar(caminho):
-    '''Imagem da Val no cli.'''
+    '''Exibe a imagem da Val no terminal.
+
+    Parâmetros:
+    caminho (str): O caminho para a imagem.
+
+    Saída:
+    None
+    '''
 
     imagem = Image.open(caminho)
     # pylint: disable=W0612
@@ -22,6 +29,6 @@ def val_avatar(caminho):
     for linha in range(altura_terminal):
         for coluna in range(largura_terminal):
             pixel = imagem_redimensionada.getpixel((coluna, linha))
-            caractere = '@' if pixel < 128 else ' '
+            caractere = '*' if pixel < 128 else ' '
             print(caractere, end='')
         print()

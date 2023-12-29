@@ -33,7 +33,7 @@ from tsepai import pai_dicionario
 ) = load_worksheets()
 
 
-def verifica_tse(servico):
+def verifica_tse(servico, contrato):
     '''Agrupador de serviço e indexador de classes.'''
     session = connect_to_sap()
     sondagem = [
@@ -43,6 +43,18 @@ def verifica_tse(servico):
         '321500',
         '283000',
         '283500'
+    ]
+    desobstrucao = [
+        '561000',
+        '563000',
+        '568000',
+        '581000',
+        '584000',
+        '585000',
+        '586000',
+        '587000',
+        '592000',
+        '717000'
     ]
     troca_pe_cv_prev = ['153000', '153500']
     pai_tse = 0
@@ -138,6 +150,24 @@ def verifica_tse(servico):
                 break
             continue
 
+        elif sap_tse in desobstrucao and contrato == "4600043760":
+            servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+            servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
+            # Coloca a tse existente na lista temporária
+            tse_temp.append(sap_tse)
+            # pylint: disable=E1121
+            (reposicao,
+             tse_proibida,
+             identificador,
+             etapa_reposicao) = pai_dicionario.pai_servico_desobstrucao(sap_tse)
+            identificador_list.append(identificador)
+            chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
+            list_chave_rb_despesa.append(chave_rb_despesa)
+            pai_tse += 1
+            if tse_proibida is not None:
+                break
+            continue
+
         # Pulando OS com asfalto incluso.
         elif sap_tse in tb_tse_asfalto:
             tse_proibida = "Aslfato na bagaça!"
@@ -173,6 +203,11 @@ def verifica_tse(servico):
         # Suprimido Ramal anterior
         elif sap_tse == '415000':
             tse_proibida = 'Ramal anterior'
+            break
+
+        # SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL
+        elif sap_tse == '416500':
+            tse_proibida = "Verificar."
             break
 
         # Serviços relacionados a obra.
@@ -216,6 +251,18 @@ def verifica_tse(servico):
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue
 
+        if sap_tse in desobstrucao and not contrato == "4600043760":
+            # FUMAÇA, DD/DC, LAVAGEM, TELEVISIONADO
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            # Serviço não existe no contrato
+            servico.modifyCell(n_tse, "CODIGO", "10")
+            continue
+
+        if contrato == "4600043760" and sap_tse not in desobstrucao:
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            servico.modifyCell(n_tse, "CODIGO", "10")
+            continue
+
     if tse_proibida is not None:
         reposicao = None
         etapa_reposicao = None
@@ -223,18 +270,14 @@ def verifica_tse(servico):
         reposicao_geral = None
         return (
             tse_temp,
-            reposicao,
             num_tse_linhas,
             tse_proibida,
             identificador_list,
-            etapa_reposicao,
             mae,
             list_chave_rb_despesa,
             list_chave_unitario,
             chave_rb_investimento,
             chave_unitario,
-            unitario_reposicao,
-            rem_base_reposicao_union,
             reposicao_geral
         )
 
@@ -256,7 +299,8 @@ def verifica_tse(servico):
                     # Pertence ao serviço Principal
                     servico.modifyCell(n_tse, "CODIGO", "3")
 
-    if chave_rb_despesa is not None and pai_tse == 1:
+    if chave_rb_despesa is not None and pai_tse == 1 \
+            or all(tse in sondagem for tse in chave_rb_despesa[0]):
         if chave_rb_despesa[0] in sondagem:
             for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
                 sap_tse = servico.GetCellValue(n_tse, "TSE")
@@ -276,21 +320,18 @@ def verifica_tse(servico):
                 servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
     # Fim da condicional.
+    # sys.exit()
     servico.pressEnter()
 
     return (
         tse_temp,
-        reposicao,
         num_tse_linhas,
         tse_proibida,
         identificador_list,
-        etapa_reposicao,
         mae,
         list_chave_rb_despesa,
         list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
-        unitario_reposicao,
-        rem_base_reposicao_union,
         reposicao_geral
     )

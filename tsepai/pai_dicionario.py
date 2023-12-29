@@ -23,6 +23,9 @@ from tsepai.pai_cesta.pai_investimento import m_tra_rb
 # Módulo Remuneração Base - Sondagem
 from tsepai.pai_cesta.pai_sondagem import m_sondagem_rb
 
+# Módulo Desobstrução
+from tsepai.pai_desobstrucao import m_desobstrucao
+
 
 def preservacao_interferencia():
     '''Captador da tse preservação.'''
@@ -167,6 +170,33 @@ def pai_servico_cesta(servico_temp):
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
         print("TSE não Encontrada no Dicionário de Pai Cesta!")
+        sys.exit()
+
+    return reposicao, tse_proibida, identificador, etapa_reposicao
+
+
+def pai_servico_desobstrucao(servico_temp):
+    '''Agregador de TSE de contratos(ex: NORTE SUL)
+    para serviços de DD e DC'''
+    dicionario_pai_desobstrucao = {
+        '561000': m_desobstrucao.Desobstrucao.dd_dc,
+        '568000': m_desobstrucao.Desobstrucao.dd_dc,
+        '581000': m_desobstrucao.Desobstrucao.dd_dc,
+        '584000': m_desobstrucao.Desobstrucao.dd_dc,
+        '585000': m_desobstrucao.Desobstrucao.dd_dc,
+        '592000': m_desobstrucao.Desobstrucao.dd_dc,
+        '717000': m_desobstrucao.Desobstrucao.dd_dc,
+
+    }
+
+    if servico_temp in dicionario_pai_desobstrucao:
+        print(
+            f"TSE está inclusa no Dicionário de Pai Desobstrução: {servico_temp}")
+        metodo = dicionario_pai_desobstrucao[servico_temp]
+        # Chama o método de uma classe dentro do Dicionário
+        reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
+    else:
+        print("TSE não Encontrada no Dicionário de Pai Desobstrução!")
         sys.exit()
 
     return reposicao, tse_proibida, identificador, etapa_reposicao

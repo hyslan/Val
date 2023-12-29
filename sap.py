@@ -1,10 +1,13 @@
 '''Módulo para interagir com o SAP GUI'''
 import subprocess
 import win32com.client
+import pythoncom
 
 
 def listar_conexoes():
     '''Função para listar as conexões ativas.'''
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
     connections = application.Children(0)
@@ -14,6 +17,8 @@ def listar_conexoes():
 
 def listar_sessoes():
     '''Função para listar as sessions ativas'''
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
     connection = application.Children(0)
@@ -24,6 +29,8 @@ def listar_sessoes():
 
 def criar_sessao(sessions):
     '''Função para criar sessões'''
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
     connection = application.Children(0)
@@ -43,6 +50,8 @@ def criar_sessao(sessions):
 
 def fechar_conexao():
     '''Função para fechar o SAP.'''
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
     connection = application.Children(0)

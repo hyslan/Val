@@ -84,24 +84,24 @@ class Tabela:
         cnn.commit()
         cnn.close()
 
-    def ordem_especifica(self):
+    def ordem_especifica(self, contrato):
         '''Teste de Ordem única.'''
         engine = create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE ORDEM = '{}'").format(str(self.ordem))
+            WHERE ORDEM = '{}' AND Contrato = '{}'").format(str(self.ordem), contrato)
         df = pd.read_sql(sql_command, cnn)
         df = df.reset_index()
         df_list = df['Ordem'].tolist()
         cnn.close()
         return df_list
 
-    def familia(self, familia):
+    def familia(self, familia, contrato):
         '''Escolher família.'''
         engine = create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE FAMILIA = '{}'").format(str(familia))
+            WHERE FAMILIA = '{}' AND Contrato = '{}'").format(str(familia), contrato)
         df = pd.read_sql(sql_command, cnn)
         df = df.reset_index()
         df_list = df['Ordem'].tolist()

@@ -1,6 +1,5 @@
 # pagador.py
 '''Módulo para precificar na aba itens de preço.'''
-import sys
 from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
@@ -10,30 +9,26 @@ from unitarios import dicionario
 from cesta import cesta_dicionario
 
 
-def precificador(tse, corte, relig, posicao_rede, profundidade):
+def precificador(tse, corte, relig,
+                 posicao_rede, profundidade, contrato):
     '''Função para apontar os itens de preço e selecionar.'''
     console = Console()
     session = connect_to_sap()
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
         tse_temp,
-        reposicao,
         num_tse_linhas,
         tse_proibida,
         identificador,
-        etapa_reposicao,
         mae,
         list_chave_rb_despesa,
         list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
-        unitario_reposicao,
-        rem_base_reposicao_union,
         reposicao_geral
     ) = verifica_tse(
-        tse)
+        tse, contrato)
 
-    etapa_rem_base = []
     etapa_unitario = []
     ligacao_errada = False
     profundidade_errada = False
@@ -42,13 +37,10 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         print("TSE proibida de ser valorada.")
         return (
             tse_proibida,
-            identificador,
             list_chave_rb_despesa,
             list_chave_unitario,
             chave_rb_investimento,
             chave_unitario,
-            etapa_rem_base,
-            etapa_unitario,
             ligacao_errada,
             profundidade_errada
         )
@@ -97,13 +89,10 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         print("Sem informação de rede.")
         return (
             tse_proibida,
-            identificador,
             list_chave_rb_despesa,
             list_chave_unitario,
             chave_rb_investimento,
             chave_unitario,
-            etapa_rem_base,
-            etapa_unitario,
             ligacao_errada,
             profundidade_errada
         )
@@ -114,6 +103,18 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
         Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
     console.print(
         Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
+
+    if contrato == "4600043760":
+        return (
+            tse_proibida,
+            list_chave_rb_despesa,
+            list_chave_unitario,
+            chave_rb_investimento,
+            chave_unitario,
+            ligacao_errada,
+            profundidade_errada
+        )
+
     if list_chave_unitario:  # Verifica se está no Conjunto Unitários
         # Aba Itens de preço
         session.findById(
@@ -158,13 +159,10 @@ def precificador(tse, corte, relig, posicao_rede, profundidade):
 
     return (
         tse_proibida,
-        identificador,
         list_chave_rb_despesa,
         list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
-        etapa_rem_base,
-        etapa_unitario,
         ligacao_errada,
         profundidade_errada
     )

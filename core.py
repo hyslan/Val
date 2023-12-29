@@ -10,10 +10,9 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 import sql_view
 import sap
+import transact_zsbmm216
 from sap_connection import connect_to_sap
 from confere_os import consulta_os
-from transact_zsbmm216 import novasp
-from transact_zsbmm216 import gbitaquera
 from pagador import precificador
 from almoxarifado import materiais
 from salvacao import salvar
@@ -22,7 +21,7 @@ from sapador import down_sap
 from wms.consulta_estoque import estoque
 
 
-def get_input(prompt:int) -> int:
+def get_input(prompt: int) -> int:
     '''Fuction de inputs'''
     return Prompt.ask(prompt)
 
@@ -35,12 +34,15 @@ def val(pendentes_list, contrato, unadm):
         sessions = sap.listar_sessoes()
     except:
         console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-        console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+        console.print(
+            "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
         sessions = sap.listar_sessoes()
 
-    new_session = sap.criar_sessao(sessions)
     input("- Val: Pressione Enter para iniciar...")
-    estoque_hj = estoque(new_session, sessions, contrato)
+    if not contrato == "4600043760":
+        new_session = sap.criar_sessao(sessions)
+        estoque_hj = estoque(new_session, sessions, contrato)
+
     limite_execucoes = len(pendentes_list)
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
@@ -100,16 +102,17 @@ def val(pendentes_list, contrato, unadm):
                     ordem = pendentes_list[int_num_lordem]
 
                 else:
-                    # Ação no SAP
-                    contrato_gbitaquera = "4600042888"
-                    contrato_novasp = "4600041302"
-                    if contrato == contrato_gbitaquera:
-                        gbitaquera(ordem)
-                    elif contrato == contrato_novasp:
-                        novasp(ordem)
-                    else:
-                        print("Contrato não informado, encerrando.")
-                        sys.exit()
+                    # -------------- Contratos -----------------
+                    # GB Itaquera = "4600042888"
+                    # NOVASP = "4600041302"
+                    # NORTE SUL = "4600043760"
+                    match contrato:
+                        case "4600042888":
+                            transact_zsbmm216.gbitaquera(ordem)
+                        case "4600041302":
+                            transact_zsbmm216.novasp(ordem)
+                        case "4600043760":
+                            transact_zsbmm216.nortesul(ordem)
 
                     console.print("Processo de Serviços Executados",
                                   style="bold red underline", justify="center")
@@ -159,17 +162,15 @@ def val(pendentes_list, contrato, unadm):
                         )
 
                     # TSE e Aba Itens de preço
-                    (tse_proibida,
-                        identificador,
+                    (
+                        tse_proibida,
                         list_chave_rb_despesa,
                         list_chave_unitario,
                         chave_rb_investimento,
                         chave_unitario,
-                        etapa_rem_base,
-                        etapa_unitario,
                         ligacao_errada,
                         profundidade_errada
-                     ) = precificador(tse, corte, relig, posicao_rede, profundidade)
+                    ) = precificador(tse, corte, relig, posicao_rede, profundidade, contrato)
                     if ligacao_errada is True:
                         ja_valorado = sql_view.Tabela(
                             ordem=ordem, cod_tse="")
@@ -197,6 +198,7 @@ def val(pendentes_list, contrato, unadm):
                         continue
                     else:
                         # Aba Materiais
+
                         # RB - Investimento
                         if chave_rb_investimento:
                             materiais(int_num_lordem,
@@ -209,7 +211,7 @@ def val(pendentes_list, contrato, unadm):
                                       estoque_hj,
                                       posicao_rede)
                         # RB - Despesa
-                        if list_chave_rb_despesa:
+                        if list_chave_rb_despesa and not contrato == "4600043760":
                             for chave_rb_despesa in list_chave_rb_despesa:
                                 materiais(int_num_lordem,
                                           hidro,

@@ -24,12 +24,21 @@ def contratada():
     '''input de contrato.'''
     contrato_gbitaquera = "4600042888"
     contrato_novasp = "4600041302"
+    contrato_recape = "4600044782"
+    contrato_nortesul = "4600043760"
     entrada = input("- Val: Qual o contrato?\n")
     if entrada == contrato_gbitaquera or entrada in ("GB", "GBITAQUERA", "gb"):
         contrato = contrato_gbitaquera
         unadm = "340"
     elif entrada == contrato_novasp or entrada in ("NOVASP", "novasp"):
         contrato = contrato_novasp
+        unadm = "344"
+    elif entrada == contrato_recape or entrada in ("RECAPE", "recape"):
+        contrato = contrato_recape
+        unadm = "344"
+    elif entrada == contrato_nortesul or entrada in ("NORTESUL", "nortesul",
+                                                     "NORTE SUL", "norte sul"):
+        contrato = contrato_nortesul
         unadm = "344"
     else:
         print("Contrato não informado, encerrando.")
@@ -50,7 +59,8 @@ def main():
     val_avatar(caminho_avatar)
 
     while True:
-        print("\nSistema Val.")
+        console.print(
+            "\n[bold blue underline]Sistema Val[/bold blue underline] :smiley:", justify='full')
         # Obtém a hora atual
         hora_atual = datetime.datetime.now().time()
         hora = hora_atual.hour
@@ -62,7 +72,7 @@ def main():
             saudacao = "Boa noite!"
         console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
         console.print(
-            f"\n- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
+            f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
         init = getpass.getpass("Digite a senha por favor.\n")
         if not init == os.environ["pwd"]:
@@ -91,13 +101,16 @@ def main():
             )
             match resposta:
                 case "1":
-                    desvalorador()
+                    contrato, unadm = contratada()
+                    desvalorador(contrato)
                     validador = True
                 case "2":
-                    retrabalho()
+                    contrato, unadm = contratada()
+                    retrabalho(contrato, unadm)
                     validador = True
                 case "3":
-                    pertencedor()
+                    contrato, unadm = contratada()
+                    pertencedor(contrato, unadm)
                     validador = True
                 case "4":
                     contrato, unadm = contratada()
@@ -133,7 +146,7 @@ def main():
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
                     teste = sql_view.Tabela(ordem_expec, "")
-                    teste_list = teste.ordem_especifica()
+                    teste_list = teste.ordem_especifica(contrato)
                     ordem, int_num_lordem, validador = val(
                         teste_list, contrato, unadm
                     )
@@ -150,7 +163,7 @@ def main():
                     familia = input(
                         "- Val: Digite o nome da família, por favor.\n"
                     )
-                    pendentes_list = pendentes.familia(familia)
+                    pendentes_list = pendentes.familia(familia, contrato)
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, contrato, unadm
                     )

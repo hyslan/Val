@@ -2,6 +2,8 @@
 import sys
 import pywintypes
 from tqdm import tqdm
+import transact_zsbmm216
+from confere_os import consulta_os
 from sap_connection import connect_to_sap
 from excel_tbs import load_worksheets
 
@@ -26,55 +28,7 @@ from excel_tbs import load_worksheets
 ) = load_worksheets()
 
 
-def consulta_os(n_os, contrato, unadm):
-    '''ZSBPM020 para consulta'''
-    session = connect_to_sap()
-    session.StartTransaction("ZSBPM020")
-    campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
-    campo_os.Text = n_os
-    session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
-    session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
-    session.findById("wnd[0]").sendVKey(8)
-    consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
-    status_sistema = consulta.GetCellValue(0, "STTXT")
-    status_usuario = consulta.GetCellValue(0, "USTXT")
-
-    return status_sistema, status_usuario
-
-
-def novasp(ordem):
-    '''Contrato NOVASP'''
-    session = connect_to_sap()
-    print("Iniciando valoração.")
-    session.StartTransaction("ZSBMM216")
-    # Unidade Administrativa
-    session.findById("wnd[0]/usr/ctxtP_UND").Text = "344"
-    # Contrato NOVASP
-    session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600041302"
-    session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
-    sap_ordem = session.findById(
-        "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
-    sap_ordem.Text = ordem
-    session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
-
-
-def recape(ordem):
-    '''Contrato NOVASP'''
-    session = connect_to_sap()
-    print("Iniciando valoração.")
-    session.StartTransaction("ZSBMM216")
-    # Unidade Administrativa
-    session.findById("wnd[0]/usr/ctxtP_UND").Text = "344"
-    # Contrato NOVASP
-    session.findById("wnd[0]/usr/ctxtP_CONT").Text = "4600044782"
-    session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
-    sap_ordem = session.findById(
-        "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
-    sap_ordem.Text = ordem
-    session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
-
-
-def pertencedor():
+def pertencedor(contrato, unadm):
     '''Função N3'''
     revalorar = False
     resposta = input("São Ordens desvaloradas?")
@@ -90,28 +44,23 @@ def pertencedor():
         ordem = planilha.cell(row=int_num_lordem, column=1).value
     except TypeError:
         print("Entrada inválida. Digite um número inteiro válido.")
-        print("Reiniciando o programa...")
-        pertencedor()
+        sys.exit()
 
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
-    contrato_recape = "4600044782"
-    contrato_novasp = "4600041302"
-    contrato = input("- Val: Qual o contrato?\n")
-    if contrato == contrato_recape or contrato in ("RECAPE", "recape"):
-        transacao = recape
-        contrato = contrato_recape
-        unadm = "344"
-    elif contrato == contrato_novasp or contrato in ("NOVASP", "novasp"):
-        transacao = novasp
-        contrato = contrato_novasp
-        unadm = "344"
+
     # Loop para pagar as ordens da planilha do Excel
     for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
-        transacao(ordem)
+        match contrato:
+            case "4600041302":
+                transact_zsbmm216.novasp(ordem)
+            case "4600044782":
+                transact_zsbmm216.recape(ordem)
+            case "4600042888":
+                transact_zsbmm216.gbitaquera(ordem)
         try:
             servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
@@ -168,7 +117,7 @@ def pertencedor():
         session.findById("wnd[0]").sendVKey(11)
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
 
-        status_sistema, status_usuario = consulta_os(
+        status_sistema, status_usuario, *_ = consulta_os(
             ordem, contrato, unadm)
         print("Verificando se Ordem foi valorada.")
         if status_usuario == "EXEC VALO":
