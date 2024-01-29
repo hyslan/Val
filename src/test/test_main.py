@@ -5,6 +5,7 @@
 
 import unittest
 from src.core import val
+from src.sapador import down_sap
 
 
 class TestMain(unittest.TestCase):
@@ -15,6 +16,10 @@ class TestMain(unittest.TestCase):
         result = val(["2341816055"], "4600041302", "344")
         correto = "2341816055", 1, True
         self.assertEqual(result, correto, "Resultado não esperado")
+
+    def test_sapador(self):
+        '''Test download sapgui'''
+        self.assertLogs(down_sap(), level='DEBUG')
 
 
 if __name__ == '__main__':

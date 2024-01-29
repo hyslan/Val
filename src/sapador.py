@@ -14,7 +14,7 @@ def down_sap():
     '''Baixa o .tx do SAP'''
     url = 'http://portalprdci.ti.sabesp.com.br:50900/irj/portal/sabesp'
     s = Service(
-        'chromedriver.exe')
+        'src/chromedriver.exe')
     opt = Options()
     opt.add_experimental_option('detach', True)
     driver = webdriver.Chrome(service=s, options=opt)
