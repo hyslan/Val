@@ -10,21 +10,13 @@ from src.tsepai.pai_unitario.pai_hidrometro import m_hidrometro
 from src.tsepai.pai_unitario.pai_poco import m_poco
 from src.tsepai.pai_unitario.pai_ligacaoesgoto import m_ligacao_esgoto_un
 from src.tsepai.pai_unitario.pai_ligacaoagua import m_ligacao_agua_un
-# Módulos Remuneração base
-from src.tsepai.pai_cesta.pai_despesa.pai_cavalete import m_cavalete_rb
-from src.tsepai.pai_cesta.pai_despesa.pai_ligacaoagua import m_ligacao_agua_rb
-from src.tsepai.pai_cesta.pai_despesa.pai_redeagua import m_rede_agua_rb
-from src.tsepai.pai_cesta.pai_despesa.pai_ligacaoesgoto import m_ligacao_esgoto_rb
-from src.tsepai.pai_cesta.pai_despesa.pai_redeesgoto import m_rede_esgoto_rb
-from src.tsepai.pai_cesta.pai_despesa.pai_poco import m_poco_rb
-# Módulo Remuneração Base - Investimento
-from src.tsepai.pai_cesta.pai_investimento import m_tra_rb
+from src.tsepai import pais
 
-# Módulo Remuneração Base - Sondagem
-from src.tsepai.pai_cesta.pai_sondagem import m_sondagem_rb
 
-# Módulo Desobstrução
-from src.tsepai.pai_desobstrucao import m_desobstrucao
+def oh_pai(session):
+    '''Aleluia Irmãos'''
+    pai = pais.Pai(session)
+    return pai
 
 
 def preservacao_interferencia():
@@ -133,33 +125,36 @@ def pai_servico_unitario(servico_temp):
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_cesta(servico_temp):
+def pai_servico_cesta(servico_temp, session):
     '''Função condicional das chaves do dicionário Remuneração Base.'''
+    pai_cesta = pais.Cesta(oh_pai(session))
+    pai_sondagem = pais.Sondagem(oh_pai(session))
+    pai_invest = pais.Investimento(oh_pai(session))
     dicionario_pai_cesta = {
 
-        '130000': m_cavalete_rb.Cavalete.reparo_cv,
-        '138000': m_cavalete_rb.Cavalete.reparo_cv,
-        '140000': m_cavalete_rb.Cavalete.reparo_de_registro_de_cv,
-        '140100': m_cavalete_rb.Cavalete.troca_de_registro_de_cv,
-        '283000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,
-        '283500': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_agua,
-        '284000': m_tra_rb.TrocaRamalAgua.troca_de_ramal_de_agua,
-        '287000': m_ligacao_agua_rb.LigacaoAgua.troca_de_conexao_lig_agua,
-        '288000': m_ligacao_agua_rb.LigacaoAgua.reparo_de_ramal_de_agua,
-        '321000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
-        '321500': m_sondagem_rb.Sondagem.sondagem_de_rede_de_agua,
-        '325000': m_rede_agua_rb.RedeAgua.troca_valvula_rede_agua,
-        '328000': m_rede_agua_rb.RedeAgua.aperto_gaxeta_valvula,
-        '330000': m_rede_agua_rb.RedeAgua.rebatido_chumbo_junta,
-        '332000': m_rede_agua_rb.RedeAgua.reparo_de_rede_de_agua,
-        '416000': m_ligacao_agua_rb.LigacaoAgua.suprimido_ramal_de_agua_abandonado,
-        '560000': m_ligacao_esgoto_rb.LigacaoEsgoto.reparo_de_ramal_de_esgoto,
-        '567000': m_sondagem_rb.Sondagem.sondagem_de_ramal_de_esgoto,
-        '569000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
-        '580000': m_rede_esgoto_rb.RedeEsgoto.reparo_de_rede_de_esgoto,
-        '539000': m_poco_rb.Poco.reconstruido_poco,
-        '540000': m_poco_rb.Poco.reconstruido_poco,
-        '591000': m_sondagem_rb.Sondagem.sondagem_de_rede_de_esgoto,
+        '130000': pai_cesta.cavalete,
+        '138000': pai_cesta.cavalete,
+        '140000': pai_cesta.cavalete,
+        '140100': pai_cesta.cavalete,
+        '283000': pai_sondagem.ligacao_agua,
+        '283500': pai_sondagem.ligacao_agua,
+        '284000': pai_invest.tra,
+        '287000': pai_cesta.ligacao_agua,
+        '288000': pai_cesta.reparo_ramal_agua,
+        '321000': pai_sondagem.rede_agua,
+        '321500': pai_sondagem.rede_agua,
+        '325000': pai_cesta.valvula,
+        '328000': pai_cesta.gaxeta,
+        '330000': pai_cesta.chumbo_junta,
+        '332000': pai_cesta.rede_agua,
+        '416000': pai_cesta.suprimido_ramal_agua_abandonado,
+        '560000': pai_cesta.ligacao_esgoto,
+        '567000': pai_sondagem.ligacao_esgoto,
+        '569000': pai_cesta.rede_esgoto,
+        '580000': pai_cesta.rede_esgoto,
+        '539000': pai_cesta.poco,
+        '540000': pai_cesta.poco,
+        '591000': pai_sondagem.rede_esgoto,
 
     }
 
@@ -175,17 +170,18 @@ def pai_servico_cesta(servico_temp):
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_desobstrucao(servico_temp):
+def pai_servico_desobstrucao(servico_temp, session):
     '''Agregador de TSE de contratos(ex: NORTE SUL)
     para serviços de DD e DC'''
+    pai_desobstrucao = oh_pai(session)
     dicionario_pai_desobstrucao = {
-        '561000': m_desobstrucao.Desobstrucao.dd_dc,
-        '568000': m_desobstrucao.Desobstrucao.dd_dc,
-        '581000': m_desobstrucao.Desobstrucao.dd_dc,
-        '584000': m_desobstrucao.Desobstrucao.dd_dc,
-        '585000': m_desobstrucao.Desobstrucao.dd_dc,
-        '592000': m_desobstrucao.Desobstrucao.dd_dc,
-        '717000': m_desobstrucao.Desobstrucao.dd_dc,
+        '561000': pai_desobstrucao.desobstrucao,
+        '568000': pai_desobstrucao.desobstrucao,
+        '581000': pai_desobstrucao.desobstrucao,
+        '584000': pai_desobstrucao.desobstrucao,
+        '585000': pai_desobstrucao.desobstrucao,
+        '592000': pai_desobstrucao.desobstrucao,
+        '717000': pai_desobstrucao.desobstrucao,
 
     }
 
