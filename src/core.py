@@ -10,8 +10,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from src import sql_view
 from src import sap
-from src import transact_zsbmm216
-from src.sap_connection import connect_to_sap
+from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
 from src.pagador import precificador
 from src.almoxarifado import materiais
@@ -26,22 +25,29 @@ def get_input(prompt: int) -> int:
     return Prompt.ask(prompt)
 
 
-def val(pendentes_list, contrato, unadm):
+def val(pendentes_list, session, contrato):
     '''Sistema Val.'''
     console = Console()
+    sessao = sap.Sap()
+    empresa, unadm, municipio = contrato
+    transacao = Transacao(empresa, unadm, municipio, session)
     validador = False
     try:
-        sessions = sap.listar_sessoes()
+        sessions = sessao.listar_sessoes()
     except:
         console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
         console.print(
             "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-        sessions = sap.listar_sessoes()
+        down_sap()
+        sessions = sessao.listar_sessoes()
 
     input("- Val: Pressione Enter para iniciar...")
     if not contrato == "4600043760":
-        new_session = sap.criar_sessao(sessions)
-        estoque_hj = estoque(new_session, sessions, contrato)
+        if not sessions.Count == 6:
+            new_session = sessao.criar_sessao(sessions)
+            estoque_hj = estoque(new_session, sessions, contrato)
+        else:
+            estoque_hj = estoque(session, sessions, contrato)
 
     limite_execucoes = len(pendentes_list)
     print(
@@ -65,7 +71,7 @@ def val(pendentes_list, contrato, unadm):
         # Loop para pagar as ordens
         for num_lordem in tqdm(range(int_num_lordem, limite_execucoes-1), ncols=100):
             try:
-                session = connect_to_sap()
+                # session = connect_to_sap()
                 print(f"Linha atual: {int_num_lordem}.")
                 start_time = time.time()  # Contador de tempo para valorar.
                 print(f"Ordem atual: {ordem}")
@@ -82,7 +88,7 @@ def val(pendentes_list, contrato, unadm):
                     operacao,
                     diametro_ramal,
                     diametro_rede
-                 ) = consulta_os(ordem, contrato, unadm)
+                 ) = consulta_os(ordem, session, contrato)
                 # Consulta Status da Ordem
                 if status_sistema == fechada:
                     print(f"Status do Sistema: {status_sistema}")
@@ -102,18 +108,7 @@ def val(pendentes_list, contrato, unadm):
                     ordem = pendentes_list[int_num_lordem]
 
                 else:
-                    # -------------- Contratos -----------------
-                    # GB Itaquera = "4600042888"
-                    # NOVASP = "4600041302"
-                    # NORTE SUL MLG = "4600043760"
-                    match contrato:
-                        case "4600042888":
-                            transact_zsbmm216.gbitaquera(ordem)
-                        case "4600041302":
-                            transact_zsbmm216.novasp(ordem)
-                        case "4600043760":
-                            transact_zsbmm216.nortesul(ordem)
-
+                    transacao.run_transacao(ordem)
                     console.print("Processo de Serviços Executados",
                                   style="bold red underline", justify="center")
                     try:
@@ -170,7 +165,8 @@ def val(pendentes_list, contrato, unadm):
                         chave_unitario,
                         ligacao_errada,
                         profundidade_errada
-                    ) = precificador(tse, corte, relig, posicao_rede, profundidade, contrato)
+                    ) = precificador(tse, corte, relig,
+                                     posicao_rede, profundidade, contrato, session)
                     if ligacao_errada is True:
                         ja_valorado = sql_view.Tabela(
                             ordem=ordem, cod_tse="")
@@ -235,10 +231,10 @@ def val(pendentes_list, contrato, unadm):
                                           estoque_hj,
                                           posicao_rede)
                         # Fim dos materiais
-                        # sys.exit()
+                        # sys.exit(0)
                         # Salvar Ordem
                         qtd_ordem = salvar(
-                            ordem, qtd_ordem, contrato, unadm)
+                            ordem, qtd_ordem, contrato, session)
                         # Fim do contador de valoração.
                         cronometro_val(start_time, ordem)
                         # Incremento + de Ordem.
@@ -257,9 +253,9 @@ def val(pendentes_list, contrato, unadm):
                     + f"\n Fatal Error: {errocritico}")
                 console.print_exception(show_locals=True)
                 sys.exit()
-                sap.encerrar_sap()
-                down_sap()
-                print("Reiniciando programa")
+                # sap.encerrar_sap()
+                # down_sap()
+                # print("Reiniciando programa")
 
         validador = True
 

@@ -2,30 +2,31 @@
 '''Módulo de check-up no SAP'''
 import threading
 from rich.console import Console
-from src.sap_connection import connect_to_sap
-from src.sap import encerrar_sap
+from src.sap import Sap
 
 # Adicionando um Lock
 lock = threading.Lock()
 console = Console()
+sap = Sap()
 
 
-def consulta_os(n_os, contrato, unadm):
+def consulta_os(n_os, session, contrato):
     '''Função para consultar ORDEM na transação ZSBPM020.'''
     diametro_ramal = None
     diametro_rede = None
     hidro = None
+    empresa, unadm, municipio = contrato
 
     def zsbpm020():
         '''Transact 020'''
         nonlocal n_os
-        nonlocal contrato
+        nonlocal empresa
         nonlocal unadm
+        nonlocal municipio
 
         # Seção Crítica - uso do Lock
         with lock:
             try:
-                session = connect_to_sap()
                 if session is None:
                     console.print("Não foi possível obter a sessão SAP.")
                     return
@@ -38,7 +39,7 @@ def consulta_os(n_os, contrato, unadm):
             except Exception as transaction_error:
                 console.print(f"Erro durante a transação: {transaction_error}")
                 console.print_exception(show_locals=True)
-                encerrar_sap()
+                sap.encerrar_sap()
 
     # Start
     thread = threading.Thread(target=zsbpm020)
@@ -47,9 +48,8 @@ def consulta_os(n_os, contrato, unadm):
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
-        encerrar_sap()
+        sap.encerrar_sap()
 
-    session = connect_to_sap()
     consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
     status_sistema = consulta.GetCellValue(0, "STTXT")
     status_usuario = consulta.GetCellValue(0, "USTXT")

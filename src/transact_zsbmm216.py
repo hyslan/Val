@@ -2,61 +2,52 @@
 '''Módulo de Contrato'''
 # Conexão SAP
 import threading
-from src.sap_connection import connect_to_sap
-from src.sap import encerrar_sap
+from src.sap import Sap
 
 # Adicionando um Lock
 lock = threading.Lock()
+sap = Sap()
 
 
-def run_transacao(ordem, contrato, unadm):
-    '''Run thread ZSBMM216
-    e faz a transação a transação com o respectivo contrato.'''
+class Transacao():
+    '''Classe operadora da transação 216'''
 
-    def t_transacao():
-        '''Transação preenchida ZSBMM216 - Contrato NOVASP'''
-        nonlocal ordem
+    def __init__(self, contrato, unadm,
+                 municipio, session) -> None:
+        self.contrato = contrato
+        self.unadm = unadm
+        self.session = session
+        self.municipio = municipio
 
-        # Seção Crítica - uso do Lock
-        with lock:
-            session = connect_to_sap()
-            print("Iniciando valoração.")
-            session.StartTransaction("ZSBMM216")
-            # Unidade Administrativa
-            session.findById("wnd[0]/usr/ctxtP_UND").Text = unadm
-            # Contrato
-            session.findById("wnd[0]/usr/ctxtP_CONT").Text = contrato
-            session.findById("wnd[0]/usr/ctxtP_MUNI").Text = "100"  # Município
-            sap_ordem = session.findById(
-                "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
-            sap_ordem.Text = ordem
-            session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
+    def run_transacao(self, ordem):
+        '''Run thread ZSBMM216
+        e faz a transação a transação com o respectivo contrato.'''
 
-    # Start
-    thread = threading.Thread(target=t_transacao)
-    thread.start()
-    # Aguarde a thread concluir
-    thread.join(timeout=300)
-    if thread.is_alive():
-        print("SAP demorando mais que o esperado, encerrando.")
-        encerrar_sap()
+        def t_transacao():
+            '''Transação preenchida ZSBMM216 - Contrato NOVASP'''
+            nonlocal ordem
 
+            # Seção Crítica - uso do Lock
+            with lock:
+                print("Iniciando valoração.")
+                self.session.StartTransaction("ZSBMM216")
+                # Unidade Administrativa
+                self.session.findById("wnd[0]/usr/ctxtP_UND").Text = self.unadm
+                # Contrato
+                self.session.findById(
+                    "wnd[0]/usr/ctxtP_CONT").Text = self.contrato
+                self.session.findById(
+                    "wnd[0]/usr/ctxtP_MUNI").Text = self.municipio  # Cidade
+                sap_ordem = self.session.findById(
+                    "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+                sap_ordem.Text = ordem
+                self.session.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
-def novasp(ordem):
-    '''Executa thread NOVASP'''
-    run_transacao(ordem, "4600041302", "344")
-
-
-def recape(ordem):
-    '''Executa thread RECAPE'''
-    run_transacao(ordem, "4600044782", "344")
-
-
-def gbitaquera(ordem):
-    '''Executa thread GB ITAQUERA'''
-    run_transacao(ordem, "4600042888", "340")
-
-
-def nortesul(ordem):
-    '''Executa thread NORTE SUL'''
-    run_transacao(ordem, "4600043760", "344")
+        # Start
+        thread = threading.Thread(target=t_transacao)
+        thread.start()
+        # Aguarde a thread concluir
+        thread.join(timeout=300)
+        if thread.is_alive():
+            print("SAP demorando mais que o esperado, encerrando.")
+            sap.encerrar_sap()

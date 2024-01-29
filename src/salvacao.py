@@ -5,28 +5,27 @@ import re
 import threading
 import pywintypes
 from src import sql_view
-from src.sap_connection import connect_to_sap
 from src.confere_os import consulta_os
-from src.sap import encerrar_sap
+from src.sap import Sap
 
 
 # Adicionando um Lock
 lock = threading.Lock()
 
 
-def salvar(ordem, qtd_ordem, contrato, unadm):
+def salvar(ordem, qtd_ordem, contrato, session):
     '''Salvar e verificar se está salvando.'''
+    sap = Sap()
 
     def salvar_valoracao():
         '''Função para salvar valoração.'''
         nonlocal ordem
         nonlocal qtd_ordem
         nonlocal contrato
-        nonlocal unadm
+        nonlocal session
 
         # Seção Crítica - uso do Lock
         with lock:
-            session = connect_to_sap()
             try:
                 print("Salvando valoração!")
                 session.findById("wnd[0]").sendVKey(11)
@@ -64,7 +63,7 @@ def salvar(ordem, qtd_ordem, contrato, unadm):
         # Verificar se Salvou
         (status_sistema,
             status_usuario,
-            *_) = consulta_os(ordem, contrato, unadm)
+            *_) = consulta_os(ordem, session, contrato)
         print("Verificando se Ordem foi valorada.")
         if status_usuario == "EXEC VALO":
             print(f"Status da Ordem: {status_sistema}, {status_usuario}")
@@ -85,6 +84,6 @@ def salvar(ordem, qtd_ordem, contrato, unadm):
     thread.join(timeout=300)
     if thread.is_alive():
         print("SAP demorando mais que o esperado, encerrando.")
-        encerrar_sap()
+        sap.encerrar_sap()
 
     return qtd_ordem

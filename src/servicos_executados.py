@@ -1,7 +1,6 @@
 # ServicosExecutados.py
 '''Módulo de TSE'''
 import numpy as np
-from src.sap_connection import connect_to_sap
 from src.excel_tbs import load_worksheets
 from src.tsepai import pai_dicionario
 
@@ -33,9 +32,9 @@ from src.tsepai import pai_dicionario
 ) = load_worksheets()
 
 
-def verifica_tse(servico, contrato):
+def verifica_tse(servico, contrato, session):
     '''Agrupador de serviço e indexador de classes.'''
-    session = connect_to_sap()
+    empresa, *_ = contrato
     sondagem = [
         '591000',
         '567000',
@@ -150,7 +149,7 @@ def verifica_tse(servico, contrato):
                 break
             continue
 
-        elif sap_tse in desobstrucao and contrato == "4600043760":
+        elif sap_tse in desobstrucao and empresa == "4600043760":
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
@@ -258,7 +257,7 @@ def verifica_tse(servico, contrato):
             servico.modifyCell(n_tse, "CODIGO", "10")
             continue
 
-        if contrato == "4600043760" and sap_tse not in desobstrucao:
+        if empresa == "4600043760" and sap_tse not in desobstrucao:
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "10")
             continue

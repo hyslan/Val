@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
+from src.sap import Sap
 from src import sql_view
 from src.core import val
 from src.avatar import val_avatar
@@ -21,30 +22,36 @@ from src.osn3 import pertencedor
 
 
 def contratada():
-    '''input de contrato.'''
-    contrato_gbitaquera = "4600042888"
-    contrato_novasp = "4600041302"
-    contrato_recape = "4600044782"
-    contrato_nortesul = "4600043760"
-    entrada = input("- Val: Qual o contrato?\n")
-    if entrada == contrato_gbitaquera or entrada in ("GB", "GBITAQUERA", "gb"):
-        contrato = contrato_gbitaquera
-        unadm = "340"
-    elif entrada == contrato_novasp or entrada in ("NOVASP", "novasp"):
-        contrato = contrato_novasp
-        unadm = "344"
-    elif entrada == contrato_recape or entrada in ("RECAPE", "recape"):
-        contrato = contrato_recape
-        unadm = "344"
-    elif entrada == contrato_nortesul or entrada in ("NORTESUL", "nortesul",
-                                                     "NORTE SUL", "norte sul"):
-        contrato = contrato_nortesul
-        unadm = "344"
-    else:
-        print("Contrato não informado, encerrando.")
-        sys.exit()
+    '''Input do contrato'''
+    contratos_mlg = {
 
-    return contrato, unadm
+        "NOVASP": {"contrato": "4600041302", "unadm": "344", "municipio": "100"},
+        "RECAPE": {"contrato": "4600044782", "unadm": "344", "municipio": "100"},
+        "NORTESUL": {"contrato": "4600043760", "unadm": "344", "municipio": "100"},
+    }
+    contratos_mlq = {
+        "GBITAQUERA": {"contrato": "4600042888", "unadm": "340", "municipio": "100"}
+    }
+    ugrs = {
+        "MLG": contratos_mlg,
+        "MLQ": contratos_mlq
+    }
+
+    regiao = input("- Val: Qual UGR:\n").upper()
+    if regiao in ugrs:
+        empresa = input("- Val: Qual o contrato?\n").upper()
+        if empresa in ugrs[regiao]:
+            contrato_info = ugrs[regiao][empresa]
+            contrato, unadm, municipio = contrato_info[
+                "contrato"], contrato_info["unadm"], contrato_info["municipio"]
+        else:
+            print("Contrato não informado, encerrando.")
+            sys.exit(0)
+    else:
+        print("Não encontrei a UGR")
+        sys.exit(0)
+
+    return contrato, unadm, municipio, municipio
 
 
 def main():
@@ -54,6 +61,7 @@ def main():
     console = Console()
     table = Table(show_header=True, header_style="bold magenta",
                   title=":star: Menu de Opçôes :star:", style="bold")
+    sap = Sap()
     # Avatar.
     val_avatar()
 
@@ -78,7 +86,7 @@ def main():
             console.print(
                 "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
             you_cant_pass()
-            sys.exit()
+            sys.exit(0)
 
         table.add_column("Seletor", style="dim", width=12)
         table.add_column("Tipo")
@@ -92,6 +100,7 @@ def main():
         table.add_row("8", "Planilha de pendentes")
         table.add_row("9", "Família de serviço")
 
+        session = sap.escolher_sessao()
         console.print(table)
 
         try:
@@ -100,24 +109,24 @@ def main():
             )
             match resposta:
                 case "1":
-                    contrato, unadm = contratada()
-                    desvalorador(contrato)
+                    contrato = contratada()
+                    desvalorador(contrato, session)
                     validador = True
                 case "2":
-                    contrato, unadm = contratada()
-                    retrabalho(contrato, unadm)
+                    contrato = contratada()
+                    retrabalho(contrato, session)
                     validador = True
                 case "3":
-                    contrato, unadm = contratada()
-                    pertencedor(contrato, unadm)
+                    contrato = contratada()
+                    pertencedor(contrato, session)
                     validador = True
                 case "4":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     pendentes_list = extract_from_sql(contrato)
                     ordem, int_num_lordem, validador = val(
-                        pendentes_list, contrato, unadm)
+                        pendentes_list, session, contrato)
                 case "5":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
                                   style="italic blue", justify="full")
@@ -127,9 +136,9 @@ def main():
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
                     pendentes_list = pendentes.tse_escolhida(contrato)
                     ordem, int_num_lordem, validador = val(
-                        pendentes_list, contrato, unadm)
+                        pendentes_list, session, contrato)
                 case "6":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
                                   style="italic blue", justify="full")
@@ -138,24 +147,24 @@ def main():
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
                     pendentes_list = pendentes.tse_expecifica(contrato)
                     ordem, int_num_lordem, validador = val(
-                        pendentes_list, contrato, unadm)
+                        pendentes_list, session, contrato)
                 case "7":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
                     teste = sql_view.Tabela(ordem_expec, "")
                     teste_list = teste.ordem_especifica(contrato)
                     ordem, int_num_lordem, validador = val(
-                        teste_list, contrato, unadm
+                        teste_list, session, contrato
                     )
                 case "8":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     planilha = pendentes_excel()
                     ordem, int_num_lordem, validador = val(
-                        planilha, contrato, unadm)
+                        planilha, session, contrato)
                 case "9":
-                    contrato, unadm = contratada()
+                    contrato = contratada()
                     pendentes = sql_view.Tabela("", "_")
                     console.print(Panel.fit(
                         pendentes.show_family()), style="italic yellow" "\n")
@@ -164,7 +173,7 @@ def main():
                     )
                     pendentes_list = pendentes.familia(familia, contrato)
                     ordem, int_num_lordem, validador = val(
-                        pendentes_list, contrato, unadm
+                        pendentes_list, session, contrato
                     )
 
         except TypeError as erro:

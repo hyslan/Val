@@ -2,8 +2,7 @@
 import sys
 import pywintypes
 from tqdm import tqdm
-from src import transact_zsbmm216
-from src.sap_connection import connect_to_sap
+from src.transact_zsbmm216 import Transacao
 from src.excel_tbs import load_worksheets
 
 
@@ -17,9 +16,10 @@ from src.excel_tbs import load_worksheets
 ) = load_worksheets()
 
 
-def desvalorador(contrato):
+def desvalorador(contrato, session):
     '''Função desvalorador'''
-    session = connect_to_sap()
+    empresa, unadm, municipio = contrato
+    transacao = Transacao(empresa, unadm, municipio, session)
     limite_execucoes = planilha.max_row
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:
@@ -37,13 +37,7 @@ def desvalorador(contrato):
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
-        match contrato:
-            case "4600041302":
-                transact_zsbmm216.novasp(ordem)
-            case "4600044782":
-                transact_zsbmm216.recape(ordem)
-            case "4600042888":
-                transact_zsbmm216.gbitaquera(ordem)
+        transacao.run_transacao(ordem)
         try:
             session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"

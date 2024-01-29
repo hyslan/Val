@@ -4,16 +4,16 @@ from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
 from src.servicos_executados import verifica_tse
-from src.sap_connection import connect_to_sap
 from src.unitarios import dicionario
 from src.cesta import cesta_dicionario
 
 
 def precificador(tse, corte, relig,
-                 posicao_rede, profundidade, contrato):
+                 posicao_rede, profundidade, contrato,
+                 session):
     '''Função para apontar os itens de preço e selecionar.'''
     console = Console()
-    session = connect_to_sap()
+    empresa, *_ = contrato
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
         tse_temp,
@@ -27,7 +27,7 @@ def precificador(tse, corte, relig,
         chave_unitario,
         reposicao_geral
     ) = verifica_tse(
-        tse, contrato)
+        tse, contrato, session)
 
     etapa_unitario = []
     ligacao_errada = False
@@ -104,7 +104,7 @@ def precificador(tse, corte, relig,
     console.print(
         Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
 
-    if contrato == "4600043760":
+    if empresa == "4600043760":
         return (
             tse_proibida,
             list_chave_rb_despesa,
