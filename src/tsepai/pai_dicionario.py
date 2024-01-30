@@ -2,14 +2,6 @@
 '''Módulo Dicionário Pai.'''
 # Biblotecas
 import sys
-# Módulos Unitários
-from src.tsepai.pai_unitario.pai_cavalete import m_cavalete
-from src.tsepai.pai_unitario.pai_supressao import m_supressao
-from src.tsepai.pai_unitario.pai_religacao import m_religacao
-from src.tsepai.pai_unitario.pai_hidrometro import m_hidrometro
-from src.tsepai.pai_unitario.pai_poco import m_poco
-from src.tsepai.pai_unitario.pai_ligacaoesgoto import m_ligacao_esgoto_un
-from src.tsepai.pai_unitario.pai_ligacaoagua import m_ligacao_agua_un
 from src.tsepai import pais
 
 
@@ -46,68 +38,66 @@ def troca_de_ramal_agua_un():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_unitario(servico_temp):
+def pai_servico_unitario(servico_temp, session):
     '''Função condicional das chaves do dicionário unitário.'''
+    pai_unitario = pais.Unitario(oh_pai(session))
 
     dicionario_pai_unitario = {
-        '134000': m_cavalete.Cavalete.instalado_lacre,
-        '135000': m_cavalete.Cavalete.instalado_lacre,
-        '138000': m_cavalete.Cavalete.readequado_cavalete,
-        '142000': m_cavalete.Cavalete.regularizar_cv,
-        '148000': m_cavalete.Cavalete.troca_cv_por_uma,
-        '149000': m_cavalete.Cavalete.trocar_cv_kit,
-        '153000': m_cavalete.Cavalete.troca_pe_cv_prev,
-        '153500': m_cavalete.Cavalete.troca_pe_cv_prev,
-        '201000': m_hidrometro.Hidrometro.un_hidrometro,
-        '202000': m_hidrometro.Hidrometro.desincl_hidrometro,
-        '203000': m_hidrometro.Hidrometro.un_hidrometro,
-        '203500': m_hidrometro.Hidrometro.desincl_hidrometro,
-        '204000': m_hidrometro.Hidrometro.un_hidrometro,
-        '205000': m_hidrometro.Hidrometro.un_hidrometro,
-        '206000': m_hidrometro.Hidrometro.un_hidrometro,
-        '207000': m_hidrometro.Hidrometro.un_hidrometro,
-        '211000': m_hidrometro.Hidrometro.hidrometro_alterar_capacidade,
-        '215000': m_hidrometro.Hidrometro.un_hidrometro,
+        '134000': pai_unitario.lacre,
+        '135000': pai_unitario.lacre,
+        '138000': pai_unitario.cavaletes_proibidos,
+        '142000': pai_unitario.cavaletes_proibidos,
+        '148000': pai_unitario.troca_cv_por_uma,
+        '149000': pai_unitario.cavaletes_proibidos,
+        '153000': pai_unitario.cavalete,
+        '153500': pai_unitario.cavalete,
+        '201000': pai_unitario.hidrometro,
+        '202000': pai_unitario.desinclinado_hidrometro,
+        '203000': pai_unitario.hidrometro,
+        '203500': pai_unitario.desinclinado_hidrometro,
+        '204000': pai_unitario.hidrometro,
+        '205000': pai_unitario.hidrometro,
+        '206000': pai_unitario.hidrometro,
+        '207000': pai_unitario.hidrometro,
+        '211000': pai_unitario.hidrometro_alterar_capacidade,
+        '215000': pai_unitario.hidrometro,
         '253000': troca_de_ramal_agua_un,  # Inclusão
-        '254000': m_ligacao_agua_un.LigacaoAgua.ligacao_agua_avulsa,
+        '254000': pai_unitario.ligacao_agua_avulsa,
         '255000': troca_de_ramal_agua_un,  # Ligação Cv múltiplo
-        '262000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
-        '263000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
-        '265000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '262000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
+        '263000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
+        '265000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
         '266000': transformacao_lig,
         '267000': transformacao_lig,
         '268000': transformacao_lig,
         '269000': transformacao_lig,
-        '280000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
-        '284500': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
-        '286000': m_ligacao_agua_un.LigacaoAgua.tra_nv_png_subst_tra_prev,
+        '280000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
+        '284500': pai_unitario.tra_nv_png_agua_subst_tra_prev,
+        '286000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
         # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
-        '312000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
-        '322000': m_poco.Poco.det_descoberto_nivelado_reg_cx_parada,
-        '404200': m_supressao.Supressao.suprimir_ligacao_de_agua,
-        '405000': m_supressao.Supressao.suprimir_ligacao_de_agua,
-        '406000': m_supressao.Supressao.suprimir_ligacao_de_agua,
-        '407000': m_supressao.Supressao.suprimir_ligacao_de_agua,
-        '414000': m_supressao.Supressao.suprimir_ligacao_de_agua,
-        '450500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '453000': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '455500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '463000': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '465000': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '467500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '475500': m_religacao.Religacao.reativada_ligacao_de_agua,
-        '502000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
-        '505000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
-        '506000': m_ligacao_esgoto_un.LigacaoEsgoto.ligacao_esgoto_avulsa,
-        '508000': m_ligacao_esgoto_un.LigacaoEsgoto.tre,
-        '537000': m_poco.Poco.nivelamento,
-        '537100': m_poco.Poco.nivelamento,
-        '538000': m_poco.Poco.nivelamento,
-        # '561000': DESOBSTRUIDO RAMAL DE ESGOTO
-        '565000': m_ligacao_esgoto_un.LigacaoEsgoto.png,
-        '569000': m_ligacao_esgoto_un.LigacaoEsgoto.tre,
-        # '581000': DESOBSTRUIDA REDE DE ESGOTO
-        # '585000': LAVAGEM DE REDE DE ESGOTO PREVENTIVA
+        '312000': pai_unitario.det_descoberto_nivelado_reg_cx_parada,
+        '322000': pai_unitario.det_descoberto_nivelado_reg_cx_parada,
+        '404200': pai_unitario.supressao,
+        '405000': pai_unitario.supressao,
+        '406000': pai_unitario.supressao,
+        '407000': pai_unitario.supressao,
+        '414000': pai_unitario.supressao,
+        '450500': pai_unitario.religacao,
+        '453000': pai_unitario.religacao,
+        '455500': pai_unitario.religacao,
+        '463000': pai_unitario.religacao,
+        '465000': pai_unitario.religacao,
+        '467500': pai_unitario.religacao,
+        '475500': pai_unitario.religacao,
+        '502000': pai_unitario.ligacao_esgoto_avulsa,
+        '505000': pai_unitario.ligacao_esgoto_avulsa,
+        '506000': pai_unitario.ligacao_esgoto_avulsa,
+        '508000': pai_unitario.tre,
+        '537000': pai_unitario.nivelamento_poco,
+        '537100': pai_unitario.nivelamento_poco,
+        '538000': pai_unitario.nivelamento_poco,
+        '565000': pai_unitario.png_esgoto,
+        '569000': pai_unitario.tre,
         '713000': preservacao_interferencia,
         '713500': preservacao_interferencia,
     }
@@ -171,7 +161,7 @@ def pai_servico_cesta(servico_temp, session):
 
 
 def pai_servico_desobstrucao(servico_temp, session):
-    '''Agregador de TSE de contratos(ex: NORTE SUL)
+    '''Agregador de TSE de contrato NORTE SUL
     para serviços de DD e DC'''
     pai_desobstrucao = oh_pai(session)
     dicionario_pai_desobstrucao = {
