@@ -85,7 +85,7 @@ def verifica_tse(servico, contrato, session):
             (reposicao,
              tse_proibida,
              identificador,
-             etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse)
+             etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse, session)
             identificador_list.append(identificador)
             chave_unitario = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             unitario_reposicao.append(reposicao)
@@ -103,7 +103,7 @@ def verifica_tse(servico, contrato, session):
             (reposicao,
              tse_proibida,
              identificador,
-             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
             chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
@@ -121,7 +121,7 @@ def verifica_tse(servico, contrato, session):
             (reposicao,
              tse_proibida,
              identificador,
-             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
             chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
@@ -139,7 +139,7 @@ def verifica_tse(servico, contrato, session):
             (reposicao,
              tse_proibida,
              identificador,
-             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse)
+             etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
             chave_rb_investimento = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
@@ -158,7 +158,7 @@ def verifica_tse(servico, contrato, session):
             (reposicao,
              tse_proibida,
              identificador,
-             etapa_reposicao) = pai_dicionario.pai_servico_desobstrucao(sap_tse)
+             etapa_reposicao) = pai_dicionario.pai_servico_desobstrucao(sap_tse, session)
             identificador_list.append(identificador)
             chave_rb_despesa = sap_tse, etapa_pai, identificador, reposicao, etapa_reposicao
             list_chave_rb_despesa.append(chave_rb_despesa)

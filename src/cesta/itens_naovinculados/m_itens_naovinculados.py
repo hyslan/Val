@@ -2,26 +2,26 @@
 '''Módulo para aba modalidade.'''
 import sys
 import pywintypes
-from src.sap_connection import connect_to_sap
 
 
 class Modalidade:
     '''Aba de Modalidade para Remuneração Base.'''
 
-    def __init__(self, reposicao, etapa_reposicao, identificador, mae) -> None:
+    def __init__(self, reposicao, etapa_reposicao,
+                 identificador, mae, session) -> None:
         self.reposicao = reposicao
         self.etapa_reposicao = etapa_reposicao
         # O identificador é uma tupla com três variáveis:
         # 0: TSE ; 1: Etapa da TSE; 2: Família pro match case;
         self.identificador = identificador
         self.mae = mae
+        self.session = session
 
     def aba_nao_vinculados(self):
         '''Abrir aba de itens não vinculados.'''
-        session = connect_to_sap()
         print("****Processo de Itens não vinculados****")
-        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-        itens_nv = session.findById(
+        self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        itens_nv = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9035/cntlCC_ITNS_NVINCRB/shellcont/shell")
         return itens_nv

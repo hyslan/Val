@@ -143,7 +143,8 @@ def precificador(tse, corte, relig,
             chave_rb_investimento[3],
             chave_rb_investimento[4],
             chave_rb_investimento,
-            mae
+            mae,
+            session
         )
 
     if list_chave_rb_despesa:
@@ -154,7 +155,8 @@ def precificador(tse, corte, relig,
                 chave_rb_despesa[3],
                 chave_rb_despesa[4],
                 chave_rb_despesa,
-                mae
+                mae,
+                session
             )
 
     return (
