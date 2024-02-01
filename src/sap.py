@@ -74,12 +74,18 @@ class Sap():
 
     def escolher_sessao(self):
         '''Escolher com qual sessão trabalhar'''
+        # pylint: disable=E1101
+        pythoncom.CoInitialize()
+        sapguiauto = win32com.client.GetObject("SAPGUI")
+        application = sapguiauto.GetScriptingEngine
+        connection = application.Children(0)
         total = self.contar_sessoes()
+        escolhas = list(map(str, range(total)))
         n_selected = Prompt.ask(
             "[bold]Escolha entre as sessões disponíveis, lembrando que sessão 1 é nº 0",
-            choices=list(range(total)), default=0)
-        conn = self.listar_sessoes()
-        session = conn.Children(n_selected)
+            choices=escolhas, default="0")
+        n_selected = int(n_selected)
+        session = connection.Children(n_selected)
         return session
 
     def fechar_conexao(self):

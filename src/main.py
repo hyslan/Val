@@ -30,11 +30,21 @@ def contratada():
         "NORTESUL": {"contrato": "4600043760", "unadm": "344", "municipio": "100"},
     }
     contratos_mlq = {
-        "GBITAQUERA": {"contrato": "4600042888", "unadm": "340", "municipio": "100"}
+        "GBITAQUERA": {"contrato": "4600042888", "unadm": "340", "municipio": "100"},
+        "NOVASP": {"contrato": "4600041302", "unadm": "340", "municipio": "100"},
+        "NORTESUL": {"contrato": "4600043654", "unadm": "340", "municipio": "100"},
+        "RECAPE": {"contrato": "4600044777", "unadm": "340", "municipio": "100"}
+    }
+    contratos_mln = {
+        "ZIGURATE": {"contrato": "4600042975", "unadm": "348", "municipio": ""},
+        "NORTESUL": {"contrato": "4600045267", "unadm": "348", "municipio": ""},
+        "NORTESUL2": {"contrato": "4600046036", "unadm": "348", "municipio": ""},
+        "RECAPE": {"contrato": "4600044787", "unadm": "348", "municipio": ""}
     }
     ugrs = {
         "MLG": contratos_mlg,
-        "MLQ": contratos_mlq
+        "MLQ": contratos_mlq,
+        "MLN": contratos_mln
     }
 
     regiao = input("- Val: Qual UGR:\n").upper()
@@ -51,7 +61,7 @@ def contratada():
         print("Não encontrei a UGR")
         sys.exit(0)
 
-    return contrato, unadm, municipio, municipio
+    return contrato, unadm, municipio
 
 
 def main():
@@ -122,7 +132,7 @@ def main():
                     validador = True
                 case "4":
                     contrato = contratada()
-                    pendentes_list = extract_from_sql(contrato)
+                    pendentes_list = extract_from_sql(contrato[0])
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, session, contrato)
                 case "5":
@@ -134,7 +144,7 @@ def main():
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-                    pendentes_list = pendentes.tse_escolhida(contrato)
+                    pendentes_list = pendentes.tse_escolhida(contrato[0])
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, session, contrato)
                 case "6":
@@ -145,7 +155,7 @@ def main():
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-                    pendentes_list = pendentes.tse_expecifica(contrato)
+                    pendentes_list = pendentes.tse_expecifica(contrato[0])
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, session, contrato)
                 case "7":
@@ -154,7 +164,7 @@ def main():
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
                     teste = sql_view.Tabela(ordem_expec, "")
-                    teste_list = teste.ordem_especifica(contrato)
+                    teste_list = teste.ordem_especifica(contrato[0])
                     ordem, int_num_lordem, validador = val(
                         teste_list, session, contrato
                     )
@@ -171,7 +181,7 @@ def main():
                     familia = input(
                         "- Val: Digite o nome da família, por favor.\n"
                     )
-                    pendentes_list = pendentes.familia(familia, contrato)
+                    pendentes_list = pendentes.familia(familia, contrato[0])
                     ordem, int_num_lordem, validador = val(
                         pendentes_list, session, contrato
                     )

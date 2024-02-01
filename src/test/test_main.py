@@ -9,6 +9,7 @@ import src.main
 from src.core import val
 from src.sapador import down_sap
 from src import sap
+from src.unitarios.controlador import Controlador
 
 console = Console()
 
@@ -40,6 +41,14 @@ class TestMain(unittest.TestCase):
         self.assertLogs(sapgui.criar_sessao(sessions), level='DEBUG')
         n = self.assertLogs(sapgui.escolher_sessao(), level='DEBUG')
         console.print([f"[italic]{n}"])
+
+    def test_dicionario_un(self):
+        '''Teste do dicionário com classe'''
+        sessao = sap.Sap()
+        gui = sessao.escolher_sessao()
+        seletor = Controlador("134000", None, None, None, 1,
+                              None, "cavalete", None, None, gui)
+        seletor.executar_processo()
 
 
 if __name__ == '__main__':

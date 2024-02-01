@@ -1,52 +1,48 @@
 '''Módulo Unitário de cavalete'''
 # cavalete.py
-from src.sap_connection import connect_to_sap
 from src.unitarios.localizador import btn_localizador
+from src.unitarios.base import BaseUnitario
 
 
-class Cavalete:
+class Cavalete(BaseUnitario):
     '''Classe Cavalete unitário'''
 
-    @staticmethod
-    def instalado_lacre(*_):
+
+
+    def instalado_lacre(self):
         '''Método Instalado Lacre Diversos'''
-        session = connect_to_sap()
         print("Iniciando processo de pagar LACRHD - Código: 456021")
         codigo = "456021"
-        preco = session.findById(
+        preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            btn_localizador(preco, session, codigo)
+            btn_localizador(preco, self.session, codigo)
             preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
             preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
             preco.pressEnter()
             print("Pago 1 UN de LACRHD - CODIGO: 456021")
 
-    @staticmethod
-    def troca_pe_cv_prev(*_):
+    def troca_pe_cv_prev(self):
         '''Método Troca de Pé de Cavalete Preventivo'''
-        session = connect_to_sap()
         print("Iniciando processo de pagar ADC  TRC PREV PE CV - Código: 456856")
         codigo = "456856"
-        preco = session.findById(
+        preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            btn_localizador(preco, session, codigo)
+            btn_localizador(preco, self.session, codigo)
             preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
             preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
             preco.pressEnter()
             print("Pago 1 UN de ADC  TRC PREV PE CV - CODIGO: 456856")
 
-    @staticmethod
-    def troca_cv_kit(*_):
+    def troca_cv_kit(self):
         '''Método Troca de cavalete KIT'''
-        session = connect_to_sap()
         print("Iniciando processo de pagar TROCA DE CAVALETE (KIT)  - Código: 456011")
-        preco = session.findById(
+        preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
@@ -63,26 +59,17 @@ class Cavalete:
                     print("Pago 1 UN de TCV SF - CODIGO: 456011")
                     break
 
-    @staticmethod
-    def troca_cv_por_uma(corte,
-                         relig,
-                         reposicao,
-                         num_tse_linhas,
-                         etapa_reposicao,
-                         posicao_rede,
-                         profundidade
-                         ):
+    def troca_cv_por_uma(self):
         '''Método Troca de Cavalete Preventivo'''
-        session = connect_to_sap()
         print("Iniciando processo de pagar SUBST CV POR UMA")
-        preco = session.findById(
+        preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            if reposicao:
+            if self.reposicao:
                 codigo = "457229"
-                btn_localizador(preco, session, codigo)
+                btn_localizador(preco, self.session, codigo)
                 item_preco = preco.GetCellValue(
                     preco.CurrentCellRow, "ITEM"
                 )
@@ -95,7 +82,7 @@ class Cavalete:
 
             else:
                 codigo = "457230"
-                btn_localizador(preco, session, codigo)
+                btn_localizador(preco, self.session, codigo)
                 item_preco = preco.GetCellValue(
                     preco.CurrentCellRow, "ITEM"
                 )

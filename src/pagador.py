@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
 from src.servicos_executados import verifica_tse
-from src.unitarios import dicionario
+from src.unitarios.controlador import Controlador
 from src.cesta import cesta_dicionario
 
 
@@ -98,11 +98,14 @@ def precificador(tse, corte, relig,
         )
 
     console.print(Columns([Panel(
-        f"[b]TSE: {tse_temp}, Reposição inclusa ou não: {reposicao_geral}")]))
-    console.print(
-        Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
-    console.print(
-        Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
+        f"[b]TSE: {tse_temp}",
+        reposicao_geral if f"\nReposição inclusa : {reposicao_geral}" else "")]))
+    if list_chave_unitario:
+        console.print(
+            Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
+    if list_chave_rb_despesa or chave_rb_investimento:
+        console.print(
+            Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
 
     if empresa == "4600043760":
         return (
@@ -123,7 +126,7 @@ def precificador(tse, corte, relig,
                       style="bold red underline", justify="center")
         for chave_unitario in list_chave_unitario:
             # pylint: disable=E1121
-            dicionario.unitario(
+            seletor = Controlador(
                 chave_unitario[0],
                 corte,
                 relig,
@@ -132,8 +135,10 @@ def precificador(tse, corte, relig,
                 chave_unitario[4],
                 identificador,
                 posicao_rede,
-                profundidade
+                profundidade,
+                session
             )
+            seletor.executar_processo()
             etapa_unitario.append(chave_unitario[0])
 
     if chave_rb_investimento:

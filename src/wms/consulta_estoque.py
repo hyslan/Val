@@ -10,7 +10,7 @@ def estoque(session, sessions, contrato):
     caminho = "C:\\Users\\irgpapais\\Documents\\Meus Projetos\\val\\"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
-    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
+    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato[0]
     print("Consultando Estoque de Materiais")
     frame.SendVkey(8)
     frame.sendVKey(42)  # Lista Detalhada
