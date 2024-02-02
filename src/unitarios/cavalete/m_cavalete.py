@@ -7,8 +7,6 @@ from src.unitarios.base import BaseUnitario
 class Cavalete(BaseUnitario):
     '''Classe Cavalete unitário'''
 
-
-
     def instalado_lacre(self):
         '''Método Instalado Lacre Diversos'''
         print("Iniciando processo de pagar LACRHD - Código: 456021")
@@ -47,17 +45,11 @@ class Cavalete(BaseUnitario):
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            num_precos_linhas = preco.RowCount
-            n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
-                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if sap_preco == str(456011):
-                    # Marca pagar na TSE
-                    preco.modifyCell(n_preco, "QUANT", "1")
-                    preco.setCurrentCell(n_preco, "QUANT")
-                    preco.pressEnter()
-                    print("Pago 1 UN de TCV SF - CODIGO: 456011")
-                    break
+            btn_localizador(preco, self.session, "456011")
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de TCV SF - CODIGO: 456011")
 
     def troca_cv_por_uma(self):
         '''Método Troca de Cavalete Preventivo'''

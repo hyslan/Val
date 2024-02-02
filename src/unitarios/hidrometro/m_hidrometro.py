@@ -1,6 +1,7 @@
 # hidrometro.py
 '''Módulo Família Hidrômetro Unitário.'''
 from src.unitarios.base import BaseUnitario
+from src.unitarios.localizador import btn_localizador
 
 
 class Hidrometro(BaseUnitario):
@@ -15,17 +16,11 @@ class Hidrometro(BaseUnitario):
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            num_precos_linhas = preco.RowCount
-            n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
-                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if sap_preco == str(456902):  # THD  ATE 10M3/H PREV
-                    # Marca pagar na TSE
-                    preco.modifyCell(n_preco, "QUANT", "1")
-                    preco.setCurrentCell(n_preco, "QUANT")
-                    preco.pressEnter()
-                    print("Pago 1 UN de THD  ATE 10M3/H PREV - CODIGO: 456902")
-                    break
+            btn_localizador(preco, self.session, "456902")
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de THD PREV - CODIGO: 456902")
 
     def desinclinado_hidrometro(self):
         '''Desinclinado Hidrômetro - Código 456022'''
@@ -35,17 +30,11 @@ class Hidrometro(BaseUnitario):
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            num_precos_linhas = preco.RowCount
-            n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
-                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if sap_preco == str(456022):
-                    # Marca pagar na TSE
-                    preco.modifyCell(n_preco, "QUANT", "1")
-                    preco.setCurrentCell(n_preco, "QUANT")
-                    preco.pressEnter()
-                    print("Pago 1 UN de DESINCL HD - CODIGO: 456022")
-                    break
+            btn_localizador(preco, self.session, "456022")
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de DESINCL HD - CODIGO: 456022")
 
     def troca_de_hidro_corretivo(self):
         '''Troca de Hidrômetro Corretivo - Código 456901'''
@@ -55,14 +44,8 @@ class Hidrometro(BaseUnitario):
             + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
-            num_precos_linhas = preco.RowCount
-            n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
-                sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
-                if sap_preco == str(456901):
-                    # Marca pagar na TSE
-                    preco.modifyCell(n_preco, "QUANT", "1")
-                    preco.setCurrentCell(n_preco, "QUANT")
-                    preco.pressEnter()
-                    print("Pago 1 UN de THD  ATE 10M3/H CORR - CODIGO: 456902")
-                    break
+            btn_localizador(preco, self.session, "456901")
+            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+            preco.pressEnter()
+            print("Pago 1 UN de THD  ATE 10M3/H CORR - CODIGO: 456901")

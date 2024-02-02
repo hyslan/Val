@@ -186,7 +186,7 @@ def main():
                         pendentes_list, session, contrato
                     )
 
-        except TypeError as erro:
+        except (TypeError, ValueError) as erro:
             print(f"Erro: {erro}")
             return
 

@@ -18,6 +18,7 @@ from src.salvacao import salvar
 from src.temporizador import cronometro_val
 from src.sapador import down_sap
 from src.wms.consulta_estoque import estoque
+from src.nazare_bugou import oxe
 
 
 def get_input(prompt: int) -> int:
@@ -56,7 +57,7 @@ def val(pendentes_list, session, contrato):
         num_lordem = get_input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
         ordem = pendentes_list[int_num_lordem]
-    except TypeError:
+    except (TypeError, ValueError):
         print("Entrada inválida. Digite um número inteiro válido.")
         num_lordem = get_input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
@@ -252,6 +253,7 @@ def val(pendentes_list, session, contrato):
                     "[bold red underline]Aconteceu um Erro com a Val!"
                     + f"\n Fatal Error: {errocritico}")
                 console.print_exception(show_locals=True)
+                oxe()
                 sys.exit()
                 # sap.encerrar_sap()
                 # down_sap()

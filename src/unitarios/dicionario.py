@@ -3,8 +3,8 @@
 # Bibliotecas
 import sys
 from src.unitarios.hidrometro.m_hidrometro import Hidrometro
-from src.unitarios.supressao import m_supressao
-from src.unitarios.religacao import m_religacao
+from src.unitarios.supressao.m_supressao import Corte
+from src.unitarios.religacao.m_religacao import Religacao
 from src.unitarios.cavalete.m_cavalete import Cavalete
 from src.unitarios.poco import m_poco
 from src.unitarios.ligacao_esgoto import m_ligacao_esgoto
@@ -43,18 +43,18 @@ class Dicionario:
             '286000': m_ligacao_agua.LigacaoAgua.tra_prev,
             '312000': m_poco.Poco.niv_cx_parada,
             '322000': m_poco.Poco.troca_de_caixa_de_parada,
-            '404200': m_supressao.Corte.supressao,
-            '405000': m_supressao.Corte.supressao,
-            '406000': m_supressao.Corte.supressao,
-            '407000': m_supressao.Corte.supressao,
-            '414000': m_supressao.Corte.supressao,
-            '450500': m_religacao.Religacao.restabelecida,
-            '453000': m_religacao.Religacao.restabelecida,
-            '455500': m_religacao.Religacao.restabelecida,
-            '463000': m_religacao.Religacao.restabelecida,
-            '465000': m_religacao.Religacao.restabelecida,
-            '467500': m_religacao.Religacao.restabelecida,
-            '475500': m_religacao.Religacao.restabelecida,
+            '404200': Corte.supressao,
+            '405000': Corte.supressao,
+            '406000': Corte.supressao,
+            '407000': Corte.supressao,
+            '414000': Corte.supressao,
+            '450500': Religacao.restabelecida,
+            '453000': Religacao.restabelecida,
+            '455500': Religacao.restabelecida,
+            '463000': Religacao.restabelecida,
+            '465000': Religacao.restabelecida,
+            '467500': Religacao.restabelecida,
+            '475500': Religacao.restabelecida,
             '502000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
             '505000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
             '506000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
