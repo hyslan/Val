@@ -3,6 +3,8 @@
 import sys
 import re
 import threading
+import pythoncom
+import win32com.client as win32
 import pywintypes
 from src import sql_view
 from src.confere_os import consulta_os
@@ -17,7 +19,7 @@ def salvar(ordem, qtd_ordem, contrato, session):
     '''Salvar e verificar se está salvando.'''
     sap = Sap()
 
-    def salvar_valoracao():
+    def salvar_valoracao(session_id):
         '''Função para salvar valoração.'''
         nonlocal ordem
         nonlocal qtd_ordem
@@ -27,10 +29,17 @@ def salvar(ordem, qtd_ordem, contrato, session):
         # Seção Crítica - uso do Lock
         with lock:
             try:
+                # pylint: disable=E1101
+                pythoncom.CoInitialize()
+                # pylint: disable=E1101
+                gui = win32.Dispatch(
+                    pythoncom.CoGetInterfaceAndReleaseStream(
+                        session_id, pythoncom.IID_IDispatch)
+                )
                 print("Salvando valoração!")
-                session.findById("wnd[0]").sendVKey(11)
-                session.findById("wnd[1]/usr/btnBUTTON_1").press()
-                rodape = session.findById("wnd[0]/sbar").Text  # Rodapé
+                gui.findById("wnd[0]").sendVKey(11)
+                gui.findById("wnd[1]/usr/btnBUTTON_1").press()
+                rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
                 salvo = "Ajustes de valoração salvos com sucesso."
                 if salvo == rodape:
                     print(f"{ordem} salva!")
@@ -45,8 +54,8 @@ def salvar(ordem, qtd_ordem, contrato, session):
                         sys.exit()
             # pylint: disable=E1101
             except pywintypes.com_error:
-                session.findById("wnd[1]/usr/btnBUTTON_1").press()
-                rodape = session.findById("wnd[0]/sbar").Text  # Rodapé
+                gui.findById("wnd[1]/usr/btnBUTTON_1").press()
+                rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
                 rodape = rodape.lower()
                 padrao = r"material (\d+)"
                 correspondencias = re.search(padrao, rodape)
@@ -77,8 +86,13 @@ def salvar(ordem, qtd_ordem, contrato, session):
             ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
             ja_valorado.valorada(obs="Não foi salvo")
 
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
+    session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
+        pythoncom.IID_IDispatch, session)
     # Start
-    thread = threading.Thread(target=salvar_valoracao)
+    thread = threading.Thread(target=salvar_valoracao, kwargs={
+                              'session_id': session_id})
     thread.start()
     # Aguarde a thread concluir
     thread.join(timeout=300)

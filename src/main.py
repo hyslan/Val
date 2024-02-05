@@ -6,6 +6,7 @@ import os
 import time
 import datetime
 import getpass
+import pywintypes
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
@@ -19,6 +20,7 @@ from src.etl import extract_from_sql, pendentes_excel
 from src.desvalorador import desvalorador
 from src.retrabalhador import retrabalho
 from src.osn3 import pertencedor
+from src.sapador import down_sap
 
 
 def contratada():
@@ -110,7 +112,16 @@ def main():
         table.add_row("8", "Planilha de pendentes")
         table.add_row("9", "Família de serviço")
 
-        session = sap.escolher_sessao()
+        try:
+            session = sap.escolher_sessao()
+        # pylint: disable=E1101
+        except pywintypes.com_error:
+            console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+            console.print(
+                "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+            down_sap()
+            session = sap.escolher_sessao()
+
         console.print(table)
 
         try:

@@ -1,6 +1,9 @@
 # ConfereOS.py
 '''Módulo de check-up no SAP'''
 import threading
+import pythoncom
+import win32com.client as win32
+import pywintypes
 from rich.console import Console
 from src.sap import Sap
 
@@ -17,7 +20,7 @@ def consulta_os(n_os, session, contrato):
     hidro = None
     empresa, unadm, municipio = contrato
 
-    def zsbpm020():
+    def zsbpm020(session_id):
         '''Transact 020'''
         nonlocal n_os
         nonlocal empresa
@@ -27,22 +30,34 @@ def consulta_os(n_os, session, contrato):
         # Seção Crítica - uso do Lock
         with lock:
             try:
-                if session is None:
+                # pylint: disable=E1101
+                pythoncom.CoInitialize()
+                # pylint: disable=E1101
+                gui = win32.Dispatch(
+                    pythoncom.CoGetInterfaceAndReleaseStream(
+                        session_id, pythoncom.IID_IDispatch)
+                )
+                if gui is None:
                     console.print("Não foi possível obter a sessão SAP.")
                     return
-                session.StartTransaction("ZSBPM020")
-                campo_os = session.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
+                gui.StartTransaction("ZSBPM020")
+                campo_os = gui.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
                 campo_os.Text = n_os
-                session.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
-                session.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
-                session.findById("wnd[0]").sendVKey(8)
-            except Exception as transaction_error:
+                gui.findById("wnd[0]/usr/txtS_CONTR-LOW").text = empresa
+                gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
+                gui.findById("wnd[0]").sendVKey(8)
+            except (pywintypes.com_error, AttributeError) as transaction_error:
                 console.print(f"Erro durante a transação: {transaction_error}")
                 console.print_exception(show_locals=True)
-                sap.encerrar_sap()
+                # sap.encerrar_sap()
 
+    # pylint: disable=E1101
+    pythoncom.CoInitialize()
+    session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
+        pythoncom.IID_IDispatch, session)
     # Start
-    thread = threading.Thread(target=zsbpm020)
+    thread = threading.Thread(target=zsbpm020, kwargs={
+                              'session_id': session_id})
     thread.start()
     # Aguarde a thread concluir
     thread.join(timeout=300)

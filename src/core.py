@@ -35,15 +35,12 @@ def val(pendentes_list, session, contrato):
     validador = False
     try:
         sessions = sessao.listar_sessoes()
-    except:
-        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-        console.print(
-            "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-        down_sap()
-        sessions = sessao.listar_sessoes()
+    # pylint: disable=E1101
+    except pywintypes.com_error:
+        return
 
     input("- Val: Pressione Enter para iniciar...")
-    if not contrato == "4600043760":
+    if not contrato[0] == "4600043760":
         if not sessions.Count == 6:
             new_session = sessao.criar_sessao(sessions)
             estoque_hj = estoque(new_session, sessions, contrato)
