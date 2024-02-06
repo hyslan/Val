@@ -250,11 +250,11 @@ def val(pendentes_list, session, contrato):
                     "[bold red underline]Aconteceu um Erro com a Val!"
                     + f"\n Fatal Error: {errocritico}")
                 console.print_exception(show_locals=True)
-                oxe()
-                sys.exit()
-                # sap.encerrar_sap()
-                # down_sap()
-                # print("Reiniciando programa")
+                # oxe()
+                # sys.exit()
+                sap.encerrar_sap()
+                down_sap()
+                print("Reiniciando programa")
 
         validador = True
 

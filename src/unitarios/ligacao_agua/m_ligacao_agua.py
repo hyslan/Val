@@ -16,6 +16,17 @@ class LigacaoAgua(BaseUnitario):
         preco.GetCellValue(0, "NUMERO_EXT")
         return preco
 
+    def supressao_ferrule(self):
+        '''Pagar Adicional de Supressão no ferrule/tomada'''
+        preco = self.preco()
+        btn_localizador(preco, self.session, "456506")
+        preco.modifyCell(
+            preco.CurrentCellRow, "QUANT", "1")
+        preco.setCurrentCell(
+            preco.CurrentCellRow, "QUANT")
+        preco.pressEnter()
+        print("Pago 1 UN de ADC  SUPR TMD AG  S/REP")
+
     def reposicoes(self, cod_reposicao: tuple) -> None:
         '''Reposições dos serviços de Ligação de água'''
         preco = self.preco()
@@ -87,7 +98,7 @@ class LigacaoAgua(BaseUnitario):
             # LAG sem fornecimento Código: 456451
             # LAG com fornecimento Código: 456461
             print(
-                f"Iniciando processo de pagar ligação de água posicao: {self.posicao_rede}"
+                f"Iniciando processo de pagar ligação de água posição: {self.posicao_rede}"
             )
             self.posicao_pagar("456451")
             if self.reposicao:
@@ -98,26 +109,132 @@ class LigacaoAgua(BaseUnitario):
             # LAG sem fornecimento Código: 456491
             # LAG com fornecimento Código: 456492
             print(
-                f"Iniciando processo de pagar ligação de água posicao: {self.posicao_rede}"
+                f"Iniciando processo de pagar ligação de água posição: {self.posicao_rede}"
             )
             self.posicao_pagar("456491")
             if self.reposicao:
                 # Ordem da tupla: Cimentado, Especial e Asfalto Frio
                 self.reposicoes(("456493", "456494", "451495"))
 
+        if not self.posicao_rede:
+            print("Sem posição de rede informada")
+            return
+
     def tra_nv(self):
         '''Troca de Ramal de água não visível'''
-        pass
+        if self.posicao_rede == 'PA':
+            # TRANV sem fornecimento Código: 456801
+            # TRANV com fornecimento Código: 456811
+            print(
+                f"Iniciando processo de pagar TRA NV posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456801")
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                # O Cimentado 456821 pode não está vinculado no sap,
+                # Caso não, colocar 456883
+                self.reposicoes(("456821", "456822", "451885"))
+
+        if self.posicao_rede in LigacaoAgua.MND:
+            # TRANV sem fornecimento Código: 456881
+            # TRANV com fornecimento Código: 456882
+            print(
+                f"Iniciando processo de pagar TRA NV posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456881")
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456883", "456884", "451885"))
+
+        if not self.posicao_rede:
+            print("Sem posição de rede informada")
+            return
 
     def png(self):
         '''Passado novo ramal para nova rede - Obra'''
-        pass
+        if self.posicao_rede == 'PA':
+            # PNG sem fornecimento Código: 456371
+            # PNG com fornecimento Código: 456381
+            print(
+                f"Iniciando processo de pagar PNG posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456371")
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456391", "456392", "451415"))
+
+        if self.posicao_rede in LigacaoAgua.MND:
+            # PNG sem fornecimento Código: 456411
+            print(
+                f"Iniciando processo de pagar PNG posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456881")
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456413", "456414", "451415"))
+
+        if not self.posicao_rede:
+            print("Sem posição de rede informada")
+            return
 
     def subst_agua(self):
         '''Substituição de ramal de água, tem adicional de suprimir
         o ferrule da rede'''
-        pass
+        if self.posicao_rede == 'PA':
+            # SUBST sem fornecimento Código: 456451
+            # SUBST com fornecimento Código: 456461
+            print(
+                f"Iniciando processo de pagar PNG posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456451")
+            self.supressao_ferrule()
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456471", "456472", "451495"))
+
+        if self.posicao_rede in LigacaoAgua.MND:
+            # SUBST sem fornecimento Código: 456491
+            # SUBST com fornecimento Código: 456492
+            print(
+                f"Iniciando processo de pagar PNG posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456491")
+            self.supressao_ferrule()
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                # Falta saber o código certo de Cimentado e Especial
+                # No MND para Substituição de Ramal de água
+                self.reposicoes(("456493", "456493", "451495"))
+
+        if not self.posicao_rede:
+            print("Sem posição de rede informada")
+            return
 
     def tra_prev(self):
         '''Troca de ramal de água preventiva'''
-        pass
+        if self.posicao_rede == 'PA':
+            # TRA PREV sem fornecimento Código: 456841
+            # TRA PREV com fornecimento Código: 456851
+            print(
+                f"Iniciando processo de pagar TRA PREV posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456841")
+
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456861", "456862", "451895"))
+
+        if self.posicao_rede in LigacaoAgua.MND:
+            # TRA PREV sem fornecimento Código: 456891
+            # TRA PREV com fornecimento Código: 456892
+            print(
+                f"Iniciando processo de pagar TRA PREV posição: {self.posicao_rede}"
+            )
+            self.posicao_pagar("456891")
+            if self.reposicao:
+                # Ordem da tupla: Cimentado, Especial e Asfalto Frio
+                self.reposicoes(("456893", "456894", "451895"))
+
+        if not self.posicao_rede:
+            print("Sem posição de rede informada")
+            return
