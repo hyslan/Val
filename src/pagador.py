@@ -13,7 +13,6 @@ def precificador(tse, corte, relig,
                  session):
     '''Função para apontar os itens de preço e selecionar.'''
     console = Console()
-    empresa, *_ = contrato
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (
         tse_temp,
@@ -97,26 +96,16 @@ def precificador(tse, corte, relig,
             profundidade_errada
         )
 
-    console.print(Columns([Panel(
-        f"[b]TSE: {tse_temp}",
-        reposicao_geral if f"\nReposição inclusa : {reposicao_geral}" else "")]))
+    console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
+    if reposicao_geral:
+        console.print(
+            Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
     if list_chave_unitario:
         console.print(
             Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
     if list_chave_rb_despesa or chave_rb_investimento:
         console.print(
             Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
-
-    if empresa == "4600043760":
-        return (
-            tse_proibida,
-            list_chave_rb_despesa,
-            list_chave_unitario,
-            chave_rb_investimento,
-            chave_unitario,
-            ligacao_errada,
-            profundidade_errada
-        )
 
     if list_chave_unitario:  # Verifica se está no Conjunto Unitários
         # Aba Itens de preço

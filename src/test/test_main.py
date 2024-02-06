@@ -16,6 +16,7 @@ from src import sap
 from src.unitarios.controlador import Controlador
 from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
+from src.salvacao import salvar
 
 console = Console()
 
@@ -87,12 +88,12 @@ class TestMain(unittest.TestCase):
         '''teste da ZSBMM216'''
         sessao = sap.Sap()
         gui = sessao.escolher_sessao()
-        print(type(gui))
         # test_com(gui)
 
+        salvar("2311178427", 1, ("4600043760", "344", "100"), gui)
         # tupla = consulta_os("2320145100", gui, ("4600042888", "340", "100"))
-        guia = Transacao("4600043760", "344", "100", gui)
-        guia.run_transacao("1234")
+        # guia = Transacao("4600043760", "344", "100", gui)
+        # guia.run_transacao("1234")
 
 
 if __name__ == '__main__':

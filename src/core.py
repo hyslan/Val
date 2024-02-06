@@ -205,7 +205,7 @@ def val(pendentes_list, session, contrato):
                                       estoque_hj,
                                       posicao_rede)
                         # RB - Despesa
-                        if list_chave_rb_despesa and not contrato == "4600043760":
+                        if list_chave_rb_despesa and not contrato[0] == "4600043760":
                             for chave_rb_despesa in list_chave_rb_despesa:
                                 materiais(int_num_lordem,
                                           hidro,

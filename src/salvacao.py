@@ -6,6 +6,7 @@ import threading
 import pythoncom
 import win32com.client as win32
 import pywintypes
+from rich.console import Console
 from src import sql_view
 from src.confere_os import consulta_os
 from src.sap import Sap
@@ -13,6 +14,7 @@ from src.sap import Sap
 
 # Adicionando um Lock
 lock = threading.Lock()
+console = Console()
 
 
 def salvar(ordem, qtd_ordem, contrato, session):
@@ -22,9 +24,6 @@ def salvar(ordem, qtd_ordem, contrato, session):
     def salvar_valoracao(session_id):
         '''Função para salvar valoração.'''
         nonlocal ordem
-        nonlocal qtd_ordem
-        nonlocal contrato
-        nonlocal session
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -69,35 +68,40 @@ def salvar(ordem, qtd_ordem, contrato, session):
                 ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
                 ja_valorado.valorada(obs="Não foi salvo")
 
-        # Verificar se Salvou
-        (status_sistema,
-            status_usuario,
-            *_) = consulta_os(ordem, session, contrato)
-        print("Verificando se Ordem foi valorada.")
-        if status_usuario == "EXEC VALO":
-            print(f"Status da Ordem: {status_sistema}, {status_usuario}")
-            print("Foi Salvo com sucesso!")
-            ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-            ja_valorado.valorada("SIM")
-            # Incremento + de Ordem.
-            qtd_ordem += 1
-        else:
-            print(f"Ordem: {ordem} não foi salva.")
-            ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-            ja_valorado.valorada(obs="Não foi salvo")
+    try:
+        # pylint: disable=E1101
+        pythoncom.CoInitialize()
+        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
+            pythoncom.IID_IDispatch, session)
+        # Start
+        thread = threading.Thread(target=salvar_valoracao, kwargs={
+            'session_id': session_id})
+        thread.start()
+        # Aguarde a thread concluir
+        thread.join(timeout=300)
+        if thread.is_alive():
+            print("SAP demorando mais que o esperado, encerrando.")
+            sap.encerrar_sap()
 
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
-        pythoncom.IID_IDispatch, session)
-    # Start
-    thread = threading.Thread(target=salvar_valoracao, kwargs={
-                              'session_id': session_id})
-    thread.start()
-    # Aguarde a thread concluir
-    thread.join(timeout=300)
-    if thread.is_alive():
-        print("SAP demorando mais que o esperado, encerrando.")
-        sap.encerrar_sap()
+    except pywintypes.com_error as salvar_erro:
+        console.print(f"Erro na parte de salvar: {salvar_erro}")
+        console.print_exception(show_locals=True)
+
+    # Verificar se Salvou
+    (status_sistema,
+        status_usuario,
+        *_) = consulta_os(ordem, session, contrato)
+    print("Verificando se Ordem foi valorada.")
+    if status_usuario == "EXEC VALO":
+        print(f"Status da Ordem: {status_sistema}, {status_usuario}")
+        print("Foi Salvo com sucesso!")
+        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+        ja_valorado.valorada("SIM")
+        # Incremento + de Ordem.
+        qtd_ordem += 1
+    else:
+        print(f"Ordem: {ordem} não foi salva.")
+        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+        ja_valorado.valorada(obs="Não foi salvo")
 
     return qtd_ordem

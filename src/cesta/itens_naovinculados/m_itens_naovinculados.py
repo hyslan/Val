@@ -20,7 +20,8 @@ class Modalidade:
     def aba_nao_vinculados(self):
         '''Abrir aba de itens não vinculados.'''
         print("****Processo de Itens não vinculados****")
-        self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        self.session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         itens_nv = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9035/cntlCC_ITNS_NVINCRB/shellcont/shell")
@@ -56,6 +57,9 @@ class Modalidade:
             case "tra":
                 self.testa_modalidade_sap(itens_nv)
                 self.troca_de_ramal_de_agua(itens_nv)
+            case "desobstrucao":
+                self.testa_modalidade_sap(itens_nv)
+                self.desobstrucao(itens_nv)
             case _:
                 print("TSE não identificada.")
                 print(f"TSE: {self.identificador[0]}")
@@ -225,6 +229,26 @@ class Modalidade:
             elif sap_tse in self.reposicao and sap_etapa in self.etapa_reposicao \
                     and sap_itens_nv in ('327050', '327060',
                                          '327070', '327080'):
+                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
+                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
+                itens_nv.pressf4()
+
+    def desobstrucao(self, itens_nv):
+        '''Módulo desobstrução para NORTESUL'''
+        print("Iniciando processo de Modalidade - "
+              + "REM. BASE DE DESOBSTRUÇÃO")
+        n_modalidade = 0
+        num_modalidade_linhas = itens_nv.RowCount
+        for n_modalidade in range(num_modalidade_linhas):
+            sap_itens_nv = itens_nv.GetCellValue(
+                n_modalidade, "NUMERO_EXT")
+            sap_etapa = itens_nv.GetCellValue(
+                n_modalidade, "ETAPA")
+            sap_tse = itens_nv.GetCellValue(
+                n_modalidade, "TSE")
+            if sap_tse == self.identificador[0] and sap_etapa == self.identificador[1] \
+                    and sap_itens_nv in ('360247', '360245',  # MLG
+                                         '', ''):  # MLQ
                 itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()

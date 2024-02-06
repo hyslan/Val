@@ -1,6 +1,5 @@
 # base.py
 '''Base construtora de classes'''
-from abc import abstractmethod
 from src.unitarios.interfaces import UnitarioInterface
 
 
@@ -23,10 +22,8 @@ class BaseUnitario(UnitarioInterface):
         self.identificador = identificador
         self.etapa = etapa
 
-    @abstractmethod
     def processar(self):
         pass
 
-    @abstractmethod
     def pagar(self):
         pass
