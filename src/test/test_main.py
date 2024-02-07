@@ -4,48 +4,15 @@
 # val/src/test/test_main.py
 
 import unittest
-import pythoncom
-import win32com
-import threading
-from typing import Type
+from unittest.mock import Mock, patch
 from rich.console import Console
 import src.main
 from src.core import val
 from src.sapador import down_sap
 from src import sap
-from src.unitarios.controlador import Controlador
 from src.transact_zsbmm216 import Transacao
-from src.confere_os import consulta_os
-from src.salvacao import salvar
-
+from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 console = Console()
-
-
-def test_com(gui: Type[win32com.client.CDispatch]) -> None:
-    def t_test(sap_id):
-        nonlocal gui
-        pythoncom.CoInitialize()
-        app = win32com.client.Dispatch(
-            pythoncom.CoGetInterfaceAndReleaseStream(
-                sap_id, pythoncom.IID_IDispatch)
-        )
-        try:
-            # Verifica se o método 'StartTransaction' está presente no objeto CDispatch
-            if hasattr(app, "StartTransaction"):
-                app.StartTransaction("ZSBMM216")
-            else:
-                console.print(
-                    "[bold red]Método 'StartTransaction' não encontrado no objeto CDispatch[/bold red]")
-        except Exception as e:
-            console.print(
-                f"[bold red]Erro ao chamar StartTransaction: {e}[/bold red]")
-        return
-
-    pythoncom.CoInitialize()
-    sap_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
-        pythoncom.IID_IDispatch, gui)
-    thread = threading.Thread(target=t_test, kwargs={'sap_id': sap_id})
-    thread.start()
 
 
 class TestMain(unittest.TestCase):
@@ -88,12 +55,39 @@ class TestMain(unittest.TestCase):
         '''teste da ZSBMM216'''
         sessao = sap.Sap()
         gui = sessao.escolher_sessao()
-        # test_com(gui)
+        guia = Transacao("4600043760", "344", "100", gui)
+        guia.run_transacao("1234")
 
-        salvar("2311178427", 1, ("4600043760", "344", "100"), gui)
-        # tupla = consulta_os("2320145100", gui, ("4600042888", "340", "100"))
-        # guia = Transacao("4600043760", "344", "100", gui)
-        # guia.run_transacao("1234")
+
+class TestMetodoPosicaoPagar(unittest.TestCase):
+    '''Teste do método _posicao_pagar da classe LigacaoAgua'''
+
+    def setUp(self):
+        # substitua pelo construtor real da classe
+        self.objeto = LigacaoAgua()
+        self.objeto._ramal = False
+        self.objeto.session = Mock()
+        self.objeto.preco = Mock()
+        self.objeto.preco.modifyCell = Mock()
+        self.objeto.preco.setCurrentCell = Mock()
+        self.objeto.preco.pressEnter = Mock()
+
+    @patch('builtins.print')
+    def test_posicao_pagar(self, mock_print):
+        '''Testa o método _posicao_pagar'''
+        preco_tse = 'preco_tse_teste'
+        self.objeto._posicao_pagar(preco_tse)
+        self.objeto.preco.modifyCell.assert_called_once_with(
+            self.objeto.preco.CurrentCellRow, "QUANT", "1")
+        self.objeto.preco.setCurrentCell.assert_called_once_with(
+            self.objeto.preco.CurrentCellRow, "QUANT")
+        self.objeto.preco.pressEnter.assert_called_once()
+        mock_print.assert_called_once_with(f"Pago 1 UN de {preco_tse}")
+        self.assertTrue(self.objeto._ramal)
+
+
+if __name__ == '__main__':
+    unittest.main()
 
 
 if __name__ == '__main__':
