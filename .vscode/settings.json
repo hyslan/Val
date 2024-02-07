@@ -11,5 +11,6 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.languageServer": "Default"
+    "python.languageServer": "Default",
+    "python.analysis.autoImportCompletions": true
 }
