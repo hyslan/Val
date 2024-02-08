@@ -27,3 +27,6 @@ class BaseUnitario(UnitarioInterface):
 
     def pagar(self):
         pass
+
+    def _processar_operacao(self, tipo_operacao):
+        '''Processar Código de preço'''

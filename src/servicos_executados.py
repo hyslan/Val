@@ -299,7 +299,8 @@ def verifica_tse(servico, contrato, session):
                     servico.modifyCell(n_tse, "CODIGO", "3")
 
     if chave_rb_despesa is not None and pai_tse == 1 \
-            or all(tse in sondagem for tse in chave_rb_despesa[0]):
+            or (chave_rb_despesa is not None
+                and all(tse in sondagem for tse in chave_rb_despesa[0])):
         if chave_rb_despesa[0] in sondagem:
             for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
                 sap_tse = servico.GetCellValue(n_tse, "TSE")

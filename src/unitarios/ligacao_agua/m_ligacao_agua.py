@@ -1,10 +1,10 @@
 '''Módulo Família Ligação Água Unitário.'''
-from src.unitarios.base import BaseUnitario
+
 from src.unitarios.localizador import btn_localizador
 from src.lista_reposicao import dict_reposicao
 
 
-class LigacaoAgua(BaseUnitario):
+class LigacaoAgua:
     '''Ramo de Ligações (Ramal) de água'''
     MND = ('TA', 'EI', 'TO', 'PO')
     # Ordem da tupla: [0] -> preço s/ fornecimento, [1] -> c/ fornecimento,
@@ -24,8 +24,18 @@ class LigacaoAgua(BaseUnitario):
         'TRA_PREV_MND': ("456891", "456892", ("456893", "456894", "451895"))
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
+                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+        self.etapa = etapa
+        self.corte = corte
+        self.relig = relig
+        self.reposicao = reposicao
+        self.num_tse_linhas = num_tse_linhas
+        self.etapa_reposicao = etapa_reposicao
+        self.posicao_rede = posicao_rede
+        self.profundidade = profundidade
+        self.session = session
+        self.identificador = identificador
         self._ramal = False
 
     def preco(self):
@@ -94,14 +104,12 @@ class LigacaoAgua(BaseUnitario):
                 preco.CurrentCellRow, "QUANT")
             preco.pressEnter()
             print(txt_reposicao)
-            contador_pg += 1
 
     def _posicao_pagar(self, preco_tse: str) -> None:
         '''Paga de acordo com a posição da rede'''
         if not self._ramal:
-            # Botão localizar
-            btn_localizador(preco, self.session, preco_tse)
             preco = self.preco()
+            btn_localizador(preco, self.session, preco_tse)
             preco.modifyCell(
                 preco.CurrentCellRow, "QUANT", "1")
             preco.setCurrentCell(

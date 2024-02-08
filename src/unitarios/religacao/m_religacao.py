@@ -3,11 +3,23 @@
 # pylint: disable=W0611
 from src.lista_reposicao import dict_reposicao
 from src.unitarios.localizador import btn_localizador
-from src.unitarios.base import BaseUnitario
 
 
-class Religacao(BaseUnitario):
+class Religacao:
     '''Classe de Religação Unitário.'''
+
+    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
+                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+        self.etapa = etapa
+        self.corte = corte
+        self.relig = relig
+        self.reposicao = reposicao
+        self.num_tse_linhas = num_tse_linhas
+        self.etapa_reposicao = etapa_reposicao
+        self.posicao_rede = posicao_rede
+        self.profundidade = profundidade
+        self.session = session
+        self.identificador = identificador
 
     def restabelecida(self):
         '''Método para definir de qual forma foi restabelecida e 

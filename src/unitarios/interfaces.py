@@ -12,3 +12,7 @@ class UnitarioInterface(ABC):
     @abstractmethod
     def pagar(self):
         '''Abstrato para pagar'''
+
+    @abstractmethod
+    def _processar_operacao(self, tipo_operacao):
+        '''Processar operação'''

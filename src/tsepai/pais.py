@@ -394,19 +394,19 @@ class Unitario(Pai):
     def tre(self):
         '''Troca de Ramal de Esgoto'''
         servico_temp, num_tse_linhas = self.get_shell()
-        self.processar_reposicao_sem_preco(
+        return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "ligacao_esgoto")
 
     def det_descoberto_nivelado_reg_cx_parada(self):
         '''Descobrir, Trocar caixa de parada - TSE 322000'''
         servico_temp, num_tse_linhas = self.get_shell()
-        self.processar_reposicao_sem_preco(
+        return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "cx_parada")
 
     def nivelamento_poco(self):
         '''Nivelamento PI/PV/TL'''
         servico_temp, num_tse_linhas = self.get_shell()
-        self.processar_servico_reposicao_dependente(
+        return self.processar_servico_reposicao_dependente(
             servico_temp, num_tse_linhas, "poço")
 
     def religacao(self):
@@ -414,11 +414,11 @@ class Unitario(Pai):
         TSEs: 405000, 414000, 450500, 453000,
         455500, 463000, 465000, 467500, 475500'''
         servico_temp, num_tse_linhas = self.get_shell()
-        self.processar_servico_sem_bloquete(
+        return self.processar_servico_sem_bloquete(
             servico_temp, num_tse_linhas, "religacao")
 
     def supressao(self):
         '''Supressão unitário'''
         servico_temp, num_tse_linhas = self.get_shell()
-        self.processar_servico_sem_bloquete(
+        return self.processar_servico_sem_bloquete(
             servico_temp, num_tse_linhas, "supressao")

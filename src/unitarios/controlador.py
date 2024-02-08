@@ -1,7 +1,6 @@
 # controlador.py
 '''Classe controladora'''
-
-from src.unitarios.dicionario import Dicionario
+from src.unitarios.dicionario import selecionar_tse
 from src.unitarios.base import BaseUnitario
 
 
@@ -46,15 +45,21 @@ class Controlador(BaseUnitario):
                         f"Pago 1 UN de Preservação - CODIGO: {serv_preservacao}")
                     break
 
+    def _processar_operacao(self, tipo_operacao):
+        '''Processar Código de preço'''
+
     def executar_processo(self):
         '''Selecionar a classe apropriada com base no código da etapa'''
         if self.etapa in ('713000', '713500'):
             self.preserv_inter_serv()
 
-        classe_unitario = Dicionario.selecionar_tse(self.etapa)
+        classe_unitario = selecionar_tse(self.etapa, self.corte, self.relig,
+                                         self.reposicao, self.num_tse_linhas,
+                                         self.etapa_reposicao, self.identificador,
+                                         self.posicao_rede, self.profundidade, self.session)
 
         if classe_unitario:
             # Processar e pagar
-            classe_unitario(self)
+            classe_unitario()
         else:
             print("Erro: Classe não encontrada para a etapa especificada.")

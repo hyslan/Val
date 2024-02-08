@@ -7,9 +7,9 @@ import pywintypes
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Prompt
+from rich.prompt import Prompt, Confirm
 from src import sql_view
-from src import sap
+from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
 from src.pagador import precificador
@@ -29,12 +29,12 @@ def get_input(prompt: int) -> int:
 def val(pendentes_list, session, contrato):
     '''Sistema Val.'''
     console = Console()
-    sessao = sap.Sap()
+    sap = Sap()
     empresa, unadm, municipio = contrato
     transacao = Transacao(empresa, unadm, municipio, session)
     validador = False
     try:
-        sessions = sessao.listar_sessoes()
+        sessions = sap.listar_sessoes()
     # pylint: disable=E1101
     except pywintypes.com_error:
         return
@@ -42,12 +42,14 @@ def val(pendentes_list, session, contrato):
     input("- Val: Pressione Enter para iniciar...")
     if not contrato[0] == "4600043760":
         if not sessions.Count == 6:
-            new_session = sessao.criar_sessao(sessions)
+            new_session = sap.criar_sessao(sessions)
             estoque_hj = estoque(new_session, sessions, contrato)
         else:
             estoque_hj = estoque(session, sessions, contrato)
 
     limite_execucoes = len(pendentes_list)
+    revalorar = Confirm.ask("Vai refazer a valoração?", choices=[
+                            "sim", "não"], default=False)
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:
@@ -69,7 +71,6 @@ def val(pendentes_list, session, contrato):
         # Loop para pagar as ordens
         for num_lordem in tqdm(range(int_num_lordem, limite_execucoes-1), ncols=100):
             try:
-                # session = connect_to_sap()
                 print(f"Linha atual: {int_num_lordem}.")
                 start_time = time.time()  # Contador de tempo para valorar.
                 print(f"Ordem atual: {ordem}")
@@ -97,13 +98,14 @@ def val(pendentes_list, session, contrato):
                     ordem = pendentes_list[int_num_lordem]
                     continue
 
-                if status_usuario == valorada:
-                    print(f"OS: {ordem} já valorada.")
-                    ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-                    ja_valorado.valorada("SIM")
-                    int_num_lordem += 1
-                    # Incremento + de Ordem.
-                    ordem = pendentes_list[int_num_lordem]
+                if revalorar is False:
+                    if status_usuario == valorada:
+                        print(f"OS: {ordem} já valorada.")
+                        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
+                        ja_valorado.valorada("SIM")
+                        int_num_lordem += 1
+                        # Incremento + de Ordem.
+                        ordem = pendentes_list[int_num_lordem]
 
                 else:
                     transacao.run_transacao(ordem)
@@ -126,23 +128,24 @@ def val(pendentes_list, session, contrato):
                         continue
 
                     try:
-                        session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-                        grid_historico = session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
-                        data_valorado = grid_historico.GetCellValue(
-                            0, "DATA")
-                        if data_valorado is not None:
-                            print(f"OS: {ordem} já valorada.")
-                            print(f"Data: {data_valorado}")
-                            ja_valorado = sql_view.Tabela(
-                                ordem=ordem, cod_tse="")
-                            ja_valorado.valorada(obs="SIM")
-                            int_num_lordem += 1
-                            # Incremento + de Ordem.
-                            ordem = pendentes_list[int_num_lordem]
-                            continue
+                        if revalorar is False:
+                            session.findById(
+                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                            grid_historico = session.findById(
+                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+                                + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                            data_valorado = grid_historico.GetCellValue(
+                                0, "DATA")
+                            if data_valorado is not None:
+                                print(f"OS: {ordem} já valorada.")
+                                print(f"Data: {data_valorado}")
+                                ja_valorado = sql_view.Tabela(
+                                    ordem=ordem, cod_tse="")
+                                ja_valorado.valorada(obs="SIM")
+                                int_num_lordem += 1
+                                # Incremento + de Ordem.
+                                ordem = pendentes_list[int_num_lordem]
+                                continue
 
                     # pylint: disable=E1101
                     except pywintypes.com_error:
@@ -250,10 +253,10 @@ def val(pendentes_list, session, contrato):
                     "[bold red underline]Aconteceu um Erro com a Val!"
                     + f"\n Fatal Error: {errocritico}")
                 console.print_exception(show_locals=True)
-                # oxe()
-                # sys.exit()
-                sap.encerrar_sap()
-                down_sap()
+                oxe()
+                sys.exit()
+                # sap.encerrar_sap()
+                # down_sap()
                 print("Reiniciando programa")
 
         validador = True

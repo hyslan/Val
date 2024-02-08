@@ -2,17 +2,21 @@
     Módulo de Testes unitários da aplicação.
 '''
 # val/src/test/test_main.py
-
 import unittest
 from unittest.mock import Mock, patch
 from rich.console import Console
 import src.main
 from src.core import val
 from src.sapador import down_sap
-from src import sap
+from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
+from src.unitarios.controlador import Controlador
 from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
+from src.unitarios.poco.m_poco import Poco
+
+
 console = Console()
+sap = Sap()
 
 
 class TestMain(unittest.TestCase):
@@ -34,27 +38,24 @@ class TestMain(unittest.TestCase):
 
     def test_sap(self):
         '''Test COM SapGui module'''
-        sapgui = sap.Sap()
-        self.assertLogs(sapgui.listar_conexoes(), level='DEBUG')
-        sessions = sapgui.listar_sessoes()
+        self.assertLogs(sap.listar_conexoes(), level='DEBUG')
+        sessions = sap.listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
-        self.assertLogs(sapgui.contar_sessoes(), level='DEBUG')
-        self.assertLogs(sapgui.criar_sessao(sessions), level='DEBUG')
-        n = self.assertLogs(sapgui.escolher_sessao(), level='DEBUG')
+        self.assertLogs(sap.contar_sessoes(), level='DEBUG')
+        self.assertLogs(sap.criar_sessao(sessions), level='DEBUG')
+        n = self.assertLogs(sap.escolher_sessao(), level='DEBUG')
         console.print([f"[italic]{n}"])
 
     def test_dicionario_un(self):
         '''Teste do dicionário com classe'''
-        sessao = sap.Sap()
-        gui = sessao.escolher_sessao()
-        # seletor = Controlador("134000", None, None, None, 1,
-        #                       None, "cavalete", None, None, gui)
-        # seletor.executar_processo()
+        gui = sap.escolher_sessao()
+        seletor = Controlador("134000", None, None, None, 1,
+                              None, "cavalete", None, None, gui)
+        seletor.executar_processo()
 
     def test_transacao(self):
         '''teste da ZSBMM216'''
-        sessao = sap.Sap()
-        gui = sessao.escolher_sessao()
+        gui = sap.escolher_sessao()
         guia = Transacao("4600043760", "344", "100", gui)
         guia.run_transacao("1234")
 
@@ -63,8 +64,7 @@ class TestMetodoPosicaoPagar(unittest.TestCase):
     '''Teste do método _posicao_pagar da classe LigacaoAgua'''
 
     def setUp(self):
-        # substitua pelo construtor real da classe
-        self.objeto = LigacaoAgua()
+        self.objeto = LigacaoAgua(Mock(), Mock())
         self.objeto._ramal = False
         self.objeto.session = Mock()
         self.objeto.preco = Mock()
@@ -86,9 +86,38 @@ class TestMetodoPosicaoPagar(unittest.TestCase):
         self.assertTrue(self.objeto._ramal)
 
 
-if __name__ == '__main__':
-    unittest.main()
+class TestProcessarOperacao(unittest.TestCase):
+    '''Testar classe poço'''
 
+    def setUp(self):
+        gui = sap.escolher_sessao()
+        self.objeto = Poco(
+            etapa="2400145264",
+            corte=None,
+            relig=None,
+            reposicao=None,
+            num_tse_linhas=1,
+            etapa_reposicao=None,
+            identificador="poço",
+            posicao_rede=None,
+            profundidade=None,
+            session=gui
+        )
+        # self.objeto._pagar = Mock()
+
+    @patch('builtins.print')
+    def test_processar_operacao_nivelamento(self, mock_print):
+        '''Niv pv'''
+        tipo_operacao = 'NIVELAMENTO'
+        codigo = self.objeto.CODIGOS.get(tipo_operacao)
+        self.objeto._processar_operacao(tipo_operacao)
+        mock_print.assert_called_once_with(
+            f"Iniciando processo de pagar {tipo_operacao.replace('_', ' ')}")
+       # self.objeto._pagar.assert_called_with(codigo[1])
+
+    def case_test(self):
+        '''Teste de caso'''
+        self.objeto.nivelamento()
 
 if __name__ == '__main__':
     unittest.main()

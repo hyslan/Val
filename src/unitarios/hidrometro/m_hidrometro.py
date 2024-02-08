@@ -1,11 +1,23 @@
 # hidrometro.py
 '''Módulo Família Hidrômetro Unitário.'''
-from src.unitarios.base import BaseUnitario
 from src.unitarios.localizador import btn_localizador
 
 
-class Hidrometro(BaseUnitario):
+class Hidrometro:
     '''Classe Unitária de Hidrômetro.'''
+
+    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
+                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+        self.etapa = etapa
+        self.corte = corte
+        self.relig = relig
+        self.reposicao = reposicao
+        self.num_tse_linhas = num_tse_linhas
+        self.etapa_reposicao = etapa_reposicao
+        self.posicao_rede = posicao_rede
+        self.profundidade = profundidade
+        self.session = session
+        self.identificador = identificador
 
     def troca_de_hidro_preventiva_agendada(self):
         '''Troca de Hidro Preventiva - Código 456902'''

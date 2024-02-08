@@ -9,5 +9,5 @@ def cronometro_val(start_time, ordem):
     # Tempo de execução.
     execution_time = end_time - start_time
     print(f"Tempo gasto para valorar a Ordem: {ordem}, "
-          + f"foi de: {execution_time} segundos.")
+          + f"foi de: {round(execution_time, 2)} segundos.")
     print(f"****Fim da Valoração da Ordem: {ordem} ****")
