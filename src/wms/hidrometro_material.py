@@ -1,9 +1,9 @@
 # hidrometro_material.py
 '''Módulo dos materiais de família Hidrômetro.'''
-from src.sap_connection import connect_to_sap
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import lacre_material
+from src.wms.localiza_material import btn_busca_material
 
 
 class HidrometroMaterial:
@@ -17,7 +17,8 @@ class HidrometroMaterial:
                  diametro_rede,
                  tb_materiais,
                  contrato,
-                 estoque) -> None:
+                 estoque,
+                 session) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -27,12 +28,12 @@ class HidrometroMaterial:
         self.tb_materiais = tb_materiais
         self.contrato = contrato
         self.estoque = estoque
+        self.session = session
 
     def receita_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro.'''
-        session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         if self.hidro is None:
             return
         hidro_instalado = self.hidro
@@ -118,13 +119,8 @@ class HidrometroMaterial:
                     sap_hidro.append(sap_material)
 
             if cod_hidro_instalado in sap_hidro:
-                self.tb_materiais.pressToolbarButton("&FIND")
-                session.findById(
-                    "wnd[1]/usr/txtGS_SEARCH-VALUE").text = cod_hidro_instalado
-                session.findById(
-                    "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
-                session.findById("wnd[1]").sendVKey(0)
-                session.findById("wnd[1]").sendVKey(12)
+                btn_busca_material(self.tb_materiais,
+                                   self.session, cod_hidro_instalado)
                 quantidade = self.tb_materiais.GetCellValue(
                     self.tb_materiais.CurrentCellRow, "QUANT"
                 )
@@ -160,13 +156,8 @@ class HidrometroMaterial:
                         if sap_material == cod_hidro_instalado:
                             print(
                                 f"Hidro foi incluso corretamente: {cod_hidro_instalado}")
-                            self.tb_materiais.pressToolbarButton("&FIND")
-                            session.findById(
-                                "wnd[1]/usr/txtGS_SEARCH-VALUE").text = cod_hidro_instalado
-                            session.findById(
-                                "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
-                            session.findById("wnd[1]").sendVKey(0)
-                            session.findById("wnd[1]").sendVKey(12)
+                            btn_busca_material(
+                                self.tb_materiais, self.session, cod_hidro_instalado)
                             quantidade = self.tb_materiais.GetCellValue(
                                 self.tb_materiais.CurrentCellRow, "QUANT"
                             )
@@ -262,12 +253,13 @@ class HidrometroMaterial:
             materiais_contratada.materiais_contratada(
                 self.tb_materiais, self.contrato, self.estoque)
             lacre_material.caca_lacre(
-                self.tb_materiais, self.operacao, self.estoque)
+                self.tb_materiais, self.operacao,
+                self.estoque, self.session)
 
     def receita_desinclinado_hidrometro(self):
         '''Padrão de materiais na classe Hidrômetro Desinclinado.'''
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         lacre_estoque = self.estoque[self.estoque['Material']
                                      == '50001070']
         if sap_material is None and not lacre_estoque.empty:

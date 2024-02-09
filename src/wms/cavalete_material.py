@@ -1,27 +1,8 @@
 # cavalete_material.py
 '''Módulo dos materiais de família Cavalete.'''
-from src.excel_tbs import load_worksheets
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import lacre_material
-
-
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_contratada,
-    tb_contratada_gb,
-    _,
-    *_,
-) = load_worksheets()
 
 
 class CavaleteMaterial:
@@ -35,7 +16,8 @@ class CavaleteMaterial:
                  diametro_rede,
                  tb_materiais,
                  contrato,
-                 estoque) -> None:
+                 estoque,
+                 session) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -45,11 +27,12 @@ class CavaleteMaterial:
         self.tb_materiais = tb_materiais
         self.contrato = contrato
         self.estoque = estoque
+        self.session = session
 
     def receita_cavalete(self):
         '''Padrão de materiais na classe Religação.'''
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         lacre_estoque = self.estoque[self.estoque['Material'] == '50001070']
         if sap_material is None and not lacre_estoque.empty:
             ultima_linha_material = 0
@@ -86,4 +69,5 @@ class CavaleteMaterial:
             materiais_contratada.materiais_contratada(
                 self.tb_materiais, self.contrato, self.estoque)
             lacre_material.caca_lacre(
-                self.tb_materiais, self.operacao, self.estoque)
+                self.tb_materiais, self.operacao,
+                self.estoque, self.session)

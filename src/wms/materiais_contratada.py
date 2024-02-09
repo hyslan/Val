@@ -24,8 +24,8 @@ from src.wms import lacre_material
 def materiais_novasp(tb_materiais,
                      num_material_linhas,
                      lacre,
-                     ultima_linha_material,
-                     estoque):
+                     estoque,
+                     session):
     '''Contratada NOVASP - MLG'''
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
@@ -49,11 +49,13 @@ def materiais_novasp(tb_materiais,
                     n_material, "ELIMINADO", True
                 )
                 lacre_material.caca_lacre(
-                    tb_materiais, sap_etapa_material, estoque)
+                    tb_materiais, sap_etapa_material,
+                    estoque, session)
                 lacre = True
             if sap_material == '50001070':
                 lacre_material.caca_lacre(
-                    tb_materiais, sap_etapa_material, estoque)
+                    tb_materiais, sap_etapa_material,
+                    estoque, session)
                 lacre = True
 
         if sap_material == '10014780':
@@ -111,7 +113,8 @@ def materiais_gb_itaquera(tb_materiais,
                           num_material_linhas,
                           lacre,
                           ultima_linha_material,
-                          estoque):
+                          estoque,
+                          session):
     '''Contratada GB - MLN'''
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
@@ -135,7 +138,8 @@ def materiais_gb_itaquera(tb_materiais,
                     n_material, "ELIMINADO", True
                 )
                 lacre_material.caca_lacre(
-                    tb_materiais, sap_etapa_material, estoque)
+                    tb_materiais, sap_etapa_material,
+                    estoque, session)
                 lacre = True
 
         if sap_material == '10014780':
@@ -225,7 +229,7 @@ def materiais_gb_itaquera(tb_materiais,
                 f"Etapa: {sap_etapa_material} - UNIAO P/TUBO PEAD DE 20 MM já foi retirado.")
 
 
-def materiais_contratada(tb_materiais, contrato, estoque):
+def materiais_contratada(tb_materiais, contrato, estoque, session):
     '''Módulo de materiais da NOVASP.'''
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     # Número da Row do Grid Materiais do SAP
@@ -236,13 +240,14 @@ def materiais_contratada(tb_materiais, contrato, estoque):
             materiais_novasp(tb_materiais,
                              num_material_linhas,
                              lacre,
-                             ultima_linha_material,
-                             estoque)
+                             estoque,
+                             session)
         case "4600042888":
             materiais_gb_itaquera(tb_materiais,
                                   num_material_linhas,
                                   lacre,
                                   ultima_linha_material,
-                                  estoque)
+                                  estoque,
+                                  session)
         case _:
             return

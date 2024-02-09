@@ -5,7 +5,6 @@ import pywintypes
 import pandas as pd
 from rich.console import Console
 from rich.progress import track
-from src.sap_connection import connect_to_sap
 from src.wms import corte_restab_material
 from src.wms import hidrometro_material
 from src.wms import rede_agua_material
@@ -27,7 +26,8 @@ class Almoxarifado:
                  diametro_rede,
                  contrato,
                  estoque,
-                 posicao_rede
+                 posicao_rede,
+                 session
                  ) -> None:
         self.hidro = hidro
         self.int_num_lordem = int_num_lordem
@@ -39,15 +39,16 @@ class Almoxarifado:
         self.contrato = contrato
         self.estoque = estoque
         self.posicao_rede = posicao_rede
+        self.session = session
 
     def aba_materiais(self):
         '''Função habilita aba de materiais no sap'''
         console = Console()
         console.print("Processo de Materiais",
                       style="bold red underline", justify="center")
-        session = connect_to_sap()
-        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
-        tb_materiais = session.findById(
+        self.session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
+        tb_materiais = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
             + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell")
 
@@ -95,7 +96,8 @@ class Almoxarifado:
         ]
         if self.identificador[0] in sondagem:
             materiais_contratada.materiais_contratada(
-                tb_materiais, self.contrato, self.estoque)
+                tb_materiais, self.contrato,
+                self.estoque, self.session)
         else:
             match self.identificador[2]:
                 case "hidrometro":
@@ -108,7 +110,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_hidrometro()
@@ -123,7 +126,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_desinclinado_hidrometro()
@@ -138,7 +142,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de Cavalete.")
                     material.receita_cavalete()
@@ -153,7 +158,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de religação.")
                     material.receita_religacao()
@@ -168,7 +174,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de Supressão.")
 
@@ -185,7 +192,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita "
                           + "de Ligação (Ramal) de Água.")
@@ -203,7 +211,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
@@ -218,7 +227,8 @@ class Almoxarifado:
                             self.diametro_rede,
                             tb_materiais,
                             self.contrato,
-                            self.estoque
+                            self.estoque,
+                            self.session
                         )
                         print(
                             "Aplicando a receita de hidrômetro em ligação de água nova.")
@@ -236,7 +246,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita de Rede de Água")
                     material.receita_reparo_de_rede_de_agua()
@@ -253,7 +264,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita de Ramal de Esgoto")
                     material.receita_reparo_de_ramal_de_esgoto()
@@ -270,7 +282,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
@@ -287,7 +300,8 @@ class Almoxarifado:
                         self.contrato,
                         self.estoque,
                         df_materiais,
-                        self.posicao_rede
+                        self.posicao_rede,
+                        self.session
                     )
                     print("Aplicando a receita de PNG Esgoto")
                     material.png()
@@ -308,7 +322,8 @@ class Almoxarifado:
                         self.diametro_rede,
                         tb_materiais,
                         self.contrato,
-                        self.estoque
+                        self.estoque,
+                        self.session
                     )
                     print("Aplicando a receita de Caixa de Parada")
                     material.receita_caixa_de_parada()
@@ -327,7 +342,8 @@ def materiais(int_num_lordem,
               diametro_rede,
               contrato,
               estoque,
-              posicao_rede
+              posicao_rede,
+              session
               ):
     '''Função dos materiais de acordo com a TSE pai.'''
     servico = Almoxarifado(int_num_lordem,
@@ -338,7 +354,8 @@ def materiais(int_num_lordem,
                            diametro_rede,
                            contrato,
                            estoque,
-                           posicao_rede
+                           posicao_rede,
+                           session
                            )
     tb_materiais = servico.aba_materiais()
     df_materiais = servico.materiais_vinculados(tb_materiais)

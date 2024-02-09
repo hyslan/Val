@@ -3,7 +3,7 @@
 import pywintypes
 
 
-def testa_material_sap(int_num_lordem, tb_materiais):
+def testa_material_sap(tb_materiais):
     '''Módulo de verificar materiais inclusos na ordem.'''
     try:
         sap_material = tb_materiais.GetCellValue(0, "MATERIAL")

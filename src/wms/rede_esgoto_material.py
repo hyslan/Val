@@ -19,7 +19,8 @@ class RedeEsgotoMaterial:
                  contrato,
                  estoque,
                  df_materiais,
-                 posicao_rede
+                 posicao_rede,
+                 session
                  ) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
@@ -32,6 +33,7 @@ class RedeEsgotoMaterial:
         self.estoque = estoque
         self.df_materiais = df_materiais
         self.posicao_rede = posicao_rede
+        self.session = session
 
     def ramal_luva_correr(self):
         '''Saber diâmetro do ramal para luva correr'''
@@ -121,7 +123,7 @@ class RedeEsgotoMaterial:
         '''Materiais com estoque'''
         session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         if sap_material is not None:
             luva_correr = self.ramal_luva_correr()
             curva45, curva90 = self.curva()
@@ -457,18 +459,21 @@ class RedeEsgotoMaterial:
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
-            self.tb_materiais, self.contrato, self.estoque)
+            self.tb_materiais, self.contrato,
+            self.estoque, self.session)
 
     def receita_reparo_de_ramal_de_esgoto(self):
         '''Padrão de materiais na classe Ramal de Esgoto.'''
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
-            self.tb_materiais, self.contrato, self.estoque)
+            self.tb_materiais, self.contrato,
+            self.estoque, self.session)
 
     def png(self):
         '''Método para PNG Esgoto'''
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
-            self.tb_materiais, self.contrato, self.estoque)
+            self.tb_materiais, self.contrato,
+            self.estoque, self.session)

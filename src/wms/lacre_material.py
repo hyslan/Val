@@ -1,10 +1,9 @@
 '''Módulo Lacre SABESP.'''
-from src.sap_connection import connect_to_sap
+from src.wms.localiza_material import btn_busca_material
 
 
-def caca_lacre(tb_materiais, etapa, estoque):
+def caca_lacre(tb_materiais, etapa, estoque, session):
     '''Módulo de procurar lacres no grid de materiais.'''
-    session = connect_to_sap()
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     lacre_estoque = estoque[estoque['Material'] == '50001070']
     procura_lacre = []
@@ -17,13 +16,7 @@ def caca_lacre(tb_materiais, etapa, estoque):
         procura_lacre.append(sap_material)
 
     if '50001070' in procura_lacre:
-        tb_materiais.pressToolbarButton("&FIND")
-        session.findById(
-            "wnd[1]/usr/txtGS_SEARCH-VALUE").text = '50001070'
-        session.findById(
-            "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
-        session.findById("wnd[1]").sendVKey(0)
-        session.findById("wnd[1]").sendVKey(12)
+        btn_busca_material(tb_materiais, session, '50001070')
         quantidade = tb_materiais.GetCellValue(
             tb_materiais.CurrentCellRow, "QUANT"
         )

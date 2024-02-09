@@ -6,15 +6,23 @@
 		}
 	],
 	"settings": {
-		"python.analysis.typeCheckingMode": "off",
+		"python.analysis.typeCheckingMode": "basic",
 		"[python]": {
-			"editor.defaultFormatter": "ms-python.autopep8"
+			"editor.defaultFormatter": "ms-python.autopep8",
 		},
 		"python.testing.pytestArgs": [
 			"."
 		],
-		"python.testing.unittestEnabled": false,
+		"python.testing.unittestEnabled": true,
 		"python.testing.pytestEnabled": true,
-		"python.languageServer": "Default"
+		"python.languageServer": "Default",
+		"pylint.cwd": "${workspaceFolder}",
+		"python.linting.pylintEnabled": true,
+		"python.linting.enabled": true,
+		"pylint.enabled": true,
+		"editor.defaultFormatter": "ms-python.pylint",
+		"[jsonc]": {
+			"editor.defaultFormatter": "vscode.json-language-features"
+		}
 	}
 }

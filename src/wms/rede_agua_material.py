@@ -3,7 +3,6 @@
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import localiza_material
-from src.sap_connection import connect_to_sap
 
 
 class RedeAguaMaterial:
@@ -19,7 +18,8 @@ class RedeAguaMaterial:
                  contrato,
                  estoque,
                  df_materiais,
-                 posicao_rede) -> None:
+                 posicao_rede,
+                 session) -> None:
         self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
@@ -31,12 +31,12 @@ class RedeAguaMaterial:
         self.estoque = estoque
         self.df_materiais = df_materiais
         self.posicao_rede = posicao_rede
+        self.session = session
 
     def materiais_vigentes(self):
         '''Materiais com estoque.'''
-        session = connect_to_sap()
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         # CONEXOES MET LIGACOES  FÊMEA DN 20
         con_met_femea_estoque = self.estoque[self.estoque['Material'] == '30002394']
         # CONEXOES MET ADAP MACHO DN 20
@@ -88,7 +88,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30002394')
+                                self.tb_materiais, self.session, '30002394')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30001346':
@@ -96,7 +96,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30001346')
+                                self.tb_materiais, self.session, '30001346')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '50000178':
@@ -104,7 +104,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '50000178')
+                                self.tb_materiais, self.session, '50000178')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30006747':
@@ -112,7 +112,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30006747')
+                                self.tb_materiais, self.session, '30006747')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30000287':
@@ -120,7 +120,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30000287')
+                                self.tb_materiais, self.session, '30000287')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30004702':
@@ -128,7 +128,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30004702')
+                                self.tb_materiais, self.session, '30004702')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30004701':
@@ -136,7 +136,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30004701')
+                                self.tb_materiais, self.session, '30004701')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case '30004703':
@@ -144,7 +144,7 @@ class RedeAguaMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, '30004703')
+                                self.tb_materiais, self.session, '30004703')
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     # TUBO PEAD DN20
@@ -156,7 +156,7 @@ class RedeAguaMaterial:
                                     material, self.estoque, 2.5, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "2")
                             case 'TA':
@@ -164,7 +164,7 @@ class RedeAguaMaterial:
                                     material, self.estoque, 4.5, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "4")
                             case 'EX':
@@ -172,7 +172,7 @@ class RedeAguaMaterial:
                                     material, self.estoque, 10, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "5")
                             case 'TO':
@@ -180,7 +180,7 @@ class RedeAguaMaterial:
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "7")
                             case 'PO':
@@ -188,7 +188,7 @@ class RedeAguaMaterial:
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "10")
 
@@ -302,7 +302,7 @@ class RedeAguaMaterial:
     def receita_reparo_de_rede_de_agua(self):
         '''Padrão de materiais na classe CRA.'''
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         # ABRACADEIRA FF REPARO TUBO DN100 LMIN=150
         abrac_ff_reparo_dn100_l150_estoque = self.estoque[
             self.estoque['Material'] == '30008103']
@@ -382,12 +382,13 @@ class RedeAguaMaterial:
             self.materiais_vigentes()
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato, self.estoque)
+                self.tb_materiais, self.contrato,
+                self.estoque, self.session)
 
     def receita_troca_de_conexao_de_ligacao_de_agua(self):
         '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
         con_met_femea_dn20_estoque = self.estoque[self.estoque['Material'] == '30002394']
         # REGISTRO METALICO RAMAL PREDIAL DN 20
@@ -480,12 +481,13 @@ class RedeAguaMaterial:
             self.materiais_vigentes()
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato, self.estoque)
+                self.tb_materiais, self.contrato,
+                self.estoque, self.session)
 
     def receita_reparo_de_ramal_de_agua(self):
         '''Padrão de materiais no reparo de Ligação de Água.'''
         sap_material = testa_material_sap.testa_material_sap(
-            self.int_num_lordem, self.tb_materiais)
+            self.tb_materiais)
         tubo_pead_dn20_estoque = self.estoque[self.estoque['Material'] == '30001848']
         if sap_material is None and not tubo_pead_dn20_estoque.empty:
             ultima_linha_material = 0
@@ -538,4 +540,5 @@ class RedeAguaMaterial:
             self.materiais_vigentes()
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato, self.estoque)
+                self.tb_materiais, self.contrato,
+                self.estoque, self.session)
