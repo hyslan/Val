@@ -33,7 +33,9 @@ class CorteRestabMaterial:
         '''Padrão de materiais na classe Religação.'''
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
-        if sap_material is None:
+        lacre_estoque = self.estoque[
+            self.estoque['Material'] == '50001070']
+        if sap_material is None and not lacre_estoque.empty:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(

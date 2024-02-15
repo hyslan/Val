@@ -7,7 +7,7 @@ from src.unitarios.supressao.m_supressao import Corte
 from src.unitarios.religacao.m_religacao import Religacao
 from src.unitarios.cavalete.m_cavalete import Cavalete
 from src.unitarios.poco.m_poco import Poco
-from src.unitarios.ligacao_esgoto import m_ligacao_esgoto
+from src.unitarios.ligacao_esgoto.m_ligacao_esgoto import LigacaoEsgoto
 from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 
 
@@ -65,15 +65,15 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         '465000': religacao.restabelecida,
         '467500': religacao.restabelecida,
         '475500': religacao.restabelecida,
-        '502000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
-        '505000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
-        '506000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
-        '508000': m_ligacao_esgoto.LigacaoEsgoto.ligacao_esgoto,
+        '502000': LigacaoEsgoto.ligacao_esgoto,
+        '505000': LigacaoEsgoto.ligacao_esgoto,
+        '506000': LigacaoEsgoto.ligacao_esgoto,
+        '508000': LigacaoEsgoto.ligacao_esgoto,
         '537000': poco.nivelamento,
         '537100': poco.nivelamento,
         '538000': poco.nivelamento,
-        '565000': m_ligacao_esgoto.LigacaoEsgoto.png_esgoto,
-        '569000': m_ligacao_esgoto.LigacaoEsgoto.tre
+        '565000': LigacaoEsgoto.png,
+        '569000': LigacaoEsgoto.tre
 
     }
 

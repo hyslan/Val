@@ -7,7 +7,7 @@ import pywintypes
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Prompt, Confirm
+from rich.prompt import IntPrompt, Confirm
 from src import sql_view
 from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
@@ -23,7 +23,7 @@ from src.nazare_bugou import oxe
 
 def get_input(prompt: int) -> int:
     '''Fuction de inputs'''
-    return Prompt.ask(prompt)
+    return IntPrompt.ask(prompt)
 
 
 def val(pendentes_list, session, contrato):
@@ -106,145 +106,148 @@ def val(pendentes_list, session, contrato):
                         int_num_lordem += 1
                         # Incremento + de Ordem.
                         ordem = pendentes_list[int_num_lordem]
-
-                else:
-                    transacao.run_transacao(ordem)
-                    console.print("Processo de Serviços Executados",
-                                  style="bold red underline", justify="center")
-                    try:
-                        tse = session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
-                        )
-                    # pylint: disable=E1101
-                    except pywintypes.com_error:
-                        print(f"Ordem: {ordem} em medição definitiva.")
-                        ja_valorado = sql_view.Tabela(
-                            ordem=ordem, cod_tse="")
-                        ja_valorado.valorada(obs="Definitiva")
-                        int_num_lordem += 1
-                        # Incremento + de Ordem.
-                        ordem = pendentes_list[int_num_lordem]
                         continue
 
-                    try:
-                        if revalorar is False:
-                            session.findById(
-                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-                            grid_historico = session.findById(
-                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                                + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
-                            data_valorado = grid_historico.GetCellValue(
-                                0, "DATA")
-                            if data_valorado is not None:
-                                print(f"OS: {ordem} já valorada.")
-                                print(f"Data: {data_valorado}")
-                                ja_valorado = sql_view.Tabela(
-                                    ordem=ordem, cod_tse="")
-                                ja_valorado.valorada(obs="SIM")
-                                int_num_lordem += 1
-                                # Incremento + de Ordem.
-                                ordem = pendentes_list[int_num_lordem]
-                                continue
+                transacao.run_transacao(ordem)
+                console.print("Processo de Serviços Executados",
+                              style="bold red underline", justify="center")
+                try:
+                    tse = session.findById(
+                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                    )
+                # pylint: disable=E1101
+                except pywintypes.com_error:
+                    print(f"Ordem: {ordem} em medição definitiva.")
+                    ja_valorado = sql_view.Tabela(
+                        ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="Definitiva")
+                    int_num_lordem += 1
+                    # Incremento + de Ordem.
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
 
-                    # pylint: disable=E1101
-                    except pywintypes.com_error:
-                        print("OS Livre para valorar.")
+                try:
+                    if revalorar is False:
                         session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
-                        tse = session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
-                        )
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                        grid_historico = session.findById(
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+                            + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                        data_valorado = grid_historico.GetCellValue(
+                            0, "DATA")
+                        if data_valorado is not None:
+                            print(f"OS: {ordem} já valorada.")
+                            print(f"Data: {data_valorado}")
+                            ja_valorado = sql_view.Tabela(
+                                ordem=ordem, cod_tse="")
+                            ja_valorado.valorada(obs="SIM")
+                            int_num_lordem += 1
+                            # Incremento + de Ordem.
+                            ordem = pendentes_list[int_num_lordem]
+                            continue
 
-                    # TSE e Aba Itens de preço
-                    (
-                        tse_proibida,
-                        list_chave_rb_despesa,
-                        list_chave_unitario,
-                        chave_rb_investimento,
-                        chave_unitario,
-                        ligacao_errada,
-                        profundidade_errada
-                    ) = precificador(tse, corte, relig,
-                                     posicao_rede, profundidade, contrato, session)
-                    if ligacao_errada is True:
-                        ja_valorado = sql_view.Tabela(
-                            ordem=ordem, cod_tse="")
-                        ja_valorado.valorada(obs="Sem posição de rede.")
-                        int_num_lordem += 1
-                        ordem = pendentes_list[int_num_lordem]
-                        continue
+                # pylint: disable=E1101
+                except pywintypes.com_error:
+                    print("OS Livre para valorar.")
+                    session.findById(
+                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
+                    tse = session.findById(
+                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                    )
 
-                    if profundidade_errada is True:
-                        ja_valorado = sql_view.Tabela(
-                            ordem=ordem, cod_tse="")
-                        ja_valorado.valorada(
-                            obs="Sem profundidade do ramal.")
-                        int_num_lordem += 1
-                        ordem = pendentes_list[int_num_lordem]
-                        continue
+                # TSE e Aba Itens de preço
+                (
+                    tse_proibida,
+                    list_chave_rb_despesa,
+                    list_chave_unitario,
+                    chave_rb_investimento,
+                    chave_unitario,
+                    ligacao_errada,
+                    profundidade_errada
+                ) = precificador(tse, corte, relig,
+                                 posicao_rede, profundidade, contrato, session)
+                if ligacao_errada is True:
+                    ja_valorado = sql_view.Tabela(
+                        ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="Sem posição de rede.")
+                    int_num_lordem += 1
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
 
-                    # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
-                    if tse_proibida is not None:
-                        ja_valorado = sql_view.Tabela(
-                            ordem=ordem, cod_tse="")
-                        ja_valorado.valorada(obs="Num Pode")
-                        int_num_lordem += 1
-                        ordem = pendentes_list[int_num_lordem]
-                        continue
-                    else:
-                        # Aba Materiais
+                if profundidade_errada is True:
+                    ja_valorado = sql_view.Tabela(
+                        ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(
+                        obs="Sem profundidade do ramal.")
+                    int_num_lordem += 1
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
 
-                        # RB - Investimento
-                        if chave_rb_investimento:
-                            materiais(int_num_lordem,
-                                      hidro,
-                                      operacao,
-                                      chave_rb_investimento,
-                                      diametro_ramal,
-                                      diametro_rede,
-                                      contrato,
-                                      estoque_hj,
-                                      posicao_rede)
-                        # RB - Despesa
-                        if list_chave_rb_despesa and not contrato[0] == "4600043760":
-                            for chave_rb_despesa in list_chave_rb_despesa:
-                                materiais(int_num_lordem,
-                                          hidro,
-                                          operacao,
-                                          chave_rb_despesa,
-                                          diametro_ramal,
-                                          diametro_rede,
-                                          contrato,
-                                          estoque_hj,
-                                          posicao_rede)
-                        # Unitários
-                        if list_chave_unitario:
-                            for chave_unitario in list_chave_unitario:
-                                materiais(int_num_lordem,
-                                          hidro,
-                                          operacao,
-                                          chave_unitario,
-                                          diametro_ramal,
-                                          diametro_rede,
-                                          contrato,
-                                          estoque_hj,
-                                          posicao_rede)
-                        # Fim dos materiais
-                        # sys.exit(0)
-                        # Salvar Ordem
-                        qtd_ordem = salvar(
-                            ordem, qtd_ordem, contrato, session)
-                        # Fim do contador de valoração.
-                        cronometro_val(start_time, ordem)
-                        # Incremento + de Ordem.
-                        int_num_lordem += 1
-                        ordem = pendentes_list[int_num_lordem]
-                        console.print(
-                            Panel.fit(
-                                f"Quantidade de ordens valoradas: {qtd_ordem}."),
-                            style="italic yellow")
+                # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
+                if tse_proibida is not None:
+                    ja_valorado = sql_view.Tabela(
+                        ordem=ordem, cod_tse="")
+                    ja_valorado.valorada(obs="Num Pode")
+                    int_num_lordem += 1
+                    ordem = pendentes_list[int_num_lordem]
+                    continue
+
+                # Aba Materiais
+
+                # RB - Investimento
+                if chave_rb_investimento:
+                    materiais(int_num_lordem,
+                              hidro,
+                              operacao,
+                              chave_rb_investimento,
+                              diametro_ramal,
+                              diametro_rede,
+                              contrato,
+                              estoque_hj,
+                              posicao_rede,
+                              session)
+                # RB - Despesa
+                if list_chave_rb_despesa and not contrato[0] == "4600043760":
+                    for chave_rb_despesa in list_chave_rb_despesa:
+                        materiais(int_num_lordem,
+                                  hidro,
+                                  operacao,
+                                  chave_rb_despesa,
+                                  diametro_ramal,
+                                  diametro_rede,
+                                  contrato,
+                                  estoque_hj,
+                                  posicao_rede,
+                                  session)
+                # Unitários
+                if list_chave_unitario:
+                    for chave_unitario in list_chave_unitario:
+                        materiais(int_num_lordem,
+                                  hidro,
+                                  operacao,
+                                  chave_unitario,
+                                  diametro_ramal,
+                                  diametro_rede,
+                                  contrato,
+                                  estoque_hj,
+                                  posicao_rede,
+                                  session)
+                # Fim dos materiais
+                # sys.exit(0)
+                # Salvar Ordem
+                qtd_ordem = salvar(
+                    ordem, qtd_ordem, contrato, session)
+                # Fim do contador de valoração.
+                cronometro_val(start_time, ordem)
+                # Incremento + de Ordem.
+                int_num_lordem += 1
+                ordem = pendentes_list[int_num_lordem]
+                console.print(
+                    Panel.fit(
+                        f"Quantidade de ordens valoradas: {qtd_ordem}."),
+                    style="italic yellow")
 
             # pylint: disable=E1101
             except Exception as errocritico:

@@ -310,7 +310,20 @@ class Almoxarifado:
                     pass
 
                 case "poço":
-                    pass
+                    material = poco_material.PocoMaterial(
+                        self.int_num_lordem,
+                        self.hidro,
+                        self.operacao,
+                        self.identificador,
+                        self.diametro_ramal,
+                        self.diametro_rede,
+                        tb_materiais,
+                        self.contrato,
+                        self.estoque,
+                        self.session
+                    )
+                    print("Aplicando a receita de Nivelamento de Poço")
+                    material.niv_pv_pi()
 
                 case "cx_parada":
                     material = poco_material.PocoMaterial(

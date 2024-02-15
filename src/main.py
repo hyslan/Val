@@ -174,10 +174,10 @@ def main():
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
-                    teste = sql_view.Tabela(ordem_expec, "")
-                    teste_list = teste.ordem_especifica(contrato[0])
+                    # teste = sql_view.Tabela(ordem_expec, "")
+                    # teste_list = teste.ordem_especifica(contrato[0])
                     ordem, int_num_lordem, validador = val(
-                        teste_list, session, contrato
+                        [ordem_expec], session, contrato
                     )
                 case "8":
                     contrato = contratada()
