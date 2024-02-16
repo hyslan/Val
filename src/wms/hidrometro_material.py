@@ -251,7 +251,8 @@ class HidrometroMaterial:
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato, self.estoque)
+                self.tb_materiais, self.contrato,
+                self.estoque, self.session)
             lacre_material.caca_lacre(
                 self.tb_materiais, self.operacao,
                 self.estoque, self.session)
@@ -281,4 +282,5 @@ class HidrometroMaterial:
 
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
-            self.tb_materiais, self.contrato, self.estoque)
+            self.tb_materiais, self.contrato,
+            self.estoque, self.session)

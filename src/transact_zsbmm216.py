@@ -1,7 +1,6 @@
 # transact_zsbmm216.py
 '''Módulo de Contrato'''
 # Conexão SAP
-import sys
 import threading
 import pythoncom
 import pywintypes

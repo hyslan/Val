@@ -1,6 +1,5 @@
 # ConfereOS.py
 '''Módulo de check-up no SAP'''
-import sys
 import threading
 import pythoncom
 import win32com.client as win32

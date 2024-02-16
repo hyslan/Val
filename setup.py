@@ -12,8 +12,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "numpy", "pandas", "openpyxl", "pywin32",
-        "rich", "sqlalchemy", "selenium", "tqdm",
-        "imageio", "pygame", "dotenv"
+        "rich", "SQLAlchemy", "selenium", "tqdm",
+        "imageio", "pygame", "python-dotenvpip "
     ],
     entry_points={
         'console_scripts': [

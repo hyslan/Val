@@ -7,7 +7,7 @@ from src import sap
 
 def estoque(session, sessions, contrato):
     '''Função para consultar estoque'''
-    caminho = "C:\\Users\\irgpapais\\Documents\\Meus Projetos\\val\\"
+    caminho = "sheets/"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
     frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato[0]

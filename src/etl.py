@@ -10,7 +10,17 @@ def pendentes_excel():
         "Digite o caminho da planilha.\n A planilha deve conter uma coluna Ordem\n")
     planilha = pd.read_excel(str(caminho))
     planilha = planilha.reset_index()
-    lista = planilha['Ordem'].to_list()
+    lista = planilha['ORDEM'].to_list()
+    return lista
+
+
+def pendentes_csv():
+    '''Load de ordens em uma planilha expecífica'''
+    caminho = input(
+        "Digite o caminho do arquivo csv.\n O arquivo deve conter uma coluna Ordem\n")
+    planilha = pd.read_csv(str(caminho))
+    planilha = planilha.reset_index()
+    lista = planilha['ORDEM'].to_list()
     return lista
 
 
@@ -100,10 +110,11 @@ def extract_from_sql(contrato):
     carteira_str = ','.join([f"'{tse}'" for tse in carteira])
     server_name = '10.66.42.188'
     database_name = 'BD_MLG'
-    connection_string = (f'DRIVER={{SQL Server Native Client 11.0}};'
+    connection_string = (f'DRIVER={{ODBC Driver 17 for SQL Server}};'
                          f'SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;')
     encoded_connection_string = quote_plus(connection_string)
-    connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
+    connection_url = f"mssql+pyodbc:///?odbc_connect={
+        encoded_connection_string}"
     engine = create_engine(connection_url)
     cnxn = engine.connect()
     print("\nConexão com SQL bem sucedida.\n")

@@ -16,7 +16,7 @@ from src import sql_view
 from src.core import val
 from src.avatar import val_avatar
 from src.face_the_gandalf import you_cant_pass
-from src.etl import extract_from_sql, pendentes_excel
+from src.etl import extract_from_sql, pendentes_excel, pendentes_csv
 from src.desvalorador import desvalorador
 from src.retrabalhador import retrabalho
 from src.osn3 import pertencedor
@@ -181,7 +181,12 @@ def main():
                     )
                 case "8":
                     contrato = contratada()
-                    planilha = pendentes_excel()
+                    ask = input("é csv?")
+                    if ask == "s":
+                        planilha = pendentes_csv
+                    else:
+                        planilha = pendentes_excel()
+
                     ordem, int_num_lordem, validador = val(
                         planilha, session, contrato)
                 case "9":
