@@ -1,5 +1,7 @@
 '''Módulo de consulta estoque de materiais'''
 import time
+import sys
+import os
 import xlwings as xw
 import pandas as pd
 from src import sap
@@ -7,7 +9,7 @@ from src import sap
 
 def estoque(session, sessions, contrato):
     '''Função para consultar estoque'''
-    caminho = "sheets/"
+    caminho = os.getcwd() + "\\sheets\\"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
     frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato[0]

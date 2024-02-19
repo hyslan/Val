@@ -14,6 +14,7 @@ from src.unitarios.controlador import Controlador
 from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 from src.unitarios.poco.m_poco import Poco
 from src.confere_os import consulta_os
+from src.wms.consulta_estoque import estoque
 
 
 console = Console()
@@ -26,6 +27,11 @@ class TestMain(unittest.TestCase):
     def test_core(self):
         '''Test main core module loop'''
         result = val("2400341804", "4600041302", "344")
+
+    def test_estoque(self):
+        '''Teste de estoque'''
+        materiais = estoque(
+            sap.escolher_sessao(), sap.listar_sessoes(), ("4600041302", "344", "100"))
 
     def test_consulta(self):
         """Consulta de OS no SAP

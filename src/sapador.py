@@ -16,7 +16,7 @@ def down_sap():
     s = Service(
         'src/chromedriver.exe')
     opt = Options()
-    opt.add_experimental_option('detach', True)
+    opt.add_argument('--headless=new')
     driver = webdriver.Chrome(service=s, options=opt)
     # Navegar até a página de login
     driver.get(url)
