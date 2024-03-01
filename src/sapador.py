@@ -36,7 +36,7 @@ def down_sap():
     print("Arquivo baixado.")
     driver.quit()
     # Caminho para o arquivo "tx.sap"
-    caminho_arquivo = "C:\\Users\\irgpapais\\Downloads\\tx.sap"
+    caminho_arquivo = os.path.join(os.path.expanduser('~'), 'Downloads') + '\tx.sap'
 
     # Tenta executar o comando
     try:
@@ -55,7 +55,7 @@ def down_sap():
 def file_downloaded(filename):
     '''Verifica se o arquivo foi baixado completamente'''
     def predicate(driver):
-        files = os.listdir("C:\\Users\\irgpapais\\Downloads")
+        files = os.listdir(os.path.join(os.path.expanduser('~'), 'Downloads'))
         return any(file.endswith(filename) for file in files)
 
     return predicate

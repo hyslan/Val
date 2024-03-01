@@ -12,11 +12,9 @@ class Tabela:
         self.cod_tse = cod_tse
         server_name = '10.66.42.188'
         database_name = 'BD_MLG'
-        connection_string = (f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server_name};'
-                             f'DATABASE={database_name};Trusted_Connection=yes;')
+        connection_string = f'DRIVER={{SQL Server Native Client 11.0}};SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;'
         encoded_connection_string = quote_plus(connection_string)
-        self.connection_url = f"mssql+pyodbc:///?odbc_connect={
-            encoded_connection_string}"
+        self.connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
         engine = create_engine(self.connection_url)
         self.cnn = engine.connect()
 

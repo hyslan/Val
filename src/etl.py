@@ -113,8 +113,7 @@ def extract_from_sql(contrato):
     connection_string = (f'DRIVER={{ODBC Driver 17 for SQL Server}};'
                          f'SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;')
     encoded_connection_string = quote_plus(connection_string)
-    connection_url = f"mssql+pyodbc:///?odbc_connect={
-        encoded_connection_string}"
+    connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
     engine = create_engine(connection_url)
     cnxn = engine.connect()
     print("\nConexão com SQL bem sucedida.\n")
