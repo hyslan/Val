@@ -1,6 +1,5 @@
 '''Módulo de consulta estoque de materiais'''
 import time
-import sys
 import os
 import xlwings as xw
 import pandas as pd
