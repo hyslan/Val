@@ -1,7 +1,6 @@
 '''Módulo para visualização da view de Valoração'''
-from urllib.parse import quote_plus
 import pandas as pd
-from sqlalchemy import create_engine, text
+import sqlalchemy as sa
 
 
 class Tabela:
@@ -10,17 +9,21 @@ class Tabela:
     def __init__(self, ordem, cod_tse) -> None:
         self.ordem = ordem
         self.cod_tse = cod_tse
-        server_name = '10.66.42.188'
-        database_name = 'BD_MLG'
-        connection_string = f'DRIVER={{SQL Server Native Client 11.0}};SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;'
-        encoded_connection_string = quote_plus(connection_string)
-        self.connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
-        engine = create_engine(self.connection_url)
+        connection_url = sa.URL.create(
+            "mssql+pyodbc",
+            username="BD_MLG_SERVICE",
+            password="S@besp2023*",
+            host="10.66.42.188",
+            database="BD_MLG",
+            query={"driver": "ODBC Driver 17 for SQL Server"},
+        )
+        self.connection_url = connection_url
+        engine = sa.create_engine(self.connection_url)
         self.cnn = engine.connect()
 
     def tse_escolhida(self, contrato):
         '''Dados da tabela do SQL'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         tse = ','.join([f"'{tse}'" for tse in self.cod_tse])
         # Função desfazer valoração
@@ -46,7 +49,7 @@ class Tabela:
 
     def tse_expecifica(self, contrato):
         '''Dados da tabela do SQL'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         resposta = input(
             "- Val: Deseja escolher um período? \n")
@@ -73,24 +76,24 @@ class Tabela:
     def valorada(self, obs):
         '''Update de row valorada'''
         try:
-            engine = create_engine(self.connection_url)
+            engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
         except Exception as errosql:
             print(f"Erro SQL: {errosql}")
-            engine = create_engine(self.connection_url)
+            engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
 
         quem = "Val"
         sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas]" +
                        "(Ordem, [VALORADO?], [POR QUEM?])" +
                        "VALUES ('{}', '{}', '{}')").format(str(self.ordem), obs, quem)
-        cnn.execute(text(sql_command))
+        cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()
 
     def ordem_especifica(self, contrato):
         '''Teste de Ordem única.'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                        f"WHERE ORDEM = '{str(self.ordem)}' AND Contrato = '{contrato}'")
@@ -102,7 +105,7 @@ class Tabela:
 
     def familia(self, familia, contrato):
         '''Escolher família.'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                        f"WHERE FAMILIA = '{str(familia)}' AND Contrato = '{contrato}'")
@@ -114,7 +117,7 @@ class Tabela:
 
     def show_family(self):
         '''Print the family list.'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = "SELECT [FAMILIA] FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
             WHERE FAMILIA IS NOT NULL GROUP BY FAMILIA ORDER BY FAMILIA ASC "
@@ -126,7 +129,7 @@ class Tabela:
 
     def show_tses(self):
         '''Print the TSEs list.'''
-        engine = create_engine(self.connection_url)
+        engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT COD_TSE, DESCRICAO FROM "
                        "[LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] "
