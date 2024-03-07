@@ -1,4 +1,4 @@
-'''Módulo de start do SAP'''
+"""Módulo de start do SAP"""
 import time
 import os
 import subprocess
@@ -11,12 +11,22 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 def down_sap():
-    '''Baixa o .tx do SAP'''
+    """Baixa o .tx do SAP"""
     url = 'http://portalprdci.ti.sabesp.com.br:50900/irj/portal/sabesp'
     s = Service(
         'src/chromedriver.exe')
     opt = Options()
     opt.add_argument('--headless=new')
+    opt.add_argument('--allow-running-insecure-content')
+    opt.add_argument('--ignore-certificate-errors')
+    opt.add_argument(
+        '--unsafely-treat-insecure-origin-as-secure=http://portalprdci.ti.sabesp.com.br:50900/irj/portal/sabesp')
+    opt.add_experimental_option('prefs', {
+        "download.default_directory": os.getcwd() + "\\src",
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True
+
+    })
     driver = webdriver.Chrome(service=s, options=opt)
     # Navegar até a página de login
     driver.get(url)
@@ -36,11 +46,11 @@ def down_sap():
     print("Arquivo baixado.")
     driver.quit()
     # Caminho para o arquivo "tx.sap"
-    caminho_arquivo = "C:\\Users\\irgpapais\\Downloads\\tx.sap"
+    caminho_arquivo = os.getcwd() + "\\src\\tx.sap"
 
     # Tenta executar o comando
     try:
-        subprocess.run(["powershell", "start", caminho_arquivo],
+        subprocess.run(["powershell", "start", '"' + caminho_arquivo + '"'],
                        shell=True, check=False)
         time.sleep(5)
         # Verifica se o processo está em execução
@@ -53,16 +63,17 @@ def down_sap():
 
 
 def file_downloaded(filename):
-    '''Verifica se o arquivo foi baixado completamente'''
+    """Verifica se o arquivo foi baixado completamente"""
     def predicate(driver):
-        files = os.listdir("C:\\Users\\irgpapais\\Downloads")
+        files = os.listdir(os.getcwd() + "\\src")
+        print(files)
         return any(file.endswith(filename) for file in files)
 
     return predicate
 
 
 def is_process_running(process_name):
-    '''Verifica se o processo está em execução'''
+    """Verifica se o processo está em execução"""
     try:
         subprocess.check_output(
             f'tasklist /FI "IMAGENAME eq {process_name}"', shell=True)
