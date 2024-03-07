@@ -74,7 +74,7 @@ def pai_servico_unitario(servico_temp, session):
         '280000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
         '284500': pai_unitario.tra_nv_png_agua_subst_tra_prev,
         '286000': pai_unitario.tra_nv_png_agua_subst_tra_prev,
-        # '304000': DESCOBERTA VALVULA DE REDE DE AGUA
+        # '304000': DESCOBERTA VALVULA DE REDE DE AGUA,
         '312000': pai_unitario.det_descoberto_nivelado_reg_cx_parada,
         '322000': pai_unitario.det_descoberto_nivelado_reg_cx_parada,
         '404200': pai_unitario.supressao,
