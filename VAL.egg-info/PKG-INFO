@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: VAL
+Version: 0.2.0
+Summary: Valoração automática de ordens
+Home-page: https://github.com/hyslan/Val
+Author: Hyslan Silva Cruz
+Author-email: hyslansilva@gmail.com
+Classifier: Programming Language :: Python :: 3.11.4
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: openpyxl
+Requires-Dist: pywin32
+Requires-Dist: rich
+Requires-Dist: SQLAlchemy
+Requires-Dist: selenium
+Requires-Dist: tqdm
+Requires-Dist: imageio
+Requires-Dist: pygame
+Requires-Dist: python-dotenvpip
+
+## SISTEMA VAL
+AplicaÃ§Ã£o para automaÃ§Ã£o de valoraÃ§Ã£o de ordens de serviÃ§os executados pela contratada via SAPGUi.
