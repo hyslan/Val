@@ -1,5 +1,5 @@
 # transact_zsbmm216.py
-'''Módulo de Contrato'''
+"""Módulo de Contrato"""
 # Conexão SAP
 import threading
 import pythoncom
@@ -17,19 +17,31 @@ console = Console()
 class Transacao():
     '''Classe operadora da transação 216'''
 
-    def __init__(self, contrato, unadm,
+    def __init__(self, contrato,
                  municipio, session) -> None:
         self.contrato = contrato
-        self.unadm = unadm
         self.session = session
-        self.municipio = municipio
+        self._municipio = municipio
+
+    @property
+    def municipio(self):
+        """Getter para municipio"""
+        return self._municipio
+
+    @municipio.setter
+    def municipio(self, cod):
+        """Setter for municipio"""
+        if isinstance(cod, str):
+            self._municipio = cod
+        else:
+            raise ValueError("Wrong type, need to be string.")
 
     def run_transacao(self, ordem):
-        '''Run thread ZSBMM216
-        e faz a transação a transação com o respectivo contrato.'''
+        """Run thread ZSBMM216
+        e faz a transação a transação com o respectivo contrato."""
 
         def t_transacao(session_id):
-            '''Transação preenchida ZSBMM216 - Contrato NOVASP'''
+            """Transação preenchida ZSBMM216 - Contrato NOVASP"""
             nonlocal ordem
 
             # Seção Crítica - uso do Lock
@@ -45,12 +57,12 @@ class Transacao():
                     print("Iniciando valoração.")
                     gui.StartTransaction("ZSBMM216")
                     # Unidade Administrativa
-                    gui.findById("wnd[0]/usr/ctxtP_UND").Text = self.unadm
+                    gui.findById("wnd[0]/usr/ctxtP_UND").Text = "1093"
                     # Contrato
                     gui.findById(
                         "wnd[0]/usr/ctxtP_CONT").Text = self.contrato
                     gui.findById(
-                        "wnd[0]/usr/ctxtP_MUNI").Text = self.municipio  # Cidade
+                        "wnd[0]/usr/ctxtP_MUNI").Text = self._municipio  # Cidade
                     sap_ordem = gui.findById(
                         "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
                     sap_ordem.Text = ordem

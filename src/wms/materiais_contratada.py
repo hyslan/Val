@@ -1,4 +1,4 @@
-'''Módulo de materiais contratada'''
+"""Módulo de materiais contratada"""
 import pywintypes
 from src.excel_tbs import load_worksheets
 from src.wms import lacre_material

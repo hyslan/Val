@@ -8,7 +8,7 @@ from src.wms import localiza_material
 class RedeAguaMaterial:
     '''Classe de materiais de CRA.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -20,7 +20,7 @@ class RedeAguaMaterial:
                  df_materiais,
                  posicao_rede,
                  session) -> None:
-        self.int_num_lordem = int_num_lordem
+
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador

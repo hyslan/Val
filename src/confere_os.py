@@ -1,5 +1,5 @@
 # ConfereOS.py
-'''Módulo de check-up no SAP'''
+"""Módulo de check-up no SAP"""
 import threading
 import pythoncom
 import win32com.client as win32
@@ -14,17 +14,16 @@ sap = Sap()
 
 
 def consulta_os(n_os, session, contrato):
-    '''Função para consultar ORDEM na transação ZSBPM020.'''
+    """Função para consultar ORDEM na transação ZSBPM020."""
     diametro_ramal = None
     diametro_rede = None
     hidro = None
-    empresa, unadm, municipio = contrato
+    empresa, municipio = contrato
 
     def zsbpm020(session_id):
-        '''Transact 020'''
+        """Transact 020"""
         nonlocal n_os
         nonlocal empresa
-        nonlocal unadm
         nonlocal municipio
 
         # Seção Crítica - uso do Lock
@@ -44,7 +43,7 @@ def consulta_os(n_os, session, contrato):
                 campo_os = gui.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
                 campo_os.Text = n_os
                 gui.findById("wnd[0]/usr/txtS_CONTR-LOW").text = empresa
-                gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = unadm
+                # gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = 
                 gui.findById("wnd[0]").sendVKey(8)
             except (pywintypes.com_error, AttributeError) as transaction_error:
                 console.print(

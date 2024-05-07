@@ -250,7 +250,7 @@ def verifica_tse(servico, contrato, session):
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue
 
-        if sap_tse in desobstrucao and not contrato == "4600043760":
+        if sap_tse in desobstrucao and not empresa == "4600043760":
             # FUMAÇA, DD/DC, LAVAGEM, TELEVISIONADO
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Serviço não existe no contrato

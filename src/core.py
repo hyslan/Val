@@ -1,5 +1,5 @@
 # core.py
-'''Coração da Val.'''
+"""Coração da Val."""
 # pylint: disable=W0611
 import sys
 import time
@@ -16,7 +16,6 @@ from src.pagador import precificador
 from src.almoxarifado import materiais
 from src.salvacao import salvar
 from src.temporizador import cronometro_val
-from src.sapador import down_sap
 from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
@@ -26,12 +25,12 @@ def get_input(prompt: int) -> int:
     return IntPrompt.ask(prompt)
 
 
-def val(pendentes_list, session, contrato):
-    '''Sistema Val.'''
+def val(pendentes_array, session, contrato):
+    """Sistema Val."""
     console = Console()
     sap = Sap()
-    empresa, unadm, municipio = contrato
-    transacao = Transacao(empresa, unadm, municipio, session)
+    empresa, municipio = contrato
+    transacao = Transacao(empresa, municipio, session)
     validador = False
     try:
         sessions = sap.listar_sessoes()
@@ -39,7 +38,6 @@ def val(pendentes_list, session, contrato):
     except pywintypes.com_error:
         return
 
-    input("- Val: Pressione Enter para iniciar...")
     if not contrato[0] == "4600043760":
         if not sessions.Count == 6:
             new_session = sap.criar_sessao(sessions)
@@ -47,31 +45,20 @@ def val(pendentes_list, session, contrato):
         else:
             estoque_hj = estoque(session, sessions, contrato)
 
-    limite_execucoes = len(pendentes_list)
+    limite_execucoes = len(pendentes_array)
     revalorar = Confirm.ask("Vai refazer a valoração?", choices=[
                             "sim", "não"], default=False)
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
-    try:
-        num_lordem = get_input("Insira o número da linha aqui: ")
-        int_num_lordem = int(num_lordem)
-        ordem = pendentes_list[int_num_lordem]
-    except (TypeError, ValueError):
-        print("Entrada inválida. Digite um número inteiro válido.")
-        num_lordem = get_input("Insira o número da linha aqui: ")
-        int_num_lordem = int(num_lordem)
-        ordem = pendentes_list[int_num_lordem]
 
     with console.status("[bold blue]Trabalhando..."):
         # Variáveis de Status da Ordem
         valorada = "EXEC VALO" or "NEXE VALO"
         fechada = "LIB"
-        print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
         qtd_ordem = 0  # Contador de ordens pagas.
         # Loop para pagar as ordens
-        for num_lordem in tqdm(range(int_num_lordem, limite_execucoes-1), ncols=100):
+        for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
-                print(f"Linha atual: {int_num_lordem}.")
                 start_time = time.time()  # Contador de tempo para valorar.
                 print(f"Ordem atual: {ordem}")
                 print("Verificando Status da Ordem.")
@@ -89,13 +76,8 @@ def val(pendentes_list, session, contrato):
                     diametro_rede
                  ) = consulta_os(ordem, session, contrato)
                 # Consulta Status da Ordem
-                if status_sistema == fechada:
-                    print(f"Status do Sistema: {status_sistema}")
-                else:
+                if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
-                    int_num_lordem += 1
-                    # Incremento + de Ordem.
-                    ordem = pendentes_list[int_num_lordem]
                     continue
 
                 if revalorar is False:
@@ -103,12 +85,11 @@ def val(pendentes_list, session, contrato):
                         print(f"OS: {ordem} já valorada.")
                         ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
                         ja_valorado.valorada("SIM")
-                        int_num_lordem += 1
-                        # Incremento + de Ordem.
-                        ordem = pendentes_list[int_num_lordem]
                         continue
 
+                transacao.municipio = cod_mun
                 transacao.run_transacao(ordem)
+
                 console.print("Processo de Serviços Executados",
                               style="bold red underline", justify="center")
                 try:
@@ -122,9 +103,6 @@ def val(pendentes_list, session, contrato):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Definitiva")
-                    int_num_lordem += 1
-                    # Incremento + de Ordem.
-                    ordem = pendentes_list[int_num_lordem]
                     continue
 
                 try:
@@ -142,9 +120,6 @@ def val(pendentes_list, session, contrato):
                             ja_valorado = sql_view.Tabela(
                                 ordem=ordem, cod_tse="")
                             ja_valorado.valorada(obs="SIM")
-                            int_num_lordem += 1
-                            # Incremento + de Ordem.
-                            ordem = pendentes_list[int_num_lordem]
                             continue
 
                 # pylint: disable=E1101
@@ -172,8 +147,6 @@ def val(pendentes_list, session, contrato):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Sem posição de rede.")
-                    int_num_lordem += 1
-                    ordem = pendentes_list[int_num_lordem]
                     continue
 
                 if profundidade_errada is True:
@@ -181,8 +154,6 @@ def val(pendentes_list, session, contrato):
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Sem profundidade do ramal.")
-                    int_num_lordem += 1
-                    ordem = pendentes_list[int_num_lordem]
                     continue
 
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
@@ -190,50 +161,49 @@ def val(pendentes_list, session, contrato):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Num Pode")
-                    int_num_lordem += 1
-                    ordem = pendentes_list[int_num_lordem]
                     continue
 
                 # Aba Materiais
 
                 # RB - Investimento
                 if chave_rb_investimento:
-                    materiais(int_num_lordem,
+                    materiais(
                               hidro,
                               operacao,
                               chave_rb_investimento,
                               diametro_ramal,
                               diametro_rede,
-                              contrato,
+                              contrato[0],
                               estoque_hj,
                               posicao_rede,
                               session)
                 # RB - Despesa
                 if list_chave_rb_despesa and not contrato[0] == "4600043760":
                     for chave_rb_despesa in list_chave_rb_despesa:
-                        materiais(int_num_lordem,
+                        materiais(
                                   hidro,
                                   operacao,
                                   chave_rb_despesa,
                                   diametro_ramal,
                                   diametro_rede,
-                                  contrato,
+                                  contrato[0],
                                   estoque_hj,
                                   posicao_rede,
                                   session)
                 # Unitários
                 if list_chave_unitario:
                     for chave_unitario in list_chave_unitario:
-                        materiais(int_num_lordem,
+                        materiais(
                                   hidro,
                                   operacao,
                                   chave_unitario,
                                   diametro_ramal,
                                   diametro_rede,
-                                  contrato,
+                                  contrato[0],
                                   estoque_hj,
                                   posicao_rede,
                                   session)
+
                 # Fim dos materiais
                 # sys.exit(0)
                 # Salvar Ordem
@@ -241,9 +211,6 @@ def val(pendentes_list, session, contrato):
                     ordem, qtd_ordem, contrato, session)
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
-                # Incremento + de Ordem.
-                int_num_lordem += 1
-                ordem = pendentes_list[int_num_lordem]
                 console.print(
                     Panel.fit(
                         f"Quantidade de ordens valoradas: {qtd_ordem}."),
@@ -260,8 +227,8 @@ def val(pendentes_list, session, contrato):
                 sys.exit()
                 # sap.encerrar_sap()
                 # down_sap()
-                print("Reiniciando programa")
+                # print("Reiniciando programa")
 
         validador = True
 
-    return ordem, int_num_lordem, validador
+    return ordem, validador
