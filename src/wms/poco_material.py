@@ -9,7 +9,7 @@ from src.wms import localiza_material
 class PocoMaterial:
     '''Classe de materiais de Poço.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -19,7 +19,7 @@ class PocoMaterial:
                  contrato,
                  estoque,
                  session) -> None:
-        self.int_num_lordem = int_num_lordem
+
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador

@@ -9,7 +9,7 @@ from src.wms.localiza_material import btn_busca_material
 class HidrometroMaterial:
     '''Classe de materiais do hidrômetro.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -19,7 +19,6 @@ class HidrometroMaterial:
                  contrato,
                  estoque,
                  session) -> None:
-        self.int_num_lordem = int_num_lordem
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador

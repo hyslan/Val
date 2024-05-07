@@ -9,7 +9,7 @@ from src.sap_connection import connect_to_sap
 class RedeEsgotoMaterial:
     '''Classe de materiais de CRE.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -22,7 +22,7 @@ class RedeEsgotoMaterial:
                  posicao_rede,
                  session
                  ) -> None:
-        self.int_num_lordem = int_num_lordem
+
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador

@@ -18,7 +18,6 @@ class Almoxarifado:
     '''Área de todos materiais obrigatórios por TSE.'''
 
     def __init__(self,
-                 int_num_lordem,
                  hidro,
                  operacao,
                  identificador,
@@ -30,7 +29,6 @@ class Almoxarifado:
                  session
                  ) -> None:
         self.hidro = hidro
-        self.int_num_lordem = int_num_lordem
         # 0 - tse, 1 - etapa tse, 2 - id match case
         self.identificador = identificador
         self.operacao = operacao
@@ -102,7 +100,7 @@ class Almoxarifado:
             match self.identificador[2]:
                 case "hidrometro":
                     material = hidrometro_material.HidrometroMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -118,7 +116,7 @@ class Almoxarifado:
 
                 case "desinclinado":
                     material = hidrometro_material.HidrometroMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -134,7 +132,7 @@ class Almoxarifado:
 
                 case "cavalete":
                     material = cavalete_material.CavaleteMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -150,7 +148,7 @@ class Almoxarifado:
 
                 case "religacao":
                     material = corte_restab_material.CorteRestabMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -166,7 +164,7 @@ class Almoxarifado:
 
                 case "supressao":
                     material = corte_restab_material.CorteRestabMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -182,7 +180,7 @@ class Almoxarifado:
                     material.receita_supressao()
                 case "ramal_agua" | "tra":
                     material = rede_agua_material.RedeAguaMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -201,7 +199,7 @@ class Almoxarifado:
 
                 case "reparo_ramal_agua" | "ligacao_agua" | "ligacao_agua_nova":
                     material = rede_agua_material.RedeAguaMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -219,7 +217,7 @@ class Almoxarifado:
                     # Olhar hidrômetro e lacre em ligações novas.
                     if self.identificador[2] == "ligacao_agua_nova":
                         material = hidrometro_material.HidrometroMaterial(
-                            self.int_num_lordem,
+                            
                             self.hidro,
                             self.operacao,
                             self.identificador,
@@ -236,7 +234,7 @@ class Almoxarifado:
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                     material = rede_agua_material.RedeAguaMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -254,7 +252,7 @@ class Almoxarifado:
 
                 case "ligacao_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -272,7 +270,7 @@ class Almoxarifado:
 
                 case "rede_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -290,7 +288,7 @@ class Almoxarifado:
 
                 case "png_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -311,7 +309,7 @@ class Almoxarifado:
 
                 case "poço":
                     material = poco_material.PocoMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -327,7 +325,7 @@ class Almoxarifado:
 
                 case "cx_parada":
                     material = poco_material.PocoMaterial(
-                        self.int_num_lordem,
+                        
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -347,7 +345,7 @@ class Almoxarifado:
         return
 
 
-def materiais(int_num_lordem,
+def materiais(
               hidro_instalado,
               operacao,
               identificador,
@@ -359,7 +357,7 @@ def materiais(int_num_lordem,
               session
               ):
     '''Função dos materiais de acordo com a TSE pai.'''
-    servico = Almoxarifado(int_num_lordem,
+    servico = Almoxarifado(
                            hidro_instalado,
                            operacao,
                            identificador,

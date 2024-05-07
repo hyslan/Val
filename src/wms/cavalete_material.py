@@ -8,7 +8,7 @@ from src.wms import lacre_material
 class CavaleteMaterial:
     '''Classe de materiais de cavalete.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -18,7 +18,7 @@ class CavaleteMaterial:
                  contrato,
                  estoque,
                  session) -> None:
-        self.int_num_lordem = int_num_lordem
+
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador
@@ -67,7 +67,8 @@ class CavaleteMaterial:
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato, self.estoque)
+                self.tb_materiais, self.contrato,
+                self.estoque, self.session)
             lacre_material.caca_lacre(
                 self.tb_materiais, self.operacao,
                 self.estoque, self.session)
