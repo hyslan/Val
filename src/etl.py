@@ -1,16 +1,15 @@
-'''Módulo para extração de ordens do SQL para a lista xlsx da Val.'''
+"""Módulo para extração de ordens do SQL para a lista xlsx da Val."""
 from urllib.parse import quote_plus
 import pandas as pd
 from sqlalchemy import create_engine
 
 
 def pendentes_excel():
-    '''Load de ordens em uma planilha expecífica'''
+    """Load de ordens em uma planilha expecífica"""
     caminho = input(
         "Digite o caminho da planilha.\n A planilha deve conter uma coluna Ordem\n")
     planilha = pd.read_excel(str(caminho))
-    planilha = planilha.reset_index()
-    lista = planilha['ORDEM'].to_list()
+    lista = planilha.to_numpy()
     return lista
 
 

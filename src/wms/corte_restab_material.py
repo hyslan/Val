@@ -8,7 +8,7 @@ from src.wms import lacre_material
 class CorteRestabMaterial:
     '''Classe de materiais de religação e supressão.'''
 
-    def __init__(self, int_num_lordem,
+    def __init__(self,
                  hidro,
                  operacao,
                  identificador,
@@ -18,7 +18,7 @@ class CorteRestabMaterial:
                  contrato,
                  estoque,
                  session) -> None:
-        self.int_num_lordem = int_num_lordem
+
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador

@@ -1,4 +1,4 @@
-'''Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz'''
+"""Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz"""
 # main.py
 # Bibliotecas
 import sys
@@ -7,6 +7,7 @@ import time
 import datetime
 import getpass
 import pywintypes
+import numpy as np
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
@@ -24,7 +25,7 @@ from src.sapador import down_sap
 
 
 def contratada():
-    '''Input do contrato'''
+    """Input do contrato"""
     contratos_mlg = {
 
         "NOVASP": {"contrato": "4600041302", "unadm": "344", "municipio": "100"},
@@ -35,7 +36,8 @@ def contratada():
         "GBITAQUERA": {"contrato": "4600042888", "unadm": "340", "municipio": "100"},
         "NOVASP": {"contrato": "4600041302", "unadm": "340", "municipio": "100"},
         "NORTESUL": {"contrato": "4600043654", "unadm": "340", "municipio": "100"},
-        "RECAPE": {"contrato": "4600044777", "unadm": "340", "municipio": "100"}
+        "RECAPE": {"contrato": "4600044777", "unadm": "340", "municipio": "100"},
+        "ZIGURATE": {"contrato": "4600042975", "unadm": "340", "municipio": "100"},
     }
     contratos_mln = {
         "ZIGURATE": {"contrato": "4600042975", "unadm": "348", "municipio": ""},
@@ -63,11 +65,13 @@ def contratada():
         print("Não encontrei a UGR")
         sys.exit(0)
 
-    return contrato, unadm, municipio
+    return contrato, municipio
 
 
 def main():
-    '''Sistema principal da Val e inicializador do programa'''
+    """Sistema principal da Val e inicializador do programa"""
+    validador = False
+    ordem = ""
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
     hora_retomada = datetime.time(6, 0)  # Ponto de retomada às 6h
     console = Console()
@@ -144,7 +148,7 @@ def main():
                 case "4":
                     contrato = contratada()
                     pendentes_list = extract_from_sql(contrato[0])
-                    ordem, int_num_lordem, validador = val(
+                    ordem, validador = val(
                         pendentes_list, session, contrato)
                 case "5":
                     contrato = contratada()
@@ -155,9 +159,9 @@ def main():
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-                    pendentes_list = pendentes.tse_escolhida(contrato[0])
-                    ordem, int_num_lordem, validador = val(
-                        pendentes_list, session, contrato)
+                    pendentes_array = pendentes.tse_escolhida(contrato[0])
+                    ordem, validador = val(
+                        pendentes_array, session, contrato)
                 case "6":
                     contrato = contratada()
                     tses_existentes = sql_view.Tabela("", "")
@@ -166,18 +170,18 @@ def main():
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-                    pendentes_list = pendentes.tse_expecifica(contrato[0])
-                    ordem, int_num_lordem, validador = val(
-                        pendentes_list, session, contrato)
+                    pendentes_array = pendentes.tse_expecifica(contrato[0])
+                    ordem, validador = val(
+                        pendentes_array, session, contrato)
                 case "7":
                     contrato = contratada()
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
-                    # teste = sql_view.Tabela(ordem_expec, "")
-                    # teste_list = teste.ordem_especifica(contrato[0])
-                    ordem, int_num_lordem, validador = val(
-                        [ordem_expec], session, contrato
+                    mun = input("Digite o Nº do Município.\n")
+                    pendentes_array = np.array([[ordem_expec, mun]])
+                    ordem, validador    = val(
+                        pendentes_array, session, contrato
                     )
                 case "8":
                     contrato = contratada()
@@ -187,7 +191,7 @@ def main():
                     else:
                         planilha = pendentes_excel()
 
-                    ordem, int_num_lordem, validador = val(
+                    ordem, validador = val(
                         planilha, session, contrato)
                 case "9":
                     contrato = contratada()
@@ -197,9 +201,9 @@ def main():
                     familia = input(
                         "- Val: Digite o nome da família, por favor.\n"
                     )
-                    pendentes_list = pendentes.familia(familia, contrato[0])
-                    ordem, int_num_lordem, validador = val(
-                        pendentes_list, session, contrato
+                    pendentes_array = pendentes.familia(familia, contrato[0])
+                    ordem, validador = val(
+                        pendentes_array, session, contrato
                     )
 
         except (TypeError, ValueError) as erro:
@@ -222,7 +226,7 @@ def main():
                     print("- Val: Bom dia!")
                     print("- Val: Vamos trabalhar!")
                     print(
-                        f"- Val: Retomando Ordem: {ordem} \n da linha: {int_num_lordem}")
+                        f"- Val: Retomando Ordem: {ordem} \n")
                     break  # Sai do Loop quando atingir a hora de retomada.
 
 
