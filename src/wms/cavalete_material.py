@@ -1,12 +1,12 @@
 # cavalete_material.py
-'''Módulo dos materiais de família Cavalete.'''
+"""Módulo dos materiais de família Cavalete."""
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import lacre_material
 
 
 class CavaleteMaterial:
-    '''Classe de materiais de cavalete.'''
+    """Classe de materiais de cavalete."""
 
     def __init__(self,
                  hidro,
@@ -30,10 +30,31 @@ class CavaleteMaterial:
         self.session = session
 
     def receita_cavalete(self):
-        '''Padrão de materiais na classe Religação.'''
+        """Padrão de materiais na classe Religação."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         lacre_estoque = self.estoque[self.estoque['Material'] == '50001070']
+        # Gambiarra
+        if sap_material is None and lacre_estoque.empty:
+            ultima_linha_material = 0
+            self.tb_materiais.InsertRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.operacao
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "50001070"
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1"
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT"
+            )
+            self.tb_materiais.modifyCheckBox(
+                self.tb_materiais.CurrentCellRow, "ELIMINADO", True
+            )
+            ultima_linha_material = ultima_linha_material + 1
+
         if sap_material is None and not lacre_estoque.empty:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))

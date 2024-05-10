@@ -1,5 +1,5 @@
 # dicionario.py
-'''Módulo do Dicionário de Unitários'''
+"""Módulo do Dicionário de Unitários"""
 # Bibliotecas
 import sys
 from src.unitarios.hidrometro.m_hidrometro import Hidrometro
@@ -13,7 +13,7 @@ from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 
 def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
                    etapa_reposicao, identificador, posicao_rede, profundidade, session):
-    '''Dicionário de chaves para etapas de unitário.'''
+    """Dicionário de chaves para etapas de unitário."""
     cavalete = Cavalete(etapa, corte, relig, reposicao, num_tse_linhas,
                         etapa_reposicao, identificador, posicao_rede, profundidade, session)
     hidrometro = Hidrometro(etapa, corte, relig, reposicao, num_tse_linhas,

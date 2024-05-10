@@ -1,5 +1,5 @@
 # pagador.py
-'''Módulo para precificar na aba itens de preço.'''
+"""Módulo para precificar na aba itens de preço."""
 from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
@@ -11,7 +11,7 @@ from src.cesta import cesta_dicionario
 def precificador(tse, corte, relig,
                  posicao_rede, profundidade, contrato,
                  session):
-    '''Função para apontar os itens de preço e selecionar.'''
+    """Função para apontar os itens de preço e selecionar."""
     console = Console()
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
     (

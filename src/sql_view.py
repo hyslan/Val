@@ -21,6 +21,21 @@ class Tabela:
         engine = sa.create_engine(self.connection_url)
         self.cnn = engine.connect()
 
+    def carteira_tse(self, contrato, carteira):
+        engine = sa.create_engine(self.connection_url)
+        cnn = engine.connect()
+        carteira_str = ','.join([f"'{tse}'" for tse in carteira])
+        # Queries para SQL.
+        # pylint disable=W1401
+        query = (f"SELECT [Ordem], COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                 f"WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) "
+                 f"AND Contrato = '{contrato}';")
+        df = pd.read_sql(query, cnn)
+        df_array = df.to_numpy()
+        cnn.close()
+        print("\nExtração de ordens feita com sucesso!")
+        return df_array
+
     def tse_escolhida(self, contrato):
         """Dados da tabela do SQL"""
         engine = sa.create_engine(self.connection_url)
@@ -35,11 +50,11 @@ class Tabela:
             data_fim = input(
                 "- Val: Digite o Ano/Mês final, por favor.\n")
             sql_command = f"SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll AND Contrato = '{contrato}' \
+            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = '{contrato}' \
                 AND MESREF >= {data_inicio} AND MESREF <= {data_fim}"
         else:
             sql_command = f"SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND [Feito?] IS NUll AND Contrato = '{contrato}'"
+            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = '{contrato}'"
 
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
@@ -59,12 +74,12 @@ class Tabela:
                 "- Val: Digite o Ano/Mês final, por favor.\n")
             sql_command = ("SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                            f"WHERE TSE_OPERACAO_ZSCP = '{self.cod_tse}' AND "
-                           f"[Feito?] IS NUll AND Contrato = '{contrato}' "
+                           f"Contrato = '{contrato}' "
                            f"AND MESREF >= '{data_inicio}' AND MESREF <= '{data_fim}'")
         else:
             sql_command = ("SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                            f"WHERE TSE_OPERACAO_ZSCP = '{self.cod_tse}' AND "
-                           f"[Feito?] IS NUll AND Contrato = '{contrato}'")
+                           f"Contrato = '{contrato}'")
 
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
