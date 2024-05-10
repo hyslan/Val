@@ -1,14 +1,14 @@
 # controlador.py
-'''Classe controladora'''
+"""Classe controladora"""
 from src.unitarios.dicionario import selecionar_tse
 from src.unitarios.base import BaseUnitario
 
 
 class Controlador(BaseUnitario):
-    '''Seletor de classes de família de serviços'''
+    """Seletor de classes de família de serviços"""
 
     def preserv_inter_serv(self):
-        '''Etapa de preservação de Interferência'''
+        """Etapa de preservação de Interferência"""
         ramo_agua = [
             ["hidrometro"],
             ["cavalete"],
@@ -46,10 +46,10 @@ class Controlador(BaseUnitario):
                     break
 
     def _processar_operacao(self, tipo_operacao):
-        '''Processar Código de preço'''
+        """Processar Código de preço"""
 
     def executar_processo(self):
-        '''Selecionar a classe apropriada com base no código da etapa'''
+        """Selecionar a classe apropriada com base no código da etapa"""
         if self.etapa in ('713000', '713500'):
             self.preserv_inter_serv()
 

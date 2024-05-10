@@ -15,9 +15,16 @@ sap = Sap()
 
 def consulta_os(n_os, session, contrato):
     """Função para consultar ORDEM na transação ZSBPM020."""
+    status_sistema = None
+    status_usuario = None
+    posicao_rede = None
+    profundidade = None
+    operacao = None
     diametro_ramal = None
     diametro_rede = None
     hidro = None
+    relig = None
+    corte = None
     empresa, municipio = contrato
 
     def zsbpm020(session_id):
@@ -78,13 +85,13 @@ def consulta_os(n_os, session, contrato):
         for n_etapa, restab in enumerate(range(0, num_etapas_linhas)):
             restab = consulta.GetCellValue(
                 n_etapa, "ZZLOCAL_RELIGA")  # religação
-            if restab is not None:
+            if restab != '':
                 relig = restab
 
         for n_etapa, supressao in enumerate(range(0, num_etapas_linhas)):
             supressao = consulta.GetCellValue(
                 n_etapa, "ZZLOCAL_CORTE")  # Supressão
-            if supressao is not None:
+            if supressao != '':
                 corte = supressao
 
         for n_etapa in range(0, num_etapas_linhas):

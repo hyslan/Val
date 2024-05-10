@@ -1,5 +1,5 @@
 # supressao.py
-'''Módulo Família Supressão Unitário.'''
+"""Módulo Família Supressão Unitário."""
 # Bibliotecas
 # pylint: disable=W0611
 from src.lista_reposicao import dict_reposicao
@@ -7,7 +7,7 @@ from src.unitarios.localizador import btn_localizador
 
 
 class Corte:
-    '''Classe de Reposição Unitário.'''
+    """Classe de Reposição Unitário."""
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
                  etapa_reposicao, identificador, posicao_rede, profundidade, session):
@@ -23,9 +23,9 @@ class Corte:
         self.identificador = identificador
 
     def supressao(self):
-        '''Método para definir de qual forma foi suprimida e 
+        """Método para definir de qual forma foi suprimida e
         pagar de acordo com as informações dadas, caso contrário,
-        pagar como ramal se tiver reposição ou cavalete.'''
+        pagar como ramal se tiver reposição ou cavalete."""
         try:
             if self.corte is not None:
                 if self.corte == 'CAVALETE':
@@ -41,7 +41,7 @@ class Corte:
                         preco.pressEnter()
                         print("Pago 1 UN de SUPR CV - CODIGO: 456033")
 
-                elif self.corte == 'RAMAL PEAD' or self.reposicao:
+                elif self.corte in ('RAMAL PEAD', 'PASSEIO') or self.reposicao:
                     print(
                         "Iniciando processo de pagar SUPR  RAMAL AG  S/REP - Código: 456035")
                     preco = self.session.findById(
@@ -83,6 +83,7 @@ class Corte:
                                     preco.CurrentCellRow, "QUANT", "1")
                                 preco.setCurrentCell(
                                     preco.CurrentCellRow, "QUANT")
+                                preco.pressEnter()
                                 print(
                                     "Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456035")
                                 contador_pg += 1
@@ -99,6 +100,7 @@ class Corte:
                                     preco.CurrentCellRow, "QUANT", "1")
                                 preco.setCurrentCell(
                                     preco.CurrentCellRow, "QUANT")
+                                preco.pressEnter()
                                 print(txt_reposicao)
                                 contador_pg += 1
 
@@ -109,11 +111,12 @@ class Corte:
                                 item_preco = preco.GetCellValue(
                                     preco.CurrentCellRow, "ITEM"
                                 )
-                                if item_preco == '1820':
+                                if item_preco in ('1820', '1830'):
                                     preco.modifyCell(
                                         preco.CurrentCellRow, "QUANT", "1")
                                     preco.setCurrentCell(
                                         preco.CurrentCellRow, "QUANT")
+                                    preco.pressEnter()
                                     print(txt_reposicao)
                                     contador_pg += 1
 
@@ -123,12 +126,13 @@ class Corte:
                             preco, self.session, '456035')
                         preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
                         preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+                        preco.pressEnter()
                         print(
                             "Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456035")
                         contador_pg += 1
                         ramal = True
 
-                elif self.corte == 'FERRULE':
+                elif self.corte in ('FERRULE', 'TOMADA/FERRULE'):
                     print(
                         "Iniciando processo de pagar SUPR  TMD AG  S/REP - Código: 456034")
                     preco = self.session.findById(
@@ -157,6 +161,19 @@ class Corte:
                         preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
                         preco.pressEnter()
                         print("Pago 1 UN de SUPR CV - CODIGO: 456033")
+            else:
+                print("Corte não informado. \nPagando como SUPR CV.")
+                preco = self.session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+                preco.GetCellValue(0, "NUMERO_EXT")
+                if preco is not None:
+                    btn_localizador(
+                        preco, self.session, '456033')
+                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+                    preco.pressEnter()
+                    print("Pago 1 UN de SUPR CV - CODIGO: 456033")
 
         except Exception as erro:
             print(f"Na Supressão deu o erro: {erro}")

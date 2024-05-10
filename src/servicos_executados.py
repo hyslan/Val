@@ -199,16 +199,6 @@ def verifica_tse(servico, contrato, session):
         #     tse_proibida = 'Readequado Cavalete!'
         #     break
 
-        # Suprimido Ramal anterior
-        elif sap_tse == '415000':
-            tse_proibida = 'Ramal anterior'
-            break
-
-        # SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL
-        elif sap_tse == '416500':
-            tse_proibida = "Verificar."
-            break
-
         # Serviços relacionados a obra.
         elif sap_tse in ('300000', '308000', '310000', '311000', '313000',
                          '315000', '532000', '564000', '588000', '590000',
@@ -246,6 +236,12 @@ def verifica_tse(servico, contrato, session):
 
         elif sap_tse == '666000':
             # VISTORIADO LOCAL E IDENTIFICADA SITUAÇÃO
+            servico.modifyCell(n_tse, "PAGAR", "n")
+            servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
+            continue
+
+        elif sap_tse == '408000':
+            # SUPRIMIDA LIG POÇO ENCERRAMENTO CONTRATO
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue

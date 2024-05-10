@@ -25,6 +25,12 @@ def get_input(prompt: int) -> int:
     return IntPrompt.ask(prompt)
 
 
+def rollback(sap) -> None:
+    sap.encerrar_sap()
+    # down_sap()
+    # print("Reiniciando programa")
+
+
 def val(pendentes_array, session, contrato):
     """Sistema Val."""
     console = Console()
@@ -143,6 +149,8 @@ def val(pendentes_array, session, contrato):
                     profundidade_errada
                 ) = precificador(tse, corte, relig,
                                  posicao_rede, profundidade, contrato, session)
+                # debug
+                # sys.exit(0)
                 if ligacao_errada is True:
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
@@ -218,16 +226,24 @@ def val(pendentes_array, session, contrato):
 
             # pylint: disable=E1101
             except Exception as errocritico:
-                # Baixa e abre novo arquivo do SAP
-                console.print(
-                    "[bold red underline]Aconteceu um Erro com a Val!"
-                    + f"\n Fatal Error: {errocritico}")
-                console.print_exception(show_locals=True)
-                oxe()
-                sys.exit()
-                # sap.encerrar_sap()
-                # down_sap()
-                # print("Reiniciando programa")
+                _, descricao, _, _ = errocritico.args
+                match descricao:
+                    case 'Falha catastrófica':
+                        console.print("[bold red]SAPGUI has crashed. :fire:")
+                        rollback(sap)
+                    case 'Falha na chamada de procedimento remoto.':
+                        console.print("[bold red]SAPGUI has been finished strangely. :fire:")
+                        rollback(sap)
+                    case 'O servidor RPC não está disponível.':
+                        console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
+                        rollback(sap)
+                    case _:
+                        console.print(
+                            "[bold red underline]Aconteceu um Erro com a Val!"
+                            + f"\n Fatal Error: {errocritico}")
+                        console.print_exception(show_locals=True)
+                        oxe()
+                        sys.exit()
 
         validador = True
 

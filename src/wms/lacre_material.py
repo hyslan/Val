@@ -1,9 +1,9 @@
-'''Módulo Lacre SABESP.'''
+"""Módulo Lacre SABESP."""
 from src.wms.localiza_material import btn_busca_material
 
 
 def caca_lacre(tb_materiais, etapa, estoque, session):
-    '''Módulo de procurar lacres no grid de materiais.'''
+    """Módulo de procurar lacres no grid de materiais."""
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     lacre_estoque = estoque[estoque['Material'] == '50001070']
     procura_lacre = []
