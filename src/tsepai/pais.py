@@ -172,15 +172,17 @@ class Cesta(Pai):
                                                  codigo_despesa, identificador)
 
     def cavalete(self):
-        '''Serviços de cavalete'''
-        return self.processar_servico_cesta("cavalete", CODIGO_DESPESA)
+        """Serviços de cavalete"""
+        return self.processar_servico_cesta("cavalete", PERTENCE_SERVICO_PRINCIPAL)
 
     def ligacao_agua(self):
         '''Serviços de água'''
         return self.processar_servico_cesta("ligacao_agua", CODIGO_DESPESA)
 
     def suprimido_ramal_agua_abandonado(self):
-        '''Suprimido Ramal de água abandonado (RB) - TSE 416000'''
+        """Suprimido Ramal de água abandonado (RB) - TSE 416000,
+        SUPRIMIDO RAMAL ANTERIOR - TSE 451000 e
+        SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL - TSE 416500"""
         return self.processar_servico_cesta("supressao", CODIGO_DESPESA)
 
     def reparo_ramal_agua(self):
@@ -192,7 +194,7 @@ class Cesta(Pai):
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
     def poco(self):
-        '''Reconstruções de poços (RB)'''
+        """Reconstruções/Reparos de poços (RB)"""
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
     def rede_agua(self):

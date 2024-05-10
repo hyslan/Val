@@ -1,18 +1,18 @@
 # pai_dicionario.py
-'''Módulo Dicionário Pai.'''
+"""Módulo Dicionário Pai."""
 # Biblotecas
 import sys
 from src.tsepai import pais
 
 
 def oh_pai(session):
-    '''Aleluia Irmãos'''
+    """Aleluia Irmãos"""
     pai = pais.Pai(session)
     return pai
 
 
 def preservacao_interferencia():
-    '''Captador da tse preservação.'''
+    """Captador da tse preservação."""
     tse_temp_reposicao = ['']
     tse_proibida = None
     identificador = "preservacao"
@@ -21,7 +21,7 @@ def preservacao_interferencia():
 
 
 def transformacao_lig():
-    '''Captador da tse Transformação'''
+    """Captador da tse Transformação"""
     tse_temp_reposicao = []
     tse_proibida = "Ramo Transformação"
     identificador = "transformacao"
@@ -30,7 +30,7 @@ def transformacao_lig():
 
 
 def troca_de_ramal_agua_un():
-    '''Captador da tse TRA.'''
+    """Captador da tse TRA."""
     tse_temp_reposicao = []
     tse_proibida = "TRA"
     identificador = "tra"
@@ -137,11 +137,15 @@ def pai_servico_cesta(servico_temp, session):
         '328000': pai_cesta.gaxeta,
         '330000': pai_cesta.chumbo_junta,
         '332000': pai_cesta.rede_agua,
+        '415000': pai_cesta.suprimido_ramal_agua_abandonado,
         '416000': pai_cesta.suprimido_ramal_agua_abandonado,
+        '416500': pai_cesta.suprimido_ramal_agua_abandonado,
         '560000': pai_cesta.ligacao_esgoto,
         '567000': pai_sondagem.ligacao_esgoto,
         '569000': pai_cesta.rede_esgoto,
         '580000': pai_cesta.rede_esgoto,
+        '531000': pai_cesta.poco,
+        '531100': pai_cesta.poco,
         '539000': pai_cesta.poco,
         '540000': pai_cesta.poco,
         '591000': pai_sondagem.rede_esgoto,
@@ -161,8 +165,8 @@ def pai_servico_cesta(servico_temp, session):
 
 
 def pai_servico_desobstrucao(servico_temp, session):
-    '''Agregador de TSE de contrato NORTE SUL
-    para serviços de DD e DC'''
+    """Agregador de TSE de contrato NORTE SUL
+    para serviços de DD e DC"""
     pai_desobstrucao = oh_pai(session)
     dicionario_pai_desobstrucao = {
         '561000': pai_desobstrucao.desobstrucao,

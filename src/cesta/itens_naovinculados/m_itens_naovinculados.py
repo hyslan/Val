@@ -2,6 +2,10 @@
 """Módulo para aba modalidade."""
 import sys
 import pywintypes
+from rich.console import Console
+
+
+console = Console()
 
 
 class Modalidade:
@@ -19,7 +23,8 @@ class Modalidade:
 
     def aba_nao_vinculados(self):
         """Abrir aba de itens não vinculados."""
-        print("****Processo de Itens não vinculados****")
+        console.print("Processo de Itens não vinculados",
+                      style="bold red underline", justify="center")
         self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         itens_nv = self.session.findById(
@@ -334,7 +339,7 @@ class Modalidade:
                 itens_nv.pressf4()
 
     def desobstrucao(self, itens_nv):
-        '''Módulo desobstrução para NORTESUL'''
+        """Módulo desobstrução para NORTESUL"""
         print("Iniciando processo de Modalidade - "
               + "REM. BASE DE DESOBSTRUÇÃO")
         num_modalidade_linhas = itens_nv.RowCount

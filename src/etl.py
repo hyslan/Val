@@ -2,7 +2,7 @@
 from urllib.parse import quote_plus
 import pandas as pd
 from sqlalchemy import create_engine
-
+from src.sql_view import Tabela
 
 def pendentes_excel():
     """Load de ordens em uma planilha expecífica"""
@@ -24,7 +24,8 @@ def pendentes_csv():
 
 
 def extract_from_sql(contrato):
-    '''Extração de ordens do contrato NOVASP do banco SQL Penha.'''
+    """Extração de ordens do contrato NOVASP do banco SQL Penha."""
+    sql = Tabela("", "")
     carteira = [
         '134000',
         '135000',
@@ -57,6 +58,7 @@ def extract_from_sql(contrato):
         '405000',
         '406000',
         '407000',
+        '408000',
         '414000',
         '450500',
         '453000',
@@ -80,6 +82,7 @@ def extract_from_sql(contrato):
 
         # Serviços REM BASE
         '130000',
+        '138000',
         '140000',
         '140100',
         '283000',
@@ -93,9 +96,12 @@ def extract_from_sql(contrato):
         '328000',
         # '330000',
         '332000',
+        '415000',
         '416000',
-        # '539000'
+        '416500',
         # '540000'
+        '531000',
+        '531100',
         '560000',
         '567000',
         # '569000'
@@ -104,27 +110,5 @@ def extract_from_sql(contrato):
         '540000',
         '591000',
     ]
-
-    # Construção da cláusula IN como uma string separada por vírgulas
-    carteira_str = ','.join([f"'{tse}'" for tse in carteira])
-    server_name = '10.66.42.188'
-    database_name = 'BD_MLG'
-    connection_string = (f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-                         f'SERVER={server_name};DATABASE={database_name};Trusted_Connection=yes;')
-    encoded_connection_string = quote_plus(connection_string)
-    connection_url = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
-    engine = create_engine(connection_url)
-    cnxn = engine.connect()
-    print("\nConexão com SQL bem sucedida.\n")
-
-    # Queries para SQL.
-
-    # pylint disable=W1401
-    query = (f"SELECT [Ordem] FROM [BD_MLG].[LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-             f"WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) "
-             f"AND [Feito?] IS NUll AND Contrato = '{contrato}';")
-    df = pd.read_sql(query, cnxn)
-    pendentes = pd.DataFrame(df)
-    pendentes_list = pendentes['Ordem'].tolist()
-    print("\nExtração de ordens feita com sucesso!")
-    return pendentes_list
+    lista = sql.carteira_tse(contrato, carteira)
+    return lista

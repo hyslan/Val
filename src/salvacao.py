@@ -1,5 +1,5 @@
 # salvacao.py
-'''Módulo de salvar valoração.'''
+"""Módulo de salvar valoração."""
 import sys
 import re
 import threading
@@ -18,11 +18,11 @@ console = Console()
 
 
 def salvar(ordem, qtd_ordem, contrato, session):
-    '''Salvar e verificar se está salvando.'''
+    """Salvar e verificar se está salvando."""
     sap = Sap()
 
     def salvar_valoracao(session_id):
-        '''Função para salvar valoração.'''
+        """Função para salvar valoração."""
         nonlocal ordem
 
         # Seção Crítica - uso do Lock
@@ -94,7 +94,7 @@ def salvar(ordem, qtd_ordem, contrato, session):
     print("Verificando se Ordem foi valorada.")
     if status_usuario == "EXEC VALO":
         print(f"Status da Ordem: {status_sistema}, {status_usuario}")
-        print("Foi Salvo com sucesso!")
+        console.print("[italic green]Foi Salvo com sucesso! :rocket:")
         ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
         ja_valorado.valorada("SIM")
         # Incremento + de Ordem.

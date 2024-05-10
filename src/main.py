@@ -180,7 +180,7 @@ def main():
                     )
                     mun = input("Digite o Nº do Município.\n")
                     pendentes_array = np.array([[ordem_expec, mun]])
-                    ordem, validador    = val(
+                    ordem, validador = val(
                         pendentes_array, session, contrato
                     )
                 case "8":
@@ -207,7 +207,8 @@ def main():
                     )
 
         except (TypeError, ValueError) as erro:
-            print(f"Erro: {erro}")
+            console.print(f":fearful: Erro Main: {erro}", style="bold red")
+            console.print_exception()
             return
 
         if validador is True:
