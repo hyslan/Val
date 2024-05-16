@@ -26,7 +26,7 @@ def materiais_novasp(tb_materiais,
                      lacre,
                      estoque,
                      session):
-    '''Contratada NOVASP - MLG'''
+    """Contratada NOVASP - MLG"""
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
         # Pega valor da célula 0
@@ -242,7 +242,20 @@ def materiais_contratada(tb_materiais, contrato, estoque, session):
                              lacre,
                              estoque,
                              session)
+        case "4600042975":
+            materiais_novasp(tb_materiais,
+                             num_material_linhas,
+                             lacre,
+                             estoque,
+                             session)
         case "4600042888":
+            materiais_gb_itaquera(tb_materiais,
+                                  num_material_linhas,
+                                  lacre,
+                                  ultima_linha_material,
+                                  estoque,
+                                  session)
+        case "4600056089":
             materiais_gb_itaquera(tb_materiais,
                                   num_material_linhas,
                                   lacre,

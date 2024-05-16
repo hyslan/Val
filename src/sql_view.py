@@ -86,6 +86,26 @@ class Tabela:
         cnn.close()
         return df_array
 
+    def clean_duplicates(self):
+        """Delete duplicates rows"""
+        try:
+            engine = sa.create_engine(self.connection_url)
+            cnn = engine.connect()
+        except Exception as errosql:
+            print(f"Erro SQL: {errosql}")
+            engine = sa.create_engine(self.connection_url)
+            cnn = engine.connect()
+
+        sql_command = ("WITH CTE AS ("
+                       "SELECT *,"
+                       " ROW_NUMBER() OVER(PARTITION BY Ordem ORDER BY (SELECT 0)) AS RowNumber"
+                       " FROM [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas"
+                       ")"
+                       " DELETE FROM CTE WHERE RowNumber > 1;")
+        cnn.execute(sa.text(sql_command))
+        cnn.commit()
+        cnn.close()
+
     def valorada(self, obs):
         """Update de row valorada"""
         try:

@@ -38,6 +38,7 @@ def contratada():
         "NORTESUL": {"contrato": "4600043654", "unadm": "340", "municipio": "100"},
         "RECAPE": {"contrato": "4600044777", "unadm": "340", "municipio": "100"},
         "ZIGURATE": {"contrato": "4600042975", "unadm": "340", "municipio": "100"},
+        "ZIGURATEIT": {"contrato": "4600056089", "unadm": "", "municipio": "100"}
     }
     contratos_mln = {
         "ZIGURATE": {"contrato": "4600042975", "unadm": "348", "municipio": ""},
@@ -125,6 +126,7 @@ def main():
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
             down_sap()
             session = sap.escolher_sessao()
+
 
         console.print(table)
 

@@ -412,9 +412,9 @@ class Unitario(Pai):
             servico_temp, num_tse_linhas, "poço")
 
     def religacao(self):
-        '''Religação unitário
+        """Religação unitário
         TSEs: 405000, 414000, 450500, 453000,
-        455500, 463000, 465000, 467500, 475500'''
+        455500, 463000, 465000, 466500, 467500, 475500"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_sem_bloquete(
             servico_temp, num_tse_linhas, "religacao")

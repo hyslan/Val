@@ -1,5 +1,5 @@
 # ServicosExecutados.py
-'''Módulo de TSE'''
+"""Módulo de TSE"""
 import numpy as np
 from src.excel_tbs import load_worksheets
 from src.tsepai import pai_dicionario
@@ -194,10 +194,10 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = 'PARALELO'
             break
 
-        # Readequado Cavalete, verificar...
-        # elif sap_tse == '138000':
-        #     tse_proibida = 'Readequado Cavalete!'
-        #     break
+        # REGULARIZADO RAMAL DE AGUA DESVIADO
+        elif sap_tse == '282000':
+            tse_proibida = 'REGULARIZADO RAMAL DE AGUA DESVIADO'
+            break
 
         # Serviços relacionados a obra.
         elif sap_tse in ('300000', '308000', '310000', '311000', '313000',

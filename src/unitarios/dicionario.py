@@ -63,6 +63,7 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         '455500': religacao.restabelecida,
         '463000': religacao.restabelecida,
         '465000': religacao.restabelecida,
+        '466500': religacao.restabelecida,
         '467500': religacao.restabelecida,
         '475500': religacao.restabelecida,
         '502000': LigacaoEsgoto.ligacao_esgoto,
@@ -83,5 +84,5 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         return dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
     else:
-        print("TSE não Encontrada no Dicionário!")
+        print(F"TSE {etapa} não Encontrada no Dicionário de Unitários!")
         sys.exit()

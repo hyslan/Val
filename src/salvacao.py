@@ -20,10 +20,12 @@ console = Console()
 def salvar(ordem, qtd_ordem, contrato, session):
     """Salvar e verificar se está salvando."""
     sap = Sap()
+    rodape = None
+    salvo = "Ajustes de valoração salvos com sucesso."
 
     def salvar_valoracao(session_id):
         """Função para salvar valoração."""
-        nonlocal ordem
+        nonlocal ordem, rodape, salvo
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -39,10 +41,11 @@ def salvar(ordem, qtd_ordem, contrato, session):
                 gui.findById("wnd[0]").sendVKey(11)
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
                 rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
-                salvo = "Ajustes de valoração salvos com sucesso."
+
                 if salvo == rodape:
                     print(f"{ordem} salva!")
                 else:
+                    console.print(f"[italic red]Nota de rodapé: {rodape}")
                     rodape = rodape.lower()
                     padrao = r"material (\d+)"
                     correspondencias = re.search(padrao, rodape)
@@ -50,7 +53,7 @@ def salvar(ordem, qtd_ordem, contrato, session):
                         # Group 1 retira string 'material'
                         codigo_material = correspondencias.group(1)
                         print(codigo_material)
-                        sys.exit()
+
             # pylint: disable=E1101
             except pywintypes.com_error:
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
@@ -68,6 +71,7 @@ def salvar(ordem, qtd_ordem, contrato, session):
                 ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
                 ja_valorado.valorada(obs="Não foi salvo")
 
+            return rodape
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
@@ -83,9 +87,11 @@ def salvar(ordem, qtd_ordem, contrato, session):
             print("SAP demorando mais que o esperado, encerrando.")
             sap.encerrar_sap()
 
+        if not salvo == rodape:
+            return qtd_ordem, rodape
     except pywintypes.com_error as salvar_erro:
-        console.print(f"Erro na parte de salvar: {salvar_erro}")
-        console.print_exception(show_locals=True)
+        console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
+                      style="bold red")
 
     # Verificar se Salvou
     (status_sistema,
@@ -100,8 +106,10 @@ def salvar(ordem, qtd_ordem, contrato, session):
         # Incremento + de Ordem.
         qtd_ordem += 1
     else:
-        print(f"Ordem: {ordem} não foi salva.")
+        console.print(f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
         ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
         ja_valorado.valorada(obs="Não foi salvo")
 
-    return qtd_ordem
+    ja_valorado.clean_duplicates()
+
+    return qtd_ordem, rodape
