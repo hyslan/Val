@@ -215,8 +215,13 @@ def val(pendentes_array, session, contrato):
                 # Fim dos materiais
                 # sys.exit(0)
                 # Salvar Ordem
-                qtd_ordem = salvar(
+                qtd_ordem, rodape = salvar(
                     ordem, qtd_ordem, contrato, session)
+                salvo = "Ajustes de valoração salvos com sucesso."
+                if not salvo == rodape:
+                    console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
+                    console.print(f"[bold yellow]Motivo: {rodape}")
+                    break
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 console.print(
@@ -226,17 +231,18 @@ def val(pendentes_array, session, contrato):
 
             # pylint: disable=E1101
             except Exception as errocritico:
+                print(f"args do errocritico: {errocritico}")
                 _, descricao, _, _ = errocritico.args
                 match descricao:
                     case 'Falha catastrófica':
                         console.print("[bold red]SAPGUI has crashed. :fire:")
-                        rollback(sap)
+                        # rollback(sap)
                     case 'Falha na chamada de procedimento remoto.':
                         console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                        rollback(sap)
+                        # rollback(sap)
                     case 'O servidor RPC não está disponível.':
                         console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                        rollback(sap)
+                        # rollback(sap)
                     case _:
                         console.print(
                             "[bold red underline]Aconteceu um Erro com a Val!"

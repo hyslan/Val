@@ -70,6 +70,10 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
+                if sap_material in ('30001848', '30007034'):
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
@@ -81,7 +85,7 @@ class CorteRestabMaterial:
                 self.estoque, self.session)
 
     def receita_supressao(self):
-        '''Padrão de materiais para supressão.'''
+        """Padrão de materiais para supressão."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         if sap_material is not None:
@@ -95,6 +99,10 @@ class CorteRestabMaterial:
                 material_lista.append(sap_material)
                 if sap_material == '30029526' \
                         and self.contrato == "4600041302":
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if sap_material in ('30001848', '30007034'):
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

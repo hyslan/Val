@@ -1,5 +1,5 @@
 # hidrometro_material.py
-'''Módulo dos materiais de família Hidrômetro.'''
+"""Módulo dos materiais de família Hidrômetro."""
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import lacre_material
@@ -30,7 +30,10 @@ class HidrometroMaterial:
         self.session = session
 
     def receita_hidrometro(self):
-        '''Padrão de materiais na classe Hidrômetro.'''
+        """Padrão de materiais na classe Hidrômetro."""
+        hidro_y = 'Y'
+        hidro_a = 'A'
+        hidro_f = 'F'
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         if self.hidro is None:
@@ -40,8 +43,6 @@ class HidrometroMaterial:
             if hidro_instalado is not None:
                 print("Tem hidro, mas não foi vinculado!")
                 ultima_linha_material = 0
-                hidro_y = 'Y'
-                hidro_a = 'A'
                 # Hidrômetro atual.
                 hidro_instalado = hidro_instalado.upper()
                 # Mata-burro pra hidro.
@@ -49,6 +50,8 @@ class HidrometroMaterial:
                     cod_hidro_instalado = '50000108'
                 if hidro_instalado.startswith(hidro_a):
                     cod_hidro_instalado = '50000530'
+                if hidro_instalado.startswith(hidro_f):
+                    cod_hidro_instalado = '50000025'
                 # Colocar lacre.
                 hidro_estoque = self.estoque[self.estoque['Material']
                                              == cod_hidro_instalado]
@@ -90,8 +93,6 @@ class HidrometroMaterial:
             # Número da Row do Grid Materiais do SAP
             n_material = 0
             ultima_linha_material = num_material_linhas
-            hidro_y = 'Y'
-            hidro_a = 'A'
             sap_hidro = []
             # Hidrômetro atual.
             hidro_instalado = hidro_instalado.upper()
@@ -101,6 +102,8 @@ class HidrometroMaterial:
                 cod_hidro_instalado = '50000108'
             if hidro_instalado.startswith(hidro_a):
                 cod_hidro_instalado = '50000530'
+            if hidro_instalado.startswith(hidro_f):
+                cod_hidro_instalado = '50000025'
 
             hidro_estoque = self.estoque[self.estoque['Material']
                                          == cod_hidro_instalado]
@@ -143,7 +146,8 @@ class HidrometroMaterial:
                     n_material, "ETAPA")
 
                 if sap_material == ('50000328', '50000263', '50000350',
-                                    '50000064', '50000260', '50000261'):
+                                    '50000064', '50000260', '50000261',
+                                    '30001848', '30007034'):
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

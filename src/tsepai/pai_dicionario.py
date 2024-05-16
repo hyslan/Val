@@ -87,6 +87,7 @@ def pai_servico_unitario(servico_temp, session):
         '455500': pai_unitario.religacao,
         '463000': pai_unitario.religacao,
         '465000': pai_unitario.religacao,
+        '466500': pai_unitario.religacao,
         '467500': pai_unitario.religacao,
         '475500': pai_unitario.religacao,
         '502000': pai_unitario.ligacao_esgoto_avulsa,

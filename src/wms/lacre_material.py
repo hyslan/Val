@@ -31,9 +31,18 @@ def caca_lacre(tb_materiais, etapa, estoque, session):
 
         # Caso lacre sem estoque
         if lacre_estoque.empty:
-            tb_materiais.modifyCheckBox(
-                tb_materiais.CurrentCellRow, "ELIMINADO", True
-            )
+            try:
+                tb_materiais.modifyCell(
+                    tb_materiais.CurrentCellRow, "QUANT", "0"
+                )
+                tb_materiais.setCurrentCell(
+                    tb_materiais.CurrentCellRow, "QUANT"
+                )
+                tb_materiais.modifyCheckBox(
+                    tb_materiais.CurrentCellRow, "ELIMINADO", True
+                )
+            except:
+                pass
 
     if '50001070' not in procura_lacre and not lacre_estoque.empty:
 

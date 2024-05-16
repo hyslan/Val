@@ -1,7 +1,6 @@
 # religacao.py
 """Módulo Família Religação Unitário."""
 # pylint: disable=W0611
-import sys
 from src.lista_reposicao import dict_reposicao
 from src.unitarios.localizador import btn_localizador
 
@@ -26,7 +25,7 @@ class Religacao:
         """Método para definir de qual forma foi restabelecida e
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete."""
-        if self.relig is not None and self.relig != '':
+        try:
             if self.relig == 'CAVALETE':
                 print("Iniciando processo de pagar RELIG CV - Código: 456037")
                 preco = self.session.findById(
@@ -39,6 +38,7 @@ class Religacao:
                     preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
                     preco.pressEnter()
                     print("Pago 1 UN de RELIG CV - CODIGO: 456037")
+                    return
 
             if self.relig in ('RAMAL PEAD', 'PASSEIO') or self.reposicao:
                 print(
@@ -108,13 +108,15 @@ class Religacao:
                             item_preco = preco.GetCellValue(
                                 preco.CurrentCellRow, "ITEM"
                             )
-                            if item_preco in ('1820', '1830'):
+                            if item_preco in ('1820', '1830', '670',
+                                              '5310'):
                                 preco.modifyCell(
                                     preco.CurrentCellRow, "QUANT", "1")
                                 preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
                                 preco.pressEnter()
                                 print(txt_reposicao)
                                 contador_pg += 1
+                    return
 
                 if ramal is False:
                     contador_pg = 0
@@ -127,6 +129,7 @@ class Religacao:
                         "Pago 1 UN de RELIG  RAMAL AG  S/REP - CODIGO: 456039")
                     contador_pg += 1
                     ramal = True
+                    return
 
             if self.relig in ('FERRULE', 'TOMADA/FERRULE'):
                 print(
@@ -143,20 +146,25 @@ class Religacao:
                     preco.pressEnter()
                     print(
                         "Pago 1 UN de RELIG  TMD AG  S/REP - CODIGO: 456040")
+                    return
 
-        else:
-            print("Religação não informada. \n Pagando como RELIG CV.")
-            preco = self.session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-            preco.GetCellValue(0, "NUMERO_EXT")
-            if preco is not None:
-                btn_localizador(
-                    preco, self.session, "456037")
-                preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                preco.pressEnter()
-                print("Pago 1 UN de RELIG CV - CODIGO: 456037")
+            if self.relig is None:
+                print("Religação não informada. \n Pagando como RELIG CV.")
+                preco = self.session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+                preco.GetCellValue(0, "NUMERO_EXT")
+                if preco is not None:
+                    btn_localizador(
+                        preco, self.session, "456037")
+                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
+                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
+                    preco.pressEnter()
+                    print("Pago 1 UN de RELIG CV - CODIGO: 456037")
+                    return
+
+        except Exception as erro:
+            print(f"Erro ao pagar religação: {erro}")
 
         # Confirmação da precificação.
         preco.pressEnter()
