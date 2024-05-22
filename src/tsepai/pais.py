@@ -98,7 +98,7 @@ class Pai():
                                      num_tse_linhas: int,
                                      codigo_despesa: str,
                                      identificador: str) -> tuple[list, None, str, list]:
-        '''Área do Loop'''
+        """Área do Loop"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 

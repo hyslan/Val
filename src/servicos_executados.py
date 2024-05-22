@@ -190,9 +190,10 @@ def verifica_tse(servico, contrato, session):
             break
 
         # Compactação e selagem da base.
-        elif sap_tse in ('758500', '758000'):
-            tse_proibida = 'PARALELO'
-            break
+        # Em análise.
+        # elif sap_tse in ('758500', '758000'):
+        #     tse_proibida = 'PARALELO'
+        #     break
 
         # REGULARIZADO RAMAL DE AGUA DESVIADO
         elif sap_tse == '282000':
@@ -225,13 +226,13 @@ def verifica_tse(servico, contrato, session):
         elif sap_tse in ('730600', '730700'):
             # Compactação e Selagem da Base.
             servico.modifyCell(n_tse, "PAGAR", "n")
-            servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
+            servico.modifyCell(n_tse, "CODIGO", "5")  # Pedido alterado por Iara Regina
             continue
 
         elif sap_tse in ('761000', '762000'):
             # REPOSIÇÃO DE PAREDE/MURO INV.
             servico.modifyCell(n_tse, "PAGAR", "n")
-            servico.modifyCell(n_tse, "CODIGO", "1")  # Divergência
+            servico.modifyCell(n_tse, "CODIGO", "5")  # Pedido alterado por Iara Regina
             continue
 
         elif sap_tse == '666000':
