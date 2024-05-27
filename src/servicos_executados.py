@@ -4,7 +4,6 @@ import numpy as np
 from src.excel_tbs import load_worksheets
 from src.tsepai import pai_dicionario
 
-
 (
     lista,
     materiais,
@@ -76,6 +75,63 @@ def verifica_tse(servico, contrato, session):
     for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+
+        # Pulando OS com asfalto incluso.
+        if sap_tse in tb_tse_asfalto:
+            tse_proibida = "Aslfato na bagaça!"
+            break
+
+        # Reposição de Guia, fazer manual.
+        if sap_tse == '755000':
+            tse_proibida = 'Reposicao de Guia!'
+            break
+
+        # Retirado Entulho.
+        if sap_tse == '714000':
+            tse_proibida = 'Retirado Entulho'
+            break
+
+        # REPOSIÇÃO DE PARALELO , fazer manual.
+        if sap_tse == '782500':
+            tse_proibida = "REPOSIÇÃO DE SARJETA INV"
+            reposicao = sap_tse
+            etapa_reposicao = etapa_pai
+            break
+
+        # REGULARIZADO RAMAL DE AGUA DESVIADO
+        if sap_tse == '282000':
+            tse_proibida = 'REGULARIZADO RAMAL DE AGUA DESVIADO'
+            break
+
+        # Serviços relacionados a obra.
+        if sap_tse in ('300000', '308000', '310000', '311000', '313000',
+                       '315000', '532000', '564000', '588000', '590000',
+                       '709000', '700000', '593000'):
+            tse_proibida = 'Obra.'
+            break
+
+        # RAMAL AGUA UNITÁRIO - A PEDIDO DA IARA
+        if sap_tse in (
+                '253000',
+                '250000',
+                '209000',
+                '605000',
+                '605000',
+                '263000',
+                '255000',
+                '254000',
+                '282000',
+                '265000',
+                '260000',
+                '265000',
+                '263000',
+                '262000',
+                '284500',
+                '286000',
+                '282500'
+        ):
+            tse_proibida = 'Iara não quer.'
+            break
 
         if sap_tse in tb_tse_un:  # Verifica se está no Conjunto Unitários
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
@@ -166,68 +222,6 @@ def verifica_tse(servico, contrato, session):
             if tse_proibida is not None:
                 break
             continue
-
-        # Pulando OS com asfalto incluso.
-        elif sap_tse in tb_tse_asfalto:
-            tse_proibida = "Aslfato na bagaça!"
-            break
-
-        # Reposição de Guia, fazer manual.
-        elif sap_tse == '755000':
-            tse_proibida = 'Reposicao de Guia!'
-            break
-
-        # Retirado Entulho.
-        elif sap_tse == '714000':
-            tse_proibida = 'Retirado Entulho'
-            break
-
-        # REPOSIÇÃO DE PARALELO , fazer manual.
-        elif sap_tse == '782500':
-            tse_proibida = "REPOSIÇÃO DE SARJETA INV"
-            reposicao = sap_tse
-            etapa_reposicao = etapa_pai
-            break
-
-        # Compactação e selagem da base.
-        # Em análise.
-        # elif sap_tse in ('758500', '758000'):
-        #     tse_proibida = 'PARALELO'
-        #     break
-
-        # REGULARIZADO RAMAL DE AGUA DESVIADO
-        elif sap_tse == '282000':
-            tse_proibida = 'REGULARIZADO RAMAL DE AGUA DESVIADO'
-            break
-
-        # Serviços relacionados a obra.
-        elif sap_tse in ('300000', '308000', '310000', '311000', '313000',
-                         '315000', '532000', '564000', '588000', '590000',
-                         '709000', '700000', '593000'):
-            tse_proibida = 'Obra.'
-            break
-
-        # RAMAL AGUA UNITÁRIO - A PEDIDO DA IARA
-        elif sap_tse in (
-            '253000',
-            '250000',
-            '209000',
-            '605000',
-            '605000',
-            '263000',
-            '255000',
-            '254000',
-            '282000',
-            '265000',
-            '260000',
-            '265000',
-            '263000',
-            '284500',
-            '286000',
-            '282500'
-        ):
-            tse_proibida = 'Obra.'
-            break
 
         elif sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
