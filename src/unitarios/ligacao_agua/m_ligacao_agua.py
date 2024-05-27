@@ -1,11 +1,11 @@
-'''Módulo Família Ligação Água Unitário.'''
+"""Módulo Família Ligação Água Unitário."""
 
 from src.unitarios.localizador import btn_localizador
 from src.lista_reposicao import dict_reposicao
 
 
 class LigacaoAgua:
-    '''Ramo de Ligações (Ramal) de água'''
+    """Ramo de Ligações (Ramal) de água"""
     MND = ('TA', 'EI', 'TO', 'PO')
     # Ordem da tupla: [0] -> preço s/ fornecimento, [1] -> c/ fornecimento,
     # [2] Reposições -> (Cimentado, Especial e Asfalto Frio)
@@ -25,7 +25,8 @@ class LigacaoAgua:
     }
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+                 etapa_reposicao, identificador, posicao_rede,
+                 profundidade, session, preco):
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -37,29 +38,20 @@ class LigacaoAgua:
         self.session = session
         self.identificador = identificador
         self._ramal = False
-
-    def preco(self):
-        '''Shell do itens preço'''
-        preco = self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-        preco.GetCellValue(0, "NUMERO_EXT")
-        return preco
+        self.preco = preco
 
     def supressao_ferrule(self):
-        '''Pagar Adicional de Supressão no ferrule/tomada'''
-        preco = self.preco()
-        btn_localizador(preco, self.session, "456506")
-        preco.modifyCell(
-            preco.CurrentCellRow, "QUANT", "1")
-        preco.setCurrentCell(
-            preco.CurrentCellRow, "QUANT")
-        preco.pressEnter()
+        """Pagar Adicional de Supressão no ferrule/tomada"""
+        btn_localizador(self.preco, self.session, "456506")
+        self.preco.modifyCell(
+            self.preco.CurrentCellRow, "QUANT", "1")
+        self.preco.setCurrentCell(
+            self.preco.CurrentCellRow, "QUANT")
+        self.preco.pressEnter()
         print("Pago 1 UN de ADC  SUPR TMD AG  S/REP")
 
     def reposicoes(self, cod_reposicao: tuple) -> None:
-        '''Reposições dos serviços de Ligação de água'''
-        preco = self.preco()
+        """Reposições dos serviços de Ligação de água"""
         rep_com_etapa = [(x, y)
                          for x, y in zip(self.reposicao, self.etapa_reposicao)]
 
@@ -84,12 +76,12 @@ class LigacaoAgua:
 
             # 4220 é módulo Investimento.
 
-            btn_localizador(preco, self.session, preco_reposicao)
-            n_etapa = preco.GetCellValue(
-                preco.CurrentCellRow, "ETAPA")
+            btn_localizador(self.preco, self.session, preco_reposicao)
+            n_etapa = self.preco.GetCellValue(
+                self.preco.CurrentCellRow, "ETAPA")
 
             if not n_etapa == operacao_rep:
-                preco.pressToolbarButton("&FIND")
+                self.preco.pressToolbarButton("&FIND")
                 self.session.findById(
                     "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
                 self.session.findById(
@@ -98,23 +90,22 @@ class LigacaoAgua:
                 self.session.findById("wnd[1]").sendVKey(0)
                 self.session.findById("wnd[1]").sendVKey(12)
 
-            preco.modifyCell(
-                preco.CurrentCellRow, "QUANT", "1")
-            preco.setCurrentCell(
-                preco.CurrentCellRow, "QUANT")
-            preco.pressEnter()
+            self.preco.modifyCell(
+                self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(
+                self.preco.CurrentCellRow, "QUANT")
+            self.preco.pressEnter()
             print(txt_reposicao)
 
     def _posicao_pagar(self, preco_tse: str) -> None:
-        '''Paga de acordo com a posição da rede'''
+        """Paga de acordo com a posição da rede"""
         if not self._ramal:
-            preco = self.preco()
-            btn_localizador(preco, self.session, preco_tse)
-            preco.modifyCell(
-                preco.CurrentCellRow, "QUANT", "1")
-            preco.setCurrentCell(
-                preco.CurrentCellRow, "QUANT")
-            preco.pressEnter()
+            btn_localizador(self.preco, self.session, preco_tse)
+            self.preco.modifyCell(
+                self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(
+                self.preco.CurrentCellRow, "QUANT")
+            self.preco.pressEnter()
             print(f"Pago 1 UN de {preco_tse}")
             self._ramal = True
 
@@ -126,7 +117,7 @@ class LigacaoAgua:
         codigo = self.CODIGOS.get(
             tipo_operacao +
             '_PA') if self.posicao_rede == 'PA' else self.CODIGOS.get(
-                tipo_operacao + '_MND')
+            tipo_operacao + '_MND')
         if codigo:
             print(
                 f"Iniciando processo de pagar {tipo_operacao.replace('_', ' ')}"
@@ -137,27 +128,27 @@ class LigacaoAgua:
             self._repor(codigo[2])
 
     def ligacao_agua(self):
-        '''Ramal novo de água, avulsa.'''
+        """Ramal novo de água, avulsa."""
         if self.posicao_rede:
             self._processar_operacao('LAG')
 
     def tra_nv(self):
-        '''Troca de Ramal de água não visível'''
+        """Troca de Ramal de água não visível"""
         if self.posicao_rede:
             self._processar_operacao('TRA_NV')
 
     def png(self):
-        '''Passado novo ramal para nova rede - Obra'''
+        """Passado novo ramal para nova rede - Obra"""
         if self.posicao_rede:
             self._processar_operacao('PNG')
 
     def subst_agua(self):
-        '''Substituição de ramal de água, tem adicional de suprimir
-        o ferrule da rede'''
+        """Substituição de ramal de água, tem adicional de suprimir
+        o ferrule da rede"""
         if self.posicao_rede:
             self._processar_operacao('SUBST')
 
     def tra_prev(self):
-        '''Troca de ramal de água preventiva'''
+        """Troca de ramal de água preventiva"""
         if self.posicao_rede:
             self._processar_operacao('TRA_PREV')

@@ -1,4 +1,4 @@
-'''Módulo de consulta estoque de materiais'''
+"""Módulo de consulta estoque de materiais"""
 import time
 import os
 import xlwings as xw

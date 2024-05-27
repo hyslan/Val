@@ -29,7 +29,7 @@ class Controlador(BaseUnitario):
 
         preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            + "ZSBMM_VALORACAO_NAPI:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         preco.GetCellValue(0, "NUMERO_EXT")
         if preco is not None:
             num_precos_linhas = preco.RowCount
@@ -56,7 +56,8 @@ class Controlador(BaseUnitario):
         classe_unitario = selecionar_tse(self.etapa, self.corte, self.relig,
                                          self.reposicao, self.num_tse_linhas,
                                          self.etapa_reposicao, self.identificador,
-                                         self.posicao_rede, self.profundidade, self.session)
+                                         self.posicao_rede, self.profundidade,
+                                         self.session, self.preco)
 
         if classe_unitario:
             # Processar e pagar

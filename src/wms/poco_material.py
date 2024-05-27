@@ -1,4 +1,4 @@
-'''Módulo dos materiais de família Poço.'''
+"""Módulo dos materiais de família Poço."""
 
 
 from src.wms import testa_material_sap
@@ -7,7 +7,7 @@ from src.wms import localiza_material
 
 
 class PocoMaterial:
-    '''Classe de materiais de Poço.'''
+    """Classe de materiais de Poço."""
 
     def __init__(self,
                  hidro,

@@ -1,5 +1,5 @@
 # hidrometro_material.py
-'''Módulo dos materiais de família Rede de Esgoto.'''
+"""Módulo dos materiais de família Rede de Esgoto."""
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import localiza_material
@@ -7,7 +7,7 @@ from src.sap_connection import connect_to_sap
 
 
 class RedeEsgotoMaterial:
-    '''Classe de materiais de CRE.'''
+    """Classe de materiais de CRE."""
 
     def __init__(self,
                  hidro,
@@ -463,7 +463,7 @@ class RedeEsgotoMaterial:
             self.estoque, self.session)
 
     def receita_reparo_de_ramal_de_esgoto(self):
-        '''Padrão de materiais na classe Ramal de Esgoto.'''
+        """Padrão de materiais na classe Ramal de Esgoto."""
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(

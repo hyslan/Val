@@ -59,7 +59,7 @@ def verifica_tse(servico, contrato, session):
     pai_tse = 0
     print("Iniciando processo de verificação de TSE")
     servico = session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                               + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+                               + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell")
     # Lista temporária para armazenar as tse
     list_chave_rb_despesa = []
     list_chave_unitario = []

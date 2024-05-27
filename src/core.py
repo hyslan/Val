@@ -21,7 +21,7 @@ from src.nazare_bugou import oxe
 
 
 def get_input(prompt: int) -> int:
-    '''Fuction de inputs'''
+    """Fuction de inputs"""
     return IntPrompt.ask(prompt)
 
 
@@ -101,7 +101,7 @@ def val(pendentes_array, session, contrato):
                 try:
                     tse = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
                     )
                 # pylint: disable=E1101
                 except pywintypes.com_error:
@@ -117,7 +117,7 @@ def val(pendentes_array, session, contrato):
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
                         grid_historico = session.findById(
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                            + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
                         data_valorado = grid_historico.GetCellValue(
                             0, "DATA")
                         if data_valorado is not None:
@@ -135,7 +135,7 @@ def val(pendentes_array, session, contrato):
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                     tse = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
                     )
 
                 # TSE e Aba Itens de preço

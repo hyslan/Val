@@ -1,10 +1,10 @@
-'''Módulo Família Poço Unitário.'''
+"""Módulo Família Poço Unitário."""
 from src.lista_reposicao import dict_reposicao
 from src.unitarios.localizador import btn_localizador
 
 
 class Poco():
-    '''Classe Unitária de Poço.'''
+    """Classe Unitária de Poço."""
     CODIGOS = {
         'NIV_CX_PARADA': ("456111", ("050401", "050402", "451123")),
         'TROCA_CX_PARADA': ("456112", ("050401", "050402", "451123")),
@@ -12,7 +12,8 @@ class Poco():
     }
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+                 etapa_reposicao, identificador, posicao_rede,
+                 profundidade, session, preco):
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -23,18 +24,10 @@ class Poco():
         self.profundidade = profundidade
         self.session = session
         self.identificador = identificador
-
-    def preco(self):
-        '''Shell do itens preço'''
-        preco = self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-        preco.GetCellValue(0, "NUMERO_EXT")
-        return preco
+        self.preco = preco
 
     def reposicoes(self, cod_reposicao: tuple) -> None:
-        '''Reposições dos serviços de Poço'''
-        preco = self.preco()
+        """Reposições dos serviços de Poço"""
         rep_com_etapa = [(x, y)
                          for x, y in zip(self.reposicao, self.etapa_reposicao)]
 
@@ -59,12 +52,12 @@ class Poco():
 
             # 4220 é módulo Investimento.
 
-            btn_localizador(preco, self.session, preco_reposicao)
-            n_etapa = preco.GetCellValue(
-                preco.CurrentCellRow, "ETAPA")
+            btn_localizador(self.preco, self.session, preco_reposicao)
+            n_etapa = self.preco.GetCellValue(
+                self.preco.CurrentCellRow, "ETAPA")
 
             if not n_etapa == operacao_rep:
-                preco.pressToolbarButton("&FIND")
+                self.preco.pressToolbarButton("&FIND")
                 self.session.findById(
                     "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
                 self.session.findById(
@@ -73,11 +66,11 @@ class Poco():
                 self.session.findById("wnd[1]").sendVKey(0)
                 self.session.findById("wnd[1]").sendVKey(12)
 
-            preco.modifyCell(
-                preco.CurrentCellRow, "QUANT", "1")
-            preco.setCurrentCell(
-                preco.CurrentCellRow, "QUANT")
-            preco.pressEnter()
+            self.preco.modifyCell(
+                self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(
+                self.preco.CurrentCellRow, "QUANT")
+            self.preco.pressEnter()
             print(txt_reposicao)
 
     def _repor(self, codigos_reposicao):
@@ -85,14 +78,13 @@ class Poco():
             self.reposicoes(codigos_reposicao)
 
     def _pagar(self, preco_tse: str) -> None:
-        '''Pagar serviço'''
-        preco = self.preco()
-        btn_localizador(preco, self.session, preco_tse)
-        preco.modifyCell(
-            preco.CurrentCellRow, "QUANT", "1")
-        preco.setCurrentCell(
-            preco.CurrentCellRow, "QUANT")
-        preco.pressEnter()
+        """Pagar serviço"""
+        btn_localizador(self.preco, self.session, preco_tse)
+        self.preco.modifyCell(
+            self.preco.CurrentCellRow, "QUANT", "1")
+        self.preco.setCurrentCell(
+            self.preco.CurrentCellRow, "QUANT")
+        self.preco.pressEnter()
         print(f"Pago 1 UN de {preco_tse}")
 
     def _processar_operacao(self, tipo_operacao: str):
@@ -108,13 +100,13 @@ class Poco():
             self._repor(codigo[1])
 
     def niv_cx_parada(self):
-        '''Método Nivelamento de Caixa de Parada'''
+        """Método Nivelamento de Caixa de Parada"""
         self._processar_operacao('NIV_CX_PARADA')
 
     def troca_de_caixa_de_parada(self):
-        '''Troca de Caixa de Parada - Código 456112'''
+        """Troca de Caixa de Parada - Código 456112"""
         self._processar_operacao('TROCA_CX_PARADA')
 
     def nivelamento(self):
-        '''Nivelamentos com e sem reposição.'''
+        """Nivelamentos com e sem reposição."""
         self._processar_operacao('NIVELAMENTO')

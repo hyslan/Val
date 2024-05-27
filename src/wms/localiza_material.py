@@ -1,8 +1,8 @@
-'''Botão busca Aba Material'''
+"""Botão busca Aba Material"""
 
 
 def btn_busca_material(tb_materiais, session, codigo):
-    '''Botão localiza material'''
+    """Botão localiza material"""
     tb_materiais.pressToolbarButton("&FIND")
     session.findById(
         "wnd[1]/usr/txtGS_SEARCH-VALUE").text = codigo
@@ -13,7 +13,7 @@ def btn_busca_material(tb_materiais, session, codigo):
 
 
 def qtd_correta(tb_materiais, qtde):
-    '''Altera para quantidade correta informada.'''
+    """Altera para quantidade correta informada."""
     tb_materiais.modifyCell(
         tb_materiais.CurrentCellRow, "QUANT", qtde)
     tb_materiais.setCurrentCell(
@@ -21,7 +21,7 @@ def qtd_correta(tb_materiais, qtde):
 
 
 def qtd_max(material, estoque, limite, df_materiais):
-    '''Query no dataset da aba materiais'''
+    """Query no dataset da aba materiais"""
     if not estoque[estoque['Material'] == material].empty:
         resultado = df_materiais[df_materiais['Material'] ==
                                  material].query(f'`Quantidade` > {limite}')
