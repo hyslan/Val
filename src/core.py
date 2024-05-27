@@ -213,7 +213,7 @@ def val(pendentes_array, session, contrato):
                                   session)
 
                 # Fim dos materiais
-                # sys.exit(0)
+                sys.exit(0)
                 # Salvar Ordem
                 qtd_ordem, rodape = salvar(
                     ordem, qtd_ordem, contrato, session)

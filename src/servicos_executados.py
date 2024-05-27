@@ -207,6 +207,28 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = 'Obra.'
             break
 
+        # RAMAL AGUA UNITÁRIO - A PEDIDO DA IARA
+        elif sap_tse in (
+            '253000',
+            '250000',
+            '209000',
+            '605000',
+            '605000',
+            '263000',
+            '255000',
+            '254000',
+            '282000',
+            '265000',
+            '260000',
+            '265000',
+            '263000',
+            '284500',
+            '286000',
+            '282500'
+        ):
+            tse_proibida = 'Obra.'
+            break
+
         elif sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "11")  # Não Executado
