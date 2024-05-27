@@ -124,6 +124,15 @@ class Pai():
                 servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
+                continue
+
+            # COMPACTAÇÃO E SELAGEM DA BASE
+            if sap_tse in ('730600', '730700'):
+                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
+                servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+                continue
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
