@@ -9,7 +9,8 @@ class Religacao:
     """Classe de Religação Unitário."""
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+                 etapa_reposicao, identificador, posicao_rede,
+                 profundidade, session, preco):
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -20,6 +21,7 @@ class Religacao:
         self.profundidade = profundidade
         self.session = session
         self.identificador = identificador
+        self.preco = preco
 
     def restabelecida(self):
         """Método para definir de qual forma foi restabelecida e
@@ -28,25 +30,19 @@ class Religacao:
         try:
             if self.relig == 'CAVALETE':
                 print("Iniciando processo de pagar RELIG CV - Código: 456037")
-                preco = self.session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-                preco.GetCellValue(0, "NUMERO_EXT")
-                if preco is not None:
-                    btn_localizador(preco, self.session, "456037")
-                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                    preco.pressEnter()
+                self.preco.GetCellValue(0, "NUMERO_EXT")
+                if self.preco is not None:
+                    btn_localizador(self.preco, self.session, "456037")
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                    self.preco.pressEnter()
                     print("Pago 1 UN de RELIG CV - CODIGO: 456037")
                     return
 
             if self.relig in ('RAMAL PEAD', 'PASSEIO') or self.reposicao:
                 print(
                     "Iniciando processo de pagar RELIG RAMAL AG S/REP - Código: 456039")
-                preco = self.session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-                preco.GetCellValue(0, "NUMERO_EXT")
+                self.preco.GetCellValue(0, "NUMERO_EXT")
 
                 ramal = False
                 contador_pg = 0
@@ -78,42 +74,42 @@ class Religacao:
                             return
 
                         if ramal is False:
-                            btn_localizador(preco, self.session, "456039")
+                            btn_localizador(self.preco, self.session, "456039")
                             # Marca pagar na TSE
-                            preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                            preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                            preco.pressEnter()
+                            self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                            self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                            self.preco.pressEnter()
                             print(
                                 "Pago 1 UN de RELIG  RAMAL AG  S/REP - CODIGO: 456039")
                             contador_pg += 1
                             ramal = True
 
                             # 660 é módulo despesa.
-                            btn_localizador(preco, self.session, preco_reposicao)
-                            item_preco = preco.GetCellValue(
-                                preco.CurrentCellRow, "ITEM"
+                            btn_localizador(self.preco, self.session, preco_reposicao)
+                            item_preco = self.preco.GetCellValue(
+                                self.preco.CurrentCellRow, "ITEM"
                             )
                             if item_preco in ('300', '1790'):
-                                preco.modifyCell(
-                                    preco.CurrentCellRow, "QUANT", "1")
-                                preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                                preco.pressEnter()
+                                self.preco.modifyCell(
+                                    self.preco.CurrentCellRow, "QUANT", "1")
+                                self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                                self.preco.pressEnter()
                                 print(txt_reposicao)
                                 contador_pg += 1
 
                         # 1820 é módulo despesa para cimentado e especial.
                         if preco_reposicao in ('456041', '456042'):
                             btn_localizador(
-                                preco, self.session, preco_reposicao)
-                            item_preco = preco.GetCellValue(
-                                preco.CurrentCellRow, "ITEM"
+                                self.preco, self.session, preco_reposicao)
+                            item_preco = self.preco.GetCellValue(
+                                self.preco.CurrentCellRow, "ITEM"
                             )
                             if item_preco in ('1820', '1830', '670',
                                               '5310'):
-                                preco.modifyCell(
-                                    preco.CurrentCellRow, "QUANT", "1")
-                                preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                                preco.pressEnter()
+                                self.preco.modifyCell(
+                                    self.preco.CurrentCellRow, "QUANT", "1")
+                                self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                                self.preco.pressEnter()
                                 print(txt_reposicao)
                                 contador_pg += 1
                     return
@@ -121,10 +117,10 @@ class Religacao:
                 if ramal is False:
                     contador_pg = 0
                     btn_localizador(
-                        preco, self.session, "456039")
-                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                    preco.pressEnter()
+                        self.preco, self.session, "456039")
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                    self.preco.pressEnter()
                     print(
                         "Pago 1 UN de RELIG  RAMAL AG  S/REP - CODIGO: 456039")
                     contador_pg += 1
@@ -134,32 +130,29 @@ class Religacao:
             if self.relig in ('FERRULE', 'TOMADA/FERRULE'):
                 print(
                     "Iniciando processo de pagar RELIG  TMD AG  S/REP - Código: 456040")
-                preco = self.session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-                preco.GetCellValue(0, "NUMERO_EXT")
-                if preco is not None:
+                self.preco.GetCellValue(0, "NUMERO_EXT")
+                if self.preco is not None:
                     btn_localizador(
-                        preco, self.session, "456040")
-                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                    preco.pressEnter()
+                        self.preco, self.session, "456040")
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                    self.preco.pressEnter()
                     print(
                         "Pago 1 UN de RELIG  TMD AG  S/REP - CODIGO: 456040")
                     return
 
             if self.relig is None:
                 print("Religação não informada. \n Pagando como RELIG CV.")
-                preco = self.session.findById(
+                self.preco = self.session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
                     + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-                preco.GetCellValue(0, "NUMERO_EXT")
-                if preco is not None:
+                self.preco.GetCellValue(0, "NUMERO_EXT")
+                if self.preco is not None:
                     btn_localizador(
-                        preco, self.session, "456037")
-                    preco.modifyCell(preco.CurrentCellRow, "QUANT", "1")
-                    preco.setCurrentCell(preco.CurrentCellRow, "QUANT")
-                    preco.pressEnter()
+                        self.preco, self.session, "456037")
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
+                    self.preco.pressEnter()
                     print("Pago 1 UN de RELIG CV - CODIGO: 456037")
                     return
 
@@ -167,4 +160,4 @@ class Religacao:
             print(f"Erro ao pagar religação: {erro}")
 
         # Confirmação da precificação.
-        preco.pressEnter()
+        self.preco.pressEnter()

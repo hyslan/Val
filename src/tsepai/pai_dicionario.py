@@ -39,7 +39,7 @@ def troca_de_ramal_agua_un():
 
 
 def pai_servico_unitario(servico_temp, session):
-    '''Função condicional das chaves do dicionário unitário.'''
+    """Função condicional das chaves do dicionário unitário."""
     pai_unitario = pais.Unitario(session)
 
     dicionario_pai_unitario = {
@@ -117,7 +117,7 @@ def pai_servico_unitario(servico_temp, session):
 
 
 def pai_servico_cesta(servico_temp, session):
-    '''Função condicional das chaves do dicionário Remuneração Base.'''
+    """Função condicional das chaves do dicionário Remuneração Base."""
     pai_cesta = pais.Cesta(session)
     pai_sondagem = pais.Sondagem(session)
     pai_invest = pais.Investimento(session)

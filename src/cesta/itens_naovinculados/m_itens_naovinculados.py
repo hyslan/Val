@@ -29,7 +29,7 @@ class Modalidade:
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         itens_nv = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9035/cntlCC_ITNS_NVINCRB/shellcont/shell")
+            + "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell")
         return itens_nv
 
     def testa_modalidade_sap(self, itens_nv):

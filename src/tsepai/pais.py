@@ -1,4 +1,4 @@
-'''Módulo de seletor de tse e seus ramos'''
+"""Módulo de seletor de tse e seus ramos"""
 from src.excel_tbs import load_worksheets
 
 (
@@ -19,28 +19,28 @@ SERVICO_N_EXISTE_CONTRATO = "10"
 
 
 class Pai():
-    '''Classe Pai da árvore de TSEs'''
+    """Classe Pai da árvore de TSEs"""
 
     def __init__(self, session) -> None:
         self.session = session
 
     def desobstrucao(self) -> tuple[list, None, str, list]:
-        '''Serviços de DD/DC, Lavagem, Televisionado'''
+        """Serviços de DD/DC, Lavagem, Televisionado"""
         etapa_reposicao = []
         tse_temp_reposicao = []
         print("Iniciando processo Pai de DD/DC, Lavagem e Televisionado")
         return tse_temp_reposicao, None, "desobstrucao", etapa_reposicao
 
     def get_shell(self) -> tuple[any, int]:
-        '''Adquire o controle do grid Serviço'''
+        """Adquire o controle do grid Serviço"""
         servico_temp = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell")
+            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell")
         num_tse_linhas = servico_temp.RowCount
         return servico_temp, num_tse_linhas
 
     def processar_servico_temp(self, servico_temp, num_tse_linhas: int, identificador: str):
-        '''Área do Loop'''
+        """Área do Loop"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 
@@ -124,12 +124,21 @@ class Pai():
                 servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
+                continue
+
+            # COMPACTAÇÃO E SELAGEM DA BASE
+            if sap_tse in ('730600', '730700'):
+                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
+                servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
+                tse_temp_reposicao.append(sap_tse)
+                etapa_reposicao.append(etapa)
+                continue
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
     def processar_servico_reposicao_dependente(self, servico_temp,
                                                num_tse_linhas, identificador):
-        '''Processar serviços que acompanham juntos reposições no pagamento'''
+        """Processar serviços que acompanham juntos reposições no pagamento"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 
@@ -162,7 +171,7 @@ class Pai():
 
 
 class Cesta(Pai):
-    '''Ramo de Rem Base'''
+    """Ramo de Rem Base"""
 
     def processar_servico_cesta(self, identificador, codigo_despesa):
         '''Processar serviços da Cesta'''

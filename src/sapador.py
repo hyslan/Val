@@ -66,7 +66,6 @@ def file_downloaded(filename):
     """Verifica se o arquivo foi baixado completamente"""
     def predicate(driver):
         files = os.listdir(os.getcwd() + "\\src")
-        print(files)
         return any(file.endswith(filename) for file in files)
 
     return predicate

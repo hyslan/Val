@@ -51,7 +51,8 @@ class LigacaoEsgoto:
     }
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede, profundidade, session):
+                 etapa_reposicao, identificador, posicao_rede,
+                 profundidade, session, preco):
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -63,18 +64,10 @@ class LigacaoEsgoto:
         self.session = session
         self.identificador = identificador
         self._ramal = False
-
-    def preco(self):
-        '''Shell do itens preço'''
-        preco = self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
-        preco.GetCellValue(0, "NUMERO_EXT")
-        return preco
+        self.preco = preco
 
     def reposicoes(self, cod_reposicao: tuple) -> None:
         '''Reposições dos serviços de Ligação de água'''
-        preco = self.preco()
         rep_com_etapa = [(x, y)
                          for x, y in zip(self.reposicao, self.etapa_reposicao)]
 
@@ -99,12 +92,12 @@ class LigacaoEsgoto:
 
             # 4220 é módulo Investimento.
 
-            btn_localizador(preco, self.session, preco_reposicao)
-            n_etapa = preco.GetCellValue(
-                preco.CurrentCellRow, "ETAPA")
+            btn_localizador(self.preco, self.session, preco_reposicao)
+            n_etapa = self.preco.GetCellValue(
+                self.preco.CurrentCellRow, "ETAPA")
 
             if not n_etapa == operacao_rep:
-                preco.pressToolbarButton("&FIND")
+                self.preco.pressToolbarButton("&FIND")
                 self.session.findById(
                     "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
                 self.session.findById(
@@ -113,23 +106,22 @@ class LigacaoEsgoto:
                 self.session.findById("wnd[1]").sendVKey(0)
                 self.session.findById("wnd[1]").sendVKey(12)
 
-            preco.modifyCell(
-                preco.CurrentCellRow, "QUANT", "1")
-            preco.setCurrentCell(
-                preco.CurrentCellRow, "QUANT")
-            preco.pressEnter()
+            self.preco.modifyCell(
+                self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(
+                self.preco.CurrentCellRow, "QUANT")
+            self.preco.pressEnter()
             print(txt_reposicao)
 
     def _posicao_pagar(self, preco_tse: str) -> None:
         '''Paga de acordo com a posição da rede'''
         if not self._ramal:
-            preco = self.preco()
-            btn_localizador(preco, self.session, preco_tse)
-            preco.modifyCell(
-                preco.CurrentCellRow, "QUANT", "1")
-            preco.setCurrentCell(
-                preco.CurrentCellRow, "QUANT")
-            preco.pressEnter()
+            btn_localizador(self.preco, self.session, preco_tse)
+            self.preco.modifyCell(
+                self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(
+                self.preco.CurrentCellRow, "QUANT")
+            self.preco.pressEnter()
             print(f"Pago 1 UN de {preco_tse}")
             self._ramal = True
 

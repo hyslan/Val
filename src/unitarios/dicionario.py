@@ -12,20 +12,30 @@ from src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 
 
 def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
-                   etapa_reposicao, identificador, posicao_rede, profundidade, session):
+                   etapa_reposicao, identificador, posicao_rede,
+                   profundidade, session, preco):
     """Dicionário de chaves para etapas de unitário."""
     cavalete = Cavalete(etapa, corte, relig, reposicao, num_tse_linhas,
-                        etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                        etapa_reposicao, identificador, posicao_rede,
+                        profundidade, session, preco)
     hidrometro = Hidrometro(etapa, corte, relig, reposicao, num_tse_linhas,
-                            etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                            etapa_reposicao, identificador, posicao_rede,
+                            profundidade, session, preco)
     supressao = Corte(etapa, corte, relig, reposicao, num_tse_linhas,
-                      etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                      etapa_reposicao, identificador, posicao_rede,
+                      profundidade, session, preco)
     religacao = Religacao(etapa, corte, relig, reposicao, num_tse_linhas,
-                          etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                          etapa_reposicao, identificador, posicao_rede,
+                          profundidade, session, preco)
     poco = Poco(etapa, corte, relig, reposicao, num_tse_linhas,
-                etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                etapa_reposicao, identificador, posicao_rede,
+                profundidade, session, preco)
     ligacao_agua = LigacaoAgua(etapa, corte, relig, reposicao, num_tse_linhas,
-                               etapa_reposicao, identificador, posicao_rede, profundidade, session)
+                               etapa_reposicao, identificador, posicao_rede,
+                               profundidade, session, preco)
+    ligacao_esgoto = LigacaoEsgoto(etapa, corte, relig, reposicao, num_tse_linhas,
+                                      etapa_reposicao, identificador, posicao_rede,
+                                      profundidade, session, preco)
 
     dicionario_un = {
         '134000': cavalete.instalado_lacre,
@@ -66,15 +76,15 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         '466500': religacao.restabelecida,
         '467500': religacao.restabelecida,
         '475500': religacao.restabelecida,
-        '502000': LigacaoEsgoto.ligacao_esgoto,
-        '505000': LigacaoEsgoto.ligacao_esgoto,
-        '506000': LigacaoEsgoto.ligacao_esgoto,
-        '508000': LigacaoEsgoto.ligacao_esgoto,
+        '502000': ligacao_esgoto.ligacao_esgoto,
+        '505000': ligacao_esgoto.ligacao_esgoto,
+        '506000': ligacao_esgoto.ligacao_esgoto,
+        '508000': ligacao_esgoto.ligacao_esgoto,
         '537000': poco.nivelamento,
         '537100': poco.nivelamento,
         '538000': poco.nivelamento,
-        '565000': LigacaoEsgoto.png,
-        '569000': LigacaoEsgoto.tre
+        '565000': ligacao_esgoto.png,
+        '569000': ligacao_esgoto.tre
 
     }
 

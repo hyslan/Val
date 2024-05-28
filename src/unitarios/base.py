@@ -1,10 +1,10 @@
 # base.py
-'''Base construtora de classes'''
+"""Base construtora de classes"""
 from src.unitarios.interfaces import UnitarioInterface
 
 
 class BaseUnitario(UnitarioInterface):
-    '''Construtor comum'''
+    """Construtor comum"""
 
     def __init__(self, etapa, corte, relig,
                  reposicao, num_tse_linhas, etapa_reposicao,
@@ -21,6 +21,9 @@ class BaseUnitario(UnitarioInterface):
         self.session = session
         self.identificador = identificador
         self.etapa = etapa
+        self.preco = self.session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
+            + "ZSBMM_VALORACAO_NAPI:9020/cntlCC_ITEM_PRECO/shellcont/shell")
 
     def processar(self):
         pass

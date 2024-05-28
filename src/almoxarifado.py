@@ -1,5 +1,5 @@
 # almoxarifado.py
-'''Módulo dos materiais contratada e SABESP.'''
+"""Módulo dos materiais contratada e SABESP."""
 import sys
 import pywintypes
 import pandas as pd
@@ -15,7 +15,7 @@ from src.wms import materiais_contratada
 
 
 class Almoxarifado:
-    '''Área de todos materiais obrigatórios por TSE.'''
+    """Área de todos materiais obrigatórios por TSE."""
 
     def __init__(self,
                  hidro,
@@ -40,7 +40,7 @@ class Almoxarifado:
         self.session = session
 
     def aba_materiais(self):
-        '''Função habilita aba de materiais no sap'''
+        """Função habilita aba de materiais no sap"""
         console = Console()
         console.print("Processo de Materiais",
                       style="bold red underline", justify="center")
@@ -48,12 +48,12 @@ class Almoxarifado:
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
         tb_materiais = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9030/cntlCC_MATERIAIS/shellcont/shell")
+            + "ZSBMM_VALORACAO_NAPI:9030/cntlCC_MATERIAIS/shellcont/shell")
 
         return tb_materiais
 
     def materiais_vinculados(self, tb_materiais):
-        '''Retorna um DataFrame com os materiais incluídos na ordem.'''
+        """Retorna um DataFrame com os materiais incluídos na ordem."""
         try:
             sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
             print("Tem material vinculado.")
@@ -85,7 +85,7 @@ class Almoxarifado:
             return None
 
     def inspecao(self, tb_materiais, df_materiais):
-        '''Seleciona a Classe da TSE correta.'''
+        """Seleciona a Classe da TSE correta."""
         sondagem = [
             '591000',
             '567000',

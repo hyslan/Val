@@ -1,12 +1,12 @@
 # hidrometro_material.py
-'''Módulo dos materiais de família Rede de Água.'''
+"""Módulo dos materiais de família Rede de Água."""
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import localiza_material
 
 
 class RedeAguaMaterial:
-    '''Classe de materiais de CRA.'''
+    """Classe de materiais de CRA."""
 
     def __init__(self,
                  hidro,
