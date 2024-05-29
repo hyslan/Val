@@ -98,12 +98,12 @@ def main():
         console.print(
             f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
-        init = getpass.getpass("Digite a senha por favor.\n")
-        if not init == os.environ["pwd"]:
-            console.print(
-                "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
-            you_cant_pass()
-            sys.exit(0)
+        # init = getpass.getpass("Digite a senha por favor.\n")
+        # if not init == os.environ["pwd"]:
+        #     console.print(
+        #         "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
+        #     you_cant_pass()
+        #     sys.exit(0)
 
         table.add_column("Seletor", style="dim", width=12)
         table.add_column("Tipo")
