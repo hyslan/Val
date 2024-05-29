@@ -24,4 +24,4 @@ python -m src.main
 4. Aguarde o processamento
 
 ## Desenvolvimento
-Desenvolvido por Hyslan Silva cruz, hyslansilva@gmail.com
+Desenvolvido por Hyslan Silva Cruz, hyslansilva@gmail.com
