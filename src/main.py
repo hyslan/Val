@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 """Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz"""
 # main.py
 # Bibliotecas
-import sys
+import argparse
 import os
 import time
 import datetime
@@ -10,8 +11,6 @@ import pywintypes
 import numpy as np
 from dotenv import load_dotenv
 from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 from src.sap import Sap
 from src import sql_view
 from src.core import val
@@ -24,60 +23,27 @@ from src.osn3 import pertencedor
 from src.sapador import down_sap
 
 
-def contratada():
-    """Input do contrato"""
-    contratos_mlg = {
-
-        "NOVASP": {"contrato": "4600041302", "unadm": "344", "municipio": "100"},
-        "RECAPE": {"contrato": "4600044782", "unadm": "344", "municipio": "100"},
-        "NORTESUL": {"contrato": "4600043760", "unadm": "344", "municipio": "100"},
-    }
-    contratos_mlq = {
-        "GBITAQUERA": {"contrato": "4600042888", "unadm": "340", "municipio": "100"},
-        "NOVASP": {"contrato": "4600041302", "unadm": "340", "municipio": "100"},
-        "NORTESUL": {"contrato": "4600043654", "unadm": "340", "municipio": "100"},
-        "RECAPE": {"contrato": "4600044777", "unadm": "340", "municipio": "100"},
-        "ZIGURATE": {"contrato": "4600042975", "unadm": "340", "municipio": "100"},
-        "ZIGURATEIT": {"contrato": "4600056089", "unadm": "", "municipio": "100"}
-    }
-    contratos_mln = {
-        "ZIGURATE": {"contrato": "4600042975", "unadm": "348", "municipio": ""},
-        "NORTESUL": {"contrato": "4600045267", "unadm": "348", "municipio": ""},
-        "NORTESUL2": {"contrato": "4600046036", "unadm": "348", "municipio": ""},
-        "RECAPE": {"contrato": "4600044787", "unadm": "348", "municipio": ""}
-    }
-    ugrs = {
-        "MLG": contratos_mlg,
-        "MLQ": contratos_mlq,
-        "MLN": contratos_mln
-    }
-
-    regiao = input("- Val: Qual UGR:\n").upper()
-    if regiao in ugrs:
-        empresa = input("- Val: Qual o contrato?\n").upper()
-        if empresa in ugrs[regiao]:
-            contrato_info = ugrs[regiao][empresa]
-            contrato, unadm, municipio = contrato_info[
-                "contrato"], contrato_info["unadm"], contrato_info["municipio"]
-        else:
-            print("Contrato não informado, encerrando.")
-            sys.exit(0)
-    else:
-        print("Não encontrei a UGR")
-        sys.exit(0)
-
-    return contrato, municipio
-
-
 def main():
     """Sistema principal da Val e inicializador do programa"""
+    parser = argparse.ArgumentParser(prog="Sistema Val",
+                                     description="Sistema de valoração automática não assistida.",
+                                     epilog="Author: Hyslan Silva Cruz")
+    parser.add_argument('-s', '--session',
+                        type=int, default=0,
+                        help='Número da sessão do SAP a ser utilizada.')
+    parser.add_argument('-o', '--option',
+                        type=str, help="Escolha uma Opção de valoração.",
+                        choices=[str(i) for i in range(1, 10)])
+    parser.add_argument('-c', '--contrato',
+                        type=str, help="Escolha o Contrato a ser utilizado.")
+    parser.add_argument('-f', '--family', default='hidrometro',
+                        type=str, help="Escolha a Família a ser utilizada.")
+
+    args = parser.parse_args()
+    options = args.option
     validador = False
-    ordem = ""
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
-    hora_retomada = datetime.time(6, 0)  # Ponto de retomada às 6h
     console = Console()
-    table = Table(show_header=True, header_style="bold magenta",
-                  title=":star: Menu de Opçôes :star:", style="bold")
     sap = Sap()
     # Avatar.
     val_avatar()
@@ -105,55 +71,32 @@ def main():
         #     you_cant_pass()
         #     sys.exit(0)
 
-        table.add_column("Seletor", style="dim", width=12)
-        table.add_column("Tipo")
-        table.add_row("1", "Desvalorador")
-        table.add_row("2", "Retrabalho")
-        table.add_row("3", "Pertencedor")
-        table.add_row("4", "TSE geral")
-        table.add_row("5", "TSEs Expecíficas")
-        table.add_row("6", "TSE Expecífica")
-        table.add_row("7", "Teste de Ordem única")
-        table.add_row("8", "Planilha de pendentes")
-        table.add_row("9", "Família de serviço")
-
         try:
-            session = sap.escolher_sessao()
+            session = sap.escolher_sessao(args.session)
         # pylint: disable=E1101
         except pywintypes.com_error:
             console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
             console.print(
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
             down_sap()
-            session = sap.escolher_sessao()
-
-
-        console.print(table)
+            session = sap.escolher_sessao(args.session)
 
         try:
-            resposta = input(
-                "\n- Val: Escolha uma opção:\n "
-            )
-            match resposta:
+            match options:
                 case "1":
-                    contrato = contratada()
-                    desvalorador(contrato, session)
+                    desvalorador(args.contrato, session)
                     validador = True
                 case "2":
-                    contrato = contratada()
-                    retrabalho(contrato, session)
+                    retrabalho(args.contrato, session)
                     validador = True
                 case "3":
-                    contrato = contratada()
-                    pertencedor(contrato, session)
+                    pertencedor(args.contrato, session)
                     validador = True
                 case "4":
-                    contrato = contratada()
-                    pendentes_list = extract_from_sql(contrato[0])
+                    pendentes_list = extract_from_sql(args.contrato)
                     ordem, validador = val(
-                        pendentes_list, session, contrato)
+                        pendentes_list, session, args.contrato)
                 case "5":
-                    contrato = contratada()
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
                                   style="italic blue", justify="full")
@@ -161,32 +104,29 @@ def main():
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-                    pendentes_array = pendentes.tse_escolhida(contrato[0])
+                    pendentes_array = pendentes.tse_escolhida(args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, contrato)
+                        pendentes_array, session, args.contrato)
                 case "6":
-                    contrato = contratada()
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
                                   style="italic blue", justify="full")
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-                    pendentes_array = pendentes.tse_expecifica(contrato[0])
+                    pendentes_array = pendentes.tse_expecifica(args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, contrato)
+                        pendentes_array, session, args.contrato)
                 case "7":
-                    contrato = contratada()
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
                     mun = input("Digite o Nº do Município.\n")
                     pendentes_array = np.array([[ordem_expec, mun]])
                     ordem, validador = val(
-                        pendentes_array, session, contrato
+                        pendentes_array, session, args.contrato
                     )
                 case "8":
-                    contrato = contratada()
                     ask = input("é csv?")
                     if ask == "s":
                         planilha = pendentes_csv
@@ -194,18 +134,12 @@ def main():
                         planilha = pendentes_excel()
 
                     ordem, validador = val(
-                        planilha, session, contrato)
+                        planilha, session, args.contrato)
                 case "9":
-                    contrato = contratada()
                     pendentes = sql_view.Tabela("", "_")
-                    console.print(Panel.fit(
-                        pendentes.show_family()), style="italic yellow" "\n")
-                    familia = input(
-                        "- Val: Digite o nome da família, por favor.\n"
-                    )
-                    pendentes_array = pendentes.familia(familia, contrato[0])
+                    pendentes_array = pendentes.familia(args.family, args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, contrato
+                        pendentes_array, session, args.contrato
                     )
 
         except (TypeError, ValueError) as erro:
@@ -215,22 +149,13 @@ def main():
 
         if validador is True:
             print("- Val: Valoração finalizada, encerrando.")
-            sys.exit()
+            return
 
         # Loop de Parada
         if hora_atual >= hora_parada:
             print("A Val foi descansar.")
             print("- Val: até amanhã.")
-            while True:
-                hora_atual = datetime.datetime.now().time()
-                print(f"Hora atual na parada: {hora_atual}")
-                time.sleep(60)
-                if hora_atual >= hora_retomada:
-                    print("- Val: Bom dia!")
-                    print("- Val: Vamos trabalhar!")
-                    print(
-                        f"- Val: Retomando Ordem: {ordem} \n")
-                    break  # Sai do Loop quando atingir a hora de retomada.
+            return
 
 
 # -Main------------------------------------------------------------------
