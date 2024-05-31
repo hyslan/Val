@@ -1,4 +1,5 @@
 """Módulo de consulta estoque de materiais"""
+import subprocess
 import time
 import os
 import xlwings as xw
@@ -7,11 +8,11 @@ from src import sap
 
 
 def estoque(session, sessions, contrato):
-    '''Função para consultar estoque'''
+    """Função para consultar estoque"""
     caminho = os.getcwd() + "\\sheets\\"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
-    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato[0]
+    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
     print("Consultando Estoque de Materiais")
     frame.SendVkey(8)
     frame.sendVKey(42)  # Lista Detalhada
@@ -39,12 +40,18 @@ def estoque(session, sessions, contrato):
         # session.EndTransaction()
         print("Encerrando Sessão.")
         con.CloseSession(f"/app/con[0]/ses[{len(sessions)}]")
-        time.sleep(6)
+        time.sleep(10)
 
     print("Fechando Arquivo Excel.\n")
     try:
+        time.sleep(10)
         book = xw.Book('estoque.xlsx')
         book.close()
+        try:
+            subprocess.run(['taskkill', '/F', '/IM', "excel"], check=True)
+        except Exception as e:
+            print(e)
+            print("Erro ao fechar xlsx files")
     except Exception as e:
         print(e)
 

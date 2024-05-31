@@ -7,7 +7,6 @@ import pywintypes
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import IntPrompt, Confirm
 from src import sql_view
 from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
@@ -20,40 +19,35 @@ from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
 
-def get_input(prompt: int) -> int:
-    """Fuction de inputs"""
-    return IntPrompt.ask(prompt)
-
-
 def rollback(sap) -> None:
     sap.encerrar_sap()
     # down_sap()
     # print("Reiniciando programa")
 
 
-def val(pendentes_array, session, contrato):
+def val(pendentes_array, session, contrato, revalorar):
     """Sistema Val."""
     console = Console()
     sap = Sap()
-    empresa, municipio = contrato
-    transacao = Transacao(empresa, municipio, session)
-    validador = False
+    transacao = Transacao(contrato, "100", session)
+
     try:
         sessions = sap.listar_sessoes()
     # pylint: disable=E1101
     except pywintypes.com_error:
         return
 
-    if not contrato[0] == "4600043760":
-        if not sessions.Count == 6:
-            new_session = sap.criar_sessao(sessions)
-            estoque_hj = estoque(new_session, sessions, contrato)
-        else:
-            estoque_hj = estoque(session, sessions, contrato)
+    try:
+        if not contrato == "4600043760":
+            if not sessions.Count == 6:
+                new_session = sap.criar_sessao(sessions)
+                estoque_hj = estoque(new_session, sessions, contrato)
+            else:
+                estoque_hj = estoque(session, sessions, contrato)
+    except:
+        return
 
     limite_execucoes = len(pendentes_array)
-    revalorar = Confirm.ask("Vai refazer a valoração?", choices=[
-                            "sim", "não"], default=False)
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
 
@@ -71,15 +65,15 @@ def val(pendentes_array, session, contrato):
                 # Função consulta de Ordem.
                 print("Iniciando Consulta.")
                 (status_sistema,
-                    status_usuario,
-                    corte,
-                    relig,
-                    posicao_rede,
-                    profundidade,
-                    hidro,
-                    operacao,
-                    diametro_ramal,
-                    diametro_rede
+                 status_usuario,
+                 corte,
+                 relig,
+                 posicao_rede,
+                 profundidade,
+                 hidro,
+                 operacao,
+                 diametro_ramal,
+                 diametro_rede
                  ) = consulta_os(ordem, session, contrato)
                 # Consulta Status da Ordem
                 if not status_sistema == fechada:
@@ -176,44 +170,44 @@ def val(pendentes_array, session, contrato):
                 # RB - Investimento
                 if chave_rb_investimento:
                     materiais(
-                              hidro,
-                              operacao,
-                              chave_rb_investimento,
-                              diametro_ramal,
-                              diametro_rede,
-                              contrato[0],
-                              estoque_hj,
-                              posicao_rede,
-                              session)
+                        hidro,
+                        operacao,
+                        chave_rb_investimento,
+                        diametro_ramal,
+                        diametro_rede,
+                        contrato,
+                        estoque_hj,
+                        posicao_rede,
+                        session)
                 # RB - Despesa
-                if list_chave_rb_despesa and not contrato[0] == "4600043760":
+                if list_chave_rb_despesa and not contrato == "4600043760":
                     for chave_rb_despesa in list_chave_rb_despesa:
                         materiais(
-                                  hidro,
-                                  operacao,
-                                  chave_rb_despesa,
-                                  diametro_ramal,
-                                  diametro_rede,
-                                  contrato[0],
-                                  estoque_hj,
-                                  posicao_rede,
-                                  session)
+                            hidro,
+                            operacao,
+                            chave_rb_despesa,
+                            diametro_ramal,
+                            diametro_rede,
+                            contrato,
+                            estoque_hj,
+                            posicao_rede,
+                            session)
                 # Unitários
                 if list_chave_unitario:
                     for chave_unitario in list_chave_unitario:
                         materiais(
-                                  hidro,
-                                  operacao,
-                                  chave_unitario,
-                                  diametro_ramal,
-                                  diametro_rede,
-                                  contrato[0],
-                                  estoque_hj,
-                                  posicao_rede,
-                                  session)
+                            hidro,
+                            operacao,
+                            chave_unitario,
+                            diametro_ramal,
+                            diametro_rede,
+                            contrato,
+                            estoque_hj,
+                            posicao_rede,
+                            session)
 
                 # Fim dos materiais
-                sys.exit(0)
+                # sys.exit(0)
                 # Salvar Ordem
                 qtd_ordem, rodape = salvar(
                     ordem, qtd_ordem, contrato, session)

@@ -50,7 +50,7 @@ def video():
             break
 
         # Show frame
-        cv2.imshow('Video', frame)
+        cv2.imshow('Voce nao vai passar!', frame)
 
         # press 'q' to exit
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -114,5 +114,3 @@ def you_cant_pass(mode):
     if mode == 'video':
         video()
 
-
-video()

@@ -25,13 +25,12 @@ def consulta_os(n_os, session, contrato):
     hidro = None
     relig = None
     corte = None
-    empresa, municipio = contrato
+
 
     def zsbpm020(session_id):
         """Transact 020"""
         nonlocal n_os
-        nonlocal empresa
-        nonlocal municipio
+        nonlocal contrato
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -49,7 +48,7 @@ def consulta_os(n_os, session, contrato):
                 gui.StartTransaction("ZSBPM020")
                 campo_os = gui.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
                 campo_os.Text = n_os
-                gui.findById("wnd[0]/usr/txtS_CONTR-LOW").text = empresa
+                gui.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
                 # gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = 
                 gui.findById("wnd[0]").sendVKey(8)
             except (pywintypes.com_error, AttributeError) as transaction_error:

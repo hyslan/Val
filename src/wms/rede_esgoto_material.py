@@ -3,7 +3,6 @@
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import localiza_material
-from src.sap_connection import connect_to_sap
 
 
 class RedeEsgotoMaterial:
@@ -98,7 +97,7 @@ class RedeEsgotoMaterial:
         return junta_esgoto, junta_esgoto_adap
 
     def rede_junta(self):
-        '''Saber diâmetro da rede para junta'''
+        """Saber diâmetro da rede para junta"""
         match self.diametro_rede:
             case '100':
                 junta_esgoto = "30002958"
@@ -120,8 +119,7 @@ class RedeEsgotoMaterial:
         return junta_esgoto, junta_esgoto_adap
 
     def materiais_vigentes(self):
-        '''Materiais com estoque'''
-        session = connect_to_sap()
+        """Materiais com estoque"""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         if sap_material is not None:
@@ -138,7 +136,7 @@ class RedeEsgotoMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, curva90)
+                                self.tb_materiais, self.session, curva90)
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case [curva45]:
@@ -146,7 +144,7 @@ class RedeEsgotoMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, curva45)
+                                self.tb_materiais, self.session, curva45)
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     case [luva_correr]:
@@ -154,7 +152,7 @@ class RedeEsgotoMaterial:
                             material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(
-                                self.tb_materiais, session, luva_correr)
+                                self.tb_materiais, self.session, luva_correr)
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     # TUBO PVC RIG JEI/JERI ESG DN 100 CM 6M
@@ -166,7 +164,7 @@ class RedeEsgotoMaterial:
                                     material, self.estoque, 2.5, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "2")
                             case 'TA':
@@ -174,7 +172,7 @@ class RedeEsgotoMaterial:
                                     material, self.estoque, 4.5, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "4")
                             case 'EX':
@@ -182,7 +180,7 @@ class RedeEsgotoMaterial:
                                     material, self.estoque, 10, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "5")
                             case 'TO':
@@ -190,7 +188,7 @@ class RedeEsgotoMaterial:
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "7")
                             case 'PO':
@@ -198,7 +196,7 @@ class RedeEsgotoMaterial:
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
                                     localiza_material.btn_busca_material(
-                                        self.tb_materiais, session, codigo)
+                                        self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "10")
 

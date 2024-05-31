@@ -1,63 +1,42 @@
 # sap_connection.py
 # -Begin-----------------------------------------------------------------
-'''Módulo SAP'''
+"""Módulo SAP"""
+
+
 # -Bibliotecas--------------------------------------------------------------
 import win32com.client
 import pythoncom
+import pywintypes
+from rich.console import Console
+from src.sapador import down_sap
+
 # -Sub Main--------------------------------------------------------------
+console = Console()
 
 
 def connect_to_sap():
-    '''Função para conexão SAP'''
-    try:
-        #pylint: disable=E1101
-        pythoncom.CoInitialize()
-        sapguiauto = win32com.client.GetObject("SAPGUI")
-        if not isinstance(sapguiauto, win32com.client.CDispatch):
-            return
-
-        application = sapguiauto.GetScriptingEngine
-    except NameError:
-        print(NameError)
-
+    """Função para conexão SAP"""
+    pythoncom.CoInitialize()
+    sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
-    if not isinstance(application, win32com.client.CDispatch):
-        sapguiauto = None
-        return
-
-    application.HistoryEnabled = True
-
     connection = application.Children(0)
-    if not isinstance(connection, win32com.client.CDispatch):
-        application = None
-        sapguiauto = None
-        return
+    session = connection.Children
 
-    if connection.DisabledByServer is True:
-        connection = None
-        application = None
-        sapguiauto = None
-        return
+    return session, connection
 
-    session = connection.Children(0)
-    if not isinstance(session, win32com.client.CDispatch):
-        connection = None
-        application = None
-        sapguiauto = None
-        return
 
-    if session.Busy is True:
-        session = None
-        connection = None
-        application = None
-        sapguiauto = None
-        return
+try:
+    session, connection = connect_to_sap()
+# pylint: disable=E1101
+except pywintypes.com_error:
+    console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+    console.print(
+        "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+    down_sap()
+    session = connect_to_sap()
 
-    if session.Info.IsLowSpeedConnection is True:
-        session = None
-        connection = None
-        application = None
-        sapguiauto = None
-        return
-
-    return session
+# Obtendo o índice da última sessão ativa
+ultimo_indice = len(session) - 1
+if ultimo_indice < 5:
+    for _ in range(ultimo_indice, 5):
+        connection.Children(ultimo_indice).CreateSession()

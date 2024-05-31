@@ -40,6 +40,8 @@ def main():
                         type=str, help="Escolha a Família a ser utilizada.")
     parser.add_argument('-p', '--password',
                         type=str, help="Digite a senha para iniciar o programa.")
+    parser.add_argument('-r', '--revalorar', default=False,
+                        type=bool, help="Revalorar uma Ordem.")
 
     args = parser.parse_args()
     options = args.option
@@ -97,7 +99,7 @@ def main():
                 case "4":
                     pendentes_list = extract_from_sql(args.contrato)
                     ordem, validador = val(
-                        pendentes_list, session, args.contrato)
+                        pendentes_list, session, args.contrato, args.revalorar)
                 case "5":
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
@@ -108,7 +110,7 @@ def main():
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
                     pendentes_array = pendentes.tse_escolhida(args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, args.contrato)
+                        pendentes_array, session, args.contrato, args.revalorar)
                 case "6":
                     tses_existentes = sql_view.Tabela("", "")
                     console.print("\n", tses_existentes.show_tses(),
@@ -118,7 +120,7 @@ def main():
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
                     pendentes_array = pendentes.tse_expecifica(args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, args.contrato)
+                        pendentes_array, session, args.contrato, args.revalorar)
                 case "7":
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
@@ -126,7 +128,7 @@ def main():
                     mun = input("Digite o Nº do Município.\n")
                     pendentes_array = np.array([[ordem_expec, mun]])
                     ordem, validador = val(
-                        pendentes_array, session, args.contrato
+                        pendentes_array, session, args.contrato, args.revalorar
                     )
                 case "8":
                     ask = input("é csv?")
@@ -136,12 +138,12 @@ def main():
                         planilha = pendentes_excel()
 
                     ordem, validador = val(
-                        planilha, session, args.contrato)
+                        planilha, session, args.contrato, args.revalorar)
                 case "9":
                     pendentes = sql_view.Tabela("", "_")
                     pendentes_array = pendentes.familia(args.family, args.contrato)
                     ordem, validador = val(
-                        pendentes_array, session, args.contrato
+                        pendentes_array, session, args.contrato, args.revalorar
                     )
 
         except (TypeError, ValueError) as erro:
