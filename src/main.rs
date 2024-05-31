@@ -1,6 +1,8 @@
 #![windows_subsystem = "windows"]
 
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 
 // Contratos
 const _NOVASPMLG: &str = "4600041302";
@@ -24,6 +26,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
 
+    thread::sleep(Duration::from_secs(10));
     //ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
     Command::new("python")
         .args([&"-m", "src.main", "-s", "0",
@@ -35,7 +38,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
     Command::new("python")
-        .args([&"-m", "src.main", "-s", "0",
+        .args([&"-m", "src.main", "-s", "1",
             "-o", "9",
             "-c", _NOVASPMLG,
         "-f", FAMILY[2],
@@ -44,7 +47,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
     Command::new("python")
-        .args([&"-m", "src.main", "-s", "0",
+        .args([&"-m", "src.main", "-s", "2",
             "-o", "9",
             "-c", _NOVASPMLG,
         "-f", FAMILY[3],
@@ -54,7 +57,7 @@ fn main() {
         .expect("failed to execute process");
 
     Command::new("python")
-        .args([&"-m", "src.main", "-s", "1",
+        .args([&"-m", "src.main", "-s", "3",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
         "-f", FAMILY[1],
@@ -63,7 +66,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
     Command::new("python")
-        .args([&"-m", "src.main", "-s", "1",
+        .args([&"-m", "src.main", "-s", "4",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
         "-f", FAMILY[2],
@@ -72,7 +75,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
     Command::new("python")
-        .args([&"-m", "src.main", "-s", "1",
+        .args([&"-m", "src.main", "-s", "5",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
         "-f", FAMILY[3],
