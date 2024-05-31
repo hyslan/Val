@@ -38,6 +38,8 @@ def main():
                         type=str, help="Escolha o Contrato a ser utilizado.")
     parser.add_argument('-f', '--family', default='hidrometro',
                         type=str, help="Escolha a Família a ser utilizada.")
+    parser.add_argument('-p', '--password',
+                        type=str, help="Digite a senha para iniciar o programa.")
 
     args = parser.parse_args()
     options = args.option
@@ -64,12 +66,12 @@ def main():
         console.print(
             f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
-        # init = getpass.getpass("Digite a senha por favor.\n")
-        # if not init == os.environ["pwd"]:
-        #     console.print(
-        #         "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
-        #     you_cant_pass()
-        #     sys.exit(0)
+
+        if not args.password == os.environ["pwd"]:
+            console.print(
+                "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
+            you_cant_pass('video')
+            return
 
         try:
             session = sap.escolher_sessao(args.session)
