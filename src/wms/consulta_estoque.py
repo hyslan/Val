@@ -1,4 +1,5 @@
 """Módulo de consulta estoque de materiais"""
+import subprocess
 import time
 import os
 import xlwings as xw
@@ -7,11 +8,11 @@ from src import sap
 
 
 def estoque(session, sessions, contrato):
-    '''Função para consultar estoque'''
+    """Função para consultar estoque"""
     caminho = os.getcwd() + "\\sheets\\"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
-    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato[0]
+    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
     print("Consultando Estoque de Materiais")
     frame.SendVkey(8)
     frame.sendVKey(42)  # Lista Detalhada
@@ -21,10 +22,10 @@ def estoque(session, sessions, contrato):
     session.findById("wnd[1]/tbar[0]/btn[0]").press()
     session.findById(
         "wnd[1]/usr/ctxtDY_PATH").text = caminho
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = "estoque.XLSX"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
     session.findById("wnd[1]").sendVKey(11)  # Substituir
     print("Planilha de estoque gerada com sucesso.")
-    materiais = pd.read_excel(caminho + "estoque.XLSX",
+    materiais = pd.read_excel(caminho + f"estoque_{contrato}.XLSX",
                               sheet_name="Sheet1", usecols=["Material",
                                                             "Texto breve material",
                                                             "Utilização livre"
@@ -39,12 +40,18 @@ def estoque(session, sessions, contrato):
         # session.EndTransaction()
         print("Encerrando Sessão.")
         con.CloseSession(f"/app/con[0]/ses[{len(sessions)}]")
-        time.sleep(6)
+        time.sleep(10)
 
     print("Fechando Arquivo Excel.\n")
     try:
-        book = xw.Book('estoque.xlsx')
+        time.sleep(10)
+        book = xw.Book(f'estoque_{contrato}.xlsx')
         book.close()
+        try:
+            subprocess.run(['taskkill', '/F', '/IM', "excel"], check=True)
+        except Exception as e:
+            print(e)
+            print("Erro ao fechar xlsx files")
     except Exception as e:
         print(e)
 

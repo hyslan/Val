@@ -85,6 +85,7 @@ class Almoxarifado:
             return None
 
     def inspecao(self, tb_materiais, df_materiais):
+        print("Iniciando inspeção de materiais.")
         """Seleciona a Classe da TSE correta."""
         sondagem = [
             '591000',
@@ -92,7 +93,7 @@ class Almoxarifado:
             '321000',
             '283000'
         ]
-        if self.identificador[0] in sondagem:
+        if self.identificador[2] in sondagem:
             materiais_contratada.materiais_contratada(
                 tb_materiais, self.contrato,
                 self.estoque, self.session)
