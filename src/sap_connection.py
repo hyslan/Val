@@ -7,6 +7,7 @@
 import win32com.client
 import pythoncom
 import pywintypes
+import time
 from rich.console import Console
 from src.sapador import down_sap
 
@@ -33,6 +34,7 @@ except pywintypes.com_error:
     console.print(
         "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
     down_sap()
+    time.sleep(20)
     session = connect_to_sap()
 
 # Obtendo o índice da última sessão ativa

@@ -37,9 +37,6 @@ class Cavalete:
         """Método Troca de Pé de Cavalete Preventivo"""
         print("Iniciando processo de pagar ADC  TRC PREV PE CV - Código: 456856")
         codigo = "456856"
-        self.preco = self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             btn_localizador(self.preco, self.session, codigo)
@@ -70,7 +67,7 @@ class Cavalete:
                 item_preco = self.preco.GetCellValue(
                     self.preco.CurrentCellRow, "ITEM"
                 )
-                if item_preco == '300':
+                if item_preco in ('300', '310'):
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
@@ -83,7 +80,7 @@ class Cavalete:
                 item_preco = self.preco.GetCellValue(
                     self.preco.CurrentCellRow, "ITEM"
                 )
-                if item_preco == '300':
+                if item_preco in ('300', '310'):
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()

@@ -22,10 +22,10 @@ def estoque(session, sessions, contrato):
     session.findById("wnd[1]/tbar[0]/btn[0]").press()
     session.findById(
         "wnd[1]/usr/ctxtDY_PATH").text = caminho
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = "estoque.XLSX"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
     session.findById("wnd[1]").sendVKey(11)  # Substituir
     print("Planilha de estoque gerada com sucesso.")
-    materiais = pd.read_excel(caminho + "estoque.XLSX",
+    materiais = pd.read_excel(caminho + f"estoque_{contrato}.XLSX",
                               sheet_name="Sheet1", usecols=["Material",
                                                             "Texto breve material",
                                                             "Utilização livre"
@@ -45,7 +45,7 @@ def estoque(session, sessions, contrato):
     print("Fechando Arquivo Excel.\n")
     try:
         time.sleep(10)
-        book = xw.Book('estoque.xlsx')
+        book = xw.Book(f'estoque_{contrato}.xlsx')
         book.close()
         try:
             subprocess.run(['taskkill', '/F', '/IM', "excel"], check=True)

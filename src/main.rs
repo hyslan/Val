@@ -26,7 +26,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
 
-    thread::sleep(Duration::from_secs(10));
+    thread::sleep(Duration::from_secs(60));
     //ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
     Command::new("python")
         .args([&"-m", "src.main", "-s", "0",

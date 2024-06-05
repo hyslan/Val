@@ -230,7 +230,7 @@ def materiais_gb_itaquera(tb_materiais,
 
 
 def materiais_contratada(tb_materiais, contrato, estoque, session):
-    '''Módulo de materiais da NOVASP.'''
+    """Módulo de materiais da NOVASP."""
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     # Número da Row do Grid Materiais do SAP
     lacre = False

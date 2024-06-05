@@ -171,7 +171,7 @@ def val(pendentes_array, session, contrato, revalorar):
                 if chave_rb_investimento:
                     materiais(
                         hidro,
-                        operacao,
+                        chave_rb_investimento[1],  # Etapa atual da chave
                         chave_rb_investimento,
                         diametro_ramal,
                         diametro_rede,
@@ -184,7 +184,7 @@ def val(pendentes_array, session, contrato, revalorar):
                     for chave_rb_despesa in list_chave_rb_despesa:
                         materiais(
                             hidro,
-                            operacao,
+                            chave_rb_despesa[1],  # Etapa atual da chave
                             chave_rb_despesa,
                             diametro_ramal,
                             diametro_rede,
@@ -197,7 +197,7 @@ def val(pendentes_array, session, contrato, revalorar):
                     for chave_unitario in list_chave_unitario:
                         materiais(
                             hidro,
-                            operacao,
+                            chave_unitario[1],  # Etapa atual da chave
                             chave_unitario,
                             diametro_ramal,
                             diametro_rede,
