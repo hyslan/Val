@@ -34,7 +34,7 @@ except pywintypes.com_error:
     console.print(
         "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
     down_sap()
-    time.sleep(20)
+    time.sleep(60)
     session = connect_to_sap()
 
 # Obtendo o índice da última sessão ativa
