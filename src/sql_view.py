@@ -15,7 +15,7 @@ class Tabela:
             password="S@besp&2024*",
             host="10.66.9.46",
             database="BD_ML",
-            query={"driver": "ODBC Driver 17 for SQL Server"},
+            query={"driver": "ODBC Driver 18 for SQL Server"},
         )
         self.connection_url = connection_url
         engine = sa.create_engine(self.connection_url)
