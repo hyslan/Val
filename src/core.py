@@ -215,7 +215,7 @@ def val(pendentes_array, session, contrato, revalorar):
                 if not salvo == rodape:
                     console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
                     console.print(f"[bold yellow]Motivo: {rodape}")
-                    break
+                    continue
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 console.print(
@@ -241,7 +241,7 @@ def val(pendentes_array, session, contrato, revalorar):
                         console.print(
                             "[bold red underline]Aconteceu um Erro com a Val!"
                             + f"\n Fatal Error: {errocritico}")
-                        console.print_exception(show_locals=True)
+                        console.print_exception()
                         oxe()
                         sys.exit()
 
