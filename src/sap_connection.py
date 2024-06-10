@@ -21,7 +21,7 @@ def connect_to_sap():
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
     conn = application.Children(0)
-    sess = connection.Children
+    sess = conn.Children
 
     return sess, conn
 
