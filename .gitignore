@@ -3,7 +3,7 @@
 /.vs
 /.vscode
 /src/__pycache__
-
+*.pyc
 
 # Added by cargo
 

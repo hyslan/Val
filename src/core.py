@@ -7,6 +7,8 @@ import pywintypes
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
+
+from sapador import down_sap
 from src import sql_view
 from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
@@ -20,9 +22,12 @@ from src.nazare_bugou import oxe
 
 
 def rollback(sap) -> None:
-    sap.encerrar_sap()
-    # down_sap()
-    # print("Reiniciando programa")
+    try:
+        sap.encerrar_sap()
+    except:
+        print("SAPLOGON já foi encerrado.")
+    down_sap()
+    print("Reiniciando programa")
 
 
 def val(pendentes_array, session, contrato, revalorar):
@@ -236,7 +241,7 @@ def val(pendentes_array, session, contrato, revalorar):
                         # rollback(sap)
                     case 'O servidor RPC não está disponível.':
                         console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                        # rollback(sap)
+                        rollback(sap)
                     case _:
                         console.print(
                             "[bold red underline]Aconteceu um Erro com a Val!"

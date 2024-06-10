@@ -20,10 +20,10 @@ def connect_to_sap():
     pythoncom.CoInitialize()
     sapguiauto = win32com.client.GetObject("SAPGUI")
     application = sapguiauto.GetScriptingEngine
-    connection = application.Children(0)
-    session = connection.Children
+    conn = application.Children(0)
+    sess = connection.Children
 
-    return session, connection
+    return sess, conn
 
 
 try:
@@ -34,8 +34,9 @@ except pywintypes.com_error:
     console.print(
         "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
     down_sap()
+    print("Wait 20 seconds...")
     time.sleep(20)
-    session = connect_to_sap()
+    session, connection = connect_to_sap()
 
 # Obtendo o índice da última sessão ativa
 ultimo_indice = len(session) - 1
