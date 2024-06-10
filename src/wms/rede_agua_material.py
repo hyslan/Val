@@ -34,7 +34,7 @@ class RedeAguaMaterial:
         self.session = session
 
     def materiais_vigentes(self):
-        '''Materiais com estoque.'''
+        """Materiais com estoque."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES  FÊMEA DN 20
@@ -300,7 +300,7 @@ class RedeAguaMaterial:
                             ultima_linha_material = ultima_linha_material + 1
 
     def receita_reparo_de_rede_de_agua(self):
-        '''Padrão de materiais na classe CRA.'''
+        """Padrão de materiais na classe CRA."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # ABRACADEIRA FF REPARO TUBO DN100 LMIN=150
@@ -386,7 +386,7 @@ class RedeAguaMaterial:
                 self.estoque, self.session)
 
     def receita_troca_de_conexao_de_ligacao_de_agua(self):
-        '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
+        """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
