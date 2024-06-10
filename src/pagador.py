@@ -1,5 +1,6 @@
 # pagador.py
 """Módulo para precificar na aba itens de preço."""
+import numpy as np
 from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
@@ -97,7 +98,7 @@ def precificador(tse, corte, relig,
         )
 
     console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
-    if reposicao_geral:
+    if np.all(reposicao_geral):
         console.print(
             Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
     if list_chave_unitario:
