@@ -8,7 +8,7 @@ from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
 
-from sapador import down_sap
+from src.sapador import down_sap
 from src import sql_view
 from src.sap import Sap
 from src.transact_zsbmm216 import Transacao
