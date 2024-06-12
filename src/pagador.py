@@ -97,9 +97,8 @@ def precificador(tse, corte, relig,
         )
 
     console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
-    if reposicao_geral:
-        console.print(
-            Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
+    console.print(
+        Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
     if list_chave_unitario:
         console.print(
             Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
