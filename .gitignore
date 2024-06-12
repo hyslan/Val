@@ -3,6 +3,9 @@
 /.vs
 /.vscode
 /src/__pycache__
+# Remove caches by -m
+src/__pycache__/servicos_executados.cpython-312.pyc
+src/wms/__pycache__/consulta_estoque.cpython-312.pyc
 *.pyc
 
 # Added by cargo

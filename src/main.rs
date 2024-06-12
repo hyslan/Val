@@ -32,7 +32,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "0",
             "-o", "9",
             "-c", _NOVASPMLG,
-        "-f", FAMILY[1],
+        "-f", FAMILY[0],
         "-p", "alefafa"
         ])
         .spawn()
@@ -41,7 +41,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "1",
             "-o", "9",
             "-c", _NOVASPMLG,
-        "-f", FAMILY[2],
+        "-f", FAMILY[1],
         "-p", "alefafa"
         ])
         .spawn()
@@ -50,7 +50,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "2",
             "-o", "9",
             "-c", _NOVASPMLG,
-        "-f", FAMILY[3],
+        "-f", FAMILY[2],
         "-p", "alefafa"
         ])
         .spawn()
@@ -60,7 +60,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "3",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[1],
+        "-f", FAMILY[0],
         "-p", "alefafa"
         ])
         .spawn()
@@ -69,7 +69,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "4",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[2],
+        "-f", FAMILY[1],
         "-p", "alefafa"
         ])
         .spawn()
@@ -78,7 +78,7 @@ fn main() {
         .args([&"-m", "src.main", "-s", "5",
             "-o", "9",
             "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[3],
+        "-f", FAMILY[2],
         "-p", "alefafa"
         ])
         .spawn()
