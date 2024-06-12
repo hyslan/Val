@@ -47,6 +47,7 @@ def estoque(session, sessions, contrato):
         time.sleep(10)
         book = xw.Book(f'estoque_{contrato}.xlsx')
         book.close()
+        book.app.quit()
         try:
             subprocess.run(['taskkill', '/F', '/IM', "excel"], check=True)
         except Exception as e:
