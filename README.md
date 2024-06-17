@@ -1,6 +1,7 @@
-# SISTEMA VAL
-Aplicação para automação de valoração de ordens de
-serviços executados pela contratada via *SAPGUI*.
+![val.png](media/val.png)
+> # SISTEMA VAL
+> Aplicação para automação de valoração de ordens de
+> serviços executados pela contratada via *SAPGUI*.
 
 ## Instalação
 1. Clone o repositório
@@ -8,7 +9,6 @@ serviços executados pela contratada via *SAPGUI*.
 ```bash
 pip install -r requirements.txt
 ```
-3. Execute o arquivo `main.py`
 
 ## Utilização
 1. Esteja dentro do ambiente SABESP.
@@ -17,6 +17,13 @@ pip install -r requirements.txt
 ```bash
 python -m src.main
 ```
+## Uso de 6 sessões simultâneas
+Para executar 6 tipos diferentes de famílias, executar via compilador do rust.
+```bash
+cargo run
+```
+**Observação:** Edite `main.rs` para ajustar as famílias. É obrigatório ter  instalado **rustup e rustc** na máquina.
+
 ### Execução
 1. Preencha os campos obrigatórios
 2. Selecione o tipo de pagamento, contratada tipo serviços

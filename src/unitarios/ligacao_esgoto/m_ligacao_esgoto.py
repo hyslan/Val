@@ -136,7 +136,7 @@ class LigacaoEsgoto:
                 codigos = self.CODIGOS_PNG
             if profundidade_float <= 2.00:
                 codigos = self.CODIGOS_2M
-            if profundidade_float > 2.00 and profundidade_float <= 3.00:
+            if 2.00 < profundidade_float <= 3.00:
                 codigos = self.CODIGOS_3M
             if tipo_operacao == "TRE" and profundidade_float > 3.00:
                 codigos = self.CODIGOS_4M

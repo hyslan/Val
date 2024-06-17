@@ -29,9 +29,8 @@ from src.etl import pendentes_csv
 
 
 def pertencedor(contrato, session):
-    '''Função N3'''
-    empresa, unadm, municipio = contrato
-    transacao = Transacao(empresa, unadm, municipio, session)
+    """Função N3"""
+    transacao = Transacao(contrato, "100", session)
     revalorar = False
     resposta = input("São Ordens desvaloradas?")
     if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
@@ -156,7 +155,7 @@ def pertencedor(contrato, session):
             print(f"Ordem: {ordem} em medição definitiva.")
             ordem_obs = planilha.cell(row=int_num_lordem, column=4)
             ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-            lista.save('lista.xlsx')
+            lista.save('sheets/lista.xlsx')
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -175,7 +174,7 @@ def pertencedor(contrato, session):
                     print(f"Data: {data_valorado}")
                     ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                     ordem_obs.value = "Já Salvo"
-                    lista.save('lista.xlsx')
+                    lista.save('sheets/lista.xlsx')
                     # Incremento de Ordem.
                     int_num_lordem += 1
                     ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -203,14 +202,14 @@ def pertencedor(contrato, session):
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
 
         status_sistema, status_usuario, *_ = consulta_os(
-            ordem, contrato, unadm)
+            ordem, session, contrato)
         print("Verificando se Ordem foi valorada.")
         if status_usuario == "EXEC VALO":
             print(f"Status da Ordem: {status_sistema}, {status_usuario}")
             print("Foi Salvo com sucesso!")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Salvo"
-            lista.save('lista.xlsx')
+            lista.save('sheets/lista.xlsx')
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -218,7 +217,7 @@ def pertencedor(contrato, session):
             print(f"Ordem: {ordem} não foi salva.")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Não"
-            lista.save('lista.xlsx')
+            lista.save('sheets/lista.xlsx')
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value

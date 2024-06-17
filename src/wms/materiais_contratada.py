@@ -1,4 +1,5 @@
 """Módulo de materiais contratada"""
+from typing import List
 import pywintypes
 from src.excel_tbs import load_worksheets
 from src.wms import lacre_material
@@ -115,7 +116,7 @@ def materiais_gb_itaquera(tb_materiais,
                           ultima_linha_material,
                           estoque,
                           session):
-    '''Contratada GB - MLN'''
+    """Contratada GB - MLN"""
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
         # Pega valor da célula 0
@@ -148,26 +149,26 @@ def materiais_gb_itaquera(tb_materiais,
                 n_material, "ELIMINADO", True
             )
 
-        if sap_material == '50000178':
-            # Remove DISPOSITIVO MED PLASTICO DN 20
-            tb_materiais.modifyCheckbox(
-                n_material, "ELIMINADO", True
-            )
-            tb_materiais.InsertRows(str(ultima_linha_material))
-            tb_materiais.modifyCell(
-                ultima_linha_material, "ETAPA", sap_etapa_material
-            )
-            # Adiciona DISPOSITIVO MED METAL DN 20.
-            tb_materiais.modifyCell(
-                ultima_linha_material, "MATERIAL", "50000021"
-            )
-            tb_materiais.modifyCell(
-                ultima_linha_material, "QUANT", "1"
-            )
-            tb_materiais.setCurrentCell(
-                ultima_linha_material, "QUANT"
-            )
-            ultima_linha_material = ultima_linha_material + 1
+        # if sap_material == '50000178':
+        #     # Remove DISPOSITIVO MED PLASTICO DN 20
+        #     tb_materiais.modifyCheckbox(
+        #         n_material, "ELIMINADO", True
+        #     )
+        #     tb_materiais.InsertRows(str(ultima_linha_material))
+        #     tb_materiais.modifyCell(
+        #         ultima_linha_material, "ETAPA", sap_etapa_material
+        #     )
+        #     # Adiciona DISPOSITIVO MED METAL DN 20.
+        #     tb_materiais.modifyCell(
+        #         ultima_linha_material, "MATERIAL", "50000021"
+        #     )
+        #     tb_materiais.modifyCell(
+        #         ultima_linha_material, "QUANT", "1"
+        #     )
+        #     tb_materiais.setCurrentCell(
+        #         ultima_linha_material, "QUANT"
+        #     )
+        #     ultima_linha_material = ultima_linha_material + 1
 
         # try:
         #     if sap_material == '10014709':
@@ -264,3 +265,17 @@ def materiais_contratada(tb_materiais, contrato, estoque, session):
                                   session)
         case _:
             return
+
+
+def lista_materiais() -> List[str]:
+    """Retorna lista de materiais marcados como contratada."""
+    contratada_list = [
+        '50000017', '50000333', '30006741', '30002033',
+        '30001023', '30004491', '30000732', '30001363',
+        '50000318', '30005788', '30002832', '30002842',
+        '30003288', '50000179', '10006345', '10006348',
+        '50000180', '30003520', '30013576', '30003675',
+        '30003758', '30007217', '50000307', '50000150',
+        '50000076', '30000880', '30007737', '30012631',
+    ]
+    return contratada_list

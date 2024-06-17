@@ -1,12 +1,12 @@
 # hidrometro_material.py
-'''Módulo dos materiais de família Corte/Relig.'''
+"""Módulo dos materiais de família Corte/Relig."""
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import lacre_material
 
 
 class CorteRestabMaterial:
-    '''Classe de materiais de religação e supressão.'''
+    """Classe de materiais de religação e supressão."""
 
     def __init__(self,
                  hidro,
@@ -30,7 +30,7 @@ class CorteRestabMaterial:
         self.session = session
 
     def receita_religacao(self):
-        '''Padrão de materiais na classe Religação.'''
+        """Padrão de materiais na classe Religação."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         lacre_estoque = self.estoque[

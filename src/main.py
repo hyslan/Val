@@ -69,7 +69,7 @@ def main():
             f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
 
-        if not args.password == os.environ["pwd"]:
+        if not args.password == os.environ["PWD"]:
             console.print(
                 "Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
             you_cant_pass('video')
