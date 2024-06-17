@@ -28,6 +28,7 @@ class CorteRestabMaterial:
         self.contrato = contrato
         self.estoque = estoque
         self.session = session
+        self.list_contratada = materiais_contratada.lista_materiais()
 
     def receita_religacao(self):
         """Padrão de materiais na classe Religação."""
@@ -59,6 +60,7 @@ class CorteRestabMaterial:
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
                 # Retirar hidro vinculado em religação.
                 if sap_material in ('50000108', '50000530'):
@@ -74,6 +76,15 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
+                if sap_material not in self.list_contratada \
+                        and not sap_material == '500001070':
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
 
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
@@ -86,6 +97,9 @@ class CorteRestabMaterial:
 
     def receita_supressao(self):
         """Padrão de materiais para supressão."""
+        materiais_receita = [
+            '30029526', '10014709', '30003832',
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         if sap_material is not None:
@@ -97,12 +111,23 @@ class CorteRestabMaterial:
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
                 material_lista.append(sap_material)
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+
                 if sap_material == '30029526' \
                         and self.contrato == "4600041302":
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
                 if sap_material in ('30001848', '30007034'):
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if sap_material not in materiais_receita \
+                        and sap_material not in self.list_contratada:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if material_estoque.empty:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

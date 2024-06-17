@@ -105,7 +105,6 @@ class CavaleteMaterial:
                     )
                 if sap_material not in materiais_receita \
                         and sap_material not in list_contratada:
-                    print("\nif material receita")
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
