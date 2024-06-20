@@ -28,18 +28,24 @@ class HidrometroMaterial:
         self.contrato = contrato
         self.estoque = estoque
         self.session = session
+        self.list_contratada = materiais_contratada.lista_materiais()
 
     def receita_hidrometro(self):
         """Padrão de materiais na classe Hidrômetro."""
         hidro_y = 'Y'
         hidro_a = 'A'
+        hidro_b = 'B'
+        hidro_d = 'D'
         hidro_f = 'F'
+        hidro_g = 'G'
+        hidro_j = 'J'
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         num_material_linhas = self.tb_materiais.RowCount
         ultima_linha_material = 0
         if self.hidro is None:
             print("Hidro não informado.")
+            exit()
         else:
             hidro_instalado = self.hidro
             if sap_material is None:
@@ -52,6 +58,8 @@ class HidrometroMaterial:
                         cod_hidro_instalado = '50000108'
                     if hidro_instalado.startswith(hidro_a):
                         cod_hidro_instalado = '50000530'
+                    if hidro_instalado.startswith(hidro_b):
+                        cod_hidro_instalado = '50000387'
                     if hidro_instalado.startswith(hidro_f):
                         cod_hidro_instalado = '50000025'
                     # Colocar lacre.
@@ -91,8 +99,6 @@ class HidrometroMaterial:
                         )
                         ultima_linha_material = ultima_linha_material + 1
             else:
-                print("else")
-
                 # Número da Row do Grid Materiais do SAP
                 ultima_linha_material = num_material_linhas
                 sap_hidro = []
@@ -104,6 +110,8 @@ class HidrometroMaterial:
                     cod_hidro_instalado = '50000108'
                 if hidro_instalado.startswith(hidro_a):
                     cod_hidro_instalado = '50000530'
+                if hidro_instalado.startswith(hidro_b):
+                    cod_hidro_instalado = '50000387'
                 if hidro_instalado.startswith(hidro_f):
                     cod_hidro_instalado = '50000025'
 
@@ -141,12 +149,12 @@ class HidrometroMaterial:
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
-                print("for do grid")
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
                 if sap_material == ('50000328', '50000263', '50000350',
                                     '50000064', '50000260', '50000261',
@@ -238,6 +246,17 @@ class HidrometroMaterial:
                             ultima_linha_material = ultima_linha_material + 1
                             hidro_adicionado = True  # Hidrômetro foi adicionado
 
+                # Only Hidro and Lacre.
+                if sap_material not in (cod_hidro_instalado, '50001070') \
+                        and sap_material not in self.list_contratada:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                # Material not in stock.
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
             if self.hidro is not None \
                     and hidro_adicionado is False and not hidro_estoque.empty:
                 print(
@@ -264,7 +283,7 @@ class HidrometroMaterial:
             self.estoque, self.session)
 
     def receita_desinclinado_hidrometro(self):
-        '''Padrão de materiais na classe Hidrômetro Desinclinado.'''
+        """Padrão de materiais na classe Hidrômetro Desinclinado."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         lacre_estoque = self.estoque[self.estoque['Material']
@@ -285,6 +304,28 @@ class HidrometroMaterial:
                 ultima_linha_material, "QUANT"
             )
             ultima_linha_material = ultima_linha_material + 1
+
+        else:
+            num_material_linhas = self.tb_materiais.RowCount
+            # Loop do Grid Materiais.
+            for n_material in range(num_material_linhas):
+                # Pega valor da célula 0
+                sap_material = self.tb_materiais.GetCellValue(
+                    n_material, "MATERIAL")
+                sap_etapa_material = self.tb_materiais.GetCellValue(
+                    n_material, "ETAPA")
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+
+                if not sap_material == '50001070' \
+                        and sap_material not in self.list_contratada:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                # Material not in stock.
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
 
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
