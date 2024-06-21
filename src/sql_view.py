@@ -171,3 +171,15 @@ class Tabela:
         df = df.to_string(index=False)
         cnn.close()
         return df
+
+    def get_new_hidro(self):
+        """Get new hidro from SQL."""
+        engine = sa.create_engine(self.connection_url)
+        cnn = engine.connect()
+        sql_command = ("SELECT HidrometroInstalado FROM "
+                       "[LESTE_AD\\CargaDeDados].tb_Fato_BexecHidros "
+                       f"WHERE NumeroOS = '{self.ordem}'")
+        df = pd.read_sql(sql_command, cnn)
+        df = df.to_string(index=False)
+        cnn.close()
+        return df
