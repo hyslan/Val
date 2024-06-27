@@ -55,6 +55,8 @@ def val(pendentes_array, session, contrato, revalorar):
     limite_execucoes = len(pendentes_array)
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
+    if limite_execucoes == 0:
+        return None, True
 
     with console.status("[bold blue]Trabalhando..."):
         # Variáveis de Status da Ordem

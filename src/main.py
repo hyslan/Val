@@ -25,6 +25,7 @@ from src.sapador import down_sap
 
 def main():
     """Sistema principal da Val e inicializador do programa"""
+    # Argumentos
     parser = argparse.ArgumentParser(prog="Sistema Val",
                                      description="Sistema de valoração automática não assistida.",
                                      epilog="Author: Hyslan Silva Cruz")
@@ -37,7 +38,7 @@ def main():
     parser.add_argument('-c', '--contrato',
                         type=str, help="Escolha o Contrato a ser utilizado.")
     parser.add_argument('-f', '--family', default='hidrometro',
-                        type=str, help="Escolha a Família a ser utilizada.")
+                        type=str, nargs='+', help="Escolha a Família a ser utilizada.")
     parser.add_argument('-p', '--password',
                         type=str, help="Digite a senha para iniciar o programa.")
     parser.add_argument('-r', '--revalorar', default=False,
@@ -45,6 +46,7 @@ def main():
 
     args = parser.parse_args()
     options = args.option
+    print("Famílias selecionadas:", args.family)
     validador = False
     hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
     console = Console()
@@ -140,7 +142,7 @@ def main():
                     ordem, validador = val(
                         planilha, session, args.contrato, args.revalorar)
                 case "9":
-                    pendentes = sql_view.Tabela("", "_")
+                    pendentes = sql_view.Tabela("", "")
                     pendentes_array = pendentes.familia(args.family, args.contrato)
                     ordem, validador = val(
                         pendentes_array, session, args.contrato, args.revalorar
