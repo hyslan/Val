@@ -9,6 +9,7 @@ import datetime
 import getpass
 import pywintypes
 import numpy as np
+import rich.console
 from dotenv import load_dotenv
 from rich.console import Console
 from src.sap import Sap
@@ -23,12 +24,13 @@ from src.osn3 import pertencedor
 from src.sapador import down_sap
 
 
-def main():
+def main() -> None:
     """Sistema principal da Val e inicializador do programa"""
     # Argumentos
-    parser = argparse.ArgumentParser(prog="Sistema Val",
-                                     description="Sistema de valoração automática não assistida.",
-                                     epilog="Author: Hyslan Silva Cruz")
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(prog="Sistema Val",
+                                                              description="Sistema de valoração automática não "
+                                                                          "assistida.",
+                                                              epilog="Author: Hyslan Silva Cruz")
     parser.add_argument('-s', '--session',
                         type=int, default=0,
                         help='Número da sessão do SAP a ser utilizada.')
@@ -44,12 +46,12 @@ def main():
     parser.add_argument('-r', '--revalorar', default=False,
                         type=bool, help="Revalorar uma Ordem.")
 
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
     options = args.option
     print("Famílias selecionadas:", args.family)
-    validador = False
-    hora_parada = datetime.time(21, 50)  # Ponto de parada às 21h50min
-    console = Console()
+    validador: bool = False
+    hora_parada: datetime.time = datetime.time(21, 50)  # Ponto de parada às 21h50min
+    console: rich.console.Console = Console()
     sap = Sap()
     # Avatar.
     val_avatar()
