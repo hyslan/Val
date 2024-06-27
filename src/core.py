@@ -53,6 +53,8 @@ def val(pendentes_array, session, contrato, revalorar):
         return
 
     limite_execucoes = len(pendentes_array)
+    if limite_execucoes == 0:
+        return None, True
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
 
