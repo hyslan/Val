@@ -45,22 +45,22 @@ class HidrometroMaterial:
 
     def _hidro_type(self):
         """Tipo de hidrômetro."""
-        hidro_y = 'Y'
-        hidro_a = 'A'
-        hidro_b = 'B'
-        hidro_f = 'F'
         self.hidro = self._hidro.upper()
         if self._hidro is not None:
-            if self._hidro.startswith(hidro_y):
+            if self._hidro.startswith('Y'):
                 return '50000108'
-            if self._hidro.startswith(hidro_a):
+            if self._hidro.startswith('A'):
                 # Hidro ultrassônico SAGA
                 if self._hidro[3] == 'G':
                     return '50000387'
                 return '50000530'
-            if self._hidro.startswith(hidro_b):
+            if self._hidro.startswith('B'):
                 return '50000387'
-            if self._hidro.startswith(hidro_f):
+            if self._hidro.startswith('D'):
+                # Hidro Fabricante ZENER
+                if self._hidro[3] == 'Z':
+                    return '50000221'
+            if self._hidro.startswith('F'):
                 return '50000025'
         return None
 
