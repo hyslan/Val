@@ -73,7 +73,7 @@ class HidrometroMaterial:
         self.tb_materiais.InsertRows(
             str(ultima_linha_material))
         self.tb_materiais.modifyCell(
-            ultima_linha_material, "ETAPA", etapa[0])
+            ultima_linha_material, "ETAPA", etapa) # Etapa do serviço principal Hidrometro
         self.tb_materiais.modifyCell(
             ultima_linha_material, "MATERIAL", cod_hidro_instalado)
         self.tb_materiais.modifyCell(
@@ -136,7 +136,7 @@ class HidrometroMaterial:
         if not hidro_estoque.empty \
                 and cod_hidro_instalado not in sap_hidro[:, 0]:
             ultima_linha_material = self._set_hidro(
-                cod_hidro_instalado, ultima_linha_material, hidro_estoque)
+                ultima_linha_material, self.operacao, cod_hidro_instalado)
 
         return True, ultima_linha_material
 
