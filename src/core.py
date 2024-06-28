@@ -238,20 +238,22 @@ def val(pendentes_array, session, contrato, revalorar):
                 match descricao:
                     case 'Falha catastrófica':
                         console.print("[bold red]SAPGUI has crashed. :fire:")
-                        # rollback(sap)
+                        rollback()
+                        continue
                     case 'Falha na chamada de procedimento remoto.':
                         console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                        # rollback(sap)
+                        rollback()
+                        continue
                     case 'O servidor RPC não está disponível.':
                         console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
                         rollback()
+                        continue
                     case _:
                         console.print(
                             "[bold red underline]Aconteceu um Erro com a Val!"
                             + f"\n Fatal Error: {errocritico}")
                         console.print_exception()
                         oxe()
-                        sys.exit()
 
         validador = True
 

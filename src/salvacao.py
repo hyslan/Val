@@ -64,7 +64,6 @@ def salvar(ordem, qtd_ordem, contrato, session):
                     # Group 1 retira string 'material'
                     codigo_material = correspondencias.group(1)
                     print(codigo_material)
-                    sys.exit()
 
                 print(f"Ordem: {ordem} não foi salva.")
                 ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
