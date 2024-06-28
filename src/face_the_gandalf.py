@@ -1,23 +1,28 @@
 """Módulo de gif de bloqueio do sistema"""
 import time
+import tkinter
 import tkinter as tk
+from typing import Generator, Any
+
 from PIL import Image, ImageTk
 import imageio
 import pygame
 import cv2
 import simpleaudio as sa
+from PIL.ImageTk import PhotoImage
 from pydub import AudioSegment
 import threading
 
+from simpleaudio import PlayObject
 
 stop_audio = False
 
 
-def play_audio(audio_path):
-    audio = AudioSegment.from_file(audio_path, format="m4a")
-    play_obj = sa.play_buffer(audio.raw_data, num_channels=audio.channels,
-                              bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate
-                              )
+def play_audio(audio_path) -> None:
+    audio: AudioSegment | Generator[Any, Any, None] = AudioSegment.from_file(audio_path, format="m4a")
+    play_obj: PlayObject = sa.play_buffer(audio.raw_data, num_channels=audio.channels,
+                                          bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate
+                                          )
     while play_obj.is_playing() and not stop_audio:
         time.sleep(0.1)
     play_obj.stop()
@@ -25,8 +30,8 @@ def play_audio(audio_path):
 
 def video():
     global stop_audio
-    video_path = 'media/gandalf.mp4'
-    audio_path = 'media/gandalf_audio.mp3'
+    video_path: str = 'media/gandalf.mp4'
+    audio_path: str = 'media/gandalf_audio.mp3'
     # Create object
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -34,15 +39,15 @@ def video():
         exit()
 
     # Get the frame rate
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    frame_delay = 1 / fps
+    fps: float = cap.get(cv2.CAP_PROP_FPS)
+    frame_delay: float = 1 / fps
 
     # Create thread to play audio
-    audio_thread = threading.Thread(target=play_audio, args=(audio_path,))
+    audio_thread: threading.Thread = threading.Thread(target=play_audio, args=(audio_path,))
     audio_thread.start()
 
     while cap.isOpened():
-        start_time = time.time()
+        start_time: float = time.time()
         # Capture frame-by-frame
         ret, frame = cap.read()
         if not ret:
@@ -68,23 +73,23 @@ def video():
 
 
 def gif():
-    root = tk.Tk()
+    root: tkinter.Tk = tk.Tk()
 
     # Configuração do GIF
-    gif_path = 'media/gandalf.gif'
-    gif = imageio.get_reader(gif_path)
-    frame_cnt = gif.get_length()
-    frames = [ImageTk.PhotoImage(Image.fromarray(gif.get_data(i)))
-              for i in range(frame_cnt)]
+    gif_path: str = 'media/gandalf.gif'
+    gif_reader: imageio.core.Format.Reader = imageio.get_reader(gif_path)
+    frame_cnt: int = gif_reader.get_length()
+    frames: list[PhotoImage] = [ImageTk.PhotoImage(Image.fromarray(gif_reader.get_data(i)))
+                                for i in range(frame_cnt)]
 
     # Configuração do áudio
     pygame.mixer.init()
-    audio_path = 'media/gandalf_shallnotpass.mp3'
+    audio_path: str = 'media/gandalf_shallnotpass.mp3'
     pygame.mixer.music.load(audio_path)
 
     def update(ind):
         """Update dos frames"""
-        frame = frames[ind]
+        frame: PhotoImage = frames[ind]
         label.configure(image=frame)
         ind += 1
 
@@ -97,7 +102,7 @@ def gif():
 
         root.after(100, update, ind)
 
-    label = tk.Label(root, text="Você não vai passar!",
+    label: tk.Label = tk.Label(root, text="Você não vai passar!",
                      background="black"
                      )
     label.pack()
@@ -113,4 +118,3 @@ def you_cant_pass(mode):
         gif()
     if mode == 'video':
         video()
-

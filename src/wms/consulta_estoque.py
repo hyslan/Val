@@ -1,5 +1,4 @@
 """Módulo de consulta estoque de materiais"""
-import subprocess
 import time
 import os
 import xlwings as xw
@@ -33,7 +32,7 @@ def estoque(session, sessions, contrato):
                               )
     materiais = materiais.dropna()
     materiais['Material'] = materiais['Material'].astype(int).astype(str)
-    sessao = sap.Sap()
+    sessao = sap
     con = sessao.listar_conexoes()
     total_sessoes = sessao.contar_sessoes()
     if not total_sessoes == 6:

@@ -10,7 +10,7 @@ from rich.panel import Panel
 
 from src.sapador import down_sap
 from src import sql_view
-from src.sap import Sap
+from src import sap
 from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
 from src.pagador import precificador
@@ -21,7 +21,7 @@ from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
 
-def rollback(sap) -> None:
+def rollback() -> None:
     try:
         sap.encerrar_sap()
     except:
@@ -33,7 +33,6 @@ def rollback(sap) -> None:
 def val(pendentes_array, session, contrato, revalorar):
     """Sistema Val."""
     console = Console()
-    sap = Sap()
     transacao = Transacao(contrato, "100", session)
 
     try:
@@ -245,7 +244,7 @@ def val(pendentes_array, session, contrato, revalorar):
                         # rollback(sap)
                     case 'O servidor RPC não está disponível.':
                         console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                        rollback(sap)
+                        rollback()
                     case _:
                         console.print(
                             "[bold red underline]Aconteceu um Erro com a Val!"

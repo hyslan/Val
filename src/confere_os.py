@@ -5,12 +5,11 @@ import pythoncom
 import win32com.client as win32
 import pywintypes
 from rich.console import Console
-from src.sap import Sap
+from src import sap
 
 # Adicionando um Lock
 lock = threading.Lock()
 console = Console()
-sap = Sap()
 
 
 def consulta_os(n_os, session, contrato):
@@ -25,7 +24,6 @@ def consulta_os(n_os, session, contrato):
     hidro = None
     relig = None
     corte = None
-
 
     def zsbpm020(session_id):
         """Transact 020"""
@@ -98,28 +96,28 @@ def consulta_os(n_os, session, contrato):
                 n_etapa, "ZZTSE"
             )
             if tipo_tse in (
-                '253000',
-                '254000',
-                '255000',
-                '262000',
-                '263000',
-                '265000',
-                '266000',
-                '268000',
-                '269000',
-                '280000',
-                '284500',
-                '286000',
-                '502000',
-                '505000',
-                '508000',
-                '561000',
-                '565000',
-                '569000',
-                '581000',
-                '539000',
-                '539000',
-                '585000',
+                    '253000',
+                    '254000',
+                    '255000',
+                    '262000',
+                    '263000',
+                    '265000',
+                    '266000',
+                    '268000',
+                    '269000',
+                    '280000',
+                    '284500',
+                    '286000',
+                    '502000',
+                    '505000',
+                    '508000',
+                    '561000',
+                    '565000',
+                    '569000',
+                    '581000',
+                    '539000',
+                    '539000',
+                    '585000',
             ):
                 # Posição da Rede
                 posicao_rede = consulta.GetCellValue(n_etapa, "ZZPOSICAO_REDE")
@@ -132,16 +130,16 @@ def consulta_os(n_os, session, contrato):
                 n_etapa, "ZZTSE"
             )
             if tipo_tse in (
-                '502000',
-                '505000',
-                '508000',
-                '561000',
-                '565000',
-                '569000',
-                '581000',
-                '539000',
-                '539000',
-                '585000',
+                    '502000',
+                    '505000',
+                    '508000',
+                    '561000',
+                    '565000',
+                    '569000',
+                    '581000',
+                    '539000',
+                    '539000',
+                    '585000',
             ):
                 # Profundidade
                 profundidade = consulta.GetCellValue(n_etapa, "ZZPROFUNDIDADE")

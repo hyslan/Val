@@ -6,16 +6,15 @@ import pythoncom
 import pywintypes
 import win32com.client as win32
 from rich.console import Console
-from src.sap import Sap
+from src import sap
 
 # Adicionando um Lock
 lock = threading.Lock()
-sap = Sap()
 console = Console()
 
 
-class Transacao():
-    '''Classe operadora da transação 216'''
+class Transacao:
+    """Classe operadora da transação 216"""
 
     def __init__(self, contrato,
                  municipio, session) -> None:

@@ -4,15 +4,14 @@
 # Bibliotecas
 import argparse
 import os
-import time
 import datetime
-import getpass
 import pywintypes
 import numpy as np
 import rich.console
+import win32com.client
 from dotenv import load_dotenv
 from rich.console import Console
-from src.sap import Sap
+import src.sap as sap
 from src import sql_view
 from src.core import val
 from src.avatar import val_avatar
@@ -47,12 +46,11 @@ def main() -> None:
                         type=bool, help="Revalorar uma Ordem.")
 
     args: argparse.Namespace = parser.parse_args()
-    options = args.option
+    options: str = args.option
     print("Famílias selecionadas:", args.family)
     validador: bool = False
     hora_parada: datetime.time = datetime.time(21, 50)  # Ponto de parada às 21h50min
     console: rich.console.Console = Console()
-    sap = Sap()
     # Avatar.
     val_avatar()
 
@@ -60,8 +58,9 @@ def main() -> None:
         console.print(
             "\n[bold blue underline]Sistema Val[/bold blue underline] :smiley:", justify='full')
         # Obtém a hora atual
-        hora_atual = datetime.datetime.now().time()
-        hora = hora_atual.hour
+        hora_atual: datetime.time = datetime.datetime.now().time()
+        hora: int = hora_atual.hour
+        saudacao: str
         if hora < 12:
             saudacao = "Bom dia!"
         elif hora < 18:
@@ -80,7 +79,7 @@ def main() -> None:
             return
 
         try:
-            session = sap.escolher_sessao(args.session)
+            session: win32com.client.CDispatch = sap.escolher_sessao(args.session)
         # pylint: disable=E1101
         except pywintypes.com_error:
             console.print("[bold cyan] Ops! o SAP Gui não está aberto.")

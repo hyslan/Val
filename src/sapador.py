@@ -2,42 +2,48 @@
 import time
 import os
 import subprocess
+from typing import Callable, Literal
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv
 
 
-def down_sap():
+def down_sap() -> None:
     """Baixa o .tx do SAP"""
-    url = 'http://portalprdci.ti.sabesp.com.br:50900/irj/portal/sabesp'
-    s = Service(
+    load_dotenv()
+    url: str = os.environ["URL"]
+    s: Service = Service(
         'src/chromedriver.exe')
-    opt = Options()
+    opt: Options = Options()
     opt.add_argument('--headless=new')
     opt.add_argument('--allow-running-insecure-content')
     opt.add_argument('--ignore-certificate-errors')
     opt.add_argument(
-        '--unsafely-treat-insecure-origin-as-secure=http://portalprdci.ti.sabesp.com.br:50900/irj/portal/sabesp')
+        f'--unsafely-treat-insecure-origin-as-secure={os.environ["URL"]}')
     opt.add_experimental_option('prefs', {
         "download.default_directory": os.getcwd() + "\\src",
         "download.prompt_for_download": False,
         "download.directory_upgrade": True
 
     })
-    driver = webdriver.Chrome(service=s, options=opt)
+    driver: WebDriver = webdriver.Chrome(service=s, options=opt)
     # Navegar até a página de login
     driver.get(url)
-    wait = WebDriverWait(driver, 180)
+    wait: WebDriverWait = WebDriverWait(driver, 180)
     wait.until(
         EC.element_to_be_clickable((
             By.XPATH,
             '//div[@title="SiiS"]'
         ))
     )
-    btn_siis = driver.find_element(
+    btn_siis: WebElement = driver.find_element(
         By.XPATH,
         '//div[@title="SiiS"]'
     )
@@ -46,7 +52,7 @@ def down_sap():
     print("Arquivo baixado.")
     driver.quit()
     # Caminho para o arquivo "tx.sap"
-    caminho_arquivo = os.getcwd() + "\\src\\tx.sap"
+    caminho_arquivo: str = os.getcwd() + "\\src\\tx.sap"
 
     # Tenta executar o comando
     try:
@@ -62,16 +68,16 @@ def down_sap():
         print(f"Ocorreu um erro: {e}")
 
 
-def file_downloaded(filename):
+def file_downloaded(filename: str) -> Callable[[WebDriver], Literal[False] | bool]:
     """Verifica se o arquivo foi baixado completamente"""
-    def predicate(driver):
-        files = os.listdir(os.getcwd() + "\\src")
+    def predicate(driver: WebDriver) -> Literal[False] | bool:
+        files: list[str] = os.listdir(os.getcwd() + "\\src")
         return any(file.endswith(filename) for file in files)
 
     return predicate
 
 
-def is_process_running(process_name):
+def is_process_running(process_name: str):
     """Verifica se o processo está em execução"""
     try:
         subprocess.check_output(

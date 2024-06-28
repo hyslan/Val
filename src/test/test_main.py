@@ -31,13 +31,13 @@ class TestMain(unittest.TestCase):
     def test_estoque(self):
         '''Teste de estoque'''
         materiais = estoque(
-            sap.escolher_sessao(), sap.listar_sessoes(), ("4600041302", "344", "100"))
+            escolher_sessao(), listar_sessoes(), ("4600041302", "344", "100"))
 
     def test_consulta(self):
         """Consulta de OS no SAP
         """
         resultado = consulta_os(
-            "2400341804", sap.escolher_sessao(), ("4600041302", "344", "100"))
+            "2400341804", escolher_sessao(), ("4600041302", "344", "100"))
 
     def test_main_contratada(self):
         '''Test fuction of main module loop'''
@@ -49,24 +49,24 @@ class TestMain(unittest.TestCase):
 
     def test_sap(self):
         '''Test COM SapGui module'''
-        self.assertLogs(sap.listar_conexoes(), level='DEBUG')
-        sessions = sap.listar_sessoes()
+        self.assertLogs(listar_conexoes(), level='DEBUG')
+        sessions = listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
-        self.assertLogs(sap.contar_sessoes(), level='DEBUG')
-        self.assertLogs(sap.criar_sessao(sessions), level='DEBUG')
-        n = self.assertLogs(sap.escolher_sessao(), level='DEBUG')
+        self.assertLogs(contar_sessoes(), level='DEBUG')
+        self.assertLogs(criar_sessao(sessions), level='DEBUG')
+        n = self.assertLogs(escolher_sessao(), level='DEBUG')
         console.print([f"[italic]{n}"])
 
     def test_dicionario_un(self):
         '''Teste do dicionário com classe'''
-        gui = sap.escolher_sessao()
+        gui = escolher_sessao()
         seletor = Controlador("134000", None, None, None, 1,
                               None, "cavalete", None, None, gui)
         seletor.executar_processo()
 
     def test_transacao(self):
         '''teste da ZSBMM216'''
-        gui = sap.escolher_sessao()
+        gui = escolher_sessao()
         guia = Transacao("4600043760", "344", "100", gui)
         guia.run_transacao("1234")
 
@@ -101,7 +101,7 @@ class TestProcessarOperacao(unittest.TestCase):
     '''Testar classe poço'''
 
     def setUp(self):
-        gui = sap.escolher_sessao()
+        gui = escolher_sessao()
         self.objeto = Poco(
             etapa="2400145264",
             corte=None,
