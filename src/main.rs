@@ -24,7 +24,7 @@ fn main() {
     // Lista de contratos
     let contracts = [_ZCMLN, _NOVASPMLG, _ZIGURATEMLQ];
     Command::new("python")
-        .args([&"-m", "src.sap_connection"])
+        .args([&"-m", "src.charging_sessions"])
         .spawn()
         .expect("failed to execute process");
 

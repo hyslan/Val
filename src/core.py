@@ -3,6 +3,8 @@
 # pylint: disable=W0611
 import sys
 import time
+
+import numpy as np
 import pywintypes
 import rich.console
 import win32com.client
@@ -10,7 +12,7 @@ from pandas import DataFrame
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
-
+from src.sap_connection import populate_sessions
 from src.sapador import down_sap
 from src import sql_view
 from src import sap
@@ -24,16 +26,18 @@ from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
 
-def rollback() -> None:
+def rollback(n: int) -> None:
     try:
         sap.encerrar_sap()
     except:
         print("SAPLOGON já foi encerrado.")
     down_sap()
+    populate_sessions()
+    sap.escolher_sessao(n)
     print("Reiniciando programa")
 
 
-def val(pendentes_array, session, contrato, revalorar):
+def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool, session_n: int):
     """Sistema Val."""
     console: rich.console.Console = Console()
     transacao: Transacao = Transacao(contrato, "100", session)
@@ -237,26 +241,29 @@ def val(pendentes_array, session, contrato, revalorar):
             # pylint: disable=E1101
             except Exception as errocritico:
                 print(f"args do errocritico: {errocritico}")
-                _, descricao, _, _ = errocritico.args
-                match descricao:
-                    case 'Falha catastrófica':
-                        console.print("[bold red]SAPGUI has crashed. :fire:")
-                        rollback()
-                        continue
-                    case 'Falha na chamada de procedimento remoto.':
-                        console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                        rollback()
-                        continue
-                    case 'O servidor RPC não está disponível.':
-                        console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                        rollback()
-                        continue
-                    case _:
-                        console.print(
-                            "[bold red underline]Aconteceu um Erro com a Val!"
-                            + f"\n Fatal Error: {errocritico}")
-                        console.print_exception()
-                        oxe()
+                try:
+                    _, descricao, _, _ = errocritico.args
+                    match descricao:
+                        case 'Falha catastrófica':
+                            console.print("[bold red]SAPGUI has crashed. :fire:")
+                            rollback(session_n)
+                            continue
+                        case 'Falha na chamada de procedimento remoto.':
+                            console.print("[bold red]SAPGUI has been finished strangely. :fire:")
+                            rollback(session_n)
+                            continue
+                        case 'O servidor RPC não está disponível.':
+                            console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
+                            rollback(session_n)
+                            continue
+                        case _:
+                            console.print(
+                                "[bold red underline]Aconteceu um Erro com a Val!"
+                                + f"\n Fatal Error: {errocritico}")
+                            console.print_exception()
+                            oxe()
+                except:
+                    console.print(errocritico)
 
         validador = True
 

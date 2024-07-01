@@ -32,9 +32,10 @@ class RedeAguaMaterial:
         self.df_materiais = df_materiais
         self.posicao_rede = posicao_rede
         self.session = session
+        self.list_contratada = materiais_contratada.lista_materiais()
 
     def materiais_vigentes(self):
-        '''Materiais com estoque.'''
+        """Materiais com estoque."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES  FÊMEA DN 20
