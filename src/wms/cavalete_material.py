@@ -42,7 +42,7 @@ class CavaleteMaterial:
             '30001346', '30004643', '30006747', '50000159',
             '50000472', '30001848', '30007896'
         ]
-        materiais_lancadados = []
+        materiais_lancados = []
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         lacre_estoque = self.estoque[self.estoque['Material'] == '50001070']
@@ -93,7 +93,7 @@ class CavaleteMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                materiais_lancadados.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                materiais_lancados.append({"Material": sap_material, "Etapa": sap_etapa_material})
                 material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")

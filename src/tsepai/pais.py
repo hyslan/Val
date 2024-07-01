@@ -238,7 +238,7 @@ class Investimento(Pai):
                                                  codigo_despesa, identificador)
 
     def tra(self):
-        '''Troca de Ramal de Água (RB) - TSE 284000'''
+        """Troca de Ramal de Água (RB) - TSE 284000"""
         return self.processar_servico_investimento("tra", CODIGO_INVESTIMENTO)
 
 

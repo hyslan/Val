@@ -1,9 +1,11 @@
 # hidrometro_material.py
 """Módulo dos materiais de família Rede de Água."""
+from rich.console import Console
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
 from src.wms import localiza_material
 
+console: Console = Console()
 
 class RedeAguaMaterial:
     """Classe de materiais de CRA."""
@@ -33,6 +35,7 @@ class RedeAguaMaterial:
         self.posicao_rede = posicao_rede
         self.session = session
         self.list_contratada = materiais_contratada.lista_materiais()
+        self.usr = session.findById("wnd[0]/usr")
 
     def materiais_vigentes(self):
         """Materiais com estoque."""
@@ -386,8 +389,34 @@ class RedeAguaMaterial:
                 self.tb_materiais, self.contrato,
                 self.estoque, self.session)
 
-    def receita_troca_de_conexao_de_ligacao_de_agua(self):
-        '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
+    def receita_tra(self):
+        """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
+        materiais_receita = [
+            '30007896', '50001070', '30001348',
+            '30006747', '50000021', '10014709',
+            # --- TE DE SERVIÇO INTERGRADO DN 20 OU 32 ---
+            '30008677',  # ART DN 100 P/ DE 32
+            '30000211',  # ART DN 100-DE 110 X 20
+            '30007034',  # ART DN 50 P/ DE 20
+            '30003467',  # ART DN 50 P/ D3 32
+            '30007235',  # ART DN 75 P/ DE 20
+            '30001683',  # ART DN 75 P/ DE 32
+            # --- TE DE SERVIÇO ELETROFUSÃO DN 20 OU 32 ---
+            '30000992',  # DE 110 X 20
+            '30003669',  # DE 160 X 20
+            '30007240',  # DE 225 X 20
+            '30007245',  # DE 90 X 32
+            '30003672',  # DE 90 X 20
+            '30007195',  # TE PP P/ TUBO PEAD DE 32 X 32 MM
+            # --- COLAR TOMADA ACO INOX DNR20 ---
+            '30004701',  # DN 200 A 300
+            '30004702',  # DN 50 A 150
+            '30004703',  # DN 200 A 300
+            # --- COLAR TOMADA FERRO CINTA INOX ---
+            '30002202',  # DN 50 A 150 X DNR25
+            '30002204',  # DN 100 X DNR50
+            '30001080',  # DN 400 X DNR20
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
@@ -430,7 +459,7 @@ class RedeAguaMaterial:
                 )
                 ultima_linha_material = ultima_linha_material + 1
         else:
-            material_lista = []
+            material_lista: list[dict[str, str]] = []
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             # Número da Row do Grid Materiais do SAP
             n_material = 0
@@ -441,9 +470,24 @@ class RedeAguaMaterial:
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                material_lista.append(sap_material)
+                sap_etapa_material = self.tb_materiais.GetCellValue(
+                    n_material, "ETAPA")
+                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
-            if '30002394' not in material_lista \
+                console.print(f"\n{material_estoque}", style="italic green")
+
+                if sap_material not in materiais_receita \
+                    and sap_material not in self.list_contratada:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
+            if '30002394' not in [i["Material"] for i in material_lista] \
                     and not con_met_femea_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
@@ -461,7 +505,7 @@ class RedeAguaMaterial:
                 )
                 ultima_linha_material = ultima_linha_material + 1
 
-            if '30006747' not in material_lista \
+            if '30006747' not in [i["Material"] for i in material_lista] \
                     and not reg_met_predial_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
