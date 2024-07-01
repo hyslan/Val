@@ -26,15 +26,16 @@ from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
 
-def rollback(n: int) -> None:
+def rollback(n: int) -> win32com.client.CDispatch:
     try:
         sap.encerrar_sap()
     except:
         print("SAPLOGON já foi encerrado.")
     down_sap()
     populate_sessions()
-    sap.escolher_sessao(n)
+    session: win32com.client.CDispatch = sap.escolher_sessao(n)
     print("Reiniciando programa")
+    return session
 
 
 def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool, session_n: int):
@@ -246,15 +247,15 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool, se
                     match descricao:
                         case 'Falha catastrófica':
                             console.print("[bold red]SAPGUI has crashed. :fire:")
-                            rollback(session_n)
+                            session = rollback(session_n)
                             continue
                         case 'Falha na chamada de procedimento remoto.':
                             console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                            rollback(session_n)
+                            session = rollback(session_n)
                             continue
                         case 'O servidor RPC não está disponível.':
                             console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                            rollback(session_n)
+                            session = rollback(session_n)
                             continue
                         case _:
                             console.print(
