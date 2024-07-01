@@ -146,6 +146,12 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = 'TROCA POR UMA E RELIGADA'
             break
 
+        # SUBSTITUIDA TAMPA DE CAIXA UMA
+        # Não definido o que fazer.
+        if sap_tse == '155000':
+            tse_proibida = 'SUBSTITUIDA TAMPA DE CAIXA UMA'
+            break
+
         if sap_tse in tb_tse_un:  # Verifica se está no Conjunto Unitários
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária

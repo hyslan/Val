@@ -86,7 +86,7 @@ def main() -> None:
             console.print(
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
             down_sap()
-            session = sap.escolher_sessao(args.session)
+            session: win32com.client.CDispatch = sap.escolher_sessao(args.session)
 
         try:
             match options:
@@ -100,7 +100,7 @@ def main() -> None:
                     pertencedor(args.contrato, session)
                     validador = True
                 case "4":
-                    pendentes_list = extract_from_sql(args.contrato)
+                    pendentes_list: np.ndarray = extract_from_sql(args.contrato)
                     ordem, validador = val(
                         pendentes_list, session, args.contrato, args.revalorar)
                 case "5":
@@ -111,7 +111,7 @@ def main() -> None:
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
                     lista_tse = tse_expec.split(', ')
                     pendentes = sql_view.Tabela(ordem="", cod_tse=lista_tse)
-                    pendentes_array = pendentes.tse_escolhida(args.contrato)
+                    pendentes_array: np.ndarray = pendentes.tse_escolhida(args.contrato)
                     ordem, validador = val(
                         pendentes_array, session, args.contrato, args.revalorar)
                 case "6":
@@ -121,7 +121,7 @@ def main() -> None:
                     tse_expec = input(
                         "- Val: Digite a TSE expecífica, por favor.\n")
                     pendentes = sql_view.Tabela(ordem="", cod_tse=tse_expec)
-                    pendentes_array = pendentes.tse_expecifica(args.contrato)
+                    pendentes_array: np.ndarray = pendentes.tse_expecifica(args.contrato)
                     ordem, validador = val(
                         pendentes_array, session, args.contrato, args.revalorar)
                 case "7":
@@ -129,14 +129,14 @@ def main() -> None:
                         "- Val: Digite o Nº da Ordem, por favor.\n"
                     )
                     mun = input("Digite o Nº do Município.\n")
-                    pendentes_array = np.array([[ordem_expec, mun]])
+                    pendentes_array: np.ndarray = np.array([[ordem_expec, mun]])
                     ordem, validador = val(
                         pendentes_array, session, args.contrato, args.revalorar
                     )
                 case "8":
                     ask = input("é csv?")
                     if ask == "s":
-                        planilha = pendentes_csv
+                        planilha = pendentes_csv()
                     else:
                         planilha = pendentes_excel()
 

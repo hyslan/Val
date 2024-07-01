@@ -4,6 +4,9 @@
 import sys
 import time
 import pywintypes
+import rich.console
+import win32com.client
+from pandas import DataFrame
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
@@ -32,11 +35,11 @@ def rollback() -> None:
 
 def val(pendentes_array, session, contrato, revalorar):
     """Sistema Val."""
-    console = Console()
-    transacao = Transacao(contrato, "100", session)
+    console: rich.console.Console = Console()
+    transacao: Transacao = Transacao(contrato, "100", session)
 
     try:
-        sessions = sap.listar_sessoes()
+        sessions: win32com.client.CDispatch = sap.listar_sessoes()
     # pylint: disable=E1101
     except pywintypes.com_error:
         return
@@ -44,10 +47,10 @@ def val(pendentes_array, session, contrato, revalorar):
     try:
         if not contrato == "4600043760":
             if not sessions.Count == 6:
-                new_session = sap.criar_sessao(sessions)
-                estoque_hj = estoque(new_session, sessions, contrato)
+                new_session: win32com.client.CDispatch = sap.criar_sessao(sessions)
+                estoque_hj: DataFrame = estoque(new_session, sessions, contrato)
             else:
-                estoque_hj = estoque(session, sessions, contrato)
+                estoque_hj: DataFrame = estoque(session, sessions, contrato)
     except:
         return
 
@@ -61,8 +64,8 @@ def val(pendentes_array, session, contrato, revalorar):
 
     with console.status("[bold blue]Trabalhando..."):
         # Variáveis de Status da Ordem
-        valorada = "EXEC VALO" or "NEXE VALO"
-        fechada = "LIB"
+        valorada: str = "EXEC VALO" or "NEXE VALO"
+        fechada: str = "LIB"
         qtd_ordem = 0  # Contador de ordens pagas.
         # Loop para pagar as ordens
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):

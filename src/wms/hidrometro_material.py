@@ -1,5 +1,11 @@
 # hidrometro_material.py
-"""Módulo dos materiais de família Hidrômetro."""
+"""Módulo dos materiais de família de serviços relacionados a Hidrômetro.
+    Materiais obrigatórios:
+        * HIDRÔMETRO;
+        * LACRE;
+    @AUTHOR= HYSLAN SILVA CRUZ
+    @YEAR= 2023
+"""
 import numpy as np
 from src.wms import testa_material_sap
 from src.wms import materiais_contratada
@@ -44,15 +50,43 @@ class HidrometroMaterial:
             raise ValueError("Wrong type, need to be string.")
 
     def _hidro_type(self):
-        """Tipo de hidrômetro."""
+        """Tipo de hidrômetro e seu fabricante de acordo com a matrícula
+        em sua primeira leitura no campo hidrômetro instalado.
+        Fonte de Referência:
+        http://10.66.9.42/catalogomateriais/index.php/arquivos/pesquisa
+        """
         self.hidro = self._hidro.upper()
         if self._hidro is not None:
             if self._hidro.startswith('Y'):
+                # HIDROMETRO QN 0,75 M3/H (QMAX) CL B EQUIPADO SAIDA M-BUS
+                # FABRICANTE ITRON -> ANO LOTE: 2016
+                if self._hidro[3] == 'T':
+                    return '50000247'
                 return '50000108'
             if self._hidro.startswith('A'):
+                # HIDROMETRO ULTRASSONICO DN20-QN 1,5 MBUS OU PULSO
+                # FABRICANTE: HYDRUS
+                if self._hidro[3] == 'B':
+                    return '50000112'
                 # Hidro ultrassônico SAGA
                 if self._hidro[3] == 'G':
                     return '50000387'
+                # HIDROMETRO TAQUIMETRICO DN 20 - CLASSE B -QN 1.5 M3/H -> ANO LOTE: 2017
+                # HIDRÔMETRO VOLUMÉTRICO DN 20 - QN 1 5 ANTI SUPER IMA - VOLUMETRICO -> ANO LOTE: 2017
+                # HIDRÔMETRO DN20 - QN 1,5 - VOLUM - ANTI S.I- R.INCLINADO -> ANO LOTE: ATUAL
+                # FABRICANTE: LAO
+                if self._hidro[3] == 'L':
+                    # ANTIGO COD. SAP: '50000321'
+                    # ANTIGO COD. SAP: '50000326'
+                    return '50000530'
+                # HIDROMETRO TAQUIMETRICO DN 20 - QN 1,5M3/H - CL C INCL
+                # FABRICANTE: ELSTER
+                if self._hidro[3] == 'N':
+                    return '50000230'
+                # HIDROMETRO VOLUMETRICO QN 1,5 M3/H CL C PRE-EQUIPADO
+                # FABRICANTE: AQUADIS+
+                if self._hidro[3] == 'S':
+                    return '50000140'
                 return '50000530'
             if self._hidro.startswith('B'):
                 return '50000387'
@@ -65,10 +99,19 @@ class HidrometroMaterial:
         return None
 
     def _delete_row(self):
+        """This line of code is used to modify a checkbox in a table.
+        The 'modifyCheckbox' method is called on the 'tb_materiais' object.
+        The method takes three arguments:
+        1. The row of the cell, which is the current cell row in this case.
+        2. The name of the column, which is "ELIMINADO" in this case.
+        3. The new value for the checkbox, which is set to True in this case.
+        This effectively marks the current row as "eliminated" in the 'tb_materiais' table.
+        """
         self.tb_materiais.modifyCheckbox(
             self.tb_materiais.CurrentCellRow, "ELIMINADO", True)
 
     def _set_hidro(self, ultima_linha_material, etapa, cod_hidro_instalado):
+        """Set the correct hydrometer"""
         self.tb_materiais.SetCurrentCell(0, 'ETAPA')
         self.tb_materiais.InsertRows(
             str(ultima_linha_material))
@@ -84,6 +127,9 @@ class HidrometroMaterial:
         return ultima_linha_material
 
     def _search_hidro(self, cod_hidro_instalado, num_material_linhas, hidro_estoque):
+        """Search for the hydrometer in the SAP table.
+        If the hydrometer is not found, it is added to the table.
+        """
         ultima_linha_material = num_material_linhas
         sap_hidro = np.empty((0, 2), dtype=str)
         for n_material in range(num_material_linhas):
