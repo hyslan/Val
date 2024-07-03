@@ -1,4 +1,4 @@
-// #![windows_subsystem = "windows"]
+#![windows_subsystem = "windows"]
 
 use std::process::Command;
 use std::thread;
@@ -23,6 +23,8 @@ const FAMILY: [&str; 5]  = ["cavalete", "religacao", "supressao", "hidrometro", 
 fn main() {
     // Lista de contratos
     let contracts = [_ZCMLN, _NOVASPMLG, _ZIGURATEMLQ];
+    let mut session:u32 = 0;
+    let mut str_session: String = session.to_string();
     Command::new("python")
         .args([&"-m", "src.charging_sessions"])
         .spawn()
@@ -33,7 +35,7 @@ fn main() {
     for &contract in &contracts {
         let mut args = vec![
             "-m", "src.main",
-            "-s", "0",
+            "-s", str_session.as_str(),
             "-o", "9",
             "-c", contract,
             "-p", "alefafa",
@@ -50,6 +52,9 @@ fn main() {
             .spawn()
             .expect("failed to execute process");
 
+        session += 1;
+        str_session = session.to_string();
+        
         thread::sleep(Duration::from_secs(1));
     }
 }
