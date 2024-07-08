@@ -3,7 +3,6 @@
 # pylint: disable=W0611
 import sys
 import time
-
 import numpy as np
 import pywintypes
 import rich.console
@@ -33,6 +32,7 @@ def rollback(n: int) -> win32com.client.CDispatch:
         print("SAPLOGON já foi encerrado.")
     down_sap()
     populate_sessions()
+    time.sleep(20)
     session: win32com.client.CDispatch = sap.escolher_sessao(n)
     print("Reiniciando programa")
     return session
