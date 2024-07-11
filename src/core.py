@@ -247,16 +247,19 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool, se
                     match descricao:
                         case 'Falha catastrófica':
                             console.print("[bold red]SAPGUI has crashed. :fire:")
-                            session = rollback(session_n)
-                            continue
+                            # session = rollback(session_n)
+                            # continue
+                            break
                         case 'Falha na chamada de procedimento remoto.':
                             console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                            session = rollback(session_n)
-                            continue
+                            # session = rollback(session_n)
+                            # continue
+                            break
                         case 'O servidor RPC não está disponível.':
                             console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                            session = rollback(session_n)
-                            continue
+                            # session = rollback(session_n)
+                            # continue
+                            break
                         case _:
                             console.print(
                                 "[bold red underline]Aconteceu um Erro com a Val!"
