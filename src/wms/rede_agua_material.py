@@ -7,6 +7,7 @@ from src.wms import localiza_material
 
 console: Console = Console()
 
+
 class RedeAguaMaterial:
     """Classe de materiais de CRA."""
 
@@ -304,86 +305,152 @@ class RedeAguaMaterial:
                             ultima_linha_material = ultima_linha_material + 1
 
     def receita_reparo_de_rede_de_agua(self):
-        '''Padrão de materiais na classe CRA.'''
+        """Padrão de materiais na classe CRA."""
+        materiais_receita = [
+            '10014709',
+            # ABRACADEIRA FF -> TRIPARTIDA
+            '30008103',
+            '30002141',
+            '30001120',
+            '30004084',
+            '30002142',
+            '30000255',
+            '30004091',
+            '30001122',
+            # CAP ELETROFUSÃO
+            '30002352',
+            '30004405',
+            # CAP FF DUCTIL BOLSA
+            '30001055',
+            # CAP FF PARA PVC
+            '30002356',
+            '30000564',
+            # CAP PVC
+            '30004421',
+            # COLAR TOMADA
+            '30000287',
+            '30004701',
+            '30004702',
+            '30002202',
+            # COLARINHO
+            '30004732',
+            '30000249',
+            '30004556',
+            # CURVA 45 GR FF P/ PVC
+            '30005264',
+            '30005265',
+            '30005266',
+            # CURVA 45 GR PVC
+            '30005280',
+            '30005283',
+            '30005282',
+            # CURVA 90 GR FF P/ PVC
+            '30002714',
+            '30005330',
+            # CURVA 90GR FF BOLSAS
+            '30008324',
+            # EXTREMIDADE FF P FLG
+            '30005517',
+            '30005519',
+            # JUNTA FF BOL VAR DIA
+            '30008409',
+            '30005611',
+            # LUVA BIPARTIDA FF
+            '30005887',
+            '30001546',
+            '30005888',
+            '30002794',
+            '30005889',
+            '30002795',
+            '30005889',
+            '30005893',
+            # LUVA CORRER FF C/ BOLSAS
+            '30005906',
+            '30002803',
+            '30005917',
+            '30002809',
+            '30005919',
+            '30005920',
+            '30008431',
+            '30005924',
+            '30002812',
+            # LUVA CORRER PVC BB
+            '30008433',
+            '30001557',
+            # LUVA ELETROFUSÃO
+            '30002823',
+            '30005752',
+            '30002826',
+            # LUVA FF PARA PVC
+            '30005772',
+            '30005773',
+            # REDUÇÃO CONC ELETROFUSÃO
+            '30001590',
+            # REDUÇÃO FF PONTA BOLSA
+            '30006911',
+            # TE ELETROFUSÃO
+            '30008671',
+            # TE DE SELA ELETROFUSÃO
+            '30011078',
+            # TE DE SERVIÇO INTERGRADO ARTICULADO
+            '30000211',
+            '30007034',
+            '30007235',
+            # TE FF DUCTIL C/ BOLSAS
+            '30008695',
+            '30007286',
+            '30003716',
+            # TE FF PARA PVC
+            '30001914',
+            '30003730',
+            '30000213',
+            # TE REDUÇÃO ELETROFUSÃO
+            '30007228',
+            # TUBO
+            '30007853',
+            '30028866',
+            '30028862',
+            '30028864',
+            '30007896',
+            # UNIÃO P/ PEAD
+            '30003832',
+            '30007765',
+            # UNIÃO PLASTICA P/ TUBO PE DE 20
+            '30029526',
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
-        # ABRACADEIRA FF REPARO TUBO DN100 LMIN=150
-        abrac_ff_reparo_dn100_l150_estoque = self.estoque[
-            self.estoque['Material'] == '30008103']
-        # TUBO PBA DN 50 1,00 MPA JEI/JERI CM 6M
-        tubo_dn50_estoque = self.estoque[self.estoque['Material']
-                                         == '30028862']
-        abracadeira_dn75 = False
-        tubo_pba_dn50 = False
+
         if sap_material is None:
             print("sem material.")
+            return
         else:
-            material_lista = []
+            material_lista: list[dict[str, str]] = []
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
-            # Número da Row do Grid Materiais do SAP
-            n_material = 0
-            ultima_linha_material = num_material_linhas
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                material_lista.append(sap_material)
-            n_material = 0
-            ultima_linha_material = num_material_linhas
-            if "30008103" in material_lista:
-                abracadeira_dn75 = True
-            if "30028862" in material_lista:
-                tubo_pba_dn50 = True
-            # Loop do Grid Materiais.
-            for n_material in range(num_material_linhas):
-                # Pega valor da célula 0
-                sap_material = self.tb_materiais.GetCellValue(
-                    n_material, "MATERIAL")
+                sap_etapa_material = self.tb_materiais.GetCellValue(
+                    n_material, "ETAPA")
+                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
-                if sap_material in ('30004097', '30002152', '30002151') \
-                        and abracadeira_dn75 is False and self.diametro_rede == '100':
+                console.print(f"\n{material_estoque}", style="italic green")
+
+                if sap_material not in materiais_receita \
+                        and sap_material not in self.list_contratada:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                    if not abrac_ff_reparo_dn100_l150_estoque.empty:
-                        self.tb_materiais.InsertRows(
-                            str(ultima_linha_material))
-                        self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
-                        )
-                        # Adiciona ABRACADEIRA FF REPARO TUBO DN100 LMIN=150.
-                        self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30008103"
-                        )
-                        self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
-                        )
-                        self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
-                        )
-                        ultima_linha_material = ultima_linha_material + 1
-                        abracadeira_dn75 = True
-
-            if tubo_pba_dn50 is False and self.diametro_rede == '50' \
-                    and not tubo_dn50_estoque.empty:
-                self.tb_materiais.InsertRows(str(ultima_linha_material))
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1]
-                )
-                # Adiciona TUBO PBA DN 50 1,00 MPA JEI/JERI CM 6M.
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30028862"
-                )
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1"
-                )
-                self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT"
-                )
-                ultima_linha_material = ultima_linha_material + 1
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
 
             self.materiais_vigentes()
+
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
                 self.tb_materiais, self.contrato,
@@ -478,7 +545,7 @@ class RedeAguaMaterial:
                 console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material not in materiais_receita \
-                    and sap_material not in self.list_contratada:
+                        and sap_material not in self.list_contratada:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -530,7 +597,10 @@ class RedeAguaMaterial:
                 self.estoque, self.session)
 
     def receita_reparo_de_ramal_de_agua(self):
-        '''Padrão de materiais no reparo de Ligação de Água.'''
+        """Padrão de materiais no reparo de Ligação de Água."""
+        materiais_receita = [
+            '30001346', '30002394', '30001848', '300029526', '10014709'
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         tubo_pead_dn20_estoque = self.estoque[self.estoque['Material'] == '30001848']
@@ -552,20 +622,34 @@ class RedeAguaMaterial:
             )
             ultima_linha_material = ultima_linha_material + 1
         else:
-            material_lista = []
+            material_lista: list[dict[str, str]] = []
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             # Número da Row do Grid Materiais do SAP
-            n_material = 0
             ultima_linha_material = num_material_linhas
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
-                # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                material_lista.append(sap_material)
+                sap_etapa_material = self.tb_materiais.GetCellValue(
+                    n_material, "ETAPA")
+                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
-            if '30001848' not in material_lista and not tubo_pead_dn20_estoque.empty:
+                console.print(f"\n{material_estoque}", style="italic green")
+
+                if sap_material not in materiais_receita \
+                        and sap_material not in self.list_contratada:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+                if material_estoque.empty:
+                    self.tb_materiais.modifyCheckbox(
+                        n_material, "ELIMINADO", True
+                    )
+
+            if '30001848' not in [i["Material"] for i in material_lista] \
+                    and not tubo_pead_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
                     ultima_linha_material, "ETAPA", self.identificador[1]

@@ -18,7 +18,7 @@ PERTENCE_SERVICO_PRINCIPAL = "3"
 SERVICO_N_EXISTE_CONTRATO = "10"
 
 
-class Pai():
+class Pai:
     """Classe Pai da árvore de TSEs"""
 
     def __init__(self, session) -> None:
@@ -67,7 +67,7 @@ class Pai():
 
     def processar_servico_temp_unitario(self, servico_temp,
                                         num_tse_linhas: int, identificador: str):
-        '''Área do Loop'''
+        """Área do Loop"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 
@@ -174,7 +174,7 @@ class Cesta(Pai):
     """Ramo de Rem Base"""
 
     def processar_servico_cesta(self, identificador, codigo_despesa):
-        '''Processar serviços da Cesta'''
+        """Processar serviços da Cesta"""
         print(f"Iniciando processo Pai de {identificador}")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas,
@@ -185,7 +185,7 @@ class Cesta(Pai):
         return self.processar_servico_cesta("cavalete", PERTENCE_SERVICO_PRINCIPAL)
 
     def ligacao_agua(self):
-        '''Serviços de água'''
+        """Serviços de água"""
         return self.processar_servico_cesta("ligacao_agua", CODIGO_DESPESA)
 
     def suprimido_ramal_agua_abandonado(self):
@@ -195,11 +195,11 @@ class Cesta(Pai):
         return self.processar_servico_cesta("supressao", CODIGO_DESPESA)
 
     def reparo_ramal_agua(self):
-        '''Reparo de ramal de água (RB) - TSE 288000'''
+        """Reparo de ramal de água (RB) - TSE 288000"""
         return self.processar_servico_cesta("reparo_ramal_agua", CODIGO_DESPESA)
 
     def ligacao_esgoto(self):
-        '''Reparo de ramal de esgoto (RB)'''
+        """Reparo de ramal de esgoto (RB)"""
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
     def poco(self):
@@ -207,31 +207,31 @@ class Cesta(Pai):
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
     def rede_agua(self):
-        '''Reparo de Rede de Água (RB) - TSE 332000'''
+        """Reparo de Rede de Água (RB) - TSE 332000"""
         return self.processar_servico_cesta("rede_agua", CODIGO_DESPESA)
 
     def gaxeta(self):
-        '''Aperto de Gaxeta válvula de Rede de água (RB)'''
+        """Aperto de Gaxeta válvula de Rede de água (RB)"""
         return self.processar_servico_cesta("gaxeta", CODIGO_DESPESA)
 
     def chumbo_junta(self):
-        '''Rebatido Chumbo na Junta (RB) - TSE 330000'''
+        """Rebatido Chumbo na Junta (RB) - TSE 330000"""
         return self.processar_servico_cesta("chumbo_junta", CODIGO_DESPESA)
 
     def valvula(self):
-        '''Troca de Válvula de Rede de água (RB) - TSE 325000'''
+        """Troca de Válvula de Rede de água (RB) - TSE 325000"""
         return self.processar_servico_cesta("valvula", CODIGO_DESPESA)
 
     def rede_esgoto(self):
-        '''Reparo de Rede de Esgoto (RB) - TSE 580000'''
+        """Reparo de Rede de Esgoto (RB) - TSE 580000"""
         return self.processar_servico_cesta("rede_esgoto", CODIGO_DESPESA)
 
 
 class Investimento(Pai):
-    '''Ramo de Investimento (RB)'''
+    """Ramo de Investimento (RB)"""
 
     def processar_servico_investimento(self, identificador, codigo_despesa):
-        '''Processar serviços de Investimento'''
+        """Processar serviços de Investimento"""
         print(f"Iniciando processo Pai de {identificador}")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas,
@@ -243,38 +243,38 @@ class Investimento(Pai):
 
 
 class Sondagem(Pai):
-    '''Ramo de Sondagem Vala Seca'''
+    """Ramo de Sondagem Vala Seca"""
 
     def ligacao_agua(self):
-        '''Sondagem de Ramal de Água (RB) - TSE 283000'''
+        """Sondagem de Ramal de Água (RB) - TSE 283000"""
         print("Iniciando processo Pai de Sondagem de Ramal de Água")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "ligacao_agua")
 
     def rede_agua(self):
-        '''Sondagem de Ramal de Água (RB) - TSE 321000'''
+        """Sondagem de Ramal de Água (RB) - TSE 321000"""
         print("Iniciando processo Pai de Sondagem de Rede de Água")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "rede_agua")
 
     def ligacao_esgoto(self):
-        '''Sondagem de Ramal de Água (RB) - TSE 567000'''
+        """Sondagem de Ramal de Água (RB) - TSE 567000"""
         print("Iniciando processo Pai de Sondagem de Ramal de Esgoto")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "ligacao_esgoto")
 
     def rede_esgoto(self):
-        '''Sondagem de Ramal de Água (RB) - TSE 591000'''
+        """Sondagem de Ramal de Água (RB) - TSE 591000"""
         print("Iniciando processo Pai de Sondagem de Ramal de Esgoto")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "rede_esgoto")
 
 
 class Unitario(Pai):
-    '''Ramo de serviços pagos unitariamente'''
+    """Ramo de serviços pagos unitariamente"""
 
     def processar_reposicao_sem_preco(self, servico_temp, num_tse_linhas, identificador):
-        '''Processar serviços que não tenham como pagar as reposições'''
+        """Processar serviços que não tenham como pagar as reposições"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 
@@ -314,7 +314,7 @@ class Unitario(Pai):
 
     def processar_servico_sem_bloquete(self, servico_temp,
                                        num_tse_linhas, identificador):
-        '''Processar serviços que não cotntemplam bloquete/muro'''
+        """Processar serviços que não cotntemplam bloquete/muro"""
         tse_temp_reposicao = []
         etapa_reposicao = []
 
@@ -348,74 +348,74 @@ class Unitario(Pai):
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
     def processar_servico_unitario(self, identificador):
-        '''Processar serviços Unitários'''
+        """Processar serviços Unitários"""
         print(f"Iniciando processo Pai de {identificador}")
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_unitario(servico_temp, num_tse_linhas,
                                                     identificador)
 
     def cavalete(self):
-        '''Serviços de unitários de cavalete'''
+        """Serviços de unitários de cavalete"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "cavalete")
 
     def lacre(self):
-        '''Instalados lacres avulsos.'''
+        """Instalados lacres avulsos."""
         return [], None, "cavalete", []
 
     def cavaletes_proibidos(self):
-        ''' Trocar Cavalete kit'''
+        """ Trocar Cavalete kit"""
         return [], "cavaletes proibidos", "cavalete", []
 
     def troca_cv_por_uma(self):
-        '''Troca de Cavalete por UMA - TSE 148000'''
+        """Troca de Cavalete por UMA - TSE 148000"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_reposicao_dependente(servico_temp, num_tse_linhas, "cavalete")
 
     def hidrometro(self):
-        '''Serviços unitários de hidrômetros'''
+        """Serviços unitários de hidrômetros"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "hidrometro")
 
     def hidrometro_alterar_capacidade(self):
-        '''Verificar esse serviço aí rapaz'''
+        """Verificar esse serviço aí rapaz"""
         return [], "sei não ein", "desinclinado", []
 
     def desinclinado_hidrometro(self):
-        '''O hidrômetro mais barato'''
+        """O hidrômetro mais barato"""
         return self.processar_servico_unitario("desinclinado")
 
     def ligacao_agua_avulsa(self):
-        '''Ligação de água simples avulsa'''
+        """Ligação de água simples avulsa"""
         return self.processar_servico_unitario("ligacao_agua_nova")
 
     def tra_nv_png_agua_subst_tra_prev(self):
-        '''TRA Não Visível, PNG Água,
-        Substituição de Ligação água, TRA Preventivo'''
+        """TRA Não Visível, PNG Água,
+        Substituição de Ligação água, TRA Preventivo"""
         return self.processar_servico_unitario("ligacao_agua")
 
     def ligacao_esgoto_avulsa(self):
-        '''Ligação de Esgoto'''
+        """Ligação de Esgoto"""
         return self.processar_servico_unitario("ligacao_esgoto")
 
     def png_esgoto(self):
-        '''PNG Obra Esgoto'''
+        """PNG Obra Esgoto"""
         return self.processar_servico_unitario("png_esgoto")
 
     def tre(self):
-        '''Troca de Ramal de Esgoto'''
+        """Troca de Ramal de Esgoto"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "ligacao_esgoto")
 
     def det_descoberto_nivelado_reg_cx_parada(self):
-        '''Descobrir, Trocar caixa de parada - TSE 322000'''
+        """Descobrir, Trocar caixa de parada - TSE 322000"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "cx_parada")
 
     def nivelamento_poco(self):
-        '''Nivelamento PI/PV/TL'''
+        """Nivelamento PI/PV/TL"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_reposicao_dependente(
             servico_temp, num_tse_linhas, "poço")
@@ -429,7 +429,7 @@ class Unitario(Pai):
             servico_temp, num_tse_linhas, "religacao")
 
     def supressao(self):
-        '''Supressão unitário'''
+        """Supressão unitário"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_sem_bloquete(
             servico_temp, num_tse_linhas, "supressao")

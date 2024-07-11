@@ -141,10 +141,12 @@ class Tabela:
     def familia(self, family: list[str], contrato: str) -> np.ndarray:
         """Escolher família."""
         family_str = ','.join([f"'{f}'" for f in family])
+        print("Família escolhida: ", family_str)
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                        f"WHERE FAMILIA IN ({family_str}) AND Contrato = '{contrato}'")
+        print(sql_command)
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
         cnn.close()
