@@ -1,5 +1,6 @@
 """Módulo dos retrabalho da valoração."""
 import sys
+import datetime as dt
 import pywintypes
 import rich
 from tqdm import tqdm
@@ -54,7 +55,9 @@ def retrabalho(contrato, session):
     salvo = "Ajustes de valoração salvos com sucesso."
     transacao = Transacao(contrato, "100", session)
     revalorar = False
-    sheet_csv = input("Deseja carregar a planilha xlsx ou CSV?\n")
+    # automated
+    # sheet_csv = input("Deseja carregar a planilha xlsx ou CSV?\n")
+    sheet_csv: None = None
     if sheet_csv:
         resposta = input("São Ordens desvaloradas?\n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
@@ -147,8 +150,9 @@ def retrabalho(contrato, session):
 
     # SQL values
     else:
-        dt_inicio = input("Digite a data de início no formato Y-m-d:\n")
-        dt_fim = input("Digite a data final no formato Y-m-d:\n")
+        today = dt.date.today()
+        dt_fim = today.replace(day=1) - dt.timedelta(days=1)
+        dt_inicio = dt_fim.replace(day=1)
         sql = Tabela("", "")
         pendentes_array = sql.retrabalho_search(dt_inicio, dt_fim)
         limite_execucoes = len(pendentes_array)

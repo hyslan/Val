@@ -1,4 +1,6 @@
 """Módulo para visualização da view de Valoração"""
+from typing import Union
+import datetime as dt
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
@@ -121,12 +123,12 @@ class Tabela:
         cnn.commit()
         cnn.close()
 
-    def retrabalho_search(self, month_start: str, month_end: str) -> np.ndarray:
+    def retrabalho_search(self, month_start: Union[str | dt.date], month_end: Union[str | dt.date]) -> np.ndarray:
         """Query for Retrabalho confirmado orders
         Args:
-            month_start (str): Start month of the query
-            month_end (str): End month of the query
-            Not Returning SABESP -> Cod: 9999999999 orders
+            month_start Union[str | Date]: Start month of the query
+            month_end Union[str | Date]: End month of the query
+            Not Returning SABESP -> Cod: '9999999999' orders
         Returns:
             df_array (np.ndarray): Array with the query results
             """
