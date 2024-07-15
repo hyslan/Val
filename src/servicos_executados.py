@@ -131,10 +131,11 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = 'Iara não quer.'
             break
 
+        # ---------- REVOGADO --------------------------------
         # TROCA PÉ DE CV PREVENTIVO - Solicitado por Ivan/Estevan
-        if sap_tse in ('153000', '153500'):
-            tse_proibida = 'Ivan não quer.'
-            break
+        # if sap_tse in ('153000', '153500'):
+        #     tse_proibida = 'Ivan não quer.'
+        #     break
 
         # INSTALDO CAIXA UMA (PARTE CIVIL)
         if sap_tse == '136000':

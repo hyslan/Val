@@ -116,7 +116,7 @@ class HidrometroMaterial:
         self.tb_materiais.InsertRows(
             str(ultima_linha_material))
         self.tb_materiais.modifyCell(
-            ultima_linha_material, "ETAPA", etapa) # Etapa do serviço principal Hidrometro
+            ultima_linha_material, "ETAPA", etapa)  # Etapa do serviço principal Hidrometro
         self.tb_materiais.modifyCell(
             ultima_linha_material, "MATERIAL", cod_hidro_instalado)
         self.tb_materiais.modifyCell(
@@ -168,7 +168,6 @@ class HidrometroMaterial:
 
         if '50000530' in sap_hidro[:, 0] \
                 and '50000530' != cod_hidro_instalado and not hidro_estoque.empty:
-
             btn_busca_material(self.tb_materiais,
                                self.session, '50000530')
             self._delete_row()
@@ -226,6 +225,8 @@ class HidrometroMaterial:
                     ultima_linha_material, "QUANT"
                 )
                 ultima_linha_material = ultima_linha_material + 1
+                print("Lacre inserido.")
+
                 # Colocar hidrometro
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
@@ -241,6 +242,8 @@ class HidrometroMaterial:
                     ultima_linha_material, "QUANT"
                 )
                 ultima_linha_material = ultima_linha_material + 1
+                print("Hidrômetro inserido.")
+                return
 
         # Número da Row do Grid Materiais do SAP
         ultima_linha_material = num_material_linhas

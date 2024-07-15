@@ -4,6 +4,9 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
+from rich.console import Console
+
+console = Console()
 
 
 class Tabela:
@@ -36,7 +39,6 @@ class Tabela:
             self._ordem = cod
         else:
             raise ValueError("Wrong type, need to be string.")
-
 
     def carteira_tse(self, contrato, carteira):
         engine = sa.create_engine(self.connection_url)
@@ -175,12 +177,22 @@ class Tabela:
     def familia(self, family: list[str], contrato: str) -> np.ndarray:
         """Escolher família."""
         family_str = ','.join([f"'{f}'" for f in family])
-        print("Família escolhida: ", family_str)
+        console.print("\n [b]Família escolhida: ", family_str)
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = ("SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                       f"WHERE FAMILIA IN ({family_str}) AND Contrato = '{contrato}'")
-        print(sql_command)
+                       f"WHERE FAMILIA IN ({family_str}) AND Contrato = '{contrato}' "
+                       f"AND TSE_OPERACAO_ZSCP NOT IN ( "
+                       "'731000', '733000', '743000', '745000', '785000', '785500', "  # -- SERVIÇOS DE ASFALTO
+                       "'755000', '714000', '782500', '282000', '300000', '308000', '310000', '311000', '313000', "
+                       "'315000', '532000', '564000', '588000', '590000', '709000', '700000', '593000', '253000', "
+                       "'250000', '209000', '605000', '605000', '263000', '255000', '254000', '282000', '265000', "
+                       "'260000', '265000', '263000', '262000', '284500', '286000', '282500', "  # -- RAMAL ÁGUA 
+                       # UNITÁRIO
+                       "'136000', '159000', '155000') "  # -- CRIAR LÓGICA
+                       )
+
+        console.print(f"\n[bold yellow]{sql_command}")
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
         cnn.close()

@@ -33,7 +33,7 @@ def precificador(tse, corte, relig,
     profundidade_errada = False
 
     if tse_proibida is not None:
-        print("TSE proibida de ser valorada.")
+        console.print(Columns([Panel("[bold red]TSE proibida de ser valorada.")]), justify="center")
         return (
             tse_proibida,
             list_chave_rb_despesa,
