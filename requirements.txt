@@ -100,7 +100,7 @@ rich==13.7.1
 rpds-py==0.18.0
 selenium==4.19.0
 Send2Trash==1.8.3
-setuptools==69.2.0
+setuptools==70.0.0
 simpleaudio==1.0.4
 six==1.16.0
 sniffio==1.3.1
