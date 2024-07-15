@@ -8,7 +8,7 @@ class Tabela:
     """Tabela de valoração"""
 
     def __init__(self, ordem, cod_tse) -> None:
-        self.ordem = ordem
+        self._ordem = ordem
         self.cod_tse = cod_tse
         connection_url = sa.URL.create(
             "mssql+pyodbc",
@@ -23,6 +23,18 @@ class Tabela:
         self.connection_url = connection_url
         engine = sa.create_engine(self.connection_url)
         self.cnn = engine.connect()
+
+    @property
+    def ordem(self):
+        return self._ordem
+
+    @ordem.setter
+    def ordem(self, cod):
+        if isinstance(cod, str):
+            self._ordem = cod
+        else:
+            raise ValueError("Wrong type, need to be string.")
+
 
     def carteira_tse(self, contrato, carteira):
         engine = sa.create_engine(self.connection_url)
@@ -108,6 +120,26 @@ class Tabela:
         cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()
+
+    def retrabalho_search(self, month_start: str, month_end: str) -> np.ndarray:
+        """Query for Retrabalho confirmado orders
+        Args:
+            month_start (str): Start month of the query
+            month_end (str): End month of the query
+            Not Returning SABESP -> Cod: 9999999999 orders
+        Returns:
+            df_array (np.ndarray): Array with the query results
+            """
+        engine = sa.create_engine(self.connection_url)
+        cnn = engine.connect()
+
+        sql_command = ("SELECT NumeroOS, ATC, CodigoContrato FROM [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] "
+                       f"WHERE DataFimExecucao >= '{month_start}' AND DataFimExecucao <= '{month_end}' "
+                       "AND Resultado = 'RETRABALHO CONFIRMADO' AND CodigoContrato <> '9999999999'")
+        df = pd.read_sql(sql_command, cnn)
+        df_array = df.to_numpy()
+        cnn.close()
+        return df_array
 
     def valorada(self, obs):
         """Update de row valorada"""

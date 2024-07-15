@@ -38,7 +38,7 @@ def rollback(n: int) -> win32com.client.CDispatch:
     return session
 
 
-def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool, session_n: int):
+def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
     """Sistema Val."""
     console: rich.console.Console = Console()
     transacao: Transacao = Transacao(contrato, "100", session)
