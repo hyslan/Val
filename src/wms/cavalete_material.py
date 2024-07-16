@@ -13,7 +13,7 @@ class CavaleteMaterial:
 
     def __init__(self,
                  hidro,
-                 operacao,
+                 operacao,  # Unique Array key
                  identificador,
                  diametro_ramal,
                  diametro_rede,
@@ -104,7 +104,8 @@ class CavaleteMaterial:
                         n_material, "ELIMINADO", True
                     )
                 if sap_material not in materiais_receita \
-                        and sap_material not in list_contratada:
+                        and sap_material not in list_contratada \
+                        and sap_etapa_material == self.operacao:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

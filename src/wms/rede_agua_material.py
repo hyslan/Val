@@ -14,7 +14,7 @@ class RedeAguaMaterial:
     def __init__(self,
                  hidro,
                  operacao,
-                 identificador,
+                 identificador,  # Unique Array key
                  diametro_ramal,
                  diametro_rede,
                  tb_materiais,
@@ -440,7 +440,8 @@ class RedeAguaMaterial:
                 console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada:
+                        and sap_material not in self.list_contratada \
+                        and sap_etapa_material == self.operacao:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -545,7 +546,8 @@ class RedeAguaMaterial:
                 console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada:
+                        and sap_material not in self.list_contratada \
+                        and sap_etapa_material == self.operacao:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -639,7 +641,8 @@ class RedeAguaMaterial:
                 console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada:
+                        and sap_material not in self.list_contratada \
+                        and sap_etapa_material == self.operacao:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
