@@ -38,7 +38,7 @@ def main() -> None:
                         choices=[str(i) for i in range(1, 10)])
     parser.add_argument('-c', '--contrato',
                         type=str, help="Escolha o Contrato a ser utilizado.")
-    parser.add_argument('-f', '--family', default='hidrometro',
+    parser.add_argument('-f', '--family', default=None,
                         type=str, nargs='+', help="Escolha a Família a ser utilizada.")
     parser.add_argument('-p', '--password',
                         type=str, help="Digite a senha para iniciar o programa.")

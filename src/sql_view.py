@@ -174,9 +174,14 @@ class Tabela:
         cnn.close()
         return df_array
 
-    def familia(self, family: list[str], contrato: str) -> np.ndarray:
+    def familia(self, family: Union[list[str] | None], contrato: str) -> np.ndarray:
         """Escolher família."""
-        family_str = ','.join([f"'{f}'" for f in family])
+        if family is not None:
+            family_str = ','.join([f"'{f}'" for f in family])
+        else:
+            family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RAMAL ESGOTO',"
+                          "'REDE AGUA', 'REDE ESGOTO', 'RELIGACAO', 'SUPRESSAO'")
+
         console.print("\n [b]Família escolhida: ", family_str)
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()

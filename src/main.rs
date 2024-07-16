@@ -37,7 +37,7 @@ fn main() {
             "-m", "src.main",
             "-s", str_session.as_str(),
             "-o", "9",
-            "-c", contract,
+            // "-c", contract, --- Catch all family possible.
             "-p", "alefafa",
             "-f"
         ];

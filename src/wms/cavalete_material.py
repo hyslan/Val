@@ -86,7 +86,7 @@ class CavaleteMaterial:
         else:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             ultima_linha_material = num_material_linhas
-            console.print(f"Etapa: {self.operacao}")
+            console.print(f"\nEtapa: {self.operacao}")
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0

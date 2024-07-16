@@ -628,7 +628,7 @@ class RedeAguaMaterial:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             # Número da Row do Grid Materiais do SAP
             ultima_linha_material = num_material_linhas
-            console.print(f"Etapa: {self.operacao}")
+            console.print(f"\nEtapa: {self.operacao}")
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
