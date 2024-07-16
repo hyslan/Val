@@ -231,8 +231,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if not salvo == rodape:
                     console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
                     console.print(f"[bold yellow]Motivo: {rodape}")
-                    continue
-                    # break
+                    # continue
+                    break
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 console.print(

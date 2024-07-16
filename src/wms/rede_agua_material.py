@@ -628,6 +628,7 @@ class RedeAguaMaterial:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             # Número da Row do Grid Materiais do SAP
             ultima_linha_material = num_material_linhas
+            console.print(f"Etapa: {self.operacao}")
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
@@ -638,7 +639,8 @@ class RedeAguaMaterial:
                 material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
                 material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
-                console.print(f"\n{material_estoque}", style="italic green")
+                if sap_material not in self.list_contratada:
+                    console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material not in materiais_receita \
                         and sap_material not in self.list_contratada \
@@ -646,7 +648,7 @@ class RedeAguaMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                if material_estoque.empty:
+                if material_estoque.empty and sap_material not in self.list_contratada:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

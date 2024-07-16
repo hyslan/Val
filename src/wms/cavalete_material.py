@@ -86,6 +86,7 @@ class CavaleteMaterial:
         else:
             num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
             ultima_linha_material = num_material_linhas
+            console.print(f"Etapa: {self.operacao}")
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
@@ -96,7 +97,8 @@ class CavaleteMaterial:
                 materiais_lancados.append({"Material": sap_material, "Etapa": sap_etapa_material})
                 material_estoque = self.estoque[self.estoque['Material'] == sap_material]
 
-                console.print(f"\n{material_estoque}", style="italic green")
+                if sap_material not in list_contratada:
+                    console.print(f"\n{material_estoque}", style="italic green")
 
                 if sap_material == '30029526' \
                         and self.contrato == "4600041302":
@@ -109,7 +111,7 @@ class CavaleteMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                if material_estoque.empty:
+                if material_estoque.empty and sap_material not in list_contratada:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
