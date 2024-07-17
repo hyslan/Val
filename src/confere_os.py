@@ -110,6 +110,7 @@ def consulta_os(n_os, session, contrato):
                     '286000',
                     '502000',
                     '505000',
+                    '506000',
                     '508000',
                     '561000',
                     '565000',
@@ -132,6 +133,7 @@ def consulta_os(n_os, session, contrato):
             if tipo_tse in (
                     '502000',
                     '505000',
+                    '506000',
                     '508000',
                     '561000',
                     '565000',

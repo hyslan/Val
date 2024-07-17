@@ -4,7 +4,6 @@ from src.excel_tbs import load_worksheets
 (
     *_,
     tb_tse_PertenceAoServicoPrincipal,
-    tb_tse_ServicoNaoExistenoContrato,
     tb_tse_reposicao,
     tb_tse_Retrabalho,
     tb_tse_Asfalto,
@@ -59,10 +58,6 @@ class Pai:
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                tse_temp_reposicao.append(sap_tse)
-                etapa_reposicao.append(etapa)
-
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
     def processar_servico_temp_unitario(self, servico_temp,
@@ -86,11 +81,6 @@ class Pai:
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
-
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_SIM)
-                tse_temp_reposicao.append(sap_tse)
-                etapa_reposicao.append(etapa)
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
@@ -117,13 +107,6 @@ class Pai:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
-                continue
-
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
-                tse_temp_reposicao.append(sap_tse)
-                etapa_reposicao.append(etapa)
                 continue
 
             # COMPACTAÇÃO E SELAGEM DA BASE
@@ -159,13 +142,6 @@ class Pai:
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
-
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
-                tse_temp_reposicao.append(sap_tse)
-                etapa_reposicao.append(etapa)
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
@@ -298,7 +274,8 @@ class Unitario(Pai):
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
+            # BLOQUETE
+            if sap_tse in ('738000', '740000'):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
@@ -338,12 +315,13 @@ class Unitario(Pai):
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
-            if sap_tse in tb_tse_ServicoNaoExistenoContrato:
-                servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
-                tse_temp_reposicao.append(sap_tse)
-                etapa_reposicao.append(etapa)
+            # -------- SERÁ PAGO LRP ESPECIAL
+            # if sap_tse in ('738000', '740000'):
+            #     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
+            #     servico_temp.modifyCell(
+            #         n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
+            #     tse_temp_reposicao.append(sap_tse)
+            #     etapa_reposicao.append(etapa)
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 

@@ -24,7 +24,6 @@ from src.tsepai import pai_dicionario
     tb_st_sistema,
     tb_st_usuario,
     tb_tse_pertence_ao_servico_principal,
-    tb_tse_servico_nao_existe_no_contrato,
     tb_tse_reposicao,
     tb_tse_retrabalho,
     tb_tse_asfalto,

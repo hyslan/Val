@@ -1,11 +1,11 @@
-'''Módulo Família Ligação Água Unitário.'''
+"""Módulo Família Ligação Esgoto Unitário."""
 
 from src.unitarios.localizador import btn_localizador
 from src.lista_reposicao import dict_reposicao
 
 
 class LigacaoEsgoto:
-    '''Ramo de Ligações (Ramal) de água'''
+    """Ramo de Ligações (Ramal) de Esgoto"""
 
     # Ordem da tupla: [0] -> preço s/ fornecimento, [1] -> c/ fornecimento,
     # [2] Reposições -> (Cimentado, Especial e Asfalto Frio)
@@ -67,7 +67,7 @@ class LigacaoEsgoto:
         self.preco = preco
 
     def reposicoes(self, cod_reposicao: tuple) -> None:
-        '''Reposições dos serviços de Ligação de água'''
+        """Reposições dos serviços de Ligação de água"""
         rep_com_etapa = [(x, y)
                          for x, y in zip(self.reposicao, self.etapa_reposicao)]
 
@@ -114,7 +114,7 @@ class LigacaoEsgoto:
             print(txt_reposicao)
 
     def _posicao_pagar(self, preco_tse: str) -> None:
-        '''Paga de acordo com a posição da rede'''
+        """Paga de acordo com a posição da rede"""
         if not self._ramal:
             btn_localizador(self.preco, self.session, preco_tse)
             self.preco.modifyCell(
@@ -141,6 +141,7 @@ class LigacaoEsgoto:
             if tipo_operacao == "TRE" and profundidade_float > 3.00:
                 codigos = self.CODIGOS_4M
         except ValueError:
+            print("Profundidade inválida.")
             return
 
         match self.posicao_rede:
@@ -160,21 +161,21 @@ class LigacaoEsgoto:
         if codigo:
             print(
                 f"Iniciando processo de pagar {tipo_operacao.replace('_', ' ')}"
-                " posição: {self.posicao_rede}")
+                f" posição: {self.posicao_rede}")
             self._posicao_pagar(codigo[0])
             self._repor(codigo[2])
 
     def ligacao_esgoto(self):
-        '''Ramal novo de água, avulsa.'''
+        """Ramal novo de água, avulsa."""
         if self.posicao_rede:
             self._processar_operacao('LESG')
 
     def tre(self):
-        '''Troca de Ramal de água não visível'''
+        """Troca de Ramal de água não visível"""
         if self.posicao_rede:
             self._processar_operacao('TRE')
 
     def png(self):
-        '''Passado novo ramal para nova rede - Obra'''
+        """Passado novo ramal para nova rede - Obra"""
         if self.posicao_rede:
             self._processar_operacao('PNG')

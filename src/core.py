@@ -160,7 +160,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 ) = precificador(tse, corte, relig,
                                  posicao_rede, profundidade, contrato, session)
                 # debug
-                # sys.exit(0)
+                # exit()
                 if ligacao_errada is True:
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")

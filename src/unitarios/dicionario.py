@@ -34,8 +34,8 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
                                etapa_reposicao, identificador, posicao_rede,
                                profundidade, session, preco)
     ligacao_esgoto = LigacaoEsgoto(etapa, corte, relig, reposicao, num_tse_linhas,
-                                      etapa_reposicao, identificador, posicao_rede,
-                                      profundidade, session, preco)
+                                   etapa_reposicao, identificador, posicao_rede,
+                                   profundidade, session, preco)
 
     dicionario_un = {
         '134000': cavalete.instalado_lacre,

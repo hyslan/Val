@@ -23,7 +23,7 @@ from src.osn3 import pertencedor
 from src.sapador import down_sap
 
 
-def main() -> None:
+def main(args=None) -> None:
     """Sistema principal da Val e inicializador do programa"""
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(prog="Sistema Val",
@@ -45,7 +45,9 @@ def main() -> None:
     parser.add_argument('-r', '--revalorar', default=False,
                         type=bool, help="Revalorar uma Ordem.")
 
-    args: argparse.Namespace = parser.parse_args()
+    if args is None:
+        args: argparse.Namespace = parser.parse_args()
+
     options: str = args.option
     print("Famílias selecionadas:", args.family)
     validador: bool = False

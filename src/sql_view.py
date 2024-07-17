@@ -179,8 +179,9 @@ class Tabela:
         if family is not None:
             family_str = ','.join([f"'{f}'" for f in family])
         else:
-            family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RAMAL ESGOTO',"
-                          "'REDE AGUA', 'REDE ESGOTO', 'RELIGACAO', 'SUPRESSAO'")
+            family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO', "
+                          "'REDE AGUA'"  #, 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
+                          )
 
         console.print("\n [b]Família escolhida: ", family_str)
         engine = sa.create_engine(self.connection_url)
