@@ -21,66 +21,40 @@ const _ZIGURATEMLQ: &str = "4600056089";
 const FAMILY: [&str; 5]  = ["cavalete", "religacao", "supressao", "hidrometro", "poco"];
 
 fn main() {
+    // Lista de contratos
+    let contracts = [_ZCMLN, _NOVASPMLG, _ZIGURATEMLQ];
+    let mut session:u32 = 0;
+    let mut str_session: String = session.to_string();
     Command::new("python")
-        .args([&"-m", "src.sap_connection"])
+        .args([&"-m", "src.charging_sessions"])
         .spawn()
         .expect("failed to execute process");
 
     thread::sleep(Duration::from_secs(60));
     //ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "0",
+    for &contract in &contracts {
+        let mut args = vec![
+            "-m", "src.main",
+            "-s", str_session.as_str(),
             "-o", "9",
-            "-c", _NOVASPMLG,
-        "-f", FAMILY[1],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "1",
-            "-o", "9",
-            "-c", _NOVASPMLG,
-        "-f", FAMILY[2],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "2",
-            "-o", "9",
-            "-c", _NOVASPMLG,
-        "-f", FAMILY[3],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
+            // "-c", contract, --- Catch all family possible.
+            "-p", "alefafa",
+            "-f"
+        ];
 
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "3",
-            "-o", "9",
-            "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[1],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "4",
-            "-o", "9",
-            "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[2],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
-    Command::new("python")
-        .args([&"-m", "src.main", "-s", "5",
-            "-o", "9",
-            "-c", _ZIGURATEMLQ,
-        "-f", FAMILY[3],
-        "-p", "alefafa"
-        ])
-        .spawn()
-        .expect("failed to execute process");
+        // Adiciona os elementos da família ao vetor de argumentos
+        for &family in FAMILY.iter() {
+            args.push(family);
+        }
+
+        Command::new("python")
+            .args(&args)
+            .spawn()
+            .expect("failed to execute process");
+
+        session += 1;
+        str_session = session.to_string();
+        
+        thread::sleep(Duration::from_secs(1));
+    }
 }

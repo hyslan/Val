@@ -1,5 +1,5 @@
 # excel_tbs.py by Author: Hyslan Silva Cruz
-'''Módulo de acessar arquivos .xlsx'''
+"""Módulo de acessar arquivos .xlsx"""
 # Bibliotecas
 from openpyxl import load_workbook  # Carregar função load
 
@@ -7,7 +7,7 @@ from openpyxl import load_workbook  # Carregar função load
 
 
 def load_worksheets():
-    '''Função para carregar os arquivos dos Excel e futuramente do SQL Server.'''
+    """Função para carregar os arquivos dos Excel e futuramente do SQL Server."""
     lista = load_workbook(
         'sheets/lista.xlsx')  # Carregando arquivo para valorar
     # Tabela de materiais da Contratada
@@ -29,10 +29,8 @@ def load_worksheets():
     naoexecutado = plan_tse["NEXEC"]
     invest = plan_tse["invest"]
     n_motivo3 = plan_tse["n3"]
-    n10 = plan_tse["n10"]
     reposicao = plan_tse["reposicao"]
     retrabalho = plan_tse["retrabalho"]
-    asfalto = plan_tse["asfalto"]
     coluna_contratada = 'A'
     coluna_tse = 'A'
     coluna_status = 'A'
@@ -63,18 +61,12 @@ def load_worksheets():
     tb_tse_pertence_ao_servico_principal = [
         cell.value for cell in n_motivo3[coluna_tse]]
 
-    plan_tse.active = n10
-    tb_tse_servico_nao_existe_no_contrato = [
-        cell.value for cell in n10[coluna_tse]]
-
     plan_tse.active = reposicao
     tb_tse_reposicao = [cell.value for cell in reposicao[coluna_tse]]
 
     plan_tse.active = retrabalho
     tb_tse_retrabalho = [cell.value for cell in retrabalho[coluna_tse]]
 
-    plan_tse.active = asfalto
-    tb_tse_asfalto = [cell.value for cell in asfalto[coluna_tse]]
 
     return (
         lista,
@@ -96,8 +88,6 @@ def load_worksheets():
         tb_st_sistema,
         tb_st_usuario,
         tb_tse_pertence_ao_servico_principal,
-        tb_tse_servico_nao_existe_no_contrato,
         tb_tse_reposicao,
-        tb_tse_retrabalho,
-        tb_tse_asfalto
+        tb_tse_retrabalho
     )

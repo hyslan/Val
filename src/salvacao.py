@@ -9,7 +9,7 @@ import pywintypes
 from rich.console import Console
 from src import sql_view
 from src.confere_os import consulta_os
-from src.sap import Sap
+from src import sap
 
 
 # Adicionando um Lock
@@ -19,7 +19,6 @@ console = Console()
 
 def salvar(ordem, qtd_ordem, contrato, session):
     """Salvar e verificar se está salvando."""
-    sap = Sap()
     rodape = None
     salvo = "Ajustes de valoração salvos com sucesso."
 
@@ -65,7 +64,6 @@ def salvar(ordem, qtd_ordem, contrato, session):
                     # Group 1 retira string 'material'
                     codigo_material = correspondencias.group(1)
                     print(codigo_material)
-                    sys.exit()
 
                 print(f"Ordem: {ordem} não foi salva.")
                 ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")

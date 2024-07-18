@@ -1,5 +1,4 @@
 """Módulo de consulta estoque de materiais"""
-import subprocess
 import time
 import os
 import xlwings as xw
@@ -33,7 +32,7 @@ def estoque(session, sessions, contrato):
                               )
     materiais = materiais.dropna()
     materiais['Material'] = materiais['Material'].astype(int).astype(str)
-    sessao = sap.Sap()
+    sessao = sap
     con = sessao.listar_conexoes()
     total_sessoes = sessao.contar_sessoes()
     if not total_sessoes == 6:
@@ -46,13 +45,8 @@ def estoque(session, sessions, contrato):
     try:
         time.sleep(10)
         book = xw.Book(f'estoque_{contrato}.xlsx')
-        book.close()
-        try:
-            subprocess.run(['taskkill', '/F', '/IM', "excel"], check=True)
-        except Exception as e:
-            print(e)
-            print("Erro ao fechar xlsx files")
+        book.app.quit()
     except Exception as e:
-        print(e)
+        print(f"Erro em consulta_estoque - MS EXCEL:{e}")
 
     return materiais

@@ -67,7 +67,8 @@ class Cavalete:
                 item_preco = self.preco.GetCellValue(
                     self.preco.CurrentCellRow, "ITEM"
                 )
-                if item_preco in ('300', '310'):
+                if item_preco in ('300', '310', '730', '1470', '4950'
+                                  ):
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
@@ -80,7 +81,8 @@ class Cavalete:
                 item_preco = self.preco.GetCellValue(
                     self.preco.CurrentCellRow, "ITEM"
                 )
-                if item_preco in ('300', '310'):
+                if item_preco in ('300', '310', '730', '1470', '4950'
+                                  ):
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()

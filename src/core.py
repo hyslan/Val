@@ -3,12 +3,18 @@
 # pylint: disable=W0611
 import sys
 import time
+import numpy as np
 import pywintypes
+import rich.console
+import win32com.client
+from pandas import DataFrame
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
+from src.sap_connection import populate_sessions
+from src.sapador import down_sap
 from src import sql_view
-from src.sap import Sap
+from src import sap
 from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
 from src.pagador import precificador
@@ -19,20 +25,26 @@ from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
 
-def rollback(sap) -> None:
-    sap.encerrar_sap()
-    # down_sap()
-    # print("Reiniciando programa")
+def rollback(n: int) -> win32com.client.CDispatch:
+    try:
+        sap.encerrar_sap()
+    except:
+        print("SAPLOGON já foi encerrado.")
+    down_sap()
+    populate_sessions()
+    time.sleep(20)
+    session: win32com.client.CDispatch = sap.escolher_sessao(n)
+    print("Reiniciando programa")
+    return session
 
 
-def val(pendentes_array, session, contrato, revalorar):
+def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
     """Sistema Val."""
-    console = Console()
-    sap = Sap()
-    transacao = Transacao(contrato, "100", session)
+    console: rich.console.Console = Console()
+    transacao: Transacao = Transacao(contrato, "100", session)
 
     try:
-        sessions = sap.listar_sessoes()
+        sessions: win32com.client.CDispatch = sap.listar_sessoes()
     # pylint: disable=E1101
     except pywintypes.com_error:
         return
@@ -40,21 +52,25 @@ def val(pendentes_array, session, contrato, revalorar):
     try:
         if not contrato == "4600043760":
             if not sessions.Count == 6:
-                new_session = sap.criar_sessao(sessions)
-                estoque_hj = estoque(new_session, sessions, contrato)
+                new_session: win32com.client.CDispatch = sap.criar_sessao(sessions)
+                estoque_hj: DataFrame = estoque(new_session, sessions, contrato)
             else:
-                estoque_hj = estoque(session, sessions, contrato)
+                estoque_hj: DataFrame = estoque(session, sessions, contrato)
     except:
         return
 
     limite_execucoes = len(pendentes_array)
+    if limite_execucoes == 0:
+        return None, True
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
+    if limite_execucoes == 0:
+        return None, True
 
     with console.status("[bold blue]Trabalhando..."):
         # Variáveis de Status da Ordem
-        valorada = "EXEC VALO" or "NEXE VALO"
-        fechada = "LIB"
+        valorada: str = "EXEC VALO" or "NEXE VALO"
+        fechada: str = "LIB"
         qtd_ordem = 0  # Contador de ordens pagas.
         # Loop para pagar as ordens
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
@@ -144,7 +160,7 @@ def val(pendentes_array, session, contrato, revalorar):
                 ) = precificador(tse, corte, relig,
                                  posicao_rede, profundidade, contrato, session)
                 # debug
-                # sys.exit(0)
+                # exit()
                 if ligacao_errada is True:
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
@@ -207,7 +223,7 @@ def val(pendentes_array, session, contrato, revalorar):
                             session)
 
                 # Fim dos materiais
-                # sys.exit(0)
+                # exit()
                 # Salvar Ordem
                 qtd_ordem, rodape = salvar(
                     ordem, qtd_ordem, contrato, session)
@@ -215,7 +231,8 @@ def val(pendentes_array, session, contrato, revalorar):
                 if not salvo == rodape:
                     console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
                     console.print(f"[bold yellow]Motivo: {rodape}")
-                    continue
+                    # continue
+                    break
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
                 console.print(
@@ -226,24 +243,32 @@ def val(pendentes_array, session, contrato, revalorar):
             # pylint: disable=E1101
             except Exception as errocritico:
                 print(f"args do errocritico: {errocritico}")
-                _, descricao, _, _ = errocritico.args
-                match descricao:
-                    case 'Falha catastrófica':
-                        console.print("[bold red]SAPGUI has crashed. :fire:")
-                        # rollback(sap)
-                    case 'Falha na chamada de procedimento remoto.':
-                        console.print("[bold red]SAPGUI has been finished strangely. :fire:")
-                        # rollback(sap)
-                    case 'O servidor RPC não está disponível.':
-                        console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
-                        # rollback(sap)
-                    case _:
-                        console.print(
-                            "[bold red underline]Aconteceu um Erro com a Val!"
-                            + f"\n Fatal Error: {errocritico}")
-                        console.print_exception()
-                        oxe()
-                        sys.exit()
+                try:
+                    _, descricao, _, _ = errocritico.args
+                    match descricao:
+                        case 'Falha catastrófica':
+                            console.print("[bold red]SAPGUI has crashed. :fire:")
+                            # session = rollback(session_n)
+                            # continue
+                            break
+                        case 'Falha na chamada de procedimento remoto.':
+                            console.print("[bold red]SAPGUI has been finished strangely. :fire:")
+                            # session = rollback(session_n)
+                            # continue
+                            break
+                        case 'O servidor RPC não está disponível.':
+                            console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
+                            # session = rollback(session_n)
+                            # continue
+                            break
+                        case _:
+                            console.print(
+                                "[bold red underline]Aconteceu um Erro com a Val!"
+                                + f"\n Fatal Error: {errocritico}")
+                            console.print_exception()
+                            oxe()
+                except:
+                    console.print(errocritico)
 
         validador = True
 

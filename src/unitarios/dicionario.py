@@ -34,8 +34,8 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
                                etapa_reposicao, identificador, posicao_rede,
                                profundidade, session, preco)
     ligacao_esgoto = LigacaoEsgoto(etapa, corte, relig, reposicao, num_tse_linhas,
-                                      etapa_reposicao, identificador, posicao_rede,
-                                      profundidade, session, preco)
+                                   etapa_reposicao, identificador, posicao_rede,
+                                   profundidade, session, preco)
 
     dicionario_un = {
         '134000': cavalete.instalado_lacre,
@@ -61,6 +61,7 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         '280000': ligacao_agua.png,
         '284500': ligacao_agua.tra_nv,
         '286000': ligacao_agua.tra_prev,
+        '304000': poco.troca_de_caixa_de_parada,
         '312000': poco.niv_cx_parada,
         '322000': poco.troca_de_caixa_de_parada,
         '404200': supressao.supressao,
@@ -75,11 +76,17 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         '465000': religacao.restabelecida,
         '466500': religacao.restabelecida,
         '467500': religacao.restabelecida,
+        '472000': religacao.restabelecida,
         '475500': religacao.restabelecida,
         '502000': ligacao_esgoto.ligacao_esgoto,
         '505000': ligacao_esgoto.ligacao_esgoto,
         '506000': ligacao_esgoto.ligacao_esgoto,
+        '507000': ligacao_esgoto.ligacao_esgoto,
         '508000': ligacao_esgoto.ligacao_esgoto,
+        '534000': poco.troca_de_caixa_de_parada,
+        '534100': poco.troca_de_caixa_de_parada,
+        # '534200': poco.troca_de_caixa_de_parada, DESCOBERTO E NIVELADO, It pays both?
+        # '534300': poco.troca_de_caixa_de_parada, DESCOBERTO E NIVELADO, It pays both?
         '537000': poco.nivelamento,
         '537100': poco.nivelamento,
         '538000': poco.nivelamento,

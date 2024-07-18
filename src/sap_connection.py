@@ -2,7 +2,6 @@
 # -Begin-----------------------------------------------------------------
 """Módulo SAP"""
 
-
 # -Bibliotecas--------------------------------------------------------------
 import win32com.client
 import pythoncom
@@ -15,16 +14,16 @@ from src.sapador import down_sap
 console = Console()
 
 
-def connect_to_sap():
-    """Função para conexão SAP"""
-    pythoncom.CoInitialize()
-    sapguiauto = win32com.client.GetObject("SAPGUI")
-    application = sapguiauto.GetScriptingEngine
-    connection = application.Children(0)
-    session = connection.Children
+def populate_sessions() -> None:
+    def connect_to_sap():
+        """Função para conexão SAP"""
+        pythoncom.CoInitialize()
+        sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
+        application = sapguiauto.GetScriptingEngine
+        conn = application.Children(0)
+        sess = conn.Children
 
-    return session, connection
-
+        return sess, conn
 
 try:
     session, connection = connect_to_sap()
@@ -34,11 +33,11 @@ except pywintypes.com_error:
     console.print(
         "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
     down_sap()
-    time.sleep(60)
+    time.sleep(20)
     session = connect_to_sap()
 
-# Obtendo o índice da última sessão ativa
-ultimo_indice = len(session) - 1
-if ultimo_indice < 5:
-    for _ in range(ultimo_indice, 5):
-        connection.Children(ultimo_indice).CreateSession()
+    # Obtendo o índice da última sessão ativa
+    ultimo_indice = len(session) - 1
+    if ultimo_indice < 5:
+        for _ in range(ultimo_indice, 5):
+            connection.Children(ultimo_indice).CreateSession()

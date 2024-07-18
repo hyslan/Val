@@ -143,9 +143,6 @@ class Religacao:
 
             if self.relig is None:
                 print("Religação não informada. \n Pagando como RELIG CV.")
-                self.preco = self.session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9020/cntlCC_ITEM_PRECO/shellcont/shell")
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:
                     btn_localizador(

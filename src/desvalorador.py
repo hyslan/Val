@@ -1,4 +1,4 @@
-'''Módulo para desfazer valoração.'''
+"""Módulo para desfazer valoração."""
 import sys
 import pywintypes
 from tqdm import tqdm
@@ -17,9 +17,8 @@ from src.etl import pendentes_csv
 
 
 def desvalorador(contrato, session):
-    '''Função desvalorador'''
-    empresa, unadm, municipio = contrato
-    transacao = Transacao(empresa, unadm, municipio, session)
+    """Função desvalorador"""
+    transacao = Transacao(contrato, "100", session)
     ask = input("É csv?")
     if ask == "s":
         csv = pendentes_csv()
@@ -36,14 +35,14 @@ def desvalorador(contrato, session):
         print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
 
         # Loop para pagar as ordens da planilha do Excel
-        for num_lordem in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
+        for _ in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
             print(f"Linha atual: {int_num_lordem}.")
             print(f"Ordem atual: {ordem}")
             transacao.run_transacao(ordem)
             try:
                 session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
@@ -82,27 +81,26 @@ def desvalorador(contrato, session):
         ordem = planilha.cell(row=int_num_lordem, column=1).value
     except TypeError:
         print("Entrada inválida. Digite um número inteiro válido.")
-        sys.exit()
+        return
 
     print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
 
     # Loop para pagar as ordens da planilha do Excel
-    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
-        ordem_obs = planilha.cell(row=int_num_lordem, column=4)
+    for _ in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         print(f"Linha atual: {int_num_lordem}.")
         print(f"Ordem atual: {ordem}")
         transacao.run_transacao(ordem)
         try:
             session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
             )
         # pylint: disable=E1101
         except pywintypes.com_error:
             print(f"Ordem: {ordem} em medição definitiva.")
             ordem_obs = planilha.cell(row=int_num_lordem, column=4)
             ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-            lista.save('lista.xlsx')
+            lista.save('sheets/lista.xlsx')
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -118,7 +116,7 @@ def desvalorador(contrato, session):
             print(f"Ordem: {ordem} não valorada.")
             ordem_obs = planilha.cell(row=int_num_lordem, column=4)
             ordem_obs.value = "Não Valorada."
-            lista.save('lista.xlsx')
+            lista.save('sheets/lista.xlsx')
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value

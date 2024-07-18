@@ -6,20 +6,19 @@ import pythoncom
 import pywintypes
 import win32com.client as win32
 from rich.console import Console
-from src.sap import Sap
+from src import sap
 
 # Adicionando um Lock
 lock = threading.Lock()
-sap = Sap()
 console = Console()
 
 
-class Transacao():
-    '''Classe operadora da transação 216'''
+class Transacao:
+    """Classe operadora da transação 216"""
 
     def __init__(self, contrato,
                  municipio, session) -> None:
-        self.contrato = contrato
+        self._contrato = contrato
         self.session = session
         self._municipio = municipio
 
@@ -33,6 +32,17 @@ class Transacao():
         """Setter for municipio"""
         if isinstance(cod, str):
             self._municipio = cod
+        else:
+            raise ValueError("Wrong type, need to be string.")
+
+    @property
+    def contrato(self):
+        return self._contrato
+
+    @contrato.setter
+    def contrato(self, cod):
+        if isinstance(cod, str):
+            self._contrato = cod
         else:
             raise ValueError("Wrong type, need to be string.")
 

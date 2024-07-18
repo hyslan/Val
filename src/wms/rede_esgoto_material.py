@@ -35,7 +35,7 @@ class RedeEsgotoMaterial:
         self.session = session
 
     def ramal_luva_correr(self):
-        '''Saber diâmetro do ramal para luva correr'''
+        """Saber diâmetro do ramal para luva correr"""
         match self.diametro_ramal:
             case 'DN_100':
                 luva_correr = "30002797"
@@ -55,7 +55,7 @@ class RedeEsgotoMaterial:
         return luva_correr
 
     def curva(self):
-        '''Curva 90 e 45'''
+        """Curva 90 e 45"""
         match self.diametro_ramal:
             case 'DN_100':
                 curva90 = "30002722"
@@ -75,7 +75,7 @@ class RedeEsgotoMaterial:
         return curva45, curva90
 
     def ramal_junta(self):
-        '''Saber diâmetro do ramal para junta'''
+        """Saber diâmetro do ramal para junta"""
         match self.diametro_ramal:
             case 'DN_100':
                 junta_esgoto = "30002958"
@@ -453,7 +453,7 @@ class RedeEsgotoMaterial:
                         )
 
     def receita_reparo_de_rede_de_esgoto(self):
-        '''Padrão de materiais na classe CRE.'''
+        """Padrão de materiais na classe CRE."""
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(
@@ -469,7 +469,7 @@ class RedeEsgotoMaterial:
             self.estoque, self.session)
 
     def png(self):
-        '''Método para PNG Esgoto'''
+        """Método para PNG Esgoto"""
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(

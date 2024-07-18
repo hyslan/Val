@@ -195,8 +195,8 @@ class Almoxarifado:
                         self.session
                     )
                     print("Aplicando a receita "
-                          + "de Ligação (Ramal) de Água.")
-                    material.receita_troca_de_conexao_de_ligacao_de_agua()
+                          + "de TRA.")
+                    material.receita_tra()
 
                 case "reparo_ramal_agua" | "ligacao_agua" | "ligacao_agua_nova":
                     material = rede_agua_material.RedeAguaMaterial(
@@ -342,7 +342,7 @@ class Almoxarifado:
 
                 case _:
                     print("Classe não identificada.")
-                    sys.exit()
+                    return
         return
 
 

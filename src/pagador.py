@@ -33,7 +33,7 @@ def precificador(tse, corte, relig,
     profundidade_errada = False
 
     if tse_proibida is not None:
-        print("TSE proibida de ser valorada.")
+        console.print(Columns([Panel("[bold red]TSE proibida de ser valorada.")]), justify="center")
         return (
             tse_proibida,
             list_chave_rb_despesa,
@@ -97,20 +97,21 @@ def precificador(tse, corte, relig,
         )
 
     console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
-    if reposicao_geral:
-        console.print(
-            Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
+    console.print(
+        Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
     if list_chave_unitario:
         console.print(
-            Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]))
+            Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]), style="bold magenta")
     if list_chave_rb_despesa or chave_rb_investimento:
         console.print(
-            Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]))
+            Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]),
+            style="bold magenta")
 
     if list_chave_unitario:  # Verifica se está no Conjunto Unitários
         # Aba Itens de preço
         session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
+
         console.print("Processo de Precificação",
                       style="bold red underline", justify="center")
         for chave_unitario in list_chave_unitario:

@@ -3,6 +3,30 @@
 /.vs
 /.vscode
 /src/__pycache__
+# Remove caches by -m
+src/__pycache__/servicos_executados.cpython-312.pyc
+src/wms/__pycache__/consulta_estoque.cpython-312.pyc
+src/wms/__pycache__/cavalete_material.cpython-312.pyc
+src/wms/__pycache__/corte_restab_material.cpython-312.pyc
+src/wms/__pycache__/materiais_contratada.cpython-312.pyc
+src/__pycache__/core.cpython-312.pyc
+src/__pycache__/desvalorador.cpython-312.pyc
+src/unitarios/ligacao_esgoto/__pycache__/m_ligacao_esgoto.cpython-312.pyc
+src/__pycache__/main.cpython-312.pyc
+src/__pycache__/osn3.cpython-312.pyc
+src/__pycache__/retrabalhador.cpython-312.pyc
+src/unitarios/religacao/__pycache__/__init__.cpython-312.pyc
+src/wms/__pycache__/hidrometro_material.cpython-312.pyc
+
+
+
+*.pyc
+
+# Estoque sheets
+sheets/estoque_4600042975.XLSX
+sheets/estoque.XLSX
+sheets/estoque_4600041302.XLSX
+sheets/estoque_4600056089.XLSX
 
 
 # Added by cargo

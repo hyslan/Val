@@ -3,6 +3,7 @@
 import numpy as np
 from src.excel_tbs import load_worksheets
 from src.tsepai import pai_dicionario
+from src.lista_reposicao import dict_reposicao
 
 (
     lista,
@@ -24,10 +25,8 @@ from src.tsepai import pai_dicionario
     tb_st_sistema,
     tb_st_usuario,
     tb_tse_pertence_ao_servico_principal,
-    tb_tse_servico_nao_existe_no_contrato,
     tb_tse_reposicao,
-    tb_tse_retrabalho,
-    tb_tse_asfalto,
+    tb_tse_retrabalho
 ) = load_worksheets()
 
 
@@ -75,7 +74,8 @@ def verifica_tse(servico, contrato, session):
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
 
         # Pulando OS com asfalto incluso.
-        if sap_tse in tb_tse_asfalto:
+        if sap_tse in dict_reposicao['asfalto']:
+            print("Tem asfalto.")
             tse_proibida = "Aslfato na bagaça!"
             break
 
@@ -131,6 +131,12 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = 'Iara não quer.'
             break
 
+        # ---------- REVOGADO --------------------------------
+        # TROCA PÉ DE CV PREVENTIVO - Solicitado por Ivan/Estevan
+        # if sap_tse in ('153000', '153500'):
+        #     tse_proibida = 'Ivan não quer.'
+        #     break
+
         # INSTALDO CAIXA UMA (PARTE CIVIL)
         if sap_tse == '136000':
             tse_proibida = 'Instalado Caixa Uma.'
@@ -139,6 +145,12 @@ def verifica_tse(servico, contrato, session):
         # TROCA DE CAVALETE POR UMA E RELIGAÇÃO
         if sap_tse == '159000':
             tse_proibida = 'TROCA POR UMA E RELIGADA'
+            break
+
+        # SUBSTITUIDA TAMPA DE CAIXA UMA
+        # Não definido o que fazer.
+        if sap_tse == '155000':
+            tse_proibida = 'SUBSTITUIDA TAMPA DE CAIXA UMA'
             break
 
         if sap_tse in tb_tse_un:  # Verifica se está no Conjunto Unitários
