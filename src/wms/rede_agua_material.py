@@ -306,7 +306,6 @@ class RedeAguaMaterial:
 
     def receita_reparo_de_rede_de_agua(self):
         """Padrão de materiais na classe CRA."""
-<<<<<<< HEAD
         materiais_receita = [
             '10014709',
             # ABRACADEIRA FF -> TRIPARTIDA
@@ -419,8 +418,6 @@ class RedeAguaMaterial:
             # UNIÃO PLASTICA P/ TUBO PE DE 20
             '30029526',
         ]
-=======
->>>>>>> 41c8c75 (pre-update)
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
 
@@ -460,7 +457,6 @@ class RedeAguaMaterial:
                 self.tb_materiais, self.contrato,
                 self.estoque, self.session)
 
-<<<<<<< HEAD
     def receita_tra(self):
         """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
         materiais_receita = [
@@ -489,10 +485,6 @@ class RedeAguaMaterial:
             '30002204',  # DN 100 X DNR50
             '30001080',  # DN 400 X DNR20
         ]
-=======
-    def receita_troca_de_conexao_de_ligacao_de_agua(self):
-        """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
->>>>>>> 41c8c75 (pre-update)
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
