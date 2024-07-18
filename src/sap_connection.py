@@ -25,17 +25,16 @@ def populate_sessions() -> None:
 
         return sess, conn
 
-    try:
-        session, connection = connect_to_sap()
-    # pylint: disable=E1101
-    except pywintypes.com_error:
-        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-        console.print(
-            "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-        down_sap()
-        print("Wait 20 seconds...")
-        time.sleep(20)
-        session, connection = connect_to_sap()
+try:
+    session, connection = connect_to_sap()
+# pylint: disable=E1101
+except pywintypes.com_error:
+    console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+    console.print(
+        "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+    down_sap()
+    time.sleep(20)
+    session = connect_to_sap()
 
     # Obtendo o índice da última sessão ativa
     ultimo_indice = len(session) - 1
