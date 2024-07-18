@@ -1,5 +1,5 @@
 # reposicao.py
-'''Módulo agrupador de reposições'''
+"""Módulo agrupador de reposições"""
 dict_reposicao = {
     'asfalto_frio': [
         "732000",  # REPOSIÇÃO DE ASFALTO A FRIO
@@ -26,5 +26,5 @@ dict_reposicao = {
         "731000",  # REPOSIÇÃO DE ASFALTO
         "733000"  # REPOSIÇÃO DE ASFALTO INV
     ],
-    'bloquete_inv': ["738000"]  # REPOSIÇÃO DE BLOQUETE INV
+    'bloquete_inv': ["738000", "740000"]  # REPOSIÇÃO DE BLOQUETE E INV
 }
