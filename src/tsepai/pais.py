@@ -5,8 +5,7 @@ from src.excel_tbs import load_worksheets
     *_,
     tb_tse_PertenceAoServicoPrincipal,
     tb_tse_reposicao,
-    tb_tse_Retrabalho,
-    tb_tse_Asfalto,
+    tb_tse_Retrabalho
 ) = load_worksheets()
 
 PAGAR_NAO = "n"
@@ -387,7 +386,9 @@ class Unitario(Pai):
             servico_temp, num_tse_linhas, "ligacao_esgoto")
 
     def det_descoberto_nivelado_reg_cx_parada(self):
-        """Descobrir, Trocar caixa de parada - TSE 322000"""
+        """Descobrir, Trocar caixa de parada,
+         DESCOBERTA VALVULA DE REDE DE AGUA
+        TSE: 304000, 322000"""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "cx_parada")

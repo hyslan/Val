@@ -3,7 +3,7 @@ from src.lista_reposicao import dict_reposicao
 from src.unitarios.localizador import btn_localizador
 
 
-class Poco():
+class Poco:
     """Classe Unitária de Poço."""
     CODIGOS = {
         'NIV_CX_PARADA': ("456111", ("050401", "050402", "451123")),
@@ -104,7 +104,7 @@ class Poco():
         self._processar_operacao('NIV_CX_PARADA')
 
     def troca_de_caixa_de_parada(self):
-        """Troca de Caixa de Parada - Código 456112"""
+        """Troca/Descobrimento de Caixa de Parada, Válvula de Rede de Água - Código 456112"""
         self._processar_operacao('TROCA_CX_PARADA')
 
     def nivelamento(self):

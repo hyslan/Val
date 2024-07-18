@@ -31,7 +31,6 @@ def load_worksheets():
     n_motivo3 = plan_tse["n3"]
     reposicao = plan_tse["reposicao"]
     retrabalho = plan_tse["retrabalho"]
-    asfalto = plan_tse["asfalto"]
     coluna_contratada = 'A'
     coluna_tse = 'A'
     coluna_status = 'A'
@@ -68,8 +67,6 @@ def load_worksheets():
     plan_tse.active = retrabalho
     tb_tse_retrabalho = [cell.value for cell in retrabalho[coluna_tse]]
 
-    plan_tse.active = asfalto
-    tb_tse_asfalto = [cell.value for cell in asfalto[coluna_tse]]
 
     return (
         lista,
@@ -92,6 +89,5 @@ def load_worksheets():
         tb_st_usuario,
         tb_tse_pertence_ao_servico_principal,
         tb_tse_reposicao,
-        tb_tse_retrabalho,
-        tb_tse_asfalto
+        tb_tse_retrabalho
     )

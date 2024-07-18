@@ -3,6 +3,7 @@
 import numpy as np
 from src.excel_tbs import load_worksheets
 from src.tsepai import pai_dicionario
+from src.lista_reposicao import dict_reposicao
 
 (
     lista,
@@ -25,8 +26,7 @@ from src.tsepai import pai_dicionario
     tb_st_usuario,
     tb_tse_pertence_ao_servico_principal,
     tb_tse_reposicao,
-    tb_tse_retrabalho,
-    tb_tse_asfalto,
+    tb_tse_retrabalho
 ) = load_worksheets()
 
 
@@ -74,7 +74,8 @@ def verifica_tse(servico, contrato, session):
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
 
         # Pulando OS com asfalto incluso.
-        if sap_tse in tb_tse_asfalto:
+        if sap_tse in dict_reposicao['asfalto']:
+            print("Tem asfalto.")
             tse_proibida = "Aslfato na bagaça!"
             break
 

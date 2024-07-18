@@ -342,7 +342,7 @@ class Almoxarifado:
 
                 case _:
                     print("Classe não identificada.")
-                    sys.exit()
+                    return
         return
 
 

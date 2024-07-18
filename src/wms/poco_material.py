@@ -31,11 +31,13 @@ class PocoMaterial:
         self.session = session
 
     def receita_caixa_de_parada(self):
-        '''Padrão de materiais no módulo caixa de parada.'''
+        """Padrão de materiais no módulo caixa de parada e descoberto."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         tampao_estoque = self.estoque[self.estoque['Material'] == '30003442']
-        if sap_material is None and not tampao_estoque.empty:
+        # In case of 'Troca caixa de parada'
+        if sap_material is None and not tampao_estoque.empty \
+                and self.identificador[0] == '322000':
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(
@@ -72,7 +74,7 @@ class PocoMaterial:
                 self.estoque, self.session)
 
     def niv_pv_pi(self):
-        '''Material do bloco de nivelamento de PV e PI.'''
+        """Material do bloco de nivelamento de PV e PI."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         tampao_estoque = self.estoque[self.estoque['Material'] == '30032220']
