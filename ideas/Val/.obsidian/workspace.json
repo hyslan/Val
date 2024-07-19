@@ -4,29 +4,25 @@
     "type": "split",
     "children": [
       {
-        "id": "ba92760ba38ca51b",
+        "id": "6af528718fcada69",
         "type": "tabs",
         "children": [
           {
-            "id": "a2be1fd12f2cf4bc",
+            "id": "84fd934a250238f7",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Welcome.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
       },
       {
-        "id": "bc1213edc736af28",
+        "id": "ef034d2a9a1e5f44",
         "type": "tabs",
         "children": [
           {
-            "id": "090d0e719ec60487",
+            "id": "b1155a46200ea64f",
             "type": "leaf",
             "state": {
               "type": "graph",
@@ -78,6 +74,14 @@
               "type": "bookmarks",
               "state": {}
             }
+          },
+          {
+            "id": "a2be1fd12f2cf4bc",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {}
+            }
           }
         ]
       }
@@ -99,7 +103,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Welcome.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +119,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Welcome.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,9 +140,15 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "Welcome.md"
-              }
+              "state": {}
+            }
+          },
+          {
+            "id": "b0296c88d1e79b4b",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
             }
           }
         ]
@@ -153,15 +161,26 @@
   "left-ribbon": {
     "hiddenItems": {
       "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "graph:Open graph view": false,
+      "obsidian-importer:Open Importer": false
     }
   },
-  "active": "a2be1fd12f2cf4bc",
+  "active": "84fd934a250238f7",
   "lastOpenFiles": [
-    "Welcome.md"
+    "Val.md",
+    "SapGuiScripting API.md",
+    "SAPGUI.md",
+    "PyWin32.md",
+    "New TSE functions.md",
+    "Multiple SapSession.md",
+    "Create Function to create new connection and run inside it.md",
+    "Classifier for Bloquete  on Leito  in Poa's City.md",
+    "COM Object Viewer.md",
+    "Welcome.md",
+    "COM.md"
   ]
 }

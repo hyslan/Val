@@ -18,7 +18,7 @@ const _RECAPEMLG: &str = "4600044782";
 const _ZIGURATEMLQ: &str = "4600056089";
 
 // Familias
-const FAMILY: [&str; 5]  = ["cavalete", "religacao", "supressao", "hidrometro", "poco"];
+const _FAMILY: [&str; 5]  = ["cavalete", "religacao", "supressao", "hidrometro", "poco"];
 
 fn main() {
     // Lista de contratos
@@ -31,21 +31,20 @@ fn main() {
         .expect("failed to execute process");
 
     thread::sleep(Duration::from_secs(60));
-    //ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
+    // ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
     for &contract in &contracts {
-        let mut args = vec![
+        let args = vec![
             "-m", "src.main",
             "-s", str_session.as_str(),
             "-o", "9",
-            // "-c", contract, --- Catch all family possible.
-            "-p", "alefafa",
-            "-f"
+            "-c", contract, // Catch all family possible.
+            "-p", "alefafa"
         ];
 
         // Adiciona os elementos da família ao vetor de argumentos
-        for &family in FAMILY.iter() {
-            args.push(family);
-        }
+//         for &family in FAMILY.iter() {
+//             args.push(family);
+//         }
 
         Command::new("python")
             .args(&args)

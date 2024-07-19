@@ -1,3 +1,10 @@
 [
-  "dataview"
+  "dataview",
+  "obsidian-icon-folder",
+  "calendar",
+  "obsidian-importer",
+  "obsidian-linter",
+  "obsidian-tasks-plugin",
+  "obsidian-mind-map",
+  "hk-code-block"
 ]

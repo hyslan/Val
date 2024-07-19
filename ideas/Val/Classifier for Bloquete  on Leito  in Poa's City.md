@@ -1,0 +1,1 @@
+Building a [CNN Model](https://pytorch.org/tutorials/beginner/introyt/modelsyt_tutorial.html) with Pytorch and integrates with [[Val]]

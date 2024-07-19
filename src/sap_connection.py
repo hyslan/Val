@@ -41,3 +41,4 @@ except pywintypes.com_error:
     if ultimo_indice < 5:
         for _ in range(ultimo_indice, 5):
             connection.Children(ultimo_indice).CreateSession()
+# --- END
