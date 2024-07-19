@@ -44,43 +44,19 @@
             }
           },
           {
-            "id": "5c2344ca9ce38049",
+            "id": "2c115098ed625c94",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Multiple SapSession.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "1910c818f11b8f54",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "New TSE functions.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "e03ebc78edfeecb5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Classifier for Bloquete  on Leito  in Poa's City.md",
+                "file": "Create Function to create new connection and run inside it.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 3
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -168,7 +144,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Classifier for Bloquete  on Leito  in Poa's City.md",
+                "file": "Create Function to create new connection and run inside it.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -185,7 +161,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Classifier for Bloquete  on Leito  in Poa's City.md",
+                "file": "Create Function to create new connection and run inside it.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -208,7 +184,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Classifier for Bloquete  on Leito  in Poa's City.md"
+                "file": "Create Function to create new connection and run inside it.md"
               }
             }
           },
@@ -238,12 +214,13 @@
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "e03ebc78edfeecb5",
+  "active": "2c115098ed625c94",
   "lastOpenFiles": [
+    "Val.md",
+    "Create Function to create new connection and run inside it.md",
+    "Multiple SapSession.md",
     "New TSE functions.md",
     "Classifier for Bloquete  on Leito  in Poa's City.md",
-    "Multiple SapSession.md",
-    "Val.md",
     "SAPGUI.md",
     "SapGuiScripting API.md",
     "COM Object Viewer.md",

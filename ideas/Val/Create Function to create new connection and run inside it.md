@@ -1,0 +1,1 @@
+To use [[Multiple SapSession]] is needed to download as many as possible tx.sap from SAP Netweaver portal.
