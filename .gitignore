@@ -32,3 +32,6 @@ sheets/estoque_4600056089.XLSX
 # Added by cargo
 
 /target
+
+# Exclude SAP shortcut
+*.sap

@@ -11,11 +11,40 @@
             "id": "84fd934a250238f7",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "Val.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "2c115098ed625c94",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Create Function to create new connection and run inside it.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "5f5aea711e9bfaf6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "SAPConnection.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
-        ]
+        ],
+        "currentTab": 4
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -103,6 +132,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "SAPConnection.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,6 +149,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "SAPConnection.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -140,7 +171,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "SAPConnection.md"
+              }
             }
           },
           {
@@ -169,15 +202,13 @@
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "84fd934a250238f7",
+  "active": "5f5aea711e9bfaf6",
   "lastOpenFiles": [
-    "Val.md",
-    "SapGuiScripting API.md",
-    "SAPGUI.md",
-    "PyWin32.md",
-    "New TSE functions.md",
-    "Multiple SapSession.md",
     "Create Function to create new connection and run inside it.md",
+    "SAPConnection.md",
+    "Val.md",
+    "Multiple SapSession.md",
+    "New TSE functions.md",
     "Classifier for Bloquete  on Leito  in Poa's City.md",
     "COM Object Viewer.md",
     "Welcome.md",
