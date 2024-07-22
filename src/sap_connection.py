@@ -18,7 +18,8 @@ def populate_sessions() -> None:
     def connect_to_sap():
         """Função para conexão SAP"""
         pythoncom.CoInitialize()
-        sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
+        sapguiauto: win32com.client.CDispatch = win32com.client.GetObject(
+            "SAPGUI")
         application = sapguiauto.GetScriptingEngine
         conn = application.Children(0)
         sess = conn.Children

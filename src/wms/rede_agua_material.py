@@ -434,8 +434,10 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")
 
@@ -540,8 +542,10 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")
 
@@ -636,11 +640,14 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 if sap_material not in self.list_contratada:
-                    console.print(f"\n{material_estoque}", style="italic green")
+                    console.print(f"\n{material_estoque}",
+                                  style="italic green")
 
                 if sap_material not in materiais_receita \
                         and sap_material not in self.list_contratada \
