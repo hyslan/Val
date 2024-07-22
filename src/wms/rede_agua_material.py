@@ -305,7 +305,119 @@ class RedeAguaMaterial:
                             ultima_linha_material = ultima_linha_material + 1
 
     def receita_reparo_de_rede_de_agua(self):
-        '''Padrão de materiais na classe CRA.'''
+        """Padrão de materiais na classe CRA."""
+        materiais_receita = [
+            '10014709',
+            # ABRACADEIRA FF -> TRIPARTIDA
+            '30008103',
+            '30002141',
+            '30001120',
+            '30004084',
+            '30002142',
+            '30000255',
+            '30004091',
+            '30001122',
+            # CAP ELETROFUSÃO
+            '30002352',
+            '30004405',
+            # CAP FF DUCTIL BOLSA
+            '30001055',
+            # CAP FF PARA PVC
+            '30002356',
+            '30000564',
+            # CAP PVC
+            '30004421',
+            # COLAR TOMADA
+            '30000287',
+            '30004701',
+            '30004702',
+            '30002202',
+            # COLARINHO
+            '30004732',
+            '30000249',
+            '30004556',
+            # CURVA 45 GR FF P/ PVC
+            '30005264',
+            '30005265',
+            '30005266',
+            # CURVA 45 GR PVC
+            '30005280',
+            '30005283',
+            '30005282',
+            # CURVA 90 GR FF P/ PVC
+            '30002714',
+            '30005330',
+            # CURVA 90GR FF BOLSAS
+            '30008324',
+            # EXTREMIDADE FF P FLG
+            '30005517',
+            '30005519',
+            # JUNTA FF BOL VAR DIA
+            '30008409',
+            '30005611',
+            # LUVA BIPARTIDA FF
+            '30005887',
+            '30001546',
+            '30005888',
+            '30002794',
+            '30005889',
+            '30002795',
+            '30005889',
+            '30005893',
+            # LUVA CORRER FF C/ BOLSAS
+            '30005906',
+            '30002803',
+            '30005917',
+            '30002809',
+            '30005919',
+            '30005920',
+            '30008431',
+            '30005924',
+            '30002812',
+            # LUVA CORRER PVC BB
+            '30008433',
+            '30001557',
+            # LUVA ELETROFUSÃO
+            '30002823',
+            '30005752',
+            '30002826',
+            # LUVA FF PARA PVC
+            '30005772',
+            '30005773',
+            # REDUÇÃO CONC ELETROFUSÃO
+            '30001590',
+            # REDUÇÃO FF PONTA BOLSA
+            '30006911',
+            # TE ELETROFUSÃO
+            '30008671',
+            # TE DE SELA ELETROFUSÃO
+            '30011078',
+            # TE DE SERVIÇO INTERGRADO ARTICULADO
+            '30000211',
+            '30007034',
+            '30007235',
+            # TE FF DUCTIL C/ BOLSAS
+            '30008695',
+            '30007286',
+            '30003716',
+            # TE FF PARA PVC
+            '30001914',
+            '30003730',
+            '30000213',
+            # TE REDUÇÃO ELETROFUSÃO
+            '30007228',
+            # TUBO
+            '30007853',
+            '30028866',
+            '30028862',
+            '30028864',
+            '30007896',
+            # UNIÃO P/ PEAD
+            '30003832',
+            '30007765',
+            # UNIÃO PLASTICA P/ TUBO PE DE 20
+            '30029526',
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
 
@@ -322,8 +434,10 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")
 
@@ -345,8 +459,34 @@ class RedeAguaMaterial:
                 self.tb_materiais, self.contrato,
                 self.estoque, self.session)
 
-    def receita_troca_de_conexao_de_ligacao_de_agua(self):
-        '''Padrão de materiais na classe Troca de Conexão de Ligação de Água.'''
+    def receita_tra(self):
+        """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
+        materiais_receita = [
+            '30007896', '50001070', '30001348',
+            '30006747', '50000021', '10014709',
+            # --- TE DE SERVIÇO INTERGRADO DN 20 OU 32 ---
+            '30008677',  # ART DN 100 P/ DE 32
+            '30000211',  # ART DN 100-DE 110 X 20
+            '30007034',  # ART DN 50 P/ DE 20
+            '30003467',  # ART DN 50 P/ D3 32
+            '30007235',  # ART DN 75 P/ DE 20
+            '30001683',  # ART DN 75 P/ DE 32
+            # --- TE DE SERVIÇO ELETROFUSÃO DN 20 OU 32 ---
+            '30000992',  # DE 110 X 20
+            '30003669',  # DE 160 X 20
+            '30007240',  # DE 225 X 20
+            '30007245',  # DE 90 X 32
+            '30003672',  # DE 90 X 20
+            '30007195',  # TE PP P/ TUBO PEAD DE 32 X 32 MM
+            # --- COLAR TOMADA ACO INOX DNR20 ---
+            '30004701',  # DN 200 A 300
+            '30004702',  # DN 50 A 150
+            '30004703',  # DN 200 A 300
+            # --- COLAR TOMADA FERRO CINTA INOX ---
+            '30002202',  # DN 50 A 150 X DNR25
+            '30002204',  # DN 100 X DNR50
+            '30001080',  # DN 400 X DNR20
+        ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
@@ -402,8 +542,10 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")
 
@@ -498,11 +640,14 @@ class RedeAguaMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_lista.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 if sap_material not in self.list_contratada:
-                    console.print(f"\n{material_estoque}", style="italic green")
+                    console.print(f"\n{material_estoque}",
+                                  style="italic green")
 
                 if sap_material not in materiais_receita \
                         and sap_material not in self.list_contratada \
