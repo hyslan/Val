@@ -60,7 +60,8 @@ class CorteRestabMaterial:
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 # Retirar hidro vinculado em religação.
                 if sap_material in ('50000108', '50000530'):
@@ -111,7 +112,8 @@ class CorteRestabMaterial:
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
                 material_lista.append(sap_material)
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 if sap_material == '30029526' \
                         and self.contrato == "4600041302":
@@ -135,4 +137,8 @@ class CorteRestabMaterial:
             # Materiais do Global.
             materiais_contratada.materiais_contratada(
                 self.tb_materiais, self.contrato,
+                self.estoque, self.session)
+            # Caça lacre
+            lacre_material.caca_lacre(
+                self.tb_materiais, self.operacao,
                 self.estoque, self.session)
