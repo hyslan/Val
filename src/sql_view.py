@@ -106,7 +106,8 @@ class Tabela:
         return df_array
 
     def clean_duplicates(self):
-        """Delete duplicates rows"""
+        """Delete duplicates rows
+        Keeping only the most recent one"""
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
@@ -117,10 +118,11 @@ class Tabela:
 
         sql_command = ("WITH CTE AS ("
                        "SELECT *,"
-                       " ROW_NUMBER() OVER(PARTITION BY Ordem ORDER BY (SELECT 0)) AS RowNumber"
+                       " ROW_NUMBER() OVER(PARTITION BY Ordem ORDER BY DataRegistro DESC) AS RowNumber"
                        " FROM [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas"
                        ")"
-                       " DELETE FROM CTE WHERE RowNumber > 1;")
+                       " DELETE FROM CTE WHERE RowNumber > 1;"
+                       )
         cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()
@@ -138,7 +140,8 @@ class Tabela:
         cnn = engine.connect()
 
         sql_command = ("SELECT NumeroOS, ATC, CodigoContrato FROM [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] "
-                       f"WHERE DataFimExecucao >= '{month_start}' AND DataFimExecucao <= '{month_end}' "
+                       f"WHERE DataFimExecucao >= '{
+                           month_start}' AND DataFimExecucao <= '{month_end}' "
                        "AND Resultado = 'RETRABALHO CONFIRMADO' AND CodigoContrato <> '9999999999'")
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
@@ -180,7 +183,7 @@ class Tabela:
             family_str = ','.join([f"'{f}'" for f in family])
         else:
             family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO', "
-                          "'REDE AGUA'"  #, 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
+                          "'REDE AGUA'"  # , 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
                           )
 
         console.print("\n [b]Família escolhida: ", family_str)
@@ -189,13 +192,14 @@ class Tabela:
         # TSEs leave out the plumbing services by Iara.
         chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'" if contrato == "4600042975" else "'',"
         sql_command = ("SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                       f"WHERE FAMILIA IN ({family_str}) AND Contrato = '{contrato}' "
+                       f"WHERE FAMILIA IN ({family_str}) AND Contrato = '{
+                           contrato}' "
                        f"AND TSE_OPERACAO_ZSCP NOT IN ( "
                        "'731000', '733000', '743000', '745000', '785000', '785500', "  # -- SERVIÇOS DE ASFALTO
                        "'755000', '714000', '782500', '282000', '300000', '308000', '310000', '311000', '313000', "
                        "'315000', '532000', '564000', '588000', '590000', '709000', '700000', '593000', '253000', "
                        "'250000', '209000', '605000', '605000', '263000', '255000', '254000', '282000', '265000', "
-                       "'260000', '265000', '263000', '262000', '284500', '286000', '282500', "  # -- RAMAL ÁGUA 
+                       "'260000', '265000', '263000', '262000', '284500', '286000', '282500', "  # -- RAMAL ÁGUA
                        # UNITÁRIO
                        # Obeying Iara's orders
                        f"{chief_iara_orders}"
