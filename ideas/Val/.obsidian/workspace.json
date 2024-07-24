@@ -44,7 +44,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 2
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -193,19 +193,20 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "graph:Open graph view": false,
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
       "obsidian-importer:Open Importer": false
     }
   },
   "active": "5f5aea711e9bfaf6",
   "lastOpenFiles": [
-    "Create Function to create new connection and run inside it.md",
+    "Log Result.md",
     "SAPConnection.md",
+    "Create Function to create new connection and run inside it.md",
     "Val.md",
     "Multiple SapSession.md",
     "New TSE functions.md",

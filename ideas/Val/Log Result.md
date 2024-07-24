@@ -1,0 +1,1 @@
+Do results in logging and use the "rodapé" SAPGUI's Message.
