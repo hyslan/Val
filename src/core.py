@@ -50,6 +50,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
         return
 
     try:
+        # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
             if not sessions.Count == 6:
                 new_session: win32com.client.CDispatch = sap.criar_sessao(
