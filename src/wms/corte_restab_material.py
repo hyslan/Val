@@ -34,6 +34,7 @@ class CorteRestabMaterial:
         """Padrão de materiais na classe Religação."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
+        print("Religacao's recipe")
         lacre_estoque = self.estoque[
             self.estoque['Material'] == '50001070']
         if sap_material is None and not lacre_estoque.empty:
@@ -77,12 +78,13 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                if sap_material not in self.list_contratada \
-                        and not sap_material == '500001070':
+                if sap_material != '50001070' \
+                        and sap_material not in self.list_contratada:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
                 if material_estoque.empty:
+                    print("VAzio?")
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
@@ -99,7 +101,7 @@ class CorteRestabMaterial:
     def receita_supressao(self):
         """Padrão de materiais para supressão."""
         materiais_receita = [
-            '30029526', '10014709', '30003832',
+            '30029526', '10014709', '30003832', '50001070'
         ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)

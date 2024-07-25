@@ -264,6 +264,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         case 'Falha catastrófica':
                             console.print(
                                 "[bold red]SAPGUI has crashed. :fire:")
+                            console.print_exception()
                             # session = rollback(session_n)
                             # continue
                             break

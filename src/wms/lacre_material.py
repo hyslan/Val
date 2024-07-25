@@ -35,6 +35,7 @@ def caca_lacre(tb_materiais, etapa, estoque, session):
             tb_materiais.modifyCell(
                 tb_materiais.CurrentCellRow, "QUANT", "1"
             )
+            input("antes do setCurrentCell")
             tb_materiais.setCurrentCell(
                 tb_materiais.CurrentCellRow, "QUANT"
             )
