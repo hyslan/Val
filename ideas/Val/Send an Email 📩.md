@@ -1,0 +1,1 @@
+Every end of the day, how many order did the [[Val]] do to the managers as a table.
