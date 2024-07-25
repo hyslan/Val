@@ -182,8 +182,9 @@ class Tabela:
         if family is not None:
             family_str = ','.join([f"'{f}'" for f in family])
         else:
-            family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO', "
-                          "'REDE AGUA'"  # , 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
+            family_str = ("'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO' "
+                          # TODO: Resolve each TSE of these families below:
+                          # "'REDE AGUA'"  # , 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
                           )
 
         console.print("\n [b]Família escolhida: ", family_str)
