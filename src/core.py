@@ -73,7 +73,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
         # Variáveis de Status da Ordem
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
-        qtd_ordem = 0  # Contador de ordens pagas.
+        qtd_ordem: int = 0  # Contador de ordens pagas.
         # Loop para pagar as ordens
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
@@ -89,13 +89,14 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                  posicao_rede,
                  profundidade,
                  hidro,
-                 operacao,
+                 _,  # Skipping 'operacao'
                  diametro_ramal,
                  diametro_rede
                  ) = consulta_os(ordem, session, contrato)
                 # Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
+                    # TODO: send to tb_valoradas status of OS.
                     continue
 
                 if revalorar is False:
@@ -140,6 +141,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                             ja_valorado = sql_view.Tabela(
                                 ordem=ordem, cod_tse="")
                             ja_valorado.valorada(obs="SIM")
+                            # TODO: send User, Date, total assigned price.
                             ja_valorado.clean_duplicates()
                             continue
 
@@ -170,6 +172,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Sem posição de rede.")
+                    # TODO: Send as Observation the wrong connection.
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -178,6 +181,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Sem profundidade do ramal.")
+                    # TODO: Send as Observation the wrong profundity.
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -240,6 +244,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     console.print(
                         f"Ordem: {ordem} não foi salva.", style="italic red")
                     console.print(f"[bold yellow]Motivo: {rodape}")
+                    # TODO: Send to tb_valoradas 'NÃO' and reason why.
                     continue
                     # break
                 # Fim do contador de valoração.
@@ -281,6 +286,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                             oxe()
                 except:
                     console.print(errocritico)
+                    # TODO: needs a log
 
         validador = True
 
