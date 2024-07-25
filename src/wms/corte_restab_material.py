@@ -82,7 +82,7 @@ class CorteRestabMaterial:
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
-                if material_estoque.empty:
+                if material_estoque.empty and not sap_material == '500001070':
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )
