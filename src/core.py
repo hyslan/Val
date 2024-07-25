@@ -1,7 +1,7 @@
 # core.py
 """Coração da Val."""
 # pylint: disable=W0611
-import sys
+import logging
 import time
 import numpy as np
 import pywintypes
@@ -24,6 +24,9 @@ from src.temporizador import cronometro_val
 from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
+# Global Class print highlighting
+console: rich.console.Console = Console()
+
 
 def rollback(n: int) -> win32com.client.CDispatch:
     try:
@@ -38,17 +41,20 @@ def rollback(n: int) -> win32com.client.CDispatch:
     return session
 
 
-def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
-    """Sistema Val."""
-    console: rich.console.Console = Console()
-    transacao: Transacao = Transacao(contrato, "100", session)
+def estoque_virtual(contrato, sessions, session) -> DataFrame:
+    """Get the virtual stock in MBLB transaction using contrato's number.
 
-    try:
-        sessions: win32com.client.CDispatch = sap.listar_sessoes()
-    # pylint: disable=E1101
-    except pywintypes.com_error:
-        return
+    Args:
+        contrato (str): _description_
+        sessions (win32com.client.CDispatch): Len of Sessions active.
+        session (win32com.client.CDispatch): Session in use.
 
+    Raises:
+        Exception: Error Message.
+
+    Returns:
+        DataFrame: Pandas Dataframe with all material allocated to the 'contrato'
+    """
     try:
         # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
@@ -59,14 +65,30 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     new_session, sessions, contrato)
             else:
                 estoque_hj: DataFrame = estoque(session, sessions, contrato)
-    except:
+
+        return estoque_hj
+
+    except Exception as e_estoque_v:
+        console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
+        raise Exception("Extração do Estoque Virtual Falhou!")
+
+
+def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
+    """Sistema Val."""
+    transacao: Transacao = Transacao(contrato, "100", session)
+
+    try:
+        sessions: win32com.client.CDispatch = sap.listar_sessoes()
+    # pylint: disable=E1101
+    except pywintypes.com_error:
         return
 
+    estoque_hj: DataFrame = estoque_virtual(contrato, sessions, session)
+
     limite_execucoes = len(pendentes_array)
-    if limite_execucoes == 0:
-        return None, True
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
+    # * In case of null Df.
     if limite_execucoes == 0:
         return None, True
 
@@ -75,11 +97,11 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
         qtd_ordem: int = 0  # Contador de ordens pagas.
-        # Loop para pagar as ordens
+        # Loop to pay service's orders
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
                 start_time = time.time()  # Contador de tempo para valorar.
-                print(f"Ordem atual: {ordem}")
+                console.print(f"[b]Ordem atual: {ordem}")
                 print("Verificando Status da Ordem.")
                 # Função consulta de Ordem.
                 print("Iniciando Consulta.")
