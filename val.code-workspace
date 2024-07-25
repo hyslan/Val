@@ -17,7 +17,7 @@
 		"python.testing.pytestEnabled": true,
 		"python.languageServer": "Default",
 		"pylint.cwd": "${workspaceFolder}",
-		"editor.defaultFormatter": "ms-python.pylint",
+		"editor.defaultFormatter": "ms-python.vscode-pylance",
 		"[jsonc]": {
 			"editor.defaultFormatter": "vscode.json-language-features"
 		}
