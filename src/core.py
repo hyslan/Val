@@ -52,8 +52,10 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
     try:
         if not contrato == "4600043760":
             if not sessions.Count == 6:
-                new_session: win32com.client.CDispatch = sap.criar_sessao(sessions)
-                estoque_hj: DataFrame = estoque(new_session, sessions, contrato)
+                new_session: win32com.client.CDispatch = sap.criar_sessao(
+                    sessions)
+                estoque_hj: DataFrame = estoque(
+                    new_session, sessions, contrato)
             else:
                 estoque_hj: DataFrame = estoque(session, sessions, contrato)
     except:
@@ -71,7 +73,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
         # Variáveis de Status da Ordem
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
-        qtd_ordem = 0  # Contador de ordens pagas.
+        qtd_ordem: int = 0  # Contador de ordens pagas.
         # Loop para pagar as ordens
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
@@ -87,13 +89,14 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                  posicao_rede,
                  profundidade,
                  hidro,
-                 operacao,
+                 _,  # Skipping 'operacao'
                  diametro_ramal,
                  diametro_rede
                  ) = consulta_os(ordem, session, contrato)
                 # Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
+                    # TODO: send to tb_valoradas status of OS.
                     continue
 
                 if revalorar is False:
@@ -101,6 +104,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         print(f"OS: {ordem} já valorada.")
                         ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
                         ja_valorado.valorada("SIM")
+                        ja_valorado.clean_duplicates()
                         continue
 
                 transacao.municipio = cod_mun
@@ -119,6 +123,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Definitiva")
+                    ja_valorado.clean_duplicates()
                     continue
 
                 try:
@@ -136,6 +141,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                             ja_valorado = sql_view.Tabela(
                                 ordem=ordem, cod_tse="")
                             ja_valorado.valorada(obs="SIM")
+                            # TODO: send User, Date, total assigned price.
+                            ja_valorado.clean_duplicates()
                             continue
 
                 # pylint: disable=E1101
@@ -165,6 +172,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Sem posição de rede.")
+                    # TODO: Send as Observation the wrong connection.
+                    ja_valorado.clean_duplicates()
                     continue
 
                 if profundidade_errada is True:
@@ -172,6 +181,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Sem profundidade do ramal.")
+                    # TODO: Send as Observation the wrong profundity.
+                    ja_valorado.clean_duplicates()
                     continue
 
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
@@ -179,6 +190,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(obs="Num Pode")
+                    ja_valorado.clean_duplicates()
                     continue
 
                 # Aba Materiais
@@ -229,8 +241,10 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ordem, qtd_ordem, contrato, session)
                 salvo = "Ajustes de valoração salvos com sucesso."
                 if not salvo == rodape:
-                    console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
+                    console.print(
+                        f"Ordem: {ordem} não foi salva.", style="italic red")
                     console.print(f"[bold yellow]Motivo: {rodape}")
+                    # TODO: Send to tb_valoradas 'NÃO' and reason why.
                     continue
                     # break
                 # Fim do contador de valoração.
@@ -247,17 +261,20 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     _, descricao, _, _ = errocritico.args
                     match descricao:
                         case 'Falha catastrófica':
-                            console.print("[bold red]SAPGUI has crashed. :fire:")
+                            console.print(
+                                "[bold red]SAPGUI has crashed. :fire:")
                             # session = rollback(session_n)
                             # continue
                             break
                         case 'Falha na chamada de procedimento remoto.':
-                            console.print("[bold red]SAPGUI has been finished strangely. :fire:")
+                            console.print(
+                                "[bold red]SAPGUI has been finished strangely. :fire:")
                             # session = rollback(session_n)
                             # continue
                             break
                         case 'O servidor RPC não está disponível.':
-                            console.print("[bold red]SAPGUI was weirdly disconnected. :fire:")
+                            console.print(
+                                "[bold red]SAPGUI was weirdly disconnected. :fire:")
                             # session = rollback(session_n)
                             # continue
                             break
@@ -269,6 +286,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                             oxe()
                 except:
                     console.print(errocritico)
+                    # TODO: needs a log
 
         validador = True
 

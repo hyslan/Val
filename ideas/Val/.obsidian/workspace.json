@@ -20,31 +20,42 @@
             }
           },
           {
-            "id": "2c115098ed625c94",
+            "id": "19c2dde15a25f115",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Create Function to create new connection and run inside it.md",
+                "file": "Forbidden TSE 🚫.md",
                 "mode": "source",
                 "source": false
               }
             }
           },
           {
-            "id": "5f5aea711e9bfaf6",
+            "id": "f3fe1179e01bbb40",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "SAPConnection.md",
+                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "cbcc71883413ff8a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TSE 730600 - Compactação e Selagem da Base.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 4
+        ]
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -132,7 +143,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "SAPConnection.md",
+                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -149,7 +160,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "SAPConnection.md",
+                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -172,7 +183,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "SAPConnection.md"
+                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md"
               }
             }
           },
@@ -194,19 +205,25 @@
   "left-ribbon": {
     "hiddenItems": {
       "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "graph:Open graph view": false,
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "5f5aea711e9bfaf6",
+  "active": "f3fe1179e01bbb40",
   "lastOpenFiles": [
-    "Create Function to create new connection and run inside it.md",
-    "SAPConnection.md",
+    "TSE 730600 - Compactação e Selagem da Base.md",
+    "TSE 332500 - Reparo de Rede De Água Não Visível.md",
+    "Forbidden TSE 🚫.md",
+    "Send an Email 📩.md",
+    "SQL Tables and Views 🎲.md",
     "Val.md",
+    "Create Function to create new connection and run inside it.md",
+    "Log Result.md",
+    "SAPConnection.md",
     "Multiple SapSession.md",
     "New TSE functions.md",
     "Classifier for Bloquete  on Leito  in Poa's City.md",
