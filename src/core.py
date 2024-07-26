@@ -93,7 +93,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
         return None, True
 
     with console.status("[bold blue]Trabalhando..."):
-        # Variáveis de Status da Ordem
+        # * Variáveis de Status da Ordem
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
         qtd_ordem: int = 0  # Contador de ordens pagas.
