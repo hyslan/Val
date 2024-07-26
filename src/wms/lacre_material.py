@@ -23,7 +23,8 @@ def caca_lacre(tb_materiais, etapa, estoque, session):
             n_material, "MATERIAL")
         sap_etapa_material = tb_materiais.GetCellValue(
             n_material, "ETAPA")
-        procura_lacre.append({"Material": sap_material, "Etapa": sap_etapa_material})
+        procura_lacre.append(
+            {"Material": sap_material, "Etapa": sap_etapa_material})
 
     if busca_material_etapa(procura_lacre, "50001070", etapa):
         btn_busca_material(tb_materiais, session, '50001070')
@@ -35,7 +36,6 @@ def caca_lacre(tb_materiais, etapa, estoque, session):
             tb_materiais.modifyCell(
                 tb_materiais.CurrentCellRow, "QUANT", "1"
             )
-            input("antes do setCurrentCell")
             tb_materiais.setCurrentCell(
                 tb_materiais.CurrentCellRow, "QUANT"
             )
@@ -70,4 +70,3 @@ def caca_lacre(tb_materiais, etapa, estoque, session):
             ultima_linha_material, "QUANT"
         )
         ultima_linha_material = ultima_linha_material + 1
-
