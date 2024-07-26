@@ -2,6 +2,7 @@
 """Coração da Val."""
 # pylint: disable=W0611
 import logging
+import datetime as dt
 import time
 import numpy as np
 import pywintypes
@@ -114,12 +115,19 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                  hidro,
                  _,  # Skipping 'operacao'
                  diametro_ramal,
-                 diametro_rede
+                 diametro_rede,
+                 principal_tse
                  ) = consulta_os(ordem, session, contrato)
-                # Consulta Status da Ordem
+                # * Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
-                    # TODO: send to tb_valoradas status of OS.
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Tabela(ordem, principal_tse)
+                    ja_valorado.valorada(
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="ABERTA", obs='', data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent
+                    )
                     continue
 
                 if revalorar is False:
