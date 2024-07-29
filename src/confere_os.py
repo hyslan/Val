@@ -226,5 +226,6 @@ def consulta_os(n_os, session, contrato):
         hidro,
         operacao,
         diametro_ramal,
-        diametro_rede
+        diametro_rede,
+        principal_tse
     )
