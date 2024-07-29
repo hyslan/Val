@@ -9,7 +9,7 @@ from rich.console import Console
 console = Console()
 
 
-class Tabela:
+class Sql:
     """Tabela de valoração"""
 
     def __init__(self, ordem: str, cod_tse: str) -> None:

@@ -68,7 +68,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun):
 
                 print(f"Ordem: {ordem} não foi salva.")
                 time_spent = cronometro_val(start_time, ordem)
-                ja_valorado = sql_view.Tabela(
+                ja_valorado = sql_view.Sql(
                     ordem=ordem, cod_tse=principal_tse)
                 ja_valorado.valorada(
                     obs=rodape,
@@ -107,7 +107,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun):
         print(f"Status da Ordem: {status_sistema}, {status_usuario}")
         console.print("[italic green]Foi Salvo com sucesso! :rocket:")
         time_spent = cronometro_val(start_time, ordem)
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse=principal_tse)
+        ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
         ja_valorado.valorada(
             obs=rodape,
             valorado="SIM", contrato=contrato, municipio=cod_mun,
@@ -121,7 +121,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun):
         console.print(
             f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
         time_spent = cronometro_val(start_time, ordem)
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse=principal_tse)
+        ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
         ja_valorado.valorada(
             obs=rodape,
             valorado="NÃO", contrato=contrato, municipio=cod_mun,

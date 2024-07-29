@@ -85,7 +85,7 @@ def valorator_user(session, ordem):
     if data_valorado is not None:
         print(f"OS: {ordem} já valorada.")
         print(f"Data: {data_valorado}")
-        ja_valorado = sql_view.Tabela(
+        ja_valorado = sql_view.Sql(
             ordem=ordem, cod_tse="")
         ja_valorado.valorada(obs="SIM")
         # TODO: send User, Date, total assigned price.
@@ -140,7 +140,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
                     time_spent = cronometro_val(start_time, ordem)
-                    ja_valorado = sql_view.Tabela(ordem, principal_tse)
+                    ja_valorado = sql_view.Sql(ordem, principal_tse)
                     ja_valorado.valorada(
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
                         status="ABERTA", obs='', data_valoracao=None,
@@ -152,7 +152,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     if status_usuario == valorada:
                         print(f"OS: {ordem} já valorada.")
                         time_spent = cronometro_val(start_time, ordem)
-                        ja_valorado = sql_view.Tabela(
+                        ja_valorado = sql_view.Sql(
                             ordem=ordem, cod_tse=principal_tse)
                         ja_valorado.valorada(
                             valorado="SIM", contrato=contrato, municipio=cod_mun,
@@ -176,7 +176,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 except pywintypes.com_error:
                     print(f"Ordem: {ordem} em medição definitiva.")
                     time_spent = cronometro_val(start_time, ordem)
-                    ja_valorado = sql_view.Tabela(
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse=principal_tse)
                     ja_valorado.valorada(
                         valorado="SIM", contrato=contrato, municipio=cod_mun,
@@ -202,7 +202,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                             time_spent = cronometro_val(start_time, ordem)
                             dt_payed = dt.datetime.strptime(
                                 data_valorado, "%d/%m/%Y").date()
-                            ja_valorado = sql_view.Tabela(
+                            ja_valorado = sql_view.Sql(
                                 ordem=ordem, cod_tse=principal_tse)
                             ja_valorado.valorada(
                                 valorado="SIM", contrato=contrato, municipio=cod_mun,
@@ -239,7 +239,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # exit()
                 if ligacao_errada is True:
                     time_spent = cronometro_val(start_time, ordem)
-                    ja_valorado = sql_view.Tabela(
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Sem posição de rede.",
@@ -252,7 +252,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
                 if profundidade_errada is True:
                     time_spent = cronometro_val(start_time, ordem)
-                    ja_valorado = sql_view.Tabela(
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Sem profundidade do ramal.",
@@ -266,7 +266,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
                 if tse_proibida is not None:
                     time_spent = cronometro_val(start_time, ordem)
-                    ja_valorado = sql_view.Tabela(
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
                         obs="Num Pode",
