@@ -97,7 +97,10 @@ def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, s
         0, "DATA")
     matricula = grid_historico.GetCellValue(0, "MODIFICADO")
     total = new_session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    f_total = float(total.replace(".", "").replace(",", "."))
+    if not total == '':
+        f_total = float(total.replace(".", "").replace(",", "."))
+    else:
+        f_total = 0
     if data_valorado is not None:
         time_spent = cronometro_val(start_time, ordem)
         print(f"OS: {ordem} já valorada.")
@@ -342,17 +345,9 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
                     ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time)
-                salvo = "Ajustes de valoração salvos com sucesso."
-                if not salvo == rodape:
-                    console.print(
-                        f"Ordem: {ordem} não foi salva.", style="italic red")
-                    console.print(f"[bold yellow]Motivo: {rodape}")
-                    # TODO: Send to tb_valoradas 'NÃO' and reason why.
-                    continue
                 # ! debug
-                    # break
-                # Fim do contador de valoração.
-                cronometro_val(start_time, ordem)
+                # break
+
                 console.print(
                     Panel.fit(
                         f"Quantidade de ordens valoradas: {qtd_ordem}."),

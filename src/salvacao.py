@@ -23,7 +23,10 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
     salvo = "Ajustes de valoração salvos com sucesso."
     total = session.findById(
         "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    f_total = float(total.replace(".", "").replace(",", "."))
+    if not total == '':
+        f_total = float(total.replace(".", "").replace(",", "."))
+    else:
+        f_total = 0
 
     def salvar_valoracao(session_id):
         """Função para salvar valoração."""
@@ -88,7 +91,9 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
                 codigo_material = correspondencias.group(1)
                 print(codigo_material)
 
-            print(f"Ordem: {ordem} não foi salva.")
+            console.print(
+                f"Ordem: {ordem} não foi salva.", style="italic red")
+            console.print(f"[bold yellow]Motivo: {rodape}")
             time_spent = cronometro_val(start_time, ordem)
             ja_valorado = sql_view.Sql(
                 ordem=ordem, cod_tse=principal_tse)
