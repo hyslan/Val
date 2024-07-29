@@ -38,6 +38,9 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
                         session_id, pythoncom.IID_IDispatch)
                 )
                 print("Salvando valoração!")
+                total = session.findById(
+                    "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
+                f_total = float(total.replace(".", "").replace(",", "."))
                 gui.findById("wnd[0]").sendVKey(11)
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
                 rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
@@ -76,7 +79,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
                     status="DISPONÍVEL", data_valoracao=None,
                     matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
-            return rodape
+            return rodape, f_total
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
@@ -113,7 +116,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
             valorado="SIM", contrato=contrato, municipio=cod_mun,
             status="VALORADA", data_valoracao=None,
             # TODO: get total amount from SAP
-            matricula='117615', valor_medido=0, tempo_gasto=time_spent
+            matricula='117615', valor_medido=f_total, tempo_gasto=time_spent
         )
         # Incremento + de Ordem.
         qtd_ordem += 1

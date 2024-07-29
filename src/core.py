@@ -279,7 +279,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     list_chave_rb_despesa,
                     list_chave_unitario,
                     chave_rb_investimento,
-                    chave_unitario,
+                    _,  # Skipping 'chave_unitario'
                     ligacao_errada,
                     profundidade_errada
                 ) = precificador(tse, corte, relig,
@@ -295,7 +295,6 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
                         status="DISPONÍVEL", data_valoracao=None,
                         matricula='117615', valor_medido=0, tempo_gasto=time_spent)
-                    # TODO: Send as Observation the wrong connection.
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -308,7 +307,6 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
                         status="DISPONÍVEL", data_valoracao=None,
                         matricula='117615', valor_medido=0, tempo_gasto=time_spent)
-                    # TODO: Send as Observation the wrong profundity.
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -330,6 +328,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                                     list_chave_unitario, hidro, diametro_ramal,
                                     diametro_rede, contrato, estoque_hj, posicao_rede, session)
                 # Fim dos materiais
+                # ! debug
                 # exit()
                 # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
@@ -341,6 +340,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     console.print(f"[bold yellow]Motivo: {rodape}")
                     # TODO: Send to tb_valoradas 'NÃO' and reason why.
                     continue
+                # ! debug
                     # break
                 # Fim do contador de valoração.
                 cronometro_val(start_time, ordem)
