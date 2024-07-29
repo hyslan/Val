@@ -184,14 +184,15 @@ class Sql:
 
         if data_valoracao is None:
             data_valoracao = dt.datetime.now().date()
-            data_valoracao = data_valoracao.strftime('%m/%d/%Y')
+
+        data_valoracao = data_valoracao.strftime('%m/%d/%Y')
 
         # ! DEBUG
         print("Argumentos:")
         print(f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
               f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
               f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
-        # exit()
+        exit()
 
         sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] " +
                        "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, " +

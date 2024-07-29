@@ -4,6 +4,7 @@
 import logging
 import datetime as dt
 import time
+from typing import Union
 import numpy as np
 import pywintypes
 import rich.console
@@ -74,31 +75,52 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
         raise Exception("Extração do Estoque Virtual Falhou!")
 
 
-def valorator_user(session, sessions, ordem, contrato, cod_mun):
+def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, start_time) -> Union[str, None]:
+    data_valorado = None
     if not sessions.Count == 6:
         new_session: win32com.client.CDispatch = sap.criar_sessao(
             sessions)
     else:
         new_session = session
 
+    con = sap.listar_conexoes()
+
     transaction_check: Transacao = Transacao(contrato, cod_mun, new_session)
     transaction_check.run_transacao(ordem, tipo="consulta")
 
-    session.findById(
+    new_session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
     grid_historico = session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
         + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
     data_valorado = grid_historico.GetCellValue(
         0, "DATA")
+    matricula = grid_historico.GetCellValue(0, "MODIFICADO")
+    total = new_session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
+    f_total = float(total.replace(".", "").replace(",", "."))
     if data_valorado is not None:
+        time_spent = cronometro_val(start_time, ordem)
         print(f"OS: {ordem} já valorada.")
         print(f"Data: {data_valorado}")
+        print(f"Matrícula: {matricula}")
+        print(f"Valor Medido: ", f_total)
         ja_valorado = sql_view.Sql(
-            ordem=ordem, cod_tse="")
-        ja_valorado.valorada(obs="SIM")
-        # TODO: send User, Date, total assigned price.
-        ja_valorado.clean_duplicates()
+            ordem=ordem, cod_tse=principal_tse)
+        try:
+            ja_valorado.valorada(
+                valorado="SIM", contrato=contrato, municipio=cod_mun,
+                status="VALORADA", obs='', data_valoracao=data_valorado,
+                matricula=matricula, valor_medido=f_total, tempo_gasto=time_spent
+            )
+            ja_valorado.clean_duplicates()
+        except Exception as e_valorado:
+            print("Erro no SQL.")
+            print(f"Erro em valorator_user: {e_valorado}")
+
+    if not sessions.Count == 6:
+        con.CloseSession(new_session.ID)
+
+    return data_valorado
 
 
 def inspector_materials(
@@ -203,15 +225,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if revalorar is False:
                     if status_usuario == valorada:
                         print(f"OS: {ordem} já valorada.")
-                        time_spent = cronometro_val(start_time, ordem)
-                        ja_valorado = sql_view.Sql(
-                            ordem=ordem, cod_tse=principal_tse)
-                        ja_valorado.valorada(
-                            valorado="SIM", contrato=contrato, municipio=cod_mun,
-                            # Open zsbmm216 and get the date of the last valuation.
-                            status="VALORADA", obs='', data_valoracao=None,
-                            matricula='', valor_medido=0, tempo_gasto=time_spent)
-                        ja_valorado.clean_duplicates()
+                        valorator_user(
+                            session, sessions, ordem, contrato, cod_mun, principal_tse, start_time)
                         continue
 
                 # * Go To ZSBMM216 Transaction
@@ -242,31 +257,11 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
                 # * Check if the 'Ordem' was already valued.
                 try:
-                    if revalorar is False:
-                        session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-                        grid_historico = session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
-                        data_valorado = grid_historico.GetCellValue(
-                            0, "DATA")
-                        if data_valorado is not None:
-                            print(f"OS: {ordem} já valorada.")
-                            print(f"Data: {data_valorado}")
-                            time_spent = cronometro_val(start_time, ordem)
-                            dt_payed = dt.datetime.strptime(
-                                data_valorado, "%d/%m/%Y").date()
-                            ja_valorado = sql_view.Sql(
-                                ordem=ordem, cod_tse=principal_tse)
-                            ja_valorado.valorada(
-                                valorado="SIM", contrato=contrato, municipio=cod_mun,
-                                # Open zsbmm216 and get the date of the last valuation.
-                                status="VALORADA", obs='', data_valoracao=dt_payed,
-                                matricula='', valor_medido=0, tempo_gasto=time_spent
-                            )
-                            # TODO: send User, Date, total assigned price.
-                            ja_valorado.clean_duplicates()
-                            continue
+                    data_valorado = valorator_user(
+                        session, sessions, ordem, contrato, cod_mun, principal_tse, start_time
+                    )
+                    if data_valorado is not None:
+                        continue
 
                 # pylint: disable=E1101
                 except pywintypes.com_error:
