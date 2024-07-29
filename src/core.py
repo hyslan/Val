@@ -114,8 +114,8 @@ def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, s
             )
             ja_valorado.clean_duplicates()
         except Exception as e_valorado:
-            print("Erro no SQL.")
-            print(f"Erro em valorator_user: {e_valorado}")
+            console.print(
+                f"[i yellow]Erro no SQL de valorator_user: {e_valorado}")
 
     if not sessions.Count == 6:
         con.CloseSession(new_session.ID)
@@ -257,21 +257,30 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
                 # * Check if the 'Ordem' was already valued.
                 try:
-                    data_valorado = valorator_user(
-                        session, sessions, ordem, contrato, cod_mun, principal_tse, start_time
-                    )
-                    if data_valorado is not None:
-                        continue
+                    session.findById(
+                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                    MESSAGE_NOT_VALUED = "Não há dados para exibição."
+                    rodape = session.findById("wnd[0]/sbar").Text
+                    if rodape == MESSAGE_NOT_VALUED:
+                        print(f"OS: {ordem} não foi valorada.")
+                        print("OS Livre para valorar.")
+                        session.findById(
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
+                        tse = session.findById(
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                        )
+                    else:
+                        data_valorado = valorator_user(
+                            session, sessions, ordem, contrato, cod_mun, principal_tse, start_time
+                        )
+                        if data_valorado is not None:
+                            continue
 
                 # pylint: disable=E1101
                 except pywintypes.com_error:
-                    print("OS Livre para valorar.")
-                    session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
-                    tse = session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
-                    )
+                    console.print_exception()
+                    exit()
 
                 # * TSE e Aba Itens de preço
                 (
