@@ -192,7 +192,6 @@ class Sql:
         print(f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
               f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
               f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
-        exit()
 
         sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] " +
                        "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, " +

@@ -90,7 +90,7 @@ def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, s
 
     new_session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-    grid_historico = session.findById(
+    grid_historico = new_session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
         + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
     data_valorado = grid_historico.GetCellValue(
