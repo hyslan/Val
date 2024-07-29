@@ -18,42 +18,6 @@
                 "source": false
               }
             }
-          },
-          {
-            "id": "19c2dde15a25f115",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Forbidden TSE 🚫.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "f3fe1179e01bbb40",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "cbcc71883413ff8a",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "TSE 730600 - Compactação e Selagem da Base.md",
-                "mode": "source",
-                "source": false
-              }
-            }
           }
         ]
       },
@@ -143,7 +107,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -160,7 +123,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -182,9 +144,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "TSE 332500 - Reparo de Rede De Água Não Visível.md"
-              }
+              "state": {}
             }
           },
           {
@@ -213,16 +173,20 @@
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "f3fe1179e01bbb40",
+  "active": "b1155a46200ea64f",
   "lastOpenFiles": [
+    "SAPGUI.md",
+    "Val.md",
+    "tb_valoradas.md",
+    "Forbidden TSE 🚫.md",
+    "2024-07-29.md",
+    "Log Result.md",
+    "Core.md",
     "TSE 730600 - Compactação e Selagem da Base.md",
     "TSE 332500 - Reparo de Rede De Água Não Visível.md",
-    "Forbidden TSE 🚫.md",
     "Send an Email 📩.md",
     "SQL Tables and Views 🎲.md",
-    "Val.md",
     "Create Function to create new connection and run inside it.md",
-    "Log Result.md",
     "SAPConnection.md",
     "Multiple SapSession.md",
     "New TSE functions.md",

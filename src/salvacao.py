@@ -10,6 +10,7 @@ from rich.console import Console
 from src import sql_view
 from src.confere_os import consulta_os
 from src import sap
+from src.temporizador import cronometro_val
 
 
 # Adicionando um Lock
@@ -17,15 +18,19 @@ lock = threading.Lock()
 console = Console()
 
 
-def salvar(ordem, qtd_ordem, contrato, session):
+def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time):
     """Salvar e verificar se está salvando."""
-    rodape = None
     salvo = "Ajustes de valoração salvos com sucesso."
+    total = session.findById(
+        "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
+    if not total == '':
+        f_total = float(total.replace(".", "").replace(",", "."))
+    else:
+        f_total = 0
 
     def salvar_valoracao(session_id):
         """Função para salvar valoração."""
-        nonlocal ordem, rodape, salvo
-
+        nonlocal ordem, salvo
         # Seção Crítica - uso do Lock
         with lock:
             try:
@@ -37,39 +42,16 @@ def salvar(ordem, qtd_ordem, contrato, session):
                         session_id, pythoncom.IID_IDispatch)
                 )
                 print("Salvando valoração!")
+
                 gui.findById("wnd[0]").sendVKey(11)
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
-                rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
-
-                if salvo == rodape:
-                    print(f"{ordem} salva!")
-                else:
-                    console.print(f"[italic red]Nota de rodapé: {rodape}")
-                    rodape = rodape.lower()
-                    padrao = r"material (\d+)"
-                    correspondencias = re.search(padrao, rodape)
-                    if correspondencias:
-                        # Group 1 retira string 'material'
-                        codigo_material = correspondencias.group(1)
-                        print(codigo_material)
+                # Rodapé
 
             # pylint: disable=E1101
             except pywintypes.com_error:
+                gui.findById("wnd[0]").sendVKey(11)
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
-                rodape = gui.findById("wnd[0]/sbar").Text  # Rodapé
-                rodape = rodape.lower()
-                padrao = r"material (\d+)"
-                correspondencias = re.search(padrao, rodape)
-                if correspondencias:
-                    # Group 1 retira string 'material'
-                    codigo_material = correspondencias.group(1)
-                    print(codigo_material)
 
-                print(f"Ordem: {ordem} não foi salva.")
-                ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-                ja_valorado.valorada(obs="Não foi salvo")
-
-            return rodape
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
@@ -85,29 +67,46 @@ def salvar(ordem, qtd_ordem, contrato, session):
             print("SAP demorando mais que o esperado, encerrando.")
             sap.encerrar_sap()
 
-        if not salvo == rodape:
-            return qtd_ordem, rodape
+        # Check the footer.
+        rodape = session.findById("wnd[0]/sbar").Text
+        if salvo == rodape:
+            console.print(f"[italic green] Ordem: {
+                          ordem} Foi Salvo com sucesso! :rocket:")
+            time_spent = cronometro_val(start_time, ordem)
+            ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
+            ja_valorado.valorada(
+                obs=rodape,
+                valorado="SIM", contrato=contrato, municipio=cod_mun,
+                status="VALORADA", data_valoracao=None,
+                matricula='117615', valor_medido=f_total, tempo_gasto=time_spent
+            )
+            # Incremento + de Ordem.
+            qtd_ordem += 1
+        else:
+            console.print(f"[italic red]Nota de rodapé: {rodape}")
+            rodape = rodape.lower()
+            padrao = r"material (\d+)"
+            correspondencias = re.search(padrao, rodape)
+            if correspondencias:
+                # Group 1 retira string 'material'
+                codigo_material = correspondencias.group(1)
+                print(codigo_material)
+
+            console.print(
+                f"Ordem: {ordem} não foi salva.", style="italic red")
+            console.print(f"[bold yellow]Motivo: {rodape}")
+            time_spent = cronometro_val(start_time, ordem)
+            ja_valorado = sql_view.Sql(
+                ordem=ordem, cod_tse=principal_tse)
+            ja_valorado.valorada(
+                obs=rodape,
+                valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                status="DISPONÍVEL", data_valoracao=None,
+                matricula='117615', valor_medido=0, tempo_gasto=time_spent)
+
+        ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
         console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
                       style="bold red")
-
-    # Verificar se Salvou
-    (status_sistema,
-        status_usuario,
-        *_) = consulta_os(ordem, session, contrato)
-    print("Verificando se Ordem foi valorada.")
-    if status_usuario == "EXEC VALO":
-        print(f"Status da Ordem: {status_sistema}, {status_usuario}")
-        console.print("[italic green]Foi Salvo com sucesso! :rocket:")
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-        ja_valorado.valorada("SIM")
-        # Incremento + de Ordem.
-        qtd_ordem += 1
-    else:
-        console.print(f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-        ja_valorado.valorada(obs="Não foi salvo")
-
-    ja_valorado.clean_duplicates()
 
     return qtd_ordem, rodape

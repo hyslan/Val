@@ -7,6 +7,7 @@ Options:
 
 ### Core
 #### Principal Service
+For loop by array.
 ##### Type
 #### Payment
  ##### Class

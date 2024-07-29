@@ -8,7 +8,7 @@ from rich.console import Console
 from src.transact_zsbmm216 import Transacao
 from src.confere_os import consulta_os
 from src.excel_tbs import load_worksheets
-from src.sql_view import Tabela
+from src.sql_view import Sql
 
 (
     lista,
@@ -112,7 +112,8 @@ def retrabalho(contrato, session):
                         lista.save('sheets/lista.xlsx')
                         # Incremento de Ordem.
                         int_num_lordem += 1
-                        ordem = planilha.cell(row=int_num_lordem, column=1).value
+                        ordem = planilha.cell(
+                            row=int_num_lordem, column=1).value
                         continue
 
                 # pylint: disable=E1101
@@ -153,7 +154,7 @@ def retrabalho(contrato, session):
         today = dt.date.today()
         dt_fim = today.replace(day=1) - dt.timedelta(days=1)
         dt_inicio = dt_fim.replace(day=1)
-        sql = Tabela("", "")
+        sql = Sql("", "")
         pendentes_array = sql.retrabalho_search(dt_inicio, dt_fim)
         limite_execucoes = len(pendentes_array)
         if limite_execucoes == 0:
@@ -201,11 +202,13 @@ def retrabalho(contrato, session):
 
                             rodape = tag_n7(servico, session)
                             if rodape == salvo:
-                                console.print("[italic green]Foi Salvo com sucesso! :rocket:")
+                                console.print(
+                                    "[italic green]Foi Salvo com sucesso! :rocket:")
                                 sql.ordem = ordem
                                 sql.valorada("SIM")
                             else:
-                                console.print(f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
+                                console.print(
+                                    f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
                                 sql.ordem = ordem
                                 sql.valorada(obs="Não foi salvo")
 

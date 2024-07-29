@@ -142,7 +142,8 @@ class HidrometroMaterial:
                     n_material, "ELIMINADO", True
                 )
             sap_hidro = np.append(sap_hidro,
-                                  np.array([[sap_material, sap_etapa_material]]),
+                                  np.array(
+                                      [[sap_material, sap_etapa_material]]),
                                   axis=0)
 
         if cod_hidro_instalado in sap_hidro[:, 0]:
@@ -197,7 +198,7 @@ class HidrometroMaterial:
         ultima_linha_material = 0
         if self._hidro is None:
             print("Hidro não informado. Buscando no Geocall.")
-            sql = sql_view.Tabela(ordem, "")
+            sql = sql_view.Sql(ordem, "")
             self.hidro = sql.get_new_hidro()
             if self._hidro is None:
                 print("Hidro não encontrado.")
@@ -259,7 +260,8 @@ class HidrometroMaterial:
                 n_material, "MATERIAL")
             sap_etapa_material = self.tb_materiais.GetCellValue(
                 n_material, "ETAPA")
-            material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+            material_estoque = self.estoque[self.estoque['Material']
+                                            == sap_material]
 
             if sap_material == ('50000328', '50000263', '50000350',
                                 '50000064', '50000260', '50000261',
@@ -320,7 +322,8 @@ class HidrometroMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 if not sap_material == '50001070' \
                         and sap_material not in self.list_contratada:
