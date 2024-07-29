@@ -42,7 +42,7 @@ class Sql:
 
     def __check_employee(self, matricula: str) -> str:
         """Check employee in the database:
-        [LESTE_AD\APP_Source].tb_Dim_Funcionarios
+        [LESTE_AD\\APP_Source].tb_Dim_Funcionarios
         """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
@@ -163,10 +163,10 @@ class Sql:
 
     def valorada(self, valorado: str, contrato: str,
                  municipio: str, status: str, obs: str,
-                 data_valoracao: Union[None | dt.date],
+                 data_valoracao: Union[None | dt.date | str],
                  matricula: str, valor_medido: float, tempo_gasto: float) -> None:
         """Update  row valorada to 
-        [LESTE_AD\hcruz_novasp].tbHyslancruz_Valoradas
+        [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas
         """
         try:
             engine = sa.create_engine(self.connection_url)
@@ -179,11 +179,19 @@ class Sql:
         if matricula == '117615':
             quem = "Val"
         else:
-            quem = self.__check_employee(matricula)
+            # ? quem = self.__check_employee(matricula)
+            quem = 'teste'
 
         if data_valoracao is None:
             data_valoracao = dt.datetime.now().date()
-            data_valoracao = data_valoracao.strftime('%d/%m/%Y')
+            data_valoracao = data_valoracao.strftime('%m/%d/%Y')
+
+        # ! DEBUG
+        print("Argumentos:")
+        print(f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
+              f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
+              f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
+        # exit()
 
         sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] " +
                        "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, " +
