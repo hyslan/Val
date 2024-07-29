@@ -72,6 +72,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
         if salvo == rodape:
             console.print(f"[italic green] Ordem: {
                           ordem} Foi Salvo com sucesso! :rocket:")
+            time_spent = cronometro_val(start_time, ordem)
             ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
             ja_valorado.valorada(
                 obs=rodape,
