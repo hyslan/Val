@@ -67,7 +67,7 @@ class Transacao:
                     print("Iniciando Transação ZSBM216.")
                     gui.StartTransaction("ZSBMM216")
                     if tipo == "consulta":
-                        gui.findById("wnd[0]/usr/radP_INDI").Select()
+                        gui.findById("wnd[0]/usr/radRB_CON").Select()
 
                     # Unidade Administrativa
                     gui.findById("wnd[0]/usr/ctxtP_UND").Text = "1093"
