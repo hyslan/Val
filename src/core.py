@@ -74,6 +74,24 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
         raise Exception("Extração do Estoque Virtual Falhou!")
 
 
+def valorator_user(session, ordem):
+    session.findById(
+        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+    grid_historico = session.findById(
+        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
+    data_valorado = grid_historico.GetCellValue(
+        0, "DATA")
+    if data_valorado is not None:
+        print(f"OS: {ordem} já valorada.")
+        print(f"Data: {data_valorado}")
+        ja_valorado = sql_view.Tabela(
+            ordem=ordem, cod_tse="")
+        ja_valorado.valorada(obs="SIM")
+        # TODO: send User, Date, total assigned price.
+        ja_valorado.clean_duplicates()
+
+
 def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
@@ -133,8 +151,14 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if revalorar is False:
                     if status_usuario == valorada:
                         print(f"OS: {ordem} já valorada.")
-                        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-                        ja_valorado.valorada("SIM")
+                        time_spent = cronometro_val(start_time, ordem)
+                        ja_valorado = sql_view.Tabela(
+                            ordem=ordem, cod_tse=principal_tse)
+                        ja_valorado.valorada(
+                            valorado="SIM", contrato=contrato, municipio=cod_mun,
+                            # Open zsbmm216 and get the date of the last valuation.
+                            status="VALORADA", obs='', data_valoracao=None,
+                            matricula='', valor_medido=0, tempo_gasto=time_spent)
                         ja_valorado.clean_duplicates()
                         continue
 
@@ -151,9 +175,15 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # pylint: disable=E1101
                 except pywintypes.com_error:
                     print(f"Ordem: {ordem} em medição definitiva.")
+                    time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Tabela(
-                        ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Definitiva")
+                        ordem=ordem, cod_tse=principal_tse)
+                    ja_valorado.valorada(
+                        valorado="SIM", contrato=contrato, municipio=cod_mun,
+                        # Open zsbmm216 and get the date of the last valuation.
+                        status="DEFINITIVA", obs='', data_valoracao=None,
+                        matricula='', valor_medido=0, tempo_gasto=time_spent
+                    )
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -169,9 +199,17 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         if data_valorado is not None:
                             print(f"OS: {ordem} já valorada.")
                             print(f"Data: {data_valorado}")
+                            time_spent = cronometro_val(start_time, ordem)
+                            dt_payed = dt.datetime.strptime(
+                                data_valorado, "%d/%m/%Y").date()
                             ja_valorado = sql_view.Tabela(
-                                ordem=ordem, cod_tse="")
-                            ja_valorado.valorada(obs="SIM")
+                                ordem=ordem, cod_tse=principal_tse)
+                            ja_valorado.valorada(
+                                valorado="SIM", contrato=contrato, municipio=cod_mun,
+                                # Open zsbmm216 and get the date of the last valuation.
+                                status="VALORADA", obs='', data_valoracao=dt_payed,
+                                matricula='', valor_medido=0, tempo_gasto=time_spent
+                            )
                             # TODO: send User, Date, total assigned price.
                             ja_valorado.clean_duplicates()
                             continue
@@ -200,27 +238,41 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # debug
                 # exit()
                 if ligacao_errada is True:
+                    time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Sem posição de rede.")
+                    ja_valorado.valorada(
+                        obs="Sem posição de rede.",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     # TODO: Send as Observation the wrong connection.
                     ja_valorado.clean_duplicates()
                     continue
 
                 if profundidade_errada is True:
+                    time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
-                        obs="Sem profundidade do ramal.")
+                        obs="Sem profundidade do ramal.",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     # TODO: Send as Observation the wrong profundity.
                     ja_valorado.clean_duplicates()
                     continue
 
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
                 if tse_proibida is not None:
+                    time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Tabela(
                         ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Num Pode")
+                    ja_valorado.valorada(
+                        obs="Num Pode",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     ja_valorado.clean_duplicates()
                     continue
 
@@ -269,7 +321,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # exit()
                 # Salvar Ordem
                 qtd_ordem, rodape = salvar(
-                    ordem, qtd_ordem, contrato, session)
+                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun)
                 salvo = "Ajustes de valoração salvos com sucesso."
                 if not salvo == rodape:
                     console.print(

@@ -183,13 +183,14 @@ class Tabela:
 
         if data_valoracao is None:
             data_valoracao = dt.datetime.now().date()
+            data_valoracao = data_valoracao.strftime('%d/%m/%Y')
 
         sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] " +
                        "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, " +
-                       "OBS, TempoGasto, DataValoracao, Matricula)" +
+                       "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)" +
                        f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
                        f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
-                       f"'{tempo_gasto}', '{data_valoracao}', '{matricula}')")
+                       f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
         cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()

@@ -18,33 +18,8 @@
                 "source": false
               }
             }
-          },
-          {
-            "id": "19c2dde15a25f115",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Forbidden TSE 🚫.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "f3fe1179e01bbb40",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Log Result.md",
-                "mode": "source",
-                "source": false
-              }
-            }
           }
-        ],
-        "currentTab": 2
+        ]
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -132,7 +107,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Log Result.md",
+                "file": "Val.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -149,7 +124,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Log Result.md",
+                "file": "Val.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -172,7 +147,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Log Result.md"
+                "file": "Val.md"
               }
             }
           },
@@ -202,16 +177,18 @@
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "f3fe1179e01bbb40",
+  "active": "84fd934a250238f7",
   "lastOpenFiles": [
-    "Core.md",
+    "tb_valoradas.md",
+    "Val.md",
+    "Forbidden TSE 🚫.md",
+    "2024-07-29.md",
     "Log Result.md",
+    "Core.md",
     "TSE 730600 - Compactação e Selagem da Base.md",
     "TSE 332500 - Reparo de Rede De Água Não Visível.md",
-    "Forbidden TSE 🚫.md",
     "Send an Email 📩.md",
     "SQL Tables and Views 🎲.md",
-    "Val.md",
     "Create Function to create new connection and run inside it.md",
     "SAPConnection.md",
     "Multiple SapSession.md",
