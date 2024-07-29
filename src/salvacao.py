@@ -18,7 +18,7 @@ lock = threading.Lock()
 console = Console()
 
 
-def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun):
+def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time):
     """Salvar e verificar se está salvando."""
     rodape = None
     salvo = "Ajustes de valoração salvos com sucesso."
