@@ -6,6 +6,7 @@ import win32com.client as win32
 import pywintypes
 from rich.console import Console
 from src import sap
+from src.lista_reposicao import dict_reposicao
 
 # Adicionando um Lock
 lock = threading.Lock()
@@ -13,7 +14,28 @@ console = Console()
 
 
 def consulta_os(n_os, session, contrato):
-    """Função para consultar ORDEM na transação ZSBPM020."""
+    """
+    Função para consultar ORDEM na transação ZSBPM020.
+
+    Args:
+        n_os (str): Número da ordem de serviço.
+        session (win32com.client.CDispatch): Objeto de sessão SAP.
+        contrato (str): Contrato relacionado à ordem de serviço.
+
+    Returns:
+        tuple: Uma tupla contendo as seguintes informações:
+            - status_sistema (str): Status do sistema.
+            - status_usuario (str): Status do usuário.
+            - corte (str): Local de corte.
+            - relig (str): Local de religação.
+            - posicao_rede (str): Posição da rede.
+            - profundidade (str): Profundidade.
+            - hidro (str): Hidrômetro instalado.
+            - operacao (str): Operação.
+            - diametro_ramal (str): Diâmetro do ramal.
+            - diametro_rede (str): Diâmetro da rede.
+            - principal_tse (str): Código da principal tse.
+    """
     status_sistema = None
     status_usuario = None
     posicao_rede = None
@@ -24,6 +46,7 @@ def consulta_os(n_os, session, contrato):
     hidro = None
     relig = None
     corte = None
+    principal_tse = None
 
     def zsbpm020(session_id):
         """Transact 020"""
@@ -47,7 +70,7 @@ def consulta_os(n_os, session, contrato):
                 campo_os = gui.findById("wnd[0]/usr/ctxtS_AUFNR-LOW")
                 campo_os.Text = n_os
                 gui.findById("wnd[0]/usr/txtS_CONTR-LOW").text = contrato
-                # gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text = 
+                # gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text =
                 gui.findById("wnd[0]").sendVKey(8)
             except (pywintypes.com_error, AttributeError) as transaction_error:
                 console.print(
@@ -78,6 +101,18 @@ def consulta_os(n_os, session, contrato):
         status_usuario = consulta.GetCellValue(0, "USTXT")
         # Contagem Grid
         num_etapas_linhas = consulta.RowCount
+
+        for n, cod_tse in enumerate(range(0, num_etapas_linhas)):
+            cod_tse = consulta.GetCellValue(n, "ZZTSE")
+            if cod_tse not in (
+                    dict_reposicao['asfalto_frio'],
+                    dict_reposicao['cimentado'],
+                    dict_reposicao['especial'],
+                    dict_reposicao['PARARELO'],
+                    dict_reposicao['SARJETA'],
+                    dict_reposicao['asfalto'],
+                    dict_reposicao['bloquete_inv']):
+                principal_tse = cod_tse
 
         for n_etapa, restab in enumerate(range(0, num_etapas_linhas)):
             restab = consulta.GetCellValue(
@@ -191,5 +226,6 @@ def consulta_os(n_os, session, contrato):
         hidro,
         operacao,
         diametro_ramal,
-        diametro_rede
+        diametro_rede,
+        principal_tse
     )

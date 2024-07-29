@@ -9,10 +9,10 @@ from rich.console import Console
 console = Console()
 
 
-class Tabela:
+class Sql:
     """Tabela de valoração"""
 
-    def __init__(self, ordem, cod_tse) -> None:
+    def __init__(self, ordem: str, cod_tse: str) -> None:
         self._ordem = ordem
         self.cod_tse = cod_tse
         connection_url = sa.URL.create(
@@ -39,6 +39,19 @@ class Tabela:
             self._ordem = cod
         else:
             raise ValueError("Wrong type, need to be string.")
+
+    def __check_employee(self, matricula: str) -> str:
+        """Check employee in the database:
+        [LESTE_AD\\APP_Source].tb_Dim_Funcionarios
+        """
+        engine = sa.create_engine(self.connection_url)
+        cnn = engine.connect()
+        query = ("SELECT NomeFuncionario FROM [LESTE_AD\\APP_Source].[tb_Dim_Funcionarios] "
+                 f"WHERE Matricula = '{matricula}';")
+        df = pd.read_sql(query, cnn)
+        who: str = df.to_string(index=False)
+        cnn.close()
+        return who
 
     def carteira_tse(self, contrato, carteira):
         engine = sa.create_engine(self.connection_url)
@@ -148,8 +161,13 @@ class Tabela:
         cnn.close()
         return df_array
 
-    def valorada(self, obs):
-        """Update de row valorada"""
+    def valorada(self, valorado: str, contrato: str,
+                 municipio: str, status: str, obs: str,
+                 data_valoracao: Union[None | dt.date | str],
+                 matricula: str, valor_medido: float, tempo_gasto: float) -> None:
+        """Update  row valorada to 
+        [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas
+        """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
@@ -158,10 +176,29 @@ class Tabela:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
 
-        quem = "Val"
-        sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas]" +
-                       "(Ordem, [VALORADO?], [POR QUEM?])" +
-                       "VALUES ('{}', '{}', '{}')").format(str(self.ordem), obs, quem)
+        if matricula == '117615':
+            quem = "Val"
+        else:
+            # ? quem = self.__check_employee(matricula)
+            quem = 'teste'
+
+        if data_valoracao is None:
+            data_valoracao = dt.datetime.now().date()
+            data_valoracao = data_valoracao.strftime('%m/%d/%Y')
+
+        # ! DEBUG
+        print("Argumentos:")
+        print(f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
+              f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
+              f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
+        # exit()
+
+        sql_command = ("INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] " +
+                       "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, " +
+                       "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)" +
+                       f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', " +
+                       f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', " +
+                       f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')")
         cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()

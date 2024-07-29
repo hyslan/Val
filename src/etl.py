@@ -2,7 +2,8 @@
 from urllib.parse import quote_plus
 import pandas as pd
 from sqlalchemy import create_engine
-from src.sql_view import Tabela
+from src.sql_view import Sql
+
 
 def pendentes_excel():
     """Load de ordens em uma planilha expecífica"""
@@ -25,7 +26,7 @@ def pendentes_csv():
 
 def extract_from_sql(contrato):
     """Extração de ordens do contrato NOVASP do banco SQL Penha."""
-    sql = Tabela("", "")
+    sql = Sql("", "")
     carteira = [
         '134000',
         '135000',

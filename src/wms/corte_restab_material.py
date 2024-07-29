@@ -84,7 +84,6 @@ class CorteRestabMaterial:
                         n_material, "ELIMINADO", True
                     )
                 if material_estoque.empty:
-                    print("VAzio?")
                     self.tb_materiais.modifyCheckbox(
                         n_material, "ELIMINADO", True
                     )

@@ -10,6 +10,7 @@ from rich.console import Console
 from src import sql_view
 from src.confere_os import consulta_os
 from src import sap
+from src.temporizador import cronometro_val
 
 
 # Adicionando um Lock
@@ -17,7 +18,7 @@ lock = threading.Lock()
 console = Console()
 
 
-def salvar(ordem, qtd_ordem, contrato, session):
+def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time):
     """Salvar e verificar se está salvando."""
     rodape = None
     salvo = "Ajustes de valoração salvos com sucesso."
@@ -66,8 +67,14 @@ def salvar(ordem, qtd_ordem, contrato, session):
                     print(codigo_material)
 
                 print(f"Ordem: {ordem} não foi salva.")
-                ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-                ja_valorado.valorada(obs="Não foi salvo")
+                time_spent = cronometro_val(start_time, ordem)
+                ja_valorado = sql_view.Sql(
+                    ordem=ordem, cod_tse=principal_tse)
+                ja_valorado.valorada(
+                    obs=rodape,
+                    valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                    status="DISPONÍVEL", data_valoracao=None,
+                    matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
             return rodape
     try:
@@ -99,14 +106,28 @@ def salvar(ordem, qtd_ordem, contrato, session):
     if status_usuario == "EXEC VALO":
         print(f"Status da Ordem: {status_sistema}, {status_usuario}")
         console.print("[italic green]Foi Salvo com sucesso! :rocket:")
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-        ja_valorado.valorada("SIM")
+        time_spent = cronometro_val(start_time, ordem)
+        ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
+        ja_valorado.valorada(
+            obs=rodape,
+            valorado="SIM", contrato=contrato, municipio=cod_mun,
+            status="VALORADA", data_valoracao=None,
+            # TODO: get total amount from SAP
+            matricula='117615', valor_medido=0, tempo_gasto=time_spent
+        )
         # Incremento + de Ordem.
         qtd_ordem += 1
     else:
-        console.print(f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
-        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-        ja_valorado.valorada(obs="Não foi salvo")
+        console.print(
+            f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
+        time_spent = cronometro_val(start_time, ordem)
+        ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
+        ja_valorado.valorada(
+            obs=rodape,
+            valorado="NÃO", contrato=contrato, municipio=cod_mun,
+            status="DISPONÍVEL", data_valoracao=None,
+            matricula='117615', valor_medido=0, tempo_gasto=time_spent
+        )
 
     ja_valorado.clean_duplicates()
 

@@ -1,7 +1,8 @@
 # core.py
 """Coração da Val."""
 # pylint: disable=W0611
-import sys
+import logging
+import datetime as dt
 import time
 import numpy as np
 import pywintypes
@@ -24,6 +25,9 @@ from src.temporizador import cronometro_val
 from src.wms.consulta_estoque import estoque
 from src.nazare_bugou import oxe
 
+# Global Class print highlighting
+console: rich.console.Console = Console()
+
 
 def rollback(n: int) -> win32com.client.CDispatch:
     try:
@@ -38,17 +42,20 @@ def rollback(n: int) -> win32com.client.CDispatch:
     return session
 
 
-def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
-    """Sistema Val."""
-    console: rich.console.Console = Console()
-    transacao: Transacao = Transacao(contrato, "100", session)
+def estoque_virtual(contrato, sessions, session) -> DataFrame:
+    """Get the virtual stock in MBLB transaction using contrato's number.
 
-    try:
-        sessions: win32com.client.CDispatch = sap.listar_sessoes()
-    # pylint: disable=E1101
-    except pywintypes.com_error:
-        return
+    Args:
+        contrato (str): _description_
+        sessions (win32com.client.CDispatch): Len of Sessions active.
+        session (win32com.client.CDispatch): Session in use.
 
+    Raises:
+        Exception: Error Message.
+
+    Returns:
+        DataFrame: Pandas Dataframe with all material allocated to the 'contrato'
+    """
     try:
         # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
@@ -59,27 +66,104 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     new_session, sessions, contrato)
             else:
                 estoque_hj: DataFrame = estoque(session, sessions, contrato)
-    except:
+
+        return estoque_hj
+
+    except Exception as e_estoque_v:
+        console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
+        raise Exception("Extração do Estoque Virtual Falhou!")
+
+
+def valorator_user(session, ordem):
+    session.findById(
+        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+    grid_historico = session.findById(
+        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
+        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
+    data_valorado = grid_historico.GetCellValue(
+        0, "DATA")
+    if data_valorado is not None:
+        print(f"OS: {ordem} já valorada.")
+        print(f"Data: {data_valorado}")
+        ja_valorado = sql_view.Sql(
+            ordem=ordem, cod_tse="")
+        ja_valorado.valorada(obs="SIM")
+        # TODO: send User, Date, total assigned price.
+        ja_valorado.clean_duplicates()
+
+
+def inspector_materials(
+        chave_rb_investimento, list_chave_rb_despesa, list_chave_unitario,
+        hidro, diametro_ramal, diametro_rede, contrato, estoque_hj, posicao_rede, session) -> None:
+    # RB - Investimento
+    if chave_rb_investimento:
+        materiais(
+            hidro,
+            chave_rb_investimento[1],  # Etapa atual da chave
+            chave_rb_investimento,
+            diametro_ramal,
+            diametro_rede,
+            contrato,
+            estoque_hj,
+            posicao_rede,
+            session)
+    # RB - Despesa
+    if list_chave_rb_despesa and not contrato == "4600043760":
+        for chave_rb_despesa in list_chave_rb_despesa:
+            materiais(
+                hidro,
+                chave_rb_despesa[1],  # Etapa atual da chave
+                chave_rb_despesa,
+                diametro_ramal,
+                diametro_rede,
+                contrato,
+                estoque_hj,
+                posicao_rede,
+                session)
+    # Unitários
+    if list_chave_unitario:
+        for chave_unitario in list_chave_unitario:
+            materiais(
+                hidro,
+                chave_unitario[1],  # Etapa atual da chave
+                chave_unitario,
+                diametro_ramal,
+                diametro_rede,
+                contrato,
+                estoque_hj,
+                posicao_rede,
+                session)
+
+
+def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
+    """Sistema Val."""
+    transacao: Transacao = Transacao(contrato, "100", session)
+
+    try:
+        sessions: win32com.client.CDispatch = sap.listar_sessoes()
+    # pylint: disable=E1101
+    except pywintypes.com_error:
         return
 
+    estoque_hj: DataFrame = estoque_virtual(contrato, sessions, session)
+
     limite_execucoes = len(pendentes_array)
-    if limite_execucoes == 0:
-        return None, True
     print(
         f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
+    # * In case of null Df.
     if limite_execucoes == 0:
         return None, True
 
     with console.status("[bold blue]Trabalhando..."):
-        # Variáveis de Status da Ordem
+        # * Variáveis de Status da Ordem
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
         qtd_ordem: int = 0  # Contador de ordens pagas.
-        # Loop para pagar as ordens
+        # Loop to pay service's orders
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
                 start_time = time.time()  # Contador de tempo para valorar.
-                print(f"Ordem atual: {ordem}")
+                console.print(f"[b]Ordem atual: {ordem}")
                 print("Verificando Status da Ordem.")
                 # Função consulta de Ordem.
                 print("Iniciando Consulta.")
@@ -92,19 +176,32 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                  hidro,
                  _,  # Skipping 'operacao'
                  diametro_ramal,
-                 diametro_rede
+                 diametro_rede,
+                 principal_tse
                  ) = consulta_os(ordem, session, contrato)
-                # Consulta Status da Ordem
+                # * Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
-                    # TODO: send to tb_valoradas status of OS.
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Sql(ordem, principal_tse)
+                    ja_valorado.valorada(
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="ABERTA", obs='', data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent
+                    )
                     continue
 
                 if revalorar is False:
                     if status_usuario == valorada:
                         print(f"OS: {ordem} já valorada.")
-                        ja_valorado = sql_view.Tabela(ordem=ordem, cod_tse="")
-                        ja_valorado.valorada("SIM")
+                        time_spent = cronometro_val(start_time, ordem)
+                        ja_valorado = sql_view.Sql(
+                            ordem=ordem, cod_tse=principal_tse)
+                        ja_valorado.valorada(
+                            valorado="SIM", contrato=contrato, municipio=cod_mun,
+                            # Open zsbmm216 and get the date of the last valuation.
+                            status="VALORADA", obs='', data_valoracao=None,
+                            matricula='', valor_medido=0, tempo_gasto=time_spent)
                         ja_valorado.clean_duplicates()
                         continue
 
@@ -121,12 +218,19 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # pylint: disable=E1101
                 except pywintypes.com_error:
                     print(f"Ordem: {ordem} em medição definitiva.")
-                    ja_valorado = sql_view.Tabela(
-                        ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Definitiva")
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Sql(
+                        ordem=ordem, cod_tse=principal_tse)
+                    ja_valorado.valorada(
+                        valorado="SIM", contrato=contrato, municipio=cod_mun,
+                        # Open zsbmm216 and get the date of the last valuation.
+                        status="DEFINITIVA", obs='', data_valoracao=None,
+                        matricula='', valor_medido=0, tempo_gasto=time_spent
+                    )
                     ja_valorado.clean_duplicates()
                     continue
 
+                # * Check if the 'Ordem' was already valued.
                 try:
                     if revalorar is False:
                         session.findById(
@@ -139,9 +243,17 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         if data_valorado is not None:
                             print(f"OS: {ordem} já valorada.")
                             print(f"Data: {data_valorado}")
-                            ja_valorado = sql_view.Tabela(
-                                ordem=ordem, cod_tse="")
-                            ja_valorado.valorada(obs="SIM")
+                            time_spent = cronometro_val(start_time, ordem)
+                            dt_payed = dt.datetime.strptime(
+                                data_valorado, "%d/%m/%Y").date()
+                            ja_valorado = sql_view.Sql(
+                                ordem=ordem, cod_tse=principal_tse)
+                            ja_valorado.valorada(
+                                valorado="SIM", contrato=contrato, municipio=cod_mun,
+                                # Open zsbmm216 and get the date of the last valuation.
+                                status="VALORADA", obs='', data_valoracao=dt_payed,
+                                matricula='', valor_medido=0, tempo_gasto=time_spent
+                            )
                             # TODO: send User, Date, total assigned price.
                             ja_valorado.clean_duplicates()
                             continue
@@ -156,7 +268,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
                     )
 
-                # TSE e Aba Itens de preço
+                # * TSE e Aba Itens de preço
                 (
                     tse_proibida,
                     list_chave_rb_despesa,
@@ -167,79 +279,56 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     profundidade_errada
                 ) = precificador(tse, corte, relig,
                                  posicao_rede, profundidade, contrato, session)
-                # debug
+                # ! debug
                 # exit()
                 if ligacao_errada is True:
-                    ja_valorado = sql_view.Tabela(
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Sem posição de rede.")
+                    ja_valorado.valorada(
+                        obs="Sem posição de rede.",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     # TODO: Send as Observation the wrong connection.
                     ja_valorado.clean_duplicates()
                     continue
 
                 if profundidade_errada is True:
-                    ja_valorado = sql_view.Tabela(
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
                     ja_valorado.valorada(
-                        obs="Sem profundidade do ramal.")
+                        obs="Sem profundidade do ramal.",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     # TODO: Send as Observation the wrong profundity.
                     ja_valorado.clean_duplicates()
                     continue
 
                 # Se a TSE não estiver no escopo da Val, vai pular pra próxima OS.
                 if tse_proibida is not None:
-                    ja_valorado = sql_view.Tabela(
+                    time_spent = cronometro_val(start_time, ordem)
+                    ja_valorado = sql_view.Sql(
                         ordem=ordem, cod_tse="")
-                    ja_valorado.valorada(obs="Num Pode")
+                    ja_valorado.valorada(
+                        obs="Num Pode",
+                        valorado="NÃO", contrato=contrato, municipio=cod_mun,
+                        status="DISPONÍVEL", data_valoracao=None,
+                        matricula='117615', valor_medido=0, tempo_gasto=time_spent)
                     ja_valorado.clean_duplicates()
                     continue
 
-                # Aba Materiais
-
-                # RB - Investimento
-                if chave_rb_investimento:
-                    materiais(
-                        hidro,
-                        chave_rb_investimento[1],  # Etapa atual da chave
-                        chave_rb_investimento,
-                        diametro_ramal,
-                        diametro_rede,
-                        contrato,
-                        estoque_hj,
-                        posicao_rede,
-                        session)
-                # RB - Despesa
-                if list_chave_rb_despesa and not contrato == "4600043760":
-                    for chave_rb_despesa in list_chave_rb_despesa:
-                        materiais(
-                            hidro,
-                            chave_rb_despesa[1],  # Etapa atual da chave
-                            chave_rb_despesa,
-                            diametro_ramal,
-                            diametro_rede,
-                            contrato,
-                            estoque_hj,
-                            posicao_rede,
-                            session)
-                # Unitários
-                if list_chave_unitario:
-                    for chave_unitario in list_chave_unitario:
-                        materiais(
-                            hidro,
-                            chave_unitario[1],  # Etapa atual da chave
-                            chave_unitario,
-                            diametro_ramal,
-                            diametro_rede,
-                            contrato,
-                            estoque_hj,
-                            posicao_rede,
-                            session)
-
+                # * Aba Materiais
+                inspector_materials(chave_rb_investimento, list_chave_rb_despesa,
+                                    list_chave_unitario, hidro, diametro_ramal,
+                                    diametro_rede, contrato, estoque_hj, posicao_rede, session)
                 # Fim dos materiais
                 # exit()
-                # Salvar Ordem
+                # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
-                    ordem, qtd_ordem, contrato, session)
+                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time)
                 salvo = "Ajustes de valoração salvos com sucesso."
                 if not salvo == rodape:
                     console.print(
