@@ -92,6 +92,49 @@ def valorator_user(session, ordem):
         ja_valorado.clean_duplicates()
 
 
+def inspector_materials(
+        chave_rb_investimento, list_chave_rb_despesa, list_chave_unitario,
+        hidro, diametro_ramal, diametro_rede, contrato, estoque_hj, posicao_rede, session) -> None:
+    # RB - Investimento
+    if chave_rb_investimento:
+        materiais(
+            hidro,
+            chave_rb_investimento[1],  # Etapa atual da chave
+            chave_rb_investimento,
+            diametro_ramal,
+            diametro_rede,
+            contrato,
+            estoque_hj,
+            posicao_rede,
+            session)
+    # RB - Despesa
+    if list_chave_rb_despesa and not contrato == "4600043760":
+        for chave_rb_despesa in list_chave_rb_despesa:
+            materiais(
+                hidro,
+                chave_rb_despesa[1],  # Etapa atual da chave
+                chave_rb_despesa,
+                diametro_ramal,
+                diametro_rede,
+                contrato,
+                estoque_hj,
+                posicao_rede,
+                session)
+    # Unitários
+    if list_chave_unitario:
+        for chave_unitario in list_chave_unitario:
+            materiais(
+                hidro,
+                chave_unitario[1],  # Etapa atual da chave
+                chave_unitario,
+                diametro_ramal,
+                diametro_rede,
+                contrato,
+                estoque_hj,
+                posicao_rede,
+                session)
+
+
 def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
@@ -187,6 +230,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado.clean_duplicates()
                     continue
 
+                # * Check if the 'Ordem' was already valued.
                 try:
                     if revalorar is False:
                         session.findById(
@@ -224,7 +268,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
                     )
 
-                # TSE e Aba Itens de preço
+                # * TSE e Aba Itens de preço
                 (
                     tse_proibida,
                     list_chave_rb_despesa,
@@ -235,7 +279,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     profundidade_errada
                 ) = precificador(tse, corte, relig,
                                  posicao_rede, profundidade, contrato, session)
-                # debug
+                # ! debug
                 # exit()
                 if ligacao_errada is True:
                     time_spent = cronometro_val(start_time, ordem)
@@ -276,52 +320,15 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                     ja_valorado.clean_duplicates()
                     continue
 
-                # Aba Materiais
-
-                # RB - Investimento
-                if chave_rb_investimento:
-                    materiais(
-                        hidro,
-                        chave_rb_investimento[1],  # Etapa atual da chave
-                        chave_rb_investimento,
-                        diametro_ramal,
-                        diametro_rede,
-                        contrato,
-                        estoque_hj,
-                        posicao_rede,
-                        session)
-                # RB - Despesa
-                if list_chave_rb_despesa and not contrato == "4600043760":
-                    for chave_rb_despesa in list_chave_rb_despesa:
-                        materiais(
-                            hidro,
-                            chave_rb_despesa[1],  # Etapa atual da chave
-                            chave_rb_despesa,
-                            diametro_ramal,
-                            diametro_rede,
-                            contrato,
-                            estoque_hj,
-                            posicao_rede,
-                            session)
-                # Unitários
-                if list_chave_unitario:
-                    for chave_unitario in list_chave_unitario:
-                        materiais(
-                            hidro,
-                            chave_unitario[1],  # Etapa atual da chave
-                            chave_unitario,
-                            diametro_ramal,
-                            diametro_rede,
-                            contrato,
-                            estoque_hj,
-                            posicao_rede,
-                            session)
-
+                # * Aba Materiais
+                inspector_materials(chave_rb_investimento, list_chave_rb_despesa,
+                                    list_chave_unitario, hidro, diametro_ramal,
+                                    diametro_rede, contrato, estoque_hj, posicao_rede, session)
                 # Fim dos materiais
                 # exit()
-                # Salvar Ordem
+                # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
-                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun)
+                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time)
                 salvo = "Ajustes de valoração salvos com sucesso."
                 if not salvo == rodape:
                     console.print(
