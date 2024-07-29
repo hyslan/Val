@@ -301,7 +301,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if ligacao_errada is True:
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(
-                        ordem=ordem, cod_tse="")
+                        ordem=ordem, cod_tse=principal_tse)
                     ja_valorado.valorada(
                         obs="Sem posição de rede.",
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
@@ -313,7 +313,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if profundidade_errada is True:
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(
-                        ordem=ordem, cod_tse="")
+                        ordem=ordem, cod_tse=principal_tse)
                     ja_valorado.valorada(
                         obs="Sem profundidade do ramal.",
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
@@ -326,7 +326,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 if tse_proibida is not None:
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(
-                        ordem=ordem, cod_tse="")
+                        ordem=ordem, cod_tse=principal_tse)
                     ja_valorado.valorada(
                         obs="Num Pode",
                         valorado="NÃO", contrato=contrato, municipio=cod_mun,
