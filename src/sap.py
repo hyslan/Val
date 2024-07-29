@@ -99,3 +99,28 @@ def encerrar_sap() -> None:
         print(f'O processo {processo} foi encerrado com sucesso.')
     except subprocess.CalledProcessError:
         print(f'Não foi possível encerrar o processo {processo}.')
+
+
+def get_connection():
+    sap_access = (
+    '[System]\n'
+    'Name=EP0\n'
+    'Client=100\n'
+    r'GuiParm=/M/erpprdci.ti.sabesp.com.br/S/3908/G/PRODUCAO /UPDOWNLOAD_CP=1160'
+    '\n'
+    '[User]\n'
+    'Name=117615\n'
+    fr'at="MYSAPSSO2={token}"'
+    '\n'
+    'Language=PT\n'
+    '[Function]\n'
+    'Command=SMEN\n'
+    'Type=Transaction\n'
+    '[Configuration]\n'
+    'Workplace=false\n'
+    'GuiSize=\n'
+    '[Options]\n'
+    'Reuse=-1')
+    with open('tx.sap', 'w') as s:
+        s.write(sap_access)
+    subprocess.run(['C:\\Program Files (x86)\\SAP\\FrontEnd\\SAPgui\\sapshcut.exe', '-system=EP0', '- client=100', '-user=117615', '-pw=123456', '-language=PT', '-command=SMEN', '-guiparm=/M/erpprdci.ti.sabesp.com.br/S/3908/G/PRODUCAO /UPDOWNLOAD_CP=1160', '-title=EP0 - 100 - 117615 - PT - SMEN', '-reuse=-1', '-nosplash', '-noconfig', '-noautoal', '-noupdinfo', '-nocrashdump', '-nologo', '-nofork', '-noini
