@@ -20,12 +20,12 @@ console = Console()
 
 def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time):
     """Salvar e verificar se está salvando."""
-    rodape = None
     salvo = "Ajustes de valoração salvos com sucesso."
+    result = [None, None]
 
     def salvar_valoracao(session_id):
         """Função para salvar valoração."""
-        nonlocal ordem, rodape, salvo
+        nonlocal ordem, salvo
 
         # Seção Crítica - uso do Lock
         with lock:
@@ -79,7 +79,9 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
                     status="DISPONÍVEL", data_valoracao=None,
                     matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
-            return rodape, f_total
+            # Store the results
+            result[0] = rodape
+            result[1] = f_total
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
@@ -87,13 +89,16 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
             pythoncom.IID_IDispatch, session)
         # Start
         thread = threading.Thread(target=salvar_valoracao, kwargs={
-            'session_id': session_id})
+            'session_id': session_id, 'result': result})
         thread.start()
         # Aguarde a thread concluir
         thread.join(timeout=300)
         if thread.is_alive():
             print("SAP demorando mais que o esperado, encerrando.")
             sap.encerrar_sap()
+
+        # Unpack the results
+        rodape, f_total = result
 
         if not salvo == rodape:
             return qtd_ordem, rodape
@@ -115,7 +120,6 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
             obs=rodape,
             valorado="SIM", contrato=contrato, municipio=cod_mun,
             status="VALORADA", data_valoracao=None,
-            # TODO: get total amount from SAP
             matricula='117615', valor_medido=f_total, tempo_gasto=time_spent
         )
         # Incremento + de Ordem.
