@@ -74,7 +74,16 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
         raise Exception("Extração do Estoque Virtual Falhou!")
 
 
-def valorator_user(session, ordem):
+def valorator_user(session, sessions, ordem, contrato, cod_mun):
+    if not sessions.Count == 6:
+        new_session: win32com.client.CDispatch = sap.criar_sessao(
+            sessions)
+    else:
+        new_session = session
+
+    transaction_check: Transacao = Transacao(contrato, cod_mun, new_session)
+    transaction_check.run_transacao(ordem, tipo="consulta")
+
     session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
     grid_historico = session.findById(
@@ -205,6 +214,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         ja_valorado.clean_duplicates()
                         continue
 
+                # * Go To ZSBMM216 Transaction
                 transacao.municipio = cod_mun
                 transacao.run_transacao(ordem)
 
