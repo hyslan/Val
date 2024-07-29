@@ -92,6 +92,7 @@ def fechar_conexao() -> None:
 
 def encerrar_sap() -> None:
     """Encerra o app SAP"""
+    # ? Can stop the SAP GUI without destroy the process?
     processo: str = 'saplogon.exe'
     try:
         subprocess.run(['taskkill', '/F', '/IM', processo], check=True)
