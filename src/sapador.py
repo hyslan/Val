@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from dotenv import load_dotenv
 
 
-def down_sap() -> None:
+def down_sap():
     """Baixa o .tx do SAP"""
     load_dotenv()
     url: str = os.environ["URL"]
