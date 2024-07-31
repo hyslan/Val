@@ -1,12 +1,15 @@
 """Módulo para visualização da view de Valoração"""
+import os
 from typing import Union
 import datetime as dt
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
 from rich.console import Console
+from dotenv import load_dotenv
 
 console = Console()
+load_dotenv()
 
 
 class Sql:
@@ -17,10 +20,10 @@ class Sql:
         self.cod_tse = cod_tse
         connection_url = sa.URL.create(
             "mssql+pyodbc",
-            username="BD_ML_SERVICE",
-            password="S@besp&2024*",
-            host="10.66.9.46",
-            database="BD_ML",
+            username=os.environ['BD_USR'],
+            password=os.environ['BD_PWD'],
+            host=os.environ['BD_HOST'],
+            database=os.environ['BD_NAME'],
             query={"driver": "ODBC Driver 18 for SQL Server",
                    "TrustServerCertificate": "yes",
                    },
