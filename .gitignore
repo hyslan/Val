@@ -38,3 +38,6 @@ sheets/estoque_4600056089.XLSX
 
 # Ignore live tests
 live_tests.ipynb
+
+# Skip environments variables
+*.env

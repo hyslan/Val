@@ -4,7 +4,6 @@ import os
 import subprocess
 import re
 from typing import Callable, Literal
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -29,11 +28,12 @@ def down_sap() -> str:
     opt.add_argument(
         f'--unsafely-treat-insecure-origin-as-secure={os.environ["URL"]}')
     opt.add_experimental_option('prefs', {
-        "download.default_directory": os.getcwd() + "\\src\\shortcut",
+        "download.default_directory": os.getcwd() + "\\shortcut",
         "download.prompt_for_download": False,
         "download.directory_upgrade": True
 
     })
+    print("Starting webdriver...")
     driver: WebDriver = webdriver.Chrome(service=s, options=opt)
     # Navegar até a página de login
     driver.get(url)
@@ -53,8 +53,9 @@ def down_sap() -> str:
     print("Arquivo baixado.")
     driver.quit()
     # Caminho para o arquivo "tx.sap"
-    caminho_arquivo: str = os.getcwd() + "src\\shortcut\\tx.sap"
+    caminho_arquivo: str = os.getcwd() + "\\shortcut\\tx.sap"
     # Get the token SSO
+    print("Getting token...")
     with open(caminho_arquivo, 'r') as f:
         txt = f.read()
 
@@ -79,7 +80,7 @@ def down_sap() -> str:
 def file_downloaded(filename: str) -> Callable[[WebDriver], Literal[False] | bool]:
     """Verifica se o arquivo foi baixado completamente"""
     def predicate(driver: WebDriver) -> Literal[False] | bool:
-        files: list[str] = os.listdir(os.getcwd() + "src\\shortcut")
+        files: list[str] = os.listdir(os.getcwd() + "\\shortcut\\")
         return any(file.endswith(filename) for file in files)
 
     return predicate

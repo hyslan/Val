@@ -6,6 +6,7 @@ import win32com.client
 import pythoncom
 from rich.console import Console
 import rich.console
+from dotenv import load_dotenv
 
 console: rich.console.Console = Console()
 
@@ -104,14 +105,15 @@ def encerrar_sap() -> None:
 
 
 def get_connection(token: str):
+    load_dotenv()
     sap_access = (
         '[System]\n'
         'Name=EP0\n'
         'Client=100\n'
-        r'GuiParm=/M/erpprdci.ti.sabesp.com.br/S/3908/G/PRODUCAO /UPDOWNLOAD_CP=1160'
+        fr'GuiParm={os.environ['SERVER']}'
         '\n'
         '[User]\n'
-        'Name=117615\n'
+        f'Name={os.environ['USR']}\n'
         fr'at="MYSAPSSO2={token}"'
         '\n'
         'Language=PT\n'
@@ -123,7 +125,8 @@ def get_connection(token: str):
         'GuiSize=\n'
         '[Options]\n'
         'Reuse=-1')
-    path_archive = os.getcwd() + 'src\\shortcut\\repeat\\tx.sap'
+    path_archive = os.getcwd() + '\\shortcut\\repeat\\tx.sap'
+    print("Saving the SAP access file...")
     with open(path_archive, 'w') as s:
         s.write(sap_access)
 
