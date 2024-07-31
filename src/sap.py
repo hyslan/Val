@@ -1,5 +1,7 @@
 """Módulo para interagir com o SAP GUI"""
+import os
 import subprocess
+import time
 import win32com.client
 import pythoncom
 from rich.console import Console
@@ -101,7 +103,7 @@ def encerrar_sap() -> None:
         print(f'Não foi possível encerrar o processo {processo}.')
 
 
-def get_connection():
+def get_connection(token: str):
     sap_access = (
         '[System]\n'
         'Name=EP0\n'
@@ -121,5 +123,31 @@ def get_connection():
         'GuiSize=\n'
         '[Options]\n'
         'Reuse=-1')
-    with open('tx.sap', 'w') as s:
+    path_archive = os.getcwd() + 'src\\shortcut\\repeat\\tx.sap'
+    with open(path_archive, 'w') as s:
         s.write(sap_access)
+
+    # Execute the command
+    try:
+        subprocess.run(["powershell", "start", '"' + path_archive + '"'],
+                       shell=True, check=False)
+        time.sleep(5)
+        # Verifica se o processo está em execução
+        if not is_process_running("powershell.exe"):
+            print("Erro: O arquivo não foi aberto corretamente.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao iniciar o arquivo tx.sap: {e}")
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
+
+    return token
+
+
+def is_process_running(process_name: str):
+    """Verifica se o processo está em execução"""
+    try:
+        subprocess.check_output(
+            f'tasklist /FI "IMAGENAME eq {process_name}"', shell=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
