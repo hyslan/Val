@@ -82,6 +82,7 @@ def main(args=None) -> None:
             return
 
         try:
+            # TODO: Change Sessions for Connections.
             session: win32com.client.CDispatch = sap.escolher_sessao(
                 args.session)
         # pylint: disable=E1101
