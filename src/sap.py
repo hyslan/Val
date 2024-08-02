@@ -104,7 +104,7 @@ def encerrar_sap() -> None:
         print(f'Não foi possível encerrar o processo {processo}.')
 
 
-def get_connection(token: str):
+def get_connection(token: str) -> str:
     load_dotenv()
     sap_access = (
         '[System]\n'
