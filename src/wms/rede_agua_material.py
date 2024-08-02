@@ -209,9 +209,8 @@ class RedeAguaMaterial:
 
                     case '30029526':
                         if self.contrato == '4600041302':
-                            self.tb_materiais.modifyCheckbox(
-                                n_material, "ELIMINADO", True
-                            )
+                            # UNIÃO PLASTICA P/ TUBO PE DE 20
+                            pass
 
                     case '30001122':
                         if abrac_ff_reparo_dn75_lmin150_estoque.empty:
@@ -605,7 +604,8 @@ class RedeAguaMaterial:
     def receita_reparo_de_ramal_de_agua(self):
         """Padrão de materiais no reparo de Ligação de Água."""
         materiais_receita = [
-            '30001346', '30002394', '30001848', '300029526', '10014709'
+            '30001346', '30002394', '30001848', '300029526', '10014709',
+            '50000178'
         ]
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
