@@ -94,17 +94,18 @@ class CavaleteMaterial:
                     n_material, "MATERIAL")
                 sap_etapa_material = self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
-                materiais_lancados.append({"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material'] == sap_material]
+                materiais_lancados.append(
+                    {"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque['Material']
+                                                == sap_material]
 
                 if sap_material not in list_contratada:
-                    console.print(f"\n{material_estoque}", style="italic green")
+                    console.print(f"\n{material_estoque}",
+                                  style="italic green")
 
                 if sap_material == '30029526' \
                         and self.contrato == "4600041302":
-                    self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True
-                    )
+                    pass
                 if sap_material not in materiais_receita \
                         and sap_material not in list_contratada \
                         and sap_etapa_material == self.operacao:
