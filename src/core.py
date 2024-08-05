@@ -72,7 +72,7 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
 
     except Exception as e_estoque_v:
         console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
-        raise Exception("Extração do Estoque Virtual Falhou!")
+        # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
 def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, start_time) -> Union[str, None]:
