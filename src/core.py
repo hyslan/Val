@@ -83,7 +83,7 @@ def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, s
     else:
         new_session = session
 
-    con = sap.listar_conexoes()
+    con = sap.connection_object()
 
     transaction_check: Transacao = Transacao(contrato, cod_mun, new_session)
     transaction_check.run_transacao(ordem, tipo="consulta")
@@ -175,7 +175,6 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
     try:
         sessions: win32com.client.CDispatch = sap.listar_sessoes()
-    # pylint: disable=E1101
     except pywintypes.com_error:
         return
 

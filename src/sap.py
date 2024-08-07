@@ -12,26 +12,18 @@ from dotenv import load_dotenv
 console: rich.console.Console = Console()
 
 
-def listar_conexoes() -> win32com.client.CDispatch:
+def connection_object(n_selected) -> win32com.client.CDispatch:
     """Função para listar as conexões ativas."""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connections: win32com.client.CDispatch = application.Children(0)
-
-    return connections
+    con = get_app()
+    connection: win32com.client.CDispatch = con.Item(n_selected)
+    return connection
 
 
-def listar_sessoes() -> win32com.client.CDispatch:
+def listar_sessoes(n_selected) -> win32com.client.CDispatch:
     """Função para listar as sessions ativas"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-    sessions: win32com.client.CDispatch = connection.Children
-
+    con = get_app()
+    con_selected: win32com.client.CDispatch = con.Item(n_selected)
+    sessions: win32com.client.CDispatch = con_selected.Children
     return sessions
 
 

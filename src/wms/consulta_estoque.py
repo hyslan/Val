@@ -34,7 +34,7 @@ def estoque(session, sessions, contrato):
     materiais = materiais.dropna()
     materiais['Material'] = materiais['Material'].astype(int).astype(str)
     sessao = sap
-    con = sessao.listar_conexoes()
+    con = sessao.connection_object()
     total_sessoes = sessao.contar_sessoes()
     if not total_sessoes == 6:
         # session.EndTransaction()
