@@ -35,6 +35,7 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
         sap.fechar_conexao(n)
     except:
         print("Conexão Encerrada.")
+
     sap.get_connection(token)
     time.sleep(10)
     session: win32com.client.CDispatch = sap.choose_connection(n)
@@ -42,13 +43,13 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
     return session
 
 
-def estoque_virtual(contrato, sessions, session) -> DataFrame:
+def estoque_virtual(contrato, n_con) -> DataFrame:
     """Get the virtual stock in MBLB transaction using contrato's number.
 
     Args:
         contrato (str): _description_
+        n_con (win32com.client.CDispatch): Connection number.
         sessions (win32com.client.CDispatch): Len of Sessions active.
-        session (win32com.client.CDispatch): Session in use.
 
     Raises:
         Exception: Error Message.
@@ -59,18 +60,16 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
     try:
         # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
-            if not sessions.Count == 6:
-                new_session: win32com.client.CDispatch = sap.create_session(
-                    sessions)
-                estoque_hj: DataFrame = estoque(
-                    new_session, sessions, contrato)
-            else:
-                estoque_hj: DataFrame = estoque(session, sessions, contrato)
+            new_session: win32com.client.CDispatch = sap.create_session(
+                n_con)
+            estoque_hj: DataFrame = estoque(
+                new_session, contrato)
 
         return estoque_hj
 
     except Exception as e_estoque_v:
         console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
+        console.print_exception()
         # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
@@ -174,11 +173,11 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
     transacao: Transacao = Transacao(contrato, "100", session)
 
     try:
-        sessions: win32com.client.CDispatch = sap.listar_sessoes()
+        sessions: win32com.client.CDispatch = sap.listar_sessoes(n_con)
     except pywintypes.com_error:
         return
 
-    estoque_hj: DataFrame = estoque_virtual(contrato, sessions, session)
+    estoque_hj: DataFrame = estoque_virtual(contrato, n_con)
 
     limite_execucoes = len(pendentes_array)
     print(
@@ -353,8 +352,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                         f"Quantidade de ordens valoradas: {qtd_ordem}."),
                     style="italic yellow")
 
-            # pylint: disable=E1101
             except Exception as errocritico:
+                console.print_exception()
                 print(f"args do errocritico: {errocritico}")
                 try:
                     _, descricao, _, _ = errocritico.args

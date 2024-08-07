@@ -32,7 +32,7 @@ def listar_sessoes(n_selected) -> win32com.client.CDispatch:
     """Função para listar as sessions ativas"""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
-    sessions: win32com.client.CDispatch = con_selected.Children
+    sessions: win32com.client.CDispatch = con_selected.Sessions
     return sessions
 
 
@@ -53,7 +53,7 @@ def create_session(n_selected: int) -> win32com.client.CDispatch:
     """Função para criar sessões"""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
-    sessions = con_selected.Sessions.Count
+    sessions = con_selected.Sessions
     # Obtendo o índice da última sessão ativa
     ultimo_indice = len(sessions) - 1
 
