@@ -83,6 +83,7 @@ def main(args=None) -> None:
 
         try:
             # TODO: Change Sessions for Connections.
+            token = down_sap()
             session: win32com.client.CDispatch = sap.escolher_sessao(
                 args.session)
         # pylint: disable=E1101
@@ -90,7 +91,7 @@ def main(args=None) -> None:
             console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
             console.print(
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-            down_sap()
+            token = down_sap()
             session: win32com.client.CDispatch = sap.escolher_sessao(
                 args.session)
 
