@@ -154,3 +154,11 @@ def is_process_running(process_name: str):
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def get_app() -> win32com.client.CDispatch:
+    """Get the SAP GUI application"""
+    pythoncom.CoInitialize()
+    app: win32com.client.CDispatch = win32com.client.GetObject(
+        "SAPGUI").GetScriptingEngine
+    return app
