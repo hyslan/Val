@@ -84,7 +84,7 @@ def main(args=None) -> None:
         try:
             # TODO: Change Sessions for Connections.
             token = down_sap()
-            session: win32com.client.CDispatch = sap.escolher_sessao(
+            session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
         # pylint: disable=E1101
         except pywintypes.com_error:
@@ -92,7 +92,7 @@ def main(args=None) -> None:
             console.print(
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
             token = down_sap()
-            session: win32com.client.CDispatch = sap.escolher_sessao(
+            session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
 
         try:

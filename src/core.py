@@ -38,7 +38,7 @@ def rollback(n: int) -> win32com.client.CDispatch:
     down_sap()
     populate_sessions()
     time.sleep(20)
-    session: win32com.client.CDispatch = sap.escolher_sessao(n)
+    session: win32com.client.CDispatch = sap.choose_connection(n)
     print("Reiniciando programa")
     return session
 

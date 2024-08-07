@@ -13,16 +13,16 @@ console: rich.console.Console = Console()
 def do() -> None:
     try:
         # Always use the first session
-        session: win32com.client.CDispatch = sap.escolher_sessao(0)
+        session: win32com.client.CDispatch = sap.choose_connection(0)
     # pylint: disable=E1101
     except pywintypes.com_error:
         console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
         console.print(
             "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
         down_sap()
-        session: win32com.client.CDispatch = sap.escolher_sessao(0)
+        session: win32com.client.CDispatch = sap.choose_connection(0)
 
-    retrabalho("",session)
+    retrabalho("", session)
 
 
 if __name__ == '__main__':
