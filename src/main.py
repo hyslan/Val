@@ -110,7 +110,8 @@ def main(args=None) -> None:
                     pendentes_list: np.ndarray = extract_from_sql(
                         args.contrato)
                     validador = val(
-                        pendentes_list, session, args.contrato, args.revalorar)
+                        pendentes_list, session, args.contrato, args.revalorar,
+                        token, args.session)
                 case "5":
                     tses_existentes = sql_view.Sql("", "")
                     console.print("\n", tses_existentes.show_tses(),
@@ -122,7 +123,8 @@ def main(args=None) -> None:
                     pendentes_array: np.ndarray = pendentes.tse_escolhida(
                         args.contrato)
                     validador = val(
-                        pendentes_array, session, args.contrato, args.revalorar)
+                        pendentes_array, session, args.contrato, args.revalorar,
+                        token, args.session)
                 case "6":
                     tses_existentes = sql_view.Sql("", "")
                     console.print("\n", tses_existentes.show_tses(),
@@ -133,7 +135,8 @@ def main(args=None) -> None:
                     pendentes_array: np.ndarray = pendentes.tse_expecifica(
                         args.contrato)
                     validador = val(
-                        pendentes_array, session, args.contrato, args.revalorar)
+                        pendentes_array, session, args.contrato, args.revalorar,
+                        token, args.session)
                 case "7":
                     ordem_expec = input(
                         "- Val: Digite o Nº da Ordem, por favor.\n"
@@ -142,7 +145,8 @@ def main(args=None) -> None:
                     pendentes_array: np.ndarray = np.array(
                         [[ordem_expec, mun]])
                     validador = val(
-                        pendentes_array, session, args.contrato, args.revalorar
+                        pendentes_array, session, args.contrato, args.revalorar,
+                        token, args.session
                     )
                 case "8":
                     ask = input("é csv?")
@@ -152,13 +156,15 @@ def main(args=None) -> None:
                         planilha = pendentes_excel()
 
                     validador = val(
-                        planilha, session, args.contrato, args.revalorar)
+                        planilha, session, args.contrato, args.revalorar,
+                        token, args.session)
                 case "9":
                     pendentes = sql_view.Sql("", "")
                     pendentes_array = pendentes.familia(
                         args.family, args.contrato)
                     validador = val(
-                        pendentes_array, session, args.contrato, args.revalorar
+                        pendentes_array, session, args.contrato, args.revalorar,
+                        token, args.session
                     )
 
         except (TypeError, ValueError) as erro:

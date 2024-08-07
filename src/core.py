@@ -30,16 +30,15 @@ from src.nazare_bugou import oxe
 console: rich.console.Console = Console()
 
 
-def rollback(n: int) -> win32com.client.CDispatch:
+def rollback(n: int, token) -> win32com.client.CDispatch:
     try:
-        sap.encerrar_sap()
+        sap.fechar_conexao(n)
     except:
-        print("SAPLOGON já foi encerrado.")
-    down_sap()
-    populate_sessions()
-    time.sleep(20)
+        print("Conexão Encerrada.")
+    sap.get_connection(token)
+    time.sleep(10)
     session: win32com.client.CDispatch = sap.choose_connection(n)
-    print("Reiniciando programa")
+    print("Sessão Recuperada.")
     return session
 
 
@@ -169,7 +168,8 @@ def inspector_materials(
                 session)
 
 
-def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
+def val(pendentes_array: np.ndarray, session, contrato: str,
+        revalorar: bool, token: str, n_con: int):
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
 
