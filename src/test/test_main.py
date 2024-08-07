@@ -28,7 +28,8 @@ class TestMain(unittest.TestCase):
     def test_main(self, mock_parse_args):
         """Test main function"""
         # mock_args = Mock(return_value=("0", "9", "4600041302", "alefafa"))
-        mock_parse_args.return_value = argparse.Namespace(s="0", o="9", c="4600041302", p="alefafa")
+        mock_parse_args.return_value = argparse.Namespace(
+            s="0", o="9", c="4600041302", p="alefafa")
         self.assertIsNone(src.main.main())
 
     def test_core(self):
@@ -39,13 +40,13 @@ class TestMain(unittest.TestCase):
     def test_estoque(self):
         """Teste de estoque"""
         materiais = estoque(
-            sap.escolher_sessao(0), sap.listar_sessoes(), ("4600041302", "344", "100"))
+            sap.choose_connection(0), sap.listar_sessoes(), ("4600041302", "344", "100"))
 
     def test_consulta(self):
         """Consulta de OS no SAP
         """
         resultado = consulta_os(
-            "2400341804", sap.escolher_sessao(0), ("4600041302", "344", "100"))
+            "2400341804", sap.choose_connection(0), ("4600041302", "344", "100"))
 
     def test_sapador(self):
         """Test download sapgui"""
@@ -53,24 +54,24 @@ class TestMain(unittest.TestCase):
 
     def test_sap(self):
         """Test COM SapGui module"""
-        self.assertLogs(sap.listar_conexoes(), level='DEBUG')
+        self.assertLogs(sap.connection_object(), level='DEBUG')
         sessions = sap.listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
         self.assertLogs(sap.contar_sessoes(), level='DEBUG')
-        self.assertLogs(sap.criar_sessao(sessions), level='DEBUG')
-        n = self.assertLogs(sap.escolher_sessao(), level='DEBUG')
+        self.assertLogs(sap.create_session(sessions), level='DEBUG')
+        n = self.assertLogs(sap.choose_connection(), level='DEBUG')
         console.print([f"[italic]{n}"])
 
     def test_dicionario_un(self):
         """Teste do dicionário com classe"""
-        gui = sap.escolher_sessao(0)
+        gui = sap.choose_connection(0)
         seletor = Controlador("134000", None, None, None, 1,
                               None, "cavalete", None, None, gui)
         seletor.executar_processo()
 
     def test_transacao(self):
         """teste da ZSBMM216"""
-        gui = sap.escolher_sessao()
+        gui = sap.choose_connection()
         guia = Transacao("4600043760", "344", "100", gui)
         guia.run_transacao("1234")
 
@@ -105,7 +106,7 @@ class TestProcessarOperacao(unittest.TestCase):
     """Testar classe poço"""
 
     def setUp(self):
-        gui = sap.escolher_sessao()
+        gui = sap.choose_connection()
         self.objeto = Poco(
             etapa="2400145264",
             corte=None,

@@ -30,26 +30,26 @@ from src.nazare_bugou import oxe
 console: rich.console.Console = Console()
 
 
-def rollback(n: int) -> win32com.client.CDispatch:
+def rollback(n: int, token) -> win32com.client.CDispatch:
     try:
-        sap.encerrar_sap()
+        sap.fechar_conexao(n)
     except:
-        print("SAPLOGON já foi encerrado.")
-    down_sap()
-    populate_sessions()
-    time.sleep(20)
-    session: win32com.client.CDispatch = sap.escolher_sessao(n)
-    print("Reiniciando programa")
+        print("Conexão Encerrada.")
+
+    sap.get_connection(token)
+    time.sleep(10)
+    session: win32com.client.CDispatch = sap.choose_connection(n)
+    print("Sessão Recuperada.")
     return session
 
 
-def estoque_virtual(contrato, sessions, session) -> DataFrame:
+def estoque_virtual(contrato, n_con) -> DataFrame:
     """Get the virtual stock in MBLB transaction using contrato's number.
 
     Args:
         contrato (str): _description_
+        n_con (win32com.client.CDispatch): Connection number.
         sessions (win32com.client.CDispatch): Len of Sessions active.
-        session (win32com.client.CDispatch): Session in use.
 
     Raises:
         Exception: Error Message.
@@ -60,30 +60,28 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
     try:
         # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
-            if not sessions.Count == 6:
-                new_session: win32com.client.CDispatch = sap.criar_sessao(
-                    sessions)
-                estoque_hj: DataFrame = estoque(
-                    new_session, sessions, contrato)
-            else:
-                estoque_hj: DataFrame = estoque(session, sessions, contrato)
+            new_session: win32com.client.CDispatch = sap.create_session(
+                n_con)
+            estoque_hj: DataFrame = estoque(
+                new_session, contrato, n_con)
 
         return estoque_hj
 
     except Exception as e_estoque_v:
         console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
-        raise Exception("Extração do Estoque Virtual Falhou!")
+        console.print_exception()
+        # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
 def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, start_time) -> Union[str, None]:
     data_valorado = None
     if not sessions.Count == 6:
-        new_session: win32com.client.CDispatch = sap.criar_sessao(
+        new_session: win32com.client.CDispatch = sap.create_session(
             sessions)
     else:
         new_session = session
 
-    con = sap.listar_conexoes()
+    con = sap.connection_object()
 
     transaction_check: Transacao = Transacao(contrato, cod_mun, new_session)
     transaction_check.run_transacao(ordem, tipo="consulta")
@@ -169,17 +167,17 @@ def inspector_materials(
                 session)
 
 
-def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
+def val(pendentes_array: np.ndarray, session, contrato: str,
+        revalorar: bool, token: str, n_con: int):
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
 
     try:
-        sessions: win32com.client.CDispatch = sap.listar_sessoes()
-    # pylint: disable=E1101
+        sessions: win32com.client.CDispatch = sap.listar_sessoes(n_con)
     except pywintypes.com_error:
         return
 
-    estoque_hj: DataFrame = estoque_virtual(contrato, sessions, session)
+    estoque_hj: DataFrame = estoque_virtual(contrato, n_con)
 
     limite_execucoes = len(pendentes_array)
     print(
@@ -212,7 +210,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                  diametro_ramal,
                  diametro_rede,
                  principal_tse
-                 ) = consulta_os(ordem, session, contrato)
+                 ) = consulta_os(ordem, session, contrato, n_con)
                 # * Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
@@ -344,7 +342,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                 # exit()
                 # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
-                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time)
+                    ordem, qtd_ordem, contrato, session,
+                    principal_tse, cod_mun, start_time, n_con)
                 # ! debug
                 # break
 
@@ -353,8 +352,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
                         f"Quantidade de ordens valoradas: {qtd_ordem}."),
                     style="italic yellow")
 
-            # pylint: disable=E1101
             except Exception as errocritico:
+                console.print_exception()
                 print(f"args do errocritico: {errocritico}")
                 try:
                     _, descricao, _, _ = errocritico.args
@@ -390,4 +389,4 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
         validador = True
 
-    return ordem, validador
+    return validador

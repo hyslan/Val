@@ -1,6 +1,5 @@
 # salvacao.py
 """Módulo de salvar valoração."""
-import sys
 import re
 import threading
 import pythoncom
@@ -8,7 +7,6 @@ import win32com.client as win32
 import pywintypes
 from rich.console import Console
 from src import sql_view
-from src.confere_os import consulta_os
 from src import sap
 from src.temporizador import cronometro_val
 
@@ -18,7 +16,8 @@ lock = threading.Lock()
 console = Console()
 
 
-def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time):
+def salvar(ordem, qtd_ordem, contrato, session,
+           principal_tse, cod_mun, start_time, n_con):
     """Salvar e verificar se está salvando."""
     salvo = "Ajustes de valoração salvos com sucesso."
     total = session.findById(
@@ -65,7 +64,7 @@ def salvar(ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_ti
         thread.join(timeout=300)
         if thread.is_alive():
             print("SAP demorando mais que o esperado, encerrando.")
-            sap.encerrar_sap()
+            sap.fechar_conexao(n_con)
 
         # Check the footer.
         rodape = session.findById("wnd[0]/sbar").Text

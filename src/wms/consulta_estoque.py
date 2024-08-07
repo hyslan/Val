@@ -6,7 +6,7 @@ import pandas as pd
 from src import sap
 
 
-def estoque(session, sessions, contrato):
+def estoque(session, contrato, n_con):
     """Função para consultar estoque"""
     caminho = os.getcwd() + "\\sheets\\"
     session.StartTransaction("MBLB")
@@ -34,12 +34,12 @@ def estoque(session, sessions, contrato):
     materiais = materiais.dropna()
     materiais['Material'] = materiais['Material'].astype(int).astype(str)
     sessao = sap
-    con = sessao.listar_conexoes()
+    con = sessao.connection_object(n_con)
     total_sessoes = sessao.contar_sessoes()
     if not total_sessoes == 6:
         # session.EndTransaction()
         print("Encerrando Sessão.")
-        con.CloseSession(f"/app/con[0]/ses[{len(sessions)}]")
+        con.CloseSession(f"/app/con[0]/ses[{total_sessoes}]")
         time.sleep(10)
 
     print("Fechando Arquivo Excel.\n")

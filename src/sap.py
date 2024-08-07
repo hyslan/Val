@@ -1,7 +1,9 @@
 """Módulo para interagir com o SAP GUI"""
 import os
 import subprocess
+import threading
 import time
+from arrow import get
 import win32com.client
 import pythoncom
 from rich.console import Console
@@ -11,26 +13,26 @@ from dotenv import load_dotenv
 console: rich.console.Console = Console()
 
 
-def listar_conexoes() -> win32com.client.CDispatch:
+def reconnect(session):
+    console.print("Tentando obter de volta IID_IDispatch")
+    s_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
+        pythoncom.IID_IDispatch, session)
+    console.print(f"Obtido com sucesso: {s_id}")
+    return s_id
+
+
+def connection_object(n_selected) -> win32com.client.CDispatch:
     """Função para listar as conexões ativas."""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connections: win32com.client.CDispatch = application.Children(0)
-
-    return connections
+    con = get_app()
+    connection: win32com.client.CDispatch = con.Item(n_selected)
+    return connection
 
 
-def listar_sessoes() -> win32com.client.CDispatch:
+def listar_sessoes(n_selected) -> win32com.client.CDispatch:
     """Função para listar as sessions ativas"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-    sessions: win32com.client.CDispatch = connection.Children
-
+    con = get_app()
+    con_selected: win32com.client.CDispatch = con.Item(n_selected)
+    sessions: win32com.client.CDispatch = con_selected.Sessions
     return sessions
 
 
@@ -47,49 +49,39 @@ def contar_sessoes() -> int:
     return sessions.Count
 
 
-def criar_sessao(sessions) -> win32com.client.CDispatch:
+def create_session(n_selected: int) -> win32com.client.CDispatch:
     """Função para criar sessões"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-
+    con = get_app()
+    con_selected: win32com.client.CDispatch = con.Item(n_selected)
+    sessions = con_selected.Sessions
     # Obtendo o índice da última sessão ativa
     ultimo_indice = len(sessions) - 1
 
     # Criando uma nova sessão com base na última sessão ativa
     if ultimo_indice < 5:
-        connection.Children(ultimo_indice).CreateSession()
+        con_selected.Children(ultimo_indice).CreateSession()
         while ultimo_indice >= len(sessions) - 1:
-            sessions = connection.Children
+            sessions = con_selected.Children
 
         # Acessando a nova sessão
-        session = connection.Children(len(sessions) - 1)
+        session = con_selected.Children(len(sessions) - 1)
     else:
-        session = connection.Children(5)
+        session = con_selected.Children(5)
 
     return session
 
 
-def escolher_sessao(n_selected: int) -> win32com.client.CDispatch:
+def choose_connection(n_selected: int) -> win32com.client.CDispatch:
     """Escolher com qual sessão trabalhar"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-    session: win32com.client.CDispatch = connection.Children(n_selected)
+    con = get_app()
+    session: win32com.client.CDispatch = con.Item(n_selected).Sessions(0)
     return session
 
 
-def fechar_conexao() -> None:
+def fechar_conexao(n_con) -> None:
     """Função para fechar o SAP."""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
+    con = get_app()
+    connection = con.Item(n_con)
     connection.CloseConnection()
 
 
@@ -104,7 +96,7 @@ def encerrar_sap() -> None:
         print(f'Não foi possível encerrar o processo {processo}.')
 
 
-def get_connection(token: str):
+def get_connection(token: str) -> str:
     load_dotenv()
     sap_access = (
         '[System]\n'
@@ -154,3 +146,16 @@ def is_process_running(process_name: str):
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def get_app() -> win32com.client.CDispatch:
+    """Get the SAP GUI application
+
+    Returns:
+        win32com.client.CDispatch: Connections from application
+    """
+    pythoncom.CoInitialize()
+    app: win32com.client.CDispatch = win32com.client.GetObject(
+        "SAPGUI").GetScriptingEngine
+    con = app.Connections
+    return con

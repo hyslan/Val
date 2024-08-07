@@ -46,7 +46,7 @@ class Transacao:
         else:
             raise ValueError("Wrong type, need to be string.")
 
-    def run_transacao(self, ordem, tipo="individual"):
+    def run_transacao(self, ordem, tipo="individual", n_con=0):
         """Run thread ZSBMM216
         e faz a transação a transação com o respectivo contrato."""
 
@@ -98,7 +98,7 @@ class Transacao:
             thread.join(timeout=300)
             if thread.is_alive():
                 print("SAP demorando mais que o esperado, encerrando.")
-                sap.encerrar_sap()
+                sap.fechar_conexao(n_con)
 
         except pywintypes.com_error as erro_thread216:
             console.print(f"Erro na thread da ZSBMM216: {erro_thread216}")
