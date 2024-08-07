@@ -58,7 +58,7 @@ class TestMain(unittest.TestCase):
         sessions = sap.listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
         self.assertLogs(sap.contar_sessoes(), level='DEBUG')
-        self.assertLogs(sap.criar_sessao(sessions), level='DEBUG')
+        self.assertLogs(sap.create_session(sessions), level='DEBUG')
         n = self.assertLogs(sap.choose_connection(), level='DEBUG')
         console.print([f"[italic]{n}"])
 

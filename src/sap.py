@@ -48,27 +48,24 @@ def contar_sessoes() -> int:
     return sessions.Count
 
 
-def criar_sessao(sessions) -> win32com.client.CDispatch:
+def create_session(n_selected: int) -> win32com.client.CDispatch:
     """Função para criar sessões"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-
+    con = get_app()
+    con_selected: win32com.client.CDispatch = con.Item(n_selected)
+    sessions = con_selected.Sessions.Count
     # Obtendo o índice da última sessão ativa
     ultimo_indice = len(sessions) - 1
 
     # Criando uma nova sessão com base na última sessão ativa
     if ultimo_indice < 5:
-        connection.Children(ultimo_indice).CreateSession()
+        con_selected.Children(ultimo_indice).CreateSession()
         while ultimo_indice >= len(sessions) - 1:
-            sessions = connection.Children
+            sessions = con_selected.Children
 
         # Acessando a nova sessão
-        session = connection.Children(len(sessions) - 1)
+        session = con_selected.Children(len(sessions) - 1)
     else:
-        session = connection.Children(5)
+        session = con_selected.Children(5)
 
     return session
 

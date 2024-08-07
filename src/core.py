@@ -61,7 +61,7 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
         # NORTE SUL DESOBSTRUÇÃO
         if not contrato == "4600043760":
             if not sessions.Count == 6:
-                new_session: win32com.client.CDispatch = sap.criar_sessao(
+                new_session: win32com.client.CDispatch = sap.create_session(
                     sessions)
                 estoque_hj: DataFrame = estoque(
                     new_session, sessions, contrato)
@@ -78,7 +78,7 @@ def estoque_virtual(contrato, sessions, session) -> DataFrame:
 def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, start_time) -> Union[str, None]:
     data_valorado = None
     if not sessions.Count == 6:
-        new_session: win32com.client.CDispatch = sap.criar_sessao(
+        new_session: win32com.client.CDispatch = sap.create_session(
             sessions)
     else:
         new_session = session
