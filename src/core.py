@@ -63,7 +63,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
             new_session: win32com.client.CDispatch = sap.create_session(
                 n_con)
             estoque_hj: DataFrame = estoque(
-                new_session, contrato)
+                new_session, contrato, n_con)
 
         return estoque_hj
 
