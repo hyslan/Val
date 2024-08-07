@@ -30,7 +30,7 @@ def main(args=None) -> None:
                                                               description="Sistema de valoração automática não "
                                                                           "assistida.",
                                                               epilog="Author: Hyslan Silva Cruz")
-    parser.add_argument('-s', '--session',
+    parser.add_argument('-s', '--session',  # It's a connection not Session
                         type=int, default=0,
                         help='Número da sessão do SAP a ser utilizada.')
     parser.add_argument('-o', '--option',
@@ -82,11 +82,11 @@ def main(args=None) -> None:
             return
 
         try:
-            # TODO: Change Sessions for Connections.
+            console.print(
+                "[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
             token = down_sap()
             session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
-        # pylint: disable=E1101
         except pywintypes.com_error:
             console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
             console.print(
@@ -109,7 +109,7 @@ def main(args=None) -> None:
                 case "4":
                     pendentes_list: np.ndarray = extract_from_sql(
                         args.contrato)
-                    ordem, validador = val(
+                    validador = val(
                         pendentes_list, session, args.contrato, args.revalorar)
                 case "5":
                     tses_existentes = sql_view.Sql("", "")
@@ -121,7 +121,7 @@ def main(args=None) -> None:
                     pendentes = sql_view.Sql(ordem="", cod_tse=lista_tse)
                     pendentes_array: np.ndarray = pendentes.tse_escolhida(
                         args.contrato)
-                    ordem, validador = val(
+                    validador = val(
                         pendentes_array, session, args.contrato, args.revalorar)
                 case "6":
                     tses_existentes = sql_view.Sql("", "")
@@ -132,7 +132,7 @@ def main(args=None) -> None:
                     pendentes = sql_view.Sql(ordem="", cod_tse=tse_expec)
                     pendentes_array: np.ndarray = pendentes.tse_expecifica(
                         args.contrato)
-                    ordem, validador = val(
+                    validador = val(
                         pendentes_array, session, args.contrato, args.revalorar)
                 case "7":
                     ordem_expec = input(
@@ -141,7 +141,7 @@ def main(args=None) -> None:
                     mun = input("Digite o Nº do Município.\n")
                     pendentes_array: np.ndarray = np.array(
                         [[ordem_expec, mun]])
-                    ordem, validador = val(
+                    validador = val(
                         pendentes_array, session, args.contrato, args.revalorar
                     )
                 case "8":
@@ -151,13 +151,13 @@ def main(args=None) -> None:
                     else:
                         planilha = pendentes_excel()
 
-                    ordem, validador = val(
+                    validador = val(
                         planilha, session, args.contrato, args.revalorar)
                 case "9":
                     pendentes = sql_view.Sql("", "")
                     pendentes_array = pendentes.familia(
                         args.family, args.contrato)
-                    ordem, validador = val(
+                    validador = val(
                         pendentes_array, session, args.contrato, args.revalorar
                     )
 

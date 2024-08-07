@@ -390,4 +390,4 @@ def val(pendentes_array: np.ndarray, session, contrato: str, revalorar: bool):
 
         validador = True
 
-    return ordem, validador
+    return validador
