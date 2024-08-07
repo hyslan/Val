@@ -211,7 +211,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                  diametro_ramal,
                  diametro_rede,
                  principal_tse
-                 ) = consulta_os(ordem, session, contrato)
+                 ) = consulta_os(ordem, session, contrato, n_con)
                 # * Consulta Status da Ordem
                 if not status_sistema == fechada:
                     print(f"OS: {ordem} aberta.")
@@ -343,7 +343,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                 # exit()
                 # * Salvar Ordem
                 qtd_ordem, rodape = salvar(
-                    ordem, qtd_ordem, contrato, session, principal_tse, cod_mun, start_time)
+                    ordem, qtd_ordem, contrato, session,
+                    principal_tse, cod_mun, start_time, n_con)
                 # ! debug
                 # break
 

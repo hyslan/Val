@@ -1,6 +1,7 @@
 """Módulo para interagir com o SAP GUI"""
 import os
 import subprocess
+import threading
 import time
 from arrow import get
 import win32com.client
@@ -10,6 +11,14 @@ import rich.console
 from dotenv import load_dotenv
 
 console: rich.console.Console = Console()
+
+
+def reconnect(session):
+    console.print("Tentando obter de volta IID_IDispatch")
+    s_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
+        pythoncom.IID_IDispatch, session)
+    console.print(f"Obtido com sucesso: {s_id}")
+    return s_id
 
 
 def connection_object(n_selected) -> win32com.client.CDispatch:

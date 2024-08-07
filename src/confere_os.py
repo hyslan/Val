@@ -13,7 +13,7 @@ lock = threading.Lock()
 console = Console()
 
 
-def consulta_os(n_os, session, contrato):
+def consulta_os(n_os, session, contrato, n_con):
     """
     Função para consultar ORDEM na transação ZSBPM020.
 
@@ -75,8 +75,6 @@ def consulta_os(n_os, session, contrato):
             except (pywintypes.com_error, AttributeError) as transaction_error:
                 console.print(
                     f"Erro durante a thread consulta OS: {transaction_error}")
-                console.print_exception(show_locals=True)
-                # sap.encerrar_sap()
 
             finally:
                 pythoncom.CoUninitialize()
@@ -94,7 +92,7 @@ def consulta_os(n_os, session, contrato):
         thread.join(timeout=300)
         if thread.is_alive():
             print("SAP demorando mais que o esperado, encerrando.")
-            sap.encerrar_sap()
+            sap.fechar_conexao(n_con)
 
         consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
         status_sistema = consulta.GetCellValue(0, "STTXT")
