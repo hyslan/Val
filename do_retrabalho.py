@@ -3,9 +3,9 @@ import win32com.client
 import pywintypes
 import rich.console
 from rich.console import Console
-import src.sap as sap
-from src.sapador import down_sap
-from src.retrabalhador import retrabalho
+import python.src.sap as sap
+from python.src.sapador import down_sap
+from python.src.retrabalhador import retrabalho
 
 console: rich.console.Console = Console()
 
