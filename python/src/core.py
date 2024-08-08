@@ -71,11 +71,12 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
         # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
-def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, start_time) -> Union[str, None]:
+def valorator_user(session, sessions, ordem, contrato,
+                   cod_mun, principal_tse, start_time, n_con) -> Union[str, None]:
     data_valorado = None
     if not sessions.Count == 6:
         new_session: win32com.client.CDispatch = sap.create_session(
-            sessions)
+            n_con)
     else:
         new_session = session
 
@@ -102,7 +103,7 @@ def valorator_user(session, sessions, ordem, contrato, cod_mun, principal_tse, s
         print(f"OS: {ordem} já valorada.")
         print(f"Data: {data_valorado}")
         print(f"Matrícula: {matricula}")
-        print(f"Valor Medido: ", f_total)
+        print("Valor Medido: ", f_total)
         ja_valorado = sql_view.Sql(
             ordem=ordem, cod_tse=principal_tse)
         try:
@@ -225,7 +226,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                     if status_usuario == valorada:
                         print(f"OS: {ordem} já valorada.")
                         valorator_user(
-                            session, sessions, ordem, contrato, cod_mun, principal_tse, start_time)
+                            session, sessions, ordem, contrato,
+                            cod_mun, principal_tse, start_time, n_con)
                         continue
 
                 # * Go To ZSBMM216 Transaction
