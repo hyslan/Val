@@ -18,15 +18,15 @@ const _RECAPEMLG: &str = "4600044782";
 const _ZIGURATEMLQ: &str = "4600056089";
 
 // Familias
-const _FAMILY: [&str; 5]  = ["cavalete", "religacao", "supressao", "hidrometro", "poco"];
+const _FAMILY: [&str; 5] = ["cavalete", "religacao", "supressao", "hidrometro", "poco"];
 
 fn main() {
     // Lista de contratos
     let contracts = [_ZCMLN, _NOVASPMLG, _ZIGURATEMLQ];
-    let mut session:u32 = 0;
+    let mut session: u32 = 0;
     let mut str_session: String = session.to_string();
     Command::new("python")
-        .args([&"-m", "src.charging_sessions"])
+        .args([&"-m", "python.src.charging_sessions"])
         .spawn()
         .expect("failed to execute process");
 
@@ -35,17 +35,22 @@ fn main() {
     // ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
     for &contract in &contracts {
         let args = vec![
-            "-m", "src.main",
-            "-s", str_session.as_str(),
-            "-o", "9",
-            "-c", contract, // Catch all family possible.
-            "-p", "alefafa"
+            "-m",
+            "main",
+            "-s",
+            str_session.as_str(),
+            "-o",
+            "9",
+            "-c",
+            contract, // Catch all family possible.
+            "-p",
+            "alefafa",
         ];
 
         // Adiciona os elementos da família ao vetor de argumentos
-//         for &family in FAMILY.iter() {
-//             args.push(family);
-//         }
+        //         for &family in FAMILY.iter() {
+        //             args.push(family);
+        //         }
 
         Command::new("python")
             .args(&args)
@@ -54,8 +59,11 @@ fn main() {
 
         session += 1;
         str_session = session.to_string();
-        
-        print!("Iniciando a sessão {} para o contrato {}...", str_session, contract);
+
+        print!(
+            "Iniciando a sessão {} para o contrato {}...",
+            str_session, contract
+        );
         print!("Aguardando 40 segundos para iniciar a próxima sessão...");
         thread::sleep(Duration::from_secs(40));
     }
