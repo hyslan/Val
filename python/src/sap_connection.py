@@ -3,13 +3,11 @@
 """Módulo SAP"""
 
 # -Bibliotecas--------------------------------------------------------------
-import win32com.client
-import pythoncom
 import pywintypes
 import time
 from rich.console import Console
 from python.src.sapador import down_sap
-import src.sap as sap
+import python.src.sap as sap
 
 # -Sub Main--------------------------------------------------------------
 console = Console()

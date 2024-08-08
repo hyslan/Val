@@ -10,7 +10,7 @@ from rich.console import Console
 import main
 from python.src.core import val
 from python.src.sapador import down_sap
-import src.sap as sap
+import python.src.sap as sap
 from python.src.transact_zsbmm216 import Transacao
 from python.src.unitarios.controlador import Controlador
 from python.src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
