@@ -229,7 +229,7 @@ class Sql:
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         # TSEs leave out the plumbing services by Iara.
-        chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'" if contrato == "4600042975" else "'',"
+        chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'," if contrato == "4600042975" else "'',"
         sql_command = fr"""
             SELECT Ordem, COD_MUNICIPIO
             FROM [LESTE_AD\hcruz_novasp].[v_Hyslan_Valoracao]
@@ -241,7 +241,7 @@ class Sql:
                 '315000', '532000', '564000', '588000', '590000', '709000', '700000', '593000', '253000',
                 '250000', '209000', '605000', '605000', '263000', '255000', '254000', '282000', '265000',
                 '260000', '265000', '263000', '262000', '284500', '286000', '282500',
-                {chief_iara_orders},
+                {chief_iara_orders}
                 '136000', '159000', '155000');
         """
 

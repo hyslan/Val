@@ -30,6 +30,7 @@ fn main() {
         .spawn()
         .expect("failed to execute process");
 
+    print!("Iniciando as sessões das conexões...");
     thread::sleep(Duration::from_secs(60));
     // ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
     for &contract in &contracts {
@@ -54,6 +55,8 @@ fn main() {
         session += 1;
         str_session = session.to_string();
         
-        thread::sleep(Duration::from_secs(1));
+        print!("Iniciando a sessão {} para o contrato {}...", str_session, contract);
+        print!("Aguardando 40 segundos para iniciar a próxima sessão...");
+        thread::sleep(Duration::from_secs(40));
     }
 }
