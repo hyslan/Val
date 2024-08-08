@@ -82,6 +82,7 @@ def main(args=None) -> None:
             you_cant_pass('video')
             return
 
+        # * Conexão ao SAP
         try:
             console.print(
                 "[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
