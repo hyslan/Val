@@ -185,6 +185,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
         return
 
     estoque_hj: DataFrame = estoque_virtual(contrato, n_con)
+    exit()
 
     with console.status("[bold blue]Trabalhando..."):
         # * Variáveis de Status da Ordem

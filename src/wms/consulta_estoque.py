@@ -35,20 +35,19 @@ def estoque(session, contrato, n_con):
     materiais['Material'] = materiais['Material'].astype(int).astype(str)
     sessao = sap
     con = sessao.connection_object(n_con)
-    total_sessoes = sessao.contar_sessoes()
+    total_sessoes = sessao.contar_sessoes(n_con)
     if not total_sessoes == 6:
-        # session.EndTransaction()
         try:
             print("Encerrando Sessão.")
-            con.CloseSession(f"/app/con[0]/ses[{total_sessoes}]")
+            con.CloseSession(f"/app/con[0]/ses[{total_sessoes - 1}]")
             print("Sessão Encerrada.")
         except Exception as e:
             print(f"Erro em consulta_estoque - Encerrar Sessão:{e}")
-        time.sleep(10)
+        time.sleep(3)
 
     print("Fechando Arquivo Excel.\n")
     try:
-        time.sleep(10)
+        time.sleep(8)
         book = xw.Book(f'estoque_{contrato}.xlsx')
         book.app.quit()
     except Exception as e:

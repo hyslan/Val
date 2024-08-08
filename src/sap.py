@@ -36,14 +36,11 @@ def listar_sessoes(n_selected) -> win32com.client.CDispatch:
     return sessions
 
 
-def contar_sessoes() -> int:
+def contar_sessoes(n_selected) -> int:
     """Contar por tamanho de 1 a 6, caso for criar sessão subtrair -1"""
-    # pylint: disable=E1101
-    pythoncom.CoInitialize()
-    sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
-    application: win32com.client.CDispatch = sapguiauto.GetScriptingEngine
-    connection: win32com.client.CDispatch = application.Children(0)
-    sessions: win32com.client.CDispatch = connection.Children
+    con = get_app()
+    con_selected: win32com.client.CDispatch = con.Item(n_selected)
+    sessions: win32com.client.CDispatch = con_selected.Sessions
     console.print(
         f"[blue italic]Quantidade de sessões ativas: {sessions.Count}")
     return sessions.Count
