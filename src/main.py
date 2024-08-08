@@ -85,6 +85,7 @@ def main(args=None) -> None:
         try:
             console.print(
                 "[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
+            token = down_sap()
             session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
         except pywintypes.com_error:

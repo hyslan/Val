@@ -171,6 +171,13 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
         revalorar: bool, token: str, n_con: int):
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
+    limite_execucoes = len(pendentes_array)
+    print(
+        f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
+    # * In case of null Df.
+    if limite_execucoes == 0:
+        print("Nenhuma Ordem para Valorar.")
+        return True
 
     try:
         sessions: win32com.client.CDispatch = sap.listar_sessoes(n_con)
@@ -178,13 +185,6 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
         return
 
     estoque_hj: DataFrame = estoque_virtual(contrato, n_con)
-
-    limite_execucoes = len(pendentes_array)
-    print(
-        f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
-    # * In case of null Df.
-    if limite_execucoes == 0:
-        return None, True
 
     with console.status("[bold blue]Trabalhando..."):
         # * Variáveis de Status da Ordem

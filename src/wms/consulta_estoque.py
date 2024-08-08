@@ -38,8 +38,12 @@ def estoque(session, contrato, n_con):
     total_sessoes = sessao.contar_sessoes()
     if not total_sessoes == 6:
         # session.EndTransaction()
-        print("Encerrando Sessão.")
-        con.CloseSession(f"/app/con[0]/ses[{total_sessoes}]")
+        try:
+            print("Encerrando Sessão.")
+            con.CloseSession(f"/app/con[0]/ses[{total_sessoes}]")
+            print("Sessão Encerrada.")
+        except Exception as e:
+            print(f"Erro em consulta_estoque - Encerrar Sessão:{e}")
         time.sleep(10)
 
     print("Fechando Arquivo Excel.\n")
