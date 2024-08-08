@@ -16,12 +16,15 @@ console = Console()
 
 
 def populate_sessions() -> None:
+    def rise_connection(token: str) -> None:
+        for _ in range(3):
+            sap.get_connection(token)
+            time.sleep(5)
     try:
         token = down_sap()
         print("Wait 20 seconds...")
         time.sleep(20)
-        for i in range(3):
-            sap.get_connection(token)
+        rise_connection(token)
 
         time.sleep(10)
     except pywintypes.com_error:
@@ -31,4 +34,5 @@ def populate_sessions() -> None:
         token = down_sap()
         print("Wait 20 seconds...")
         time.sleep(20)
+        rise_connection(token)
 # --- END

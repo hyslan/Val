@@ -2,6 +2,7 @@
 """Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz"""
 # main.py
 # Bibliotecas
+import time
 import argparse
 import os
 import datetime
@@ -84,7 +85,6 @@ def main(args=None) -> None:
         try:
             console.print(
                 "[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
-            token = down_sap()
             session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
         except pywintypes.com_error:
@@ -92,6 +92,7 @@ def main(args=None) -> None:
             console.print(
                 "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
             token = down_sap()
+            time.sleep(10)
             session: win32com.client.CDispatch = sap.choose_connection(
                 args.session)
 
