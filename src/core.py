@@ -34,7 +34,7 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
     try:
         sap.fechar_conexao(n)
     except:
-        print("Conexão Encerrada.")
+        print("Conexão já Encerrada ou não ativa.")
 
     sap.get_connection(token)
     time.sleep(10)
@@ -362,27 +362,25 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                             console.print(
                                 "[bold red]SAPGUI has crashed. :fire:")
                             console.print_exception()
-                            # session = rollback(session_n)
-                            # continue
-                            break
+                            session = rollback(n_con, token)
+                            continue
                         case 'Falha na chamada de procedimento remoto.':
                             console.print(
                                 "[bold red]SAPGUI has been finished strangely. :fire:")
-                            # session = rollback(session_n)
-                            # continue
-                            break
+                            session = rollback(n_con, token)
+                            continue
                         case 'O servidor RPC não está disponível.':
                             console.print(
                                 "[bold red]SAPGUI was weirdly disconnected. :fire:")
-                            # session = rollback(session_n)
-                            # continue
-                            break
+                            session = rollback(n_con, token)
+                            continue
                         case _:
                             console.print(
                                 "[bold red underline]Aconteceu um Erro com a Val!"
                                 + f"\n Fatal Error: {errocritico}")
                             console.print_exception()
                             oxe()
+                            break
                 except:
                     console.print(errocritico)
                     # TODO: needs a log
