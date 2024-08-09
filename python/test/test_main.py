@@ -54,7 +54,7 @@ class TestMain(unittest.TestCase):
 
     def test_sap(self):
         """Test COM SapGui module"""
-        self.assertLogs(sap.connection_object(), level='DEBUG')
+        self.assertLogs(sap.connection_object(0), level='DEBUG')
         sessions = sap.listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
         self.assertLogs(sap.contar_sessoes(), level='DEBUG')

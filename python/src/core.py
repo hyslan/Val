@@ -80,7 +80,7 @@ def valorator_user(session, sessions, ordem, contrato,
     else:
         new_session = session
 
-    con = sap.connection_object()
+    con = sap.connection_object(n_con)
 
     transaction_check: Transacao = Transacao(contrato, cod_mun, new_session)
     transaction_check.run_transacao(ordem, tipo="consulta")
