@@ -9,6 +9,7 @@ from python.src.cesta import cesta_dicionario
 from .log_decorator import log_execution
 
 
+@log_execution
 def precificador(tse, corte, relig,
                  posicao_rede, profundidade, contrato,
                  session):

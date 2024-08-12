@@ -1,5 +1,6 @@
 # salvacao.py
 """Módulo de salvar valoração."""
+import logging
 import re
 import threading
 import pythoncom
@@ -104,9 +105,14 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 status="DISPONÍVEL", data_valoracao=None,
                 matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
+        logging.info(
+            f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}"
+            f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}"
+        )
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
         console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
                       style="bold red")
+        logging.critical(f"Erro ao salvar a valoração: {salvar_erro}")
 
     return qtd_ordem, rodape
