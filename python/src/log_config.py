@@ -1,6 +1,9 @@
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from rich.console import Console
+
+console = Console()
 
 
 def setup_logging(log_directory="logs", log_level=logging.DEBUG):
@@ -30,4 +33,5 @@ def setup_logging(log_directory="logs", log_level=logging.DEBUG):
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
 
-    logger.debug("Logging setup complete.")
+    logger.debug(console.print(
+        "Logging setup complete.", style="bright_yellow"))

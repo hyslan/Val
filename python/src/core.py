@@ -276,7 +276,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                         )
                     else:
                         data_valorado = valorator_user(
-                            session, sessions, ordem, contrato, cod_mun, principal_tse, start_time
+                            session, sessions, ordem, contrato,
+                            cod_mun, principal_tse, start_time, n_con
                         )
                         if data_valorado is not None:
                             continue
