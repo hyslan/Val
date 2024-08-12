@@ -39,6 +39,7 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
     print("Sessão Recuperada.")
     return session
 
+
 @log_execution
 def estoque_virtual(contrato, n_con) -> DataFrame:
     """Get the virtual stock in MBLB transaction using contrato's number.
@@ -68,6 +69,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
         console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
         console.print_exception()
         # raise Exception("Extração do Estoque Virtual Falhou!")
+
 
 @log_execution
 def valorator_user(session, sessions, ordem, contrato,
@@ -121,6 +123,7 @@ def valorator_user(session, sessions, ordem, contrato,
 
     return data_valorado
 
+
 @log_execution
 def inspector_materials(
         chave_rb_investimento, list_chave_rb_despesa, list_chave_unitario,
@@ -163,6 +166,7 @@ def inspector_materials(
                 estoque_hj,
                 posicao_rede,
                 session)
+
 
 @log_execution
 def val(pendentes_array: np.ndarray, session, contrato: str,
@@ -288,7 +292,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                     list_chave_rb_despesa,
                     list_chave_unitario,
                     chave_rb_investimento,
-                    _,  # Skipping 'chave_unitario'
+                    chave_unitario,  # Skipping 'chave_unitario'
                     ligacao_errada,
                     profundidade_errada
                 ) = precificador(tse, corte, relig,

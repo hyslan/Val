@@ -41,3 +41,6 @@ live_tests.ipynb
 
 # Skip environments variables
 *.env
+
+# Exclude logs
+/logs
