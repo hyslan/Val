@@ -6,6 +6,7 @@ from rich.panel import Panel
 from python.src.servicos_executados import verifica_tse
 from python.src.unitarios.controlador import Controlador
 from python.src.cesta import cesta_dicionario
+from .log_decorator import log_execution
 
 
 def precificador(tse, corte, relig,
