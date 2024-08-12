@@ -1,8 +1,5 @@
 # core.py
 """Coração da Val."""
-# pylint: disable=W0611
-import logging
-import datetime as dt
 import time
 from typing import Union
 import numpy as np
@@ -23,6 +20,7 @@ from python.src.salvacao import salvar
 from python.src.temporizador import cronometro_val
 from python.src.wms.consulta_estoque import estoque
 from python.src.nazare_bugou import oxe
+from .log_decorator import log_execution
 
 # Global Class print highlighting
 console: rich.console.Console = Console()
@@ -41,6 +39,7 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
     return session
 
 
+@log_execution
 def estoque_virtual(contrato, n_con) -> DataFrame:
     """Get the virtual stock in MBLB transaction using contrato's number.
 
@@ -71,6 +70,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
         # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
+@log_execution
 def valorator_user(session, sessions, ordem, contrato,
                    cod_mun, principal_tse, start_time, n_con) -> Union[str, None]:
     data_valorado = None
@@ -123,6 +123,7 @@ def valorator_user(session, sessions, ordem, contrato,
     return data_valorado
 
 
+@log_execution
 def inspector_materials(
         chave_rb_investimento, list_chave_rb_despesa, list_chave_unitario,
         hidro, diametro_ramal, diametro_rede, contrato, estoque_hj, posicao_rede, session) -> None:
@@ -166,6 +167,7 @@ def inspector_materials(
                 session)
 
 
+@log_execution
 def val(pendentes_array: np.ndarray, session, contrato: str,
         revalorar: bool, token: str, n_con: int):
     """Sistema Val."""

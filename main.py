@@ -12,6 +12,7 @@ import rich.console
 import win32com.client
 from dotenv import load_dotenv
 from rich.console import Console
+from python.src.log_config import setup_logging
 import python.src.sap as sap
 from python.src import sql_view
 from python.src.core import val
@@ -26,6 +27,8 @@ from python.src.sapador import down_sap
 
 def main(args=None) -> None:
     """Sistema principal da Val e inicializador do programa"""
+    # * Configuração do log
+    setup_logging()
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(prog="Sistema Val",
                                                               description="Sistema de valoração automática não "
