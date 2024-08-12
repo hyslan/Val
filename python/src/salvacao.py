@@ -105,10 +105,11 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 status="DISPONÍVEL", data_valoracao=None,
                 matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
-        logging.info(
+        logging.info(console.print(
             f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}"
-            f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}"
-        )
+            f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
+            style="bright_yellow"
+        ))
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
         console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
