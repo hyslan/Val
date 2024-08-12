@@ -1,8 +1,6 @@
 # core.py
 """Coração da Val."""
 # pylint: disable=W0611
-import logging
-import datetime as dt
 import time
 from typing import Union
 import numpy as np
@@ -13,6 +11,7 @@ from pandas import DataFrame
 from tqdm import tqdm
 from rich.console import Console
 from rich.panel import Panel
+from .log_decorator import log_execution
 from python.src import sql_view
 from python.src import sap
 from python.src.transact_zsbmm216 import Transacao
@@ -41,6 +40,7 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
     return session
 
 
+@log_execution
 def estoque_virtual(contrato, n_con) -> DataFrame:
     """Get the virtual stock in MBLB transaction using contrato's number.
 
@@ -71,6 +71,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
         # raise Exception("Extração do Estoque Virtual Falhou!")
 
 
+@log_execution
 def valorator_user(session, sessions, ordem, contrato,
                    cod_mun, principal_tse, start_time, n_con) -> Union[str, None]:
     data_valorado = None
@@ -123,6 +124,7 @@ def valorator_user(session, sessions, ordem, contrato,
     return data_valorado
 
 
+@log_execution
 def inspector_materials(
         chave_rb_investimento, list_chave_rb_despesa, list_chave_unitario,
         hidro, diametro_ramal, diametro_rede, contrato, estoque_hj, posicao_rede, session) -> None:
@@ -166,6 +168,7 @@ def inspector_materials(
                 session)
 
 
+@log_execution
 def val(pendentes_array: np.ndarray, session, contrato: str,
         revalorar: bool, token: str, n_con: int):
     """Sistema Val."""
@@ -273,7 +276,8 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                         )
                     else:
                         data_valorado = valorator_user(
-                            session, sessions, ordem, contrato, cod_mun, principal_tse, start_time
+                            session, sessions, ordem, contrato,
+                            cod_mun, principal_tse, start_time, n_con
                         )
                         if data_valorado is not None:
                             continue
@@ -289,7 +293,7 @@ def val(pendentes_array: np.ndarray, session, contrato: str,
                     list_chave_rb_despesa,
                     list_chave_unitario,
                     chave_rb_investimento,
-                    _,  # Skipping 'chave_unitario'
+                    chave_unitario,  # Skipping 'chave_unitario'
                     ligacao_errada,
                     profundidade_errada
                 ) = precificador(tse, corte, relig,

@@ -1,5 +1,6 @@
 # salvacao.py
 """Módulo de salvar valoração."""
+import logging
 import re
 import threading
 import pythoncom
@@ -9,13 +10,14 @@ from rich.console import Console
 from python.src import sql_view
 from python.src import sap
 from python.src.temporizador import cronometro_val
-
+from .log_decorator import log_execution
 
 # Adicionando um Lock
 lock = threading.Lock()
 console = Console()
 
 
+@log_execution
 def salvar(ordem, qtd_ordem, contrato, session,
            principal_tse, cod_mun, start_time, n_con):
     """Salvar e verificar se está salvando."""
@@ -103,9 +105,15 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 status="DISPONÍVEL", data_valoracao=None,
                 matricula='117615', valor_medido=0, tempo_gasto=time_spent)
 
+        logging.info(console.print(
+            f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}"
+            f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
+            style="bright_yellow"
+        ))
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
         console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
                       style="bold red")
+        logging.critical(f"Erro ao salvar a valoração: {salvar_erro}")
 
     return qtd_ordem, rodape
