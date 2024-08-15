@@ -28,6 +28,8 @@ sheets/estoque.XLSX
 sheets/estoque_4600041302.XLSX
 sheets/estoque_4600056089.XLSX
 
+# Data from users
+/data
 
 # Added by cargo
 
