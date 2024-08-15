@@ -1,4 +1,5 @@
 """Módulo para extração de ordens do SQL para a lista xlsx da Val."""
+import os
 from urllib.parse import quote_plus
 import pandas as pd
 from sqlalchemy import create_engine
@@ -7,9 +8,11 @@ from python.src.sql_view import Sql
 
 def pendentes_excel():
     """Load de ordens em uma planilha expecífica"""
+    path = os.path.join(os.getcwd(), '/data')
     caminho = input(
-        "Digite o caminho da planilha.\n A planilha deve conter uma coluna Ordem\n")
-    planilha = pd.read_excel(str(caminho))
+        "Digite o nome do arquivo.\n A planilha deve conter uma coluna Ordem\n")
+    file_path = os.path.join(path, caminho)
+    planilha = pd.read_excel(file_path)
     lista = planilha.to_numpy()
     return lista
 

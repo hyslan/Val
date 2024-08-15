@@ -4,7 +4,7 @@ import pywintypes
 from tqdm import tqdm
 from python.src.transact_zsbmm216 import Transacao
 from python.src.excel_tbs import load_worksheets
-from python.src.etl import pendentes_csv
+from python.src.etl import pendentes_csv, pendentes_excel
 
 (
     lista,
