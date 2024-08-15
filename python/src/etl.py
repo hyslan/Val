@@ -13,7 +13,7 @@ def pendentes_excel():
         "Digite o nome do arquivo.\n A planilha deve conter uma coluna Ordem\n")
     file_path = os.path.join(path, caminho)
     print("Caminho do arquivo: ", file_path)
-    planilha = pd.read_excel(f"{file_path}.XLSX")
+    planilha = pd.read_excel(f"{file_path}.XLSX", dtype=str)
     lista = planilha.to_numpy()
     return lista
 
