@@ -68,7 +68,6 @@ def desvalorador(contrato, session):
     pendentes_array = pendentes_excel()
     limite_execucoes = len(pendentes_array)
     print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}\n")
-    print(pendentes_array)
     try:
         num_lordem = input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
@@ -101,6 +100,7 @@ def desvalorador(contrato, session):
             session.findById("wnd[0]").SendVkey(2)
             session.findById("wnd[1]/usr/btnBUTTON_1").press()
             int_num_lordem += 1
+            print(f"Ordem {ordem} desvalorada.")
         except pywintypes.com_error:
             print(f"Ordem: {ordem} não valorada.")
             # Incremento de Ordem.
