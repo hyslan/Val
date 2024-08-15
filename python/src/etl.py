@@ -8,11 +8,12 @@ from python.src.sql_view import Sql
 
 def pendentes_excel():
     """Load de ordens em uma planilha expecífica"""
-    path = os.path.join(os.getcwd(), '/data')
+    path = os.path.join(os.getcwd(), 'data')
     caminho = input(
         "Digite o nome do arquivo.\n A planilha deve conter uma coluna Ordem\n")
     file_path = os.path.join(path, caminho)
-    planilha = pd.read_excel(file_path)
+    print("Caminho do arquivo: ", file_path)
+    planilha = pd.read_excel(f"{file_path}.XLSX")
     lista = planilha.to_numpy()
     return lista
 
