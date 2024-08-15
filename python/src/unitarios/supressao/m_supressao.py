@@ -141,7 +141,7 @@ class Corte:
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:
                     btn_localizador(
-                        self.preco, self.session, '456034')
+                        self.preco, self.session, '456031')
                     self.preco.modifyCell(
                         self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(
