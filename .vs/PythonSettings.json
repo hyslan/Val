@@ -1,6 +1,0 @@
-{
-  "TestFramework": "Pytest",
-  "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
-  "pylint.enabled": true
-}
