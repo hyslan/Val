@@ -31,6 +31,9 @@
 		},
 		"[rust]": {
 			"editor.defaultFormatter": "rust-lang.rust-analyzer"
+		},
+		"[github-actions-workflow]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
 		}
 	}
 }
