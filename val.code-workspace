@@ -6,23 +6,34 @@
 		}
 	],
 	"settings": {
+		"notebook.formatOnSave.enabled": true,
+		"notebook.codeActionsOnSave": {
+			"notebook.source.organizeImports": "explicit",
+			"notebook.source.fixAll": "explicit"
+		},
 		"python.analysis.typeCheckingMode": "basic",
 		"[python]": {
-			"editor.defaultFormatter": "ms-python.autopep8",
+			"editor.defaultFormatter": "charliermarsh.ruff",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": "explicit",
+				"source.fixAll": "explicit"
+			}
 		},
 		"python.testing.pytestArgs": [
 			"."
 		],
 		"python.testing.unittestEnabled": true,
 		"python.testing.pytestEnabled": true,
-		"python.languageServer": "Default",
-		"pylint.cwd": "${workspaceFolder}",
 		"editor.defaultFormatter": "ms-python.vscode-pylance",
 		"[jsonc]": {
 			"editor.defaultFormatter": "vscode.json-language-features"
 		},
 		"[rust]": {
 			"editor.defaultFormatter": "rust-lang.rust-analyzer"
+		},
+		"[github-actions-workflow]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
 		}
 	}
 }

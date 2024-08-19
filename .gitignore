@@ -22,6 +22,9 @@ src/wms/__pycache__/hidrometro_material.cpython-312.pyc
 
 *.pyc
 
+# Mypy cache
+.mypy_cache/
+
 # Estoque sheets
 sheets/estoque_4600042975.XLSX
 sheets/estoque.XLSX
