@@ -1,5 +1,6 @@
 # ServicosExecutados.py
 """Módulo de TSE"""
+from typing import Union
 import numpy as np
 from python.src.excel_tbs import load_worksheets
 from python.src.tsepai import pai_dicionario
@@ -64,7 +65,8 @@ def verifica_tse(servico, contrato, session):
     num_tse_linhas = servico.RowCount
     rem_base_reposicao = []
     unitario_reposicao = []
-    mae = False
+    mae: bool = False
+    tse_proibida: Union[None | str] = None
     chave_unitario = None
     chave_rb_despesa = None
     chave_rb_investimento = None
