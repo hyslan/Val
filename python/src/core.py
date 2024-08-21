@@ -57,7 +57,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame:
     """
     try:
         # NORTE SUL DESOBSTRUÇÃO
-        if not contrato == "4600043760":
+        if contrato not in ("4600043760", "4600046036", "4600045267"):
             new_session: win32com.client.CDispatch = sap.create_session(
                 n_con)
             estoque_hj: DataFrame = estoque(
