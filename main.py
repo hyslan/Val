@@ -123,7 +123,7 @@ def main(args=None) -> None:
                                   style="italic blue", justify="full")
                     tse_expec = input(
                         "- Val: Digite as TSE separadas por vírgula, por favor.\n")
-                    lista_tse = tse_expec.split(', ')
+                    lista_tse = tse_expec.split(", ")
                     pendentes = sql_view.Sql(ordem="", cod_tse=lista_tse)
                     pendentes_array: np.ndarray = pendentes.tse_escolhida(
                         args.contrato)

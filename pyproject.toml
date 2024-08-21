@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Val"
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "pandas",
+    "jupyter",
+    "ipython",
+    "pytest",
+    "mypy",
+    "openpyxl",
+    "xlwings",
+    "rich",
+    "sqlalchemy",
+]
+requires-python = ">=3.11"
+authors = [{ name = "Hyslan Silva Cruz", email = "hyslansilva@gmail.com" }]
+description = "Val is a Python library for data validation for Sabesp's SAP orders."
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["rpa", "automation", "data-validation", "sabesp", "sap"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Repository = "https://github.com/hyslan/Val"
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.ruff]
+line-length = 128
