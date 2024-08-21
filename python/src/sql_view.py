@@ -51,10 +51,7 @@ class Sql:
         """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
-        query = (
-            "SELECT NomeFuncionario FROM [LESTE_AD\\APP_Source].[tb_Dim_Funcionarios] "
-            f"WHERE Matricula = '{matricula}';"
-        )
+        query = "SELECT NomeFuncionario FROM [LESTE_AD\\APP_Source].[tb_Dim_Funcionarios] " f"WHERE Matricula = '{matricula}';"
         df = pd.read_sql(query, cnn)
         who: str = df.to_string(index=False)
         cnn.close()
@@ -150,7 +147,9 @@ class Sql:
         cnn.close()
 
     def retrabalho_search(
-        self, month_start: str | dt.date, month_end: str | dt.date,
+        self,
+        month_start: str | dt.date,
+        month_end: str | dt.date,
     ) -> np.ndarray:
         """Query for Retrabalho confirmado orders
         Args:
@@ -251,11 +250,7 @@ class Sql:
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         # TSEs leave out the plumbing services by Iara.
-        chief_iara_orders = (
-            "'534200', '534300', '537000', '537100', '538000',"
-            if contrato == "4600042975"
-            else "'',"
-        )
+        chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'," if contrato == "4600042975" else "'',"
         sql_command = rf"""
             SELECT Ordem, COD_MUNICIPIO
             FROM [LESTE_AD\hcruz_novasp].[v_Hyslan_Valoracao]
@@ -281,8 +276,8 @@ class Sql:
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = r"""
-            SELECT Ordem, COD_MUNICIPIO
-            FROM [LESTE_AD\cruz_novasp].[v_Hyslan_Valoracao]
+            SELECT Ordem, COD_MUNICIPIO, CONTRATO
+            FROM [LESTE_AD\hcruz_novasp].[v_Hyslan_Valoracao]
             WHERE Contrato IN ('4600043760', '4600045267', '4600046036', '4600046036');
         """
         console.print(f"\n[bold yellow]{sql_command}")
@@ -295,10 +290,8 @@ class Sql:
         """Print the family list."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
-        sql_command = (
-            "SELECT [FAMILIA] FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
+        sql_command = "SELECT [FAMILIA] FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
             WHERE FAMILIA IS NOT NULL GROUP BY FAMILIA ORDER BY FAMILIA"
-        )
         df = pd.read_sql(sql_command, cnn)
         df = df["FAMILIA"].to_string(index=False)
         cnn.close()

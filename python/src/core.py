@@ -1,7 +1,7 @@
 # core.py
 """Coração da Val."""
 
-# pylint: disable=W0611
+import sys
 import time
 
 import numpy as np
@@ -63,7 +63,7 @@ def estoque_virtual(contrato, n_con) -> DataFrame | None:
     """
     try:
         # NORTE SUL DESOBSTRUÇÃO
-        if contrato not in ("4600043760", "4600046036", "4600045267"):
+        if contrato not in ("4600043760", "4600046036", "4600045267", "4600043654"):
             new_session: win32com.client.CDispatch = sap.create_session(n_con)
             estoque_hj: DataFrame = estoque(new_session, contrato, n_con)
 
@@ -77,7 +77,14 @@ def estoque_virtual(contrato, n_con) -> DataFrame | None:
 
 @log_execution
 def valorator_user(
-    session, sessions, ordem, contrato, cod_mun, principal_tse, start_time, n_con,
+    session,
+    sessions,
+    ordem,
+    contrato,
+    cod_mun,
+    principal_tse,
+    start_time,
+    n_con,
 ) -> str | None:
     data_valorado = None
     if sessions.Count != 6:
@@ -92,8 +99,7 @@ def valorator_user(
 
     new_session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
     grid_historico = new_session.findById(
-        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell",
+        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:" + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell",
     )
     data_valorado = grid_historico.GetCellValue(0, "DATA")
     matricula = grid_historico.GetCellValue(0, "MODIFICADO")
@@ -195,12 +201,12 @@ def inspector_materials(
 @log_execution
 def val(
     pendentes_array: np.ndarray,
-    session,
-    contrato: str,
+    session: win32com.client.CDispatch,
+    contrato: str | None,
     revalorar: bool,
     token: str,
     n_con: int,
-):
+) -> None:
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
     limite_execucoes = len(pendentes_array)
@@ -215,14 +221,204 @@ def val(
     except pywintypes.com_error:
         return None
 
-    estoque_hj: DataFrame | None = estoque_virtual(contrato, n_con)
+    if contrato is not None:
+        estoque_hj: DataFrame | None = estoque_virtual(contrato, n_con)
 
     with console.status("[bold blue]Trabalhando..."):
         # * Variáveis de Status da Ordem
         valorada: str = "EXEC VALO" or "NEXE VALO"
         fechada: str = "LIB"
         qtd_ordem: int = 0  # Contador de ordens pagas.
-        # Loop to pay service's orders
+        # * For NORTESUL
+        if contrato is None:
+            for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
+                try:
+                    start_time = time.time()  # Contador de tempo para valorar.
+                    console.print(f"[b]Ordem atual: {ordem}")
+                    print("Verificando Status da Ordem.")
+                    # Função consulta de Ordem.
+                    print("Iniciando Consulta.")
+                    (
+                        status_sistema,
+                        status_usuario,
+                        corte,
+                        relig,
+                        posicao_rede,
+                        profundidade,
+                        hidro,
+                        _,  # Skipping 'operacao'
+                        diametro_ramal,
+                        diametro_rede,
+                        principal_tse,
+                    ) = consulta_os(ordem, session, empresa, n_con)
+                    # * Consulta Status da Ordem
+                    if status_sistema != fechada:
+                        print(f"OS: {ordem} aberta.")
+                        time_spent = cronometro_val(start_time, ordem)
+                        ja_valorado = sql_view.Sql(ordem, principal_tse)
+                        ja_valorado.valorada(
+                            valorado="NÃO",
+                            contrato=empresa,
+                            municipio=cod_mun,
+                            status="ABERTA",
+                            obs="",
+                            data_valoracao=None,
+                            matricula="117615",
+                            valor_medido=0,
+                            tempo_gasto=time_spent,
+                        )
+                        continue
+
+                    if revalorar is False and status_usuario == valorada:
+                        print(f"OS: {ordem} já valorada.")
+                        valorator_user(
+                            session,
+                            sessions,
+                            ordem,
+                            empresa,
+                            cod_mun,
+                            principal_tse,
+                            start_time,
+                            n_con,
+                        )
+                        continue
+
+                    # * Go To ZSBMM216 Transaction
+                    transacao.municipio = cod_mun
+                    transacao.run_transacao(ordem)
+
+                    console.print(
+                        "Processo de Serviços Executados",
+                        style="bold red underline",
+                        justify="center",
+                    )
+                    try:
+                        tse = session.findById(
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                        )
+                    except pywintypes.com_error:
+                        print(f"Ordem: {ordem} em medição definitiva.")
+                        time_spent = cronometro_val(start_time, ordem)
+                        ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
+                        ja_valorado.valorada(
+                            valorado="SIM",
+                            contrato=empresa,
+                            municipio=cod_mun,
+                            # Open zsbmm216 and get the date of the last valuation.
+                            status="DEFINITIVA",
+                            obs="",
+                            data_valoracao=None,
+                            matricula="",
+                            valor_medido=0,
+                            tempo_gasto=time_spent,
+                        )
+                        ja_valorado.clean_duplicates()
+                        continue
+
+                    # * Check if the 'Ordem' was already valued.
+                    try:
+                        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+                        MESSAGE_NOT_VALUED = "Não há dados para exibição."
+                        rodape = session.findById("wnd[0]/sbar").Text
+                        if rodape == MESSAGE_NOT_VALUED:
+                            print(f"OS: {ordem} não foi valorada.")
+                            print("OS Livre para valorar.")
+                            session.findById(
+                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
+                            ).select()
+                            tse = session.findById(
+                                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                            )
+                        else:
+                            data_valorado = valorator_user(
+                                session,
+                                sessions,
+                                ordem,
+                                empresa,
+                                cod_mun,
+                                principal_tse,
+                                start_time,
+                                n_con,
+                            )
+                            if data_valorado is not None:
+                                continue
+
+                    except pywintypes.com_error:
+                        console.print_exception()
+                        sys.exit()
+
+                    # * TSE e Aba Itens de preço
+                    (
+                        tse_proibida,
+                        list_chave_rb_despesa,
+                        list_chave_unitario,
+                        chave_rb_investimento,
+                        chave_unitario,  # Skipping 'chave_unitario'
+                        ligacao_errada,
+                        profundidade_errada,
+                    ) = precificador(
+                        tse,
+                        corte,
+                        relig,
+                        posicao_rede,
+                        profundidade,
+                        empresa,
+                        session,
+                    )
+
+                    # * Salvar Ordem
+                    qtd_ordem, rodape = salvar(
+                        ordem,
+                        qtd_ordem,
+                        empresa,
+                        session,
+                        principal_tse,
+                        cod_mun,
+                        start_time,
+                        n_con,
+                    )
+
+                    console.print(
+                        Panel.fit(f"Quantidade de ordens valoradas: {qtd_ordem}."),
+                        style="italic yellow",
+                    )
+
+                except Exception as errocritico:
+                    console.print_exception()
+                    print(f"args do errocritico: {errocritico}")
+                    try:
+                        _, descricao, _, _ = errocritico.args
+                        match descricao:
+                            case "Falha catastrófica":
+                                console.print("[bold red]SAPGUI has crashed. :fire:")
+                                console.print_exception()
+                                session = rollback(n_con, token)
+                                continue
+                            case "Falha na chamada de procedimento remoto.":
+                                console.print(
+                                    "[bold red]SAPGUI has been finished strangely. :fire:",
+                                )
+                                session = rollback(n_con, token)
+                                continue
+                            case "O servidor RPC não está disponível.":
+                                console.print(
+                                    "[bold red]SAPGUI was weirdly disconnected. :fire:",
+                                )
+                                session = rollback(n_con, token)
+                                continue
+                            case _:
+                                console.print(
+                                    "[bold red underline]Aconteceu um Erro com a Val!" + f"\n Fatal Error: {errocritico}",
+                                )
+                                console.print_exception()
+                                oxe()
+                                break
+                    except:
+                        console.print(errocritico)
+            return None
+        # * Loop to pay service's orders
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
             try:
                 start_time = time.time()  # Contador de tempo para valorar.
@@ -354,7 +550,13 @@ def val(
                     ligacao_errada,
                     profundidade_errada,
                 ) = precificador(
-                    tse, corte, relig, posicao_rede, profundidade, contrato, session,
+                    tse,
+                    corte,
+                    relig,
+                    posicao_rede,
+                    profundidade,
+                    contrato,
+                    session,
                 )
                 # ! debug
                 # exit()
@@ -411,18 +613,19 @@ def val(
                     continue
 
                 # * Aba Materiais
-                inspector_materials(
-                    chave_rb_investimento,
-                    list_chave_rb_despesa,
-                    list_chave_unitario,
-                    hidro,
-                    diametro_ramal,
-                    diametro_rede,
-                    contrato,
-                    estoque_hj,
-                    posicao_rede,
-                    session,
-                )
+                if contrato is not None:
+                    inspector_materials(
+                        chave_rb_investimento,
+                        list_chave_rb_despesa,
+                        list_chave_unitario,
+                        hidro,
+                        diametro_ramal,
+                        diametro_rede,
+                        contrato,
+                        estoque_hj,
+                        posicao_rede,
+                        session,
+                    )
                 # Fim dos materiais
                 # ! debug
                 # exit()
@@ -470,16 +673,12 @@ def val(
                             continue
                         case _:
                             console.print(
-                                "[bold red underline]Aconteceu um Erro com a Val!"
-                                + f"\n Fatal Error: {errocritico}",
+                                "[bold red underline]Aconteceu um Erro com a Val!" + f"\n Fatal Error: {errocritico}",
                             )
                             console.print_exception()
                             oxe()
                             break
                 except:
                     console.print(errocritico)
-                    # TODO: needs a log
-
-        validador = True
-
-    return validador
+                    # TODO (Hyslan):  needs a log
+    return None
