@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-"""Sistema Val: programa de valoração automática não assistida, Author: Hyslan Silva Cruz"""
+"""Sistema Val.
+
+programa de valoração automática não assistida
+Author: Hyslan Silva Cruz.
+"""
 
 # main.py
 # Bibliotecas
+from __future__ import annotations
+
 import argparse
 import datetime
 import os
 import time
+import typing
 
 import numpy as np
 import pywintypes
-import rich.console
-import win32com.client
 from dotenv import load_dotenv
 from rich.console import Console
 
@@ -26,13 +31,19 @@ from python.src.osn3 import pertencedor
 from python.src.retrabalhador import retrabalho
 from python.src.sapador import down_sap
 
+if typing.TYPE_CHECKING:
+    import rich.console
+    import win32com.client
+
 
 def main(args=None) -> None:
-    """Sistema principal da Val e inicializador do programa"""
+    """Sistema principal da Val e inicializador do programa."""
     setup_logging()
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
-        prog="Sistema Val", description="Sistema de valoração automática não " "assistida.", epilog="Author: Hyslan Silva Cruz"
+        prog="Sistema Val",
+        description="Sistema de valoração automática não assistida.",
+        epilog="Author: Hyslan Silva Cruz",
     )
     parser.add_argument(
         "-s",
@@ -42,7 +53,11 @@ def main(args=None) -> None:
         help="Número da sessão do SAP a ser utilizada.",
     )
     parser.add_argument(
-        "-o", "--option", type=str, help="Escolha uma Opção de valoração.", choices=[str(i) for i in range(1, 10)]
+        "-o",
+        "--option",
+        type=str,
+        help="Escolha uma Opção de valoração.",
+        choices=[str(i) for i in range(1, 10)],
     )
     parser.add_argument("-c", "--contrato", type=str, help="Escolha o Contrato a ser utilizado.")
     parser.add_argument("-f", "--family", default=None, type=str, nargs="+", help="Escolha a Família a ser utilizada.")
