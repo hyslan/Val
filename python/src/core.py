@@ -284,6 +284,7 @@ def val(
                         continue
 
                     # * Go To ZSBMM216 Transaction
+                    transacao.contrato = empresa
                     transacao.municipio = cod_mun
                     transacao.run_transacao(ordem)
 
