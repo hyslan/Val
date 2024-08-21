@@ -38,7 +38,8 @@ class Corte:
     def supressao(self):
         """Método para definir de qual forma foi suprimida e
         pagar de acordo com as informações dadas, caso contrário,
-        pagar como ramal se tiver reposição ou cavalete."""
+        pagar como ramal se tiver reposição ou cavalete.
+        """
         try:
             if self.corte == "CAVALETE":
                 print("Iniciando processo de pagar SUPR CV - Código: 456033")
@@ -53,7 +54,7 @@ class Corte:
 
             if self.corte in ("RAMAL PEAD", "PASSEIO") or self.reposicao:
                 print(
-                    "Iniciando processo de pagar SUPR  RAMAL AG  S/REP - Código: 456032"
+                    "Iniciando processo de pagar SUPR  RAMAL AG  S/REP - Código: 456032",
                 )
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 ramal = False
@@ -61,7 +62,7 @@ class Corte:
                 # Function lambda com list compreenhension para matriz de reposições.
                 if self.reposicao:
                     rep_com_etapa = [
-                        (x, y) for x, y in zip(self.reposicao, self.etapa_reposicao)
+                        (x, y) for x, y in zip(self.reposicao, self.etapa_reposicao, strict=False)
                     ]
 
                     for pavimento in rep_com_etapa:
@@ -95,10 +96,10 @@ class Corte:
                         if ramal is False:
                             btn_localizador(self.preco, self.session, "456032")
                             self.preco.modifyCell(
-                                self.preco.CurrentCellRow, "QUANT", "1"
+                                self.preco.CurrentCellRow, "QUANT", "1",
                             )
                             self.preco.setCurrentCell(
-                                self.preco.CurrentCellRow, "QUANT"
+                                self.preco.CurrentCellRow, "QUANT",
                             )
                             self.preco.pressEnter()
                             print("Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456035")
@@ -108,14 +109,14 @@ class Corte:
                             # 660 é módulo despesa.
                         btn_localizador(self.preco, self.session, preco_reposicao)
                         item_preco = self.preco.GetCellValue(
-                            self.preco.CurrentCellRow, "ITEM"
+                            self.preco.CurrentCellRow, "ITEM",
                         )
                         if item_preco == "660":
                             self.preco.modifyCell(
-                                self.preco.CurrentCellRow, "QUANT", "1"
+                                self.preco.CurrentCellRow, "QUANT", "1",
                             )
                             self.preco.setCurrentCell(
-                                self.preco.CurrentCellRow, "QUANT"
+                                self.preco.CurrentCellRow, "QUANT",
                             )
                             self.preco.pressEnter()
                             print(txt_reposicao)
@@ -125,14 +126,14 @@ class Corte:
                         if preco_reposicao in ("456041", "456042"):
                             btn_localizador(self.preco, self.session, preco_reposicao)
                             item_preco = self.preco.GetCellValue(
-                                self.preco.CurrentCellRow, "ITEM"
+                                self.preco.CurrentCellRow, "ITEM",
                             )
                             if item_preco in ("1820", "1830", "5310", "670"):
                                 self.preco.modifyCell(
-                                    self.preco.CurrentCellRow, "QUANT", "1"
+                                    self.preco.CurrentCellRow, "QUANT", "1",
                                 )
                                 self.preco.setCurrentCell(
-                                    self.preco.CurrentCellRow, "QUANT"
+                                    self.preco.CurrentCellRow, "QUANT",
                                 )
                                 self.preco.pressEnter()
                                 print(txt_reposicao)
@@ -152,7 +153,7 @@ class Corte:
 
             if self.corte in ("FERRULE", "TOMADA/FERRULE"):
                 print(
-                    "Iniciando processo de pagar SUPR  TMD AG  S/REP - Código: 456031"
+                    "Iniciando processo de pagar SUPR  TMD AG  S/REP - Código: 456031",
                 )
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:

@@ -2,7 +2,6 @@
 
 import datetime as dt
 import os
-from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -128,7 +127,8 @@ class Sql:
 
     def clean_duplicates(self):
         """Delete duplicates rows
-        Keeping only the most recent one"""
+        Keeping only the most recent one
+        """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
@@ -150,7 +150,7 @@ class Sql:
         cnn.close()
 
     def retrabalho_search(
-        self, month_start: Union[str | dt.date], month_end: Union[str | dt.date]
+        self, month_start: str | dt.date, month_end: str | dt.date,
     ) -> np.ndarray:
         """Query for Retrabalho confirmado orders
         Args:
@@ -181,7 +181,7 @@ class Sql:
         municipio: str,
         status: str,
         obs: str,
-        data_valoracao: Union[None | dt.date | str],
+        data_valoracao: None | dt.date | str,
         matricula: str,
         valor_medido: float,
         tempo_gasto: float,
@@ -229,14 +229,14 @@ class Sql:
         cnn = engine.connect()
         sql_command = (
             "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-            f"WHERE ORDEM = '{str(self.ordem)}' AND Contrato = '{contrato}'"
+            f"WHERE ORDEM = '{self.ordem!s}' AND Contrato = '{contrato}'"
         )
         df = pd.read_sql(sql_command, cnn)
         df_array = df.to_numpy()
         cnn.close()
         return df_array
 
-    def familia(self, family: Union[list[str] | None], contrato: str) -> np.ndarray:
+    def familia(self, family: list[str] | None, contrato: str) -> np.ndarray:
         """Escolher família."""
         if family is not None:
             family_str = ",".join([f"'{f}'" for f in family])

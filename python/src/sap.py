@@ -2,11 +2,12 @@
 import os
 import subprocess
 import time
-import win32com.client
+
 import pythoncom
-from rich.console import Console
 import rich.console
+import win32com.client
 from dotenv import load_dotenv
+from rich.console import Console
 
 console: rich.console.Console = Console()
 
@@ -83,12 +84,12 @@ def fechar_conexao(n_con) -> None:
 def encerrar_sap() -> None:
     """Encerra o app SAP"""
     # ? Can stop the SAP GUI without destroy the process?
-    processo: str = 'saplogon.exe'
+    processo: str = "saplogon.exe"
     try:
-        subprocess.run(['taskkill', '/F', '/IM', processo], check=True)
-        print(f'O processo {processo} foi encerrado com sucesso.')
+        subprocess.run(["taskkill", "/F", "/IM", processo], check=True)
+        print(f"O processo {processo} foi encerrado com sucesso.")
     except subprocess.CalledProcessError:
-        print(f'Não foi possível encerrar o processo {processo}.')
+        print(f"Não foi possível encerrar o processo {processo}.")
 
 
 def get_connection(token: str) -> str:
@@ -112,9 +113,9 @@ def get_connection(token: str) -> str:
         'GuiSize=\n'
         '[Options]\n'
         'Reuse=-1')
-    path_archive = os.getcwd() + '\\shortcut\\repeat\\tx.sap'
+    path_archive = os.getcwd() + "\\shortcut\\repeat\\tx.sap"
     print("Saving the SAP access file...")
-    with open(path_archive, 'w') as s:
+    with open(path_archive, "w") as s:
         s.write(sap_access)
 
     # Execute the command
@@ -146,8 +147,10 @@ def is_process_running(process_name: str):
 def get_app() -> win32com.client.CDispatch:
     """Get the SAP GUI application
 
-    Returns:
+    Returns
+    -------
         win32com.client.CDispatch: Connections from application
+
     """
     pythoncom.CoInitialize()
     app: win32com.client.CDispatch = win32com.client.GetObject(

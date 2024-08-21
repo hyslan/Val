@@ -1,12 +1,13 @@
-'''Módulo dos N3 da valoração.'''
+"""Módulo dos N3 da valoração."""
 import sys
+
 import pywintypes
 from tqdm import tqdm
-from python.src.transact_zsbmm216 import Transacao
-from python.src.confere_os import consulta_os
-from python.src.excel_tbs import load_worksheets
-from python.src.etl import pendentes_csv
 
+from python.src.confere_os import consulta_os
+from python.src.etl import pendentes_csv
+from python.src.excel_tbs import load_worksheets
+from python.src.transact_zsbmm216 import Transacao
 
 (
     lista,
@@ -59,7 +60,7 @@ def pertencedor(contrato, session):
             try:
                 servico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
@@ -92,11 +93,11 @@ def pertencedor(contrato, session):
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                     servico = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                     )
 
             num_tse_linhas = servico.RowCount
-            for n_tse in range(0, num_tse_linhas):
+            for n_tse in range(num_tse_linhas):
                 servico.modifyCell(n_tse, "PAGAR", "n")
                 # Pertence ao serviço principal
                 servico.modifyCell(n_tse, "CODIGO", "3")
@@ -148,14 +149,14 @@ def pertencedor(contrato, session):
         try:
             servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
             )
         # pylint: disable=E1101
         except pywintypes.com_error:
             print(f"Ordem: {ordem} em medição definitiva.")
             ordem_obs = planilha.cell(row=int_num_lordem, column=4)
             ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-            lista.save('sheets/lista.xlsx')
+            lista.save("sheets/lista.xlsx")
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -174,7 +175,7 @@ def pertencedor(contrato, session):
                     print(f"Data: {data_valorado}")
                     ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                     ordem_obs.value = "Já Salvo"
-                    lista.save('sheets/lista.xlsx')
+                    lista.save("sheets/lista.xlsx")
                     # Incremento de Ordem.
                     int_num_lordem += 1
                     ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -187,11 +188,11 @@ def pertencedor(contrato, session):
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                 servico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell"
+                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                 )
 
         num_tse_linhas = servico.RowCount
-        for n_tse in range(0, num_tse_linhas):
+        for n_tse in range(num_tse_linhas):
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Pertence ao serviço principal
             servico.modifyCell(n_tse, "CODIGO", "3")
@@ -209,7 +210,7 @@ def pertencedor(contrato, session):
             print("Foi Salvo com sucesso!")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Salvo"
-            lista.save('sheets/lista.xlsx')
+            lista.save("sheets/lista.xlsx")
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -217,7 +218,7 @@ def pertencedor(contrato, session):
             print(f"Ordem: {ordem} não foi salva.")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Não"
-            lista.save('sheets/lista.xlsx')
+            lista.save("sheets/lista.xlsx")
             # Incremento de Ordem.
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value

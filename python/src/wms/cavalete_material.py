@@ -1,9 +1,8 @@
 # cavalete_material.py
 """Módulo dos materiais de família Cavalete."""
 from rich.console import Console
-from python.src.wms import testa_material_sap
-from python.src.wms import materiais_contratada
-from python.src.wms import lacre_material
+
+from python.src.wms import lacre_material, materiais_contratada, testa_material_sap
 
 console = Console()
 
@@ -35,35 +34,36 @@ class CavaleteMaterial:
     def receita_cavalete(self):
         """Padrão de materiais na classe Religação.
         Segue a risca os materiais da lista materiais_receita e os da contratada,
-        exclui os materiais sem estoque."""
+        exclui os materiais sem estoque.
+        """
         list_contratada = materiais_contratada.lista_materiais()
         materiais_receita = [
-            '30002394', '50000021', '50000178', '50001070',
-            '30001346', '30004643', '30006747', '50000159',
-            '50000472', '30001848', '30007896'
+            "30002394", "50000021", "50000178", "50001070",
+            "30001346", "30004643", "30006747", "50000159",
+            "50000472", "30001848", "30007896",
         ]
         materiais_lancados = []
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
-        lacre_estoque = self.estoque[self.estoque['Material'] == '50001070']
+        lacre_estoque = self.estoque[self.estoque["Material"] == "50001070"]
         # Gambiarra
         if sap_material is None and lacre_estoque.empty:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "ETAPA", self.operacao
+                ultima_linha_material, "ETAPA", self.operacao,
             )
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "MATERIAL", "50001070"
+                ultima_linha_material, "MATERIAL", "50001070",
             )
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "QUANT", "0"
+                ultima_linha_material, "QUANT", "0",
             )
             self.tb_materiais.setCurrentCell(
-                ultima_linha_material, "QUANT"
+                ultima_linha_material, "QUANT",
             )
             self.tb_materiais.modifyCheckBox(
-                self.tb_materiais.CurrentCellRow, "ELIMINADO", True
+                self.tb_materiais.CurrentCellRow, "ELIMINADO", True,
             )
             ultima_linha_material = ultima_linha_material + 1
 
@@ -71,16 +71,16 @@ class CavaleteMaterial:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "ETAPA", self.operacao
+                ultima_linha_material, "ETAPA", self.operacao,
             )
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "MATERIAL", "50001070"
+                ultima_linha_material, "MATERIAL", "50001070",
             )
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "QUANT", "1"
+                ultima_linha_material, "QUANT", "1",
             )
             self.tb_materiais.setCurrentCell(
-                ultima_linha_material, "QUANT"
+                ultima_linha_material, "QUANT",
             )
             ultima_linha_material = ultima_linha_material + 1
         else:
@@ -96,25 +96,25 @@ class CavaleteMaterial:
                     n_material, "ETAPA")
                 materiais_lancados.append(
                     {"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque['Material']
+                material_estoque = self.estoque[self.estoque["Material"]
                                                 == sap_material]
 
                 if sap_material not in list_contratada:
                     console.print(f"\n{material_estoque}",
                                   style="italic green")
 
-                if sap_material == '30029526' \
+                if sap_material == "30029526" \
                         and self.contrato == "4600041302":
                     pass
                 if sap_material not in materiais_receita \
                         and sap_material not in list_contratada \
                         and sap_etapa_material == self.operacao:
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True
+                        n_material, "ELIMINADO", True,
                     )
                 if material_estoque.empty and sap_material not in list_contratada:
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True
+                        n_material, "ELIMINADO", True,
                     )
 
             # Materiais do Global.

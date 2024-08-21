@@ -1,8 +1,6 @@
 # hidrometro_material.py
 """Módulo dos materiais de família Rede de Esgoto."""
-from python.src.wms import testa_material_sap
-from python.src.wms import materiais_contratada
-from python.src.wms import localiza_material
+from python.src.wms import localiza_material, materiais_contratada, testa_material_sap
 
 
 class RedeEsgotoMaterial:
@@ -19,7 +17,7 @@ class RedeEsgotoMaterial:
                  estoque,
                  df_materiais,
                  posicao_rede,
-                 session
+                 session,
                  ) -> None:
 
         self.hidro = hidro
@@ -37,15 +35,15 @@ class RedeEsgotoMaterial:
     def ramal_luva_correr(self):
         """Saber diâmetro do ramal para luva correr"""
         match self.diametro_ramal:
-            case 'DN_100':
+            case "DN_100":
                 luva_correr = "30002797"
-            case 'DN_150':
+            case "DN_150":
                 luva_correr = "30001548"
-            case 'DN_200':
+            case "DN_200":
                 luva_correr = "30002798"
-            case 'DN_300':
+            case "DN_300":
                 luva_correr = "30008427"
-            case 'DN_400':
+            case "DN_400":
                 luva_correr = "30005898"
             case _:
                 print("Diâmetro do ramal não informado.")
@@ -57,13 +55,13 @@ class RedeEsgotoMaterial:
     def curva(self):
         """Curva 90 e 45"""
         match self.diametro_ramal:
-            case 'DN_100':
+            case "DN_100":
                 curva90 = "30002722"
                 curva45 = "30005282"
-            case 'DN_200':
+            case "DN_200":
                 curva45 = "30005284"
                 curva90 = "30005147"
-            case 'DN_300':
+            case "DN_300":
                 curva45 = "30005285"
                 curva90 = "30005148"
             case _:
@@ -77,16 +75,16 @@ class RedeEsgotoMaterial:
     def ramal_junta(self):
         """Saber diâmetro do ramal para junta"""
         match self.diametro_ramal:
-            case 'DN_100':
+            case "DN_100":
                 junta_esgoto = "30002958"
                 junta_esgoto_adap = "30005615"
-            case 'DN_150':
+            case "DN_150":
                 junta_esgoto = "30005617"
                 junta_esgoto_adap = "30001528"
-            case 'DN_200':
+            case "DN_200":
                 junta_esgoto = "30000357"
                 junta_esgoto_adap = "30005619"
-            case 'DN_300':
+            case "DN_300":
                 junta_esgoto_adap = "30001529"
             case _:
                 print("Diâmetro do ramal não informado.")
@@ -99,16 +97,16 @@ class RedeEsgotoMaterial:
     def rede_junta(self):
         """Saber diâmetro da rede para junta"""
         match self.diametro_rede:
-            case '100':
+            case "100":
                 junta_esgoto = "30002958"
                 junta_esgoto_adap = "30005615"
-            case '150':
+            case "150":
                 junta_esgoto = "30005617"
                 junta_esgoto_adap = "30001528"
-            case '200':
+            case "200":
                 junta_esgoto = "30000357"
                 junta_esgoto_adap = "30005619"
-            case '300':
+            case "300":
                 junta_esgoto_adap = "30001529"
             case _:
                 print("Diâmetro da rede não informado.")
@@ -129,7 +127,7 @@ class RedeEsgotoMaterial:
             n_material = 0
             ultima_linha_material = num_material_linhas
 
-            for material in self.df_materiais['Material']:
+            for material in self.df_materiais["Material"]:
                 match material:
                     case [curva90]:
                         resultado = localiza_material.qtd_max(
@@ -156,10 +154,10 @@ class RedeEsgotoMaterial:
                             localiza_material.qtd_correta(
                                 self.tb_materiais, "1")
                     # TUBO PVC RIG JEI/JERI ESG DN 100 CM 6M
-                    case '30028856':
-                        codigo = '30028856'
+                    case "30028856":
+                        codigo = "30028856"
                         match self.posicao_rede:
-                            case 'PA':
+                            case "PA":
                                 resultado = localiza_material.qtd_max(
                                     material, self.estoque, 2.5, self.df_materiais)
                                 if not resultado.empty:
@@ -167,7 +165,7 @@ class RedeEsgotoMaterial:
                                         self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "2")
-                            case 'TA':
+                            case "TA":
                                 resultado = localiza_material.qtd_max(
                                     material, self.estoque, 4.5, self.df_materiais)
                                 if not resultado.empty:
@@ -175,7 +173,7 @@ class RedeEsgotoMaterial:
                                         self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "4")
-                            case 'EX':
+                            case "EX":
                                 resultado = localiza_material.qtd_max(
                                     material, self.estoque, 10, self.df_materiais)
                                 if not resultado.empty:
@@ -183,7 +181,7 @@ class RedeEsgotoMaterial:
                                         self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "5")
-                            case 'TO':
+                            case "TO":
                                 resultado = localiza_material.qtd_max(
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
@@ -191,7 +189,7 @@ class RedeEsgotoMaterial:
                                         self.tb_materiais, self.session, codigo)
                                     localiza_material.qtd_correta(
                                         self.tb_materiais, "7")
-                            case 'PO':
+                            case "PO":
                                 resultado = localiza_material.qtd_max(
                                     material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
@@ -209,76 +207,76 @@ class RedeEsgotoMaterial:
                     n_material, "ETAPA")
 
                 match sap_material:
-                    case '30022469':
+                    case "30022469":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", sap_etapa_material
+                            ultima_linha_material, "ETAPA", sap_etapa_material,
                         )
                         # Adiciona Curva 45G ESG DN 100 vigente.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30005282"
+                            ultima_linha_material, "MATERIAL", "30005282",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30000139':
+                    case "30000139":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona Curva 90G ESG DN 100 vigente.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30022735"
+                            ultima_linha_material, "MATERIAL", "30022735",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
                 # O ventilador bugado do SAP.
-                    case '30002858':
+                    case "30002858":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
 
-                    case '30005616':
+                    case "30005616":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", sap_etapa_material
+                            ultima_linha_material, "ETAPA", sap_etapa_material,
                         )
                         # Adiciona Curva 90G ESG DN 100 vigente.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30005617"
+                            ultima_linha_material, "MATERIAL", "30005617",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30005894':
+                    case "30005894":
                         pass
                         # self.tb_materiais.modifyCheckbox(
                         #     n_material, "ELIMINADO", True
@@ -299,157 +297,157 @@ class RedeEsgotoMaterial:
                         # )
                         # ultima_linha_material = ultima_linha_material + 1
 
-                    case '30005283':
+                    case "30005283":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona Curva 45G ESG DN 100 vigente.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30005282"
+                            ultima_linha_material, "MATERIAL", "30005282",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30007917':
+                    case "30007917":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o TUBO PVC Esgoto DN 100.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30028856"
+                            ultima_linha_material, "MATERIAL", "30028856",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30005329':
+                    case "30005329":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o Curva 90 GR PVC Esgoto DN 100.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30022735"
+                            ultima_linha_material, "MATERIAL", "30022735",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30001657':
+                    case "30001657":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o SELIM AJUST TUBO PVC DN 150x100.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30007132"
+                            ultima_linha_material, "MATERIAL", "30007132",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30003816':
+                    case "30003816":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o TUBO PVC Esgoto DN 100.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30028856"
+                            ultima_linha_material, "MATERIAL", "30028856",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30005145':
+                    case "30005145":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o CURVA 90 GR PVC PB JE/JERI ESG DN 100.
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30022735"
+                            ultima_linha_material, "MATERIAL", "30022735",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
-                    case '30008877':
+                    case "30008877":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
                         self.tb_materiais.InsertRows(
                             str(ultima_linha_material))
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "ETAPA", self.identificador[1]
+                            ultima_linha_material, "ETAPA", self.identificador[1],
                         )
                         # Adiciona o SELIM AJUST TUBO PVC E CER DN 150X100
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30007132"
+                            ultima_linha_material, "MATERIAL", "30007132",
                         )
                         self.tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         self.tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
 
                     # Removendo JUNTA FLEX ESGOTO ADAP DN 100MMX100MM porque acabou.
-                    case '30005615':
+                    case "30005615":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True
+                            n_material, "ELIMINADO", True,
                         )
 
     def receita_reparo_de_rede_de_esgoto(self):

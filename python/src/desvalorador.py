@@ -1,9 +1,11 @@
 """Módulo para desfazer valoração."""
 import sys
+
 import pywintypes
 from tqdm import tqdm
-from python.src.transact_zsbmm216 import Transacao
+
 from python.src.etl import pendentes_csv, pendentes_excel
+from python.src.transact_zsbmm216 import Transacao
 
 
 def desvalorador(contrato, session):
@@ -33,7 +35,7 @@ def desvalorador(contrato, session):
             try:
                 session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
@@ -88,7 +90,7 @@ def desvalorador(contrato, session):
         try:
             session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
             )
         except pywintypes.com_error:
             print(f"Ordem: {ordem} em medição definitiva.")

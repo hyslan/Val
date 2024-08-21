@@ -1,18 +1,20 @@
 """Módulo de start do SAP"""
-import time
 import os
-import subprocess
 import re
-from typing import Callable, Literal
+import subprocess
+import time
+from collections.abc import Callable
+from typing import Literal
+
+from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from dotenv import load_dotenv
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def down_sap() -> str:
@@ -20,17 +22,17 @@ def down_sap() -> str:
     load_dotenv()
     url: str = os.environ["URL"]
     s: Service = Service(
-        'chromedriver.exe')
+        "chromedriver.exe")
     opt: Options = Options()
-    opt.add_argument('--headless=new')
-    opt.add_argument('--allow-running-insecure-content')
-    opt.add_argument('--ignore-certificate-errors')
+    opt.add_argument("--headless=new")
+    opt.add_argument("--allow-running-insecure-content")
+    opt.add_argument("--ignore-certificate-errors")
     opt.add_argument(
         f'--unsafely-treat-insecure-origin-as-secure={os.environ["URL"]}')
-    opt.add_experimental_option('prefs', {
+    opt.add_experimental_option("prefs", {
         "download.default_directory": os.getcwd() + "\\shortcut",
         "download.prompt_for_download": False,
-        "download.directory_upgrade": True
+        "download.directory_upgrade": True,
 
     })
     print("Starting webdriver...")
@@ -41,12 +43,12 @@ def down_sap() -> str:
     wait.until(
         EC.element_to_be_clickable((
             By.XPATH,
-            '//div[@title="SiiS"]'
-        ))
+            '//div[@title="SiiS"]',
+        )),
     )
     btn_siis: WebElement = driver.find_element(
         By.XPATH,
-        '//div[@title="SiiS"]'
+        '//div[@title="SiiS"]',
     )
     btn_siis.click()
     wait.until(file_downloaded("tx.sap"))
@@ -56,7 +58,7 @@ def down_sap() -> str:
     caminho_arquivo: str = os.getcwd() + "\\shortcut\\tx.sap"
     # Get the token SSO
     print("Getting token...")
-    with open(caminho_arquivo, 'r') as f:
+    with open(caminho_arquivo) as f:
         txt = f.read()
 
     scan = re.search(r'at="MYSAPSSO2=(.*)"', txt)

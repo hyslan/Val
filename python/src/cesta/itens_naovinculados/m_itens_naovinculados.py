@@ -31,7 +31,7 @@ class Modalidade:
         self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         itens_nv = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell"
+            + "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell",
         )
         return itens_nv
 
@@ -76,9 +76,10 @@ class Modalidade:
     def fech_e_reab_lig(self, itens_nv):
         """Módulo Religação e Supressão - Modalidade.
         CÓDIGO: 327041 - PE, 327051 - SM
-        327061 - IT, 327071 - AA"""
+        327061 - IT, 327071 - AA
+        """
         print(
-            "Iniciando processo de Modalide - REM BASE - " + "MOD DESP FECH E REAB LIG "
+            "Iniciando processo de Modalide - REM BASE - " + "MOD DESP FECH E REAB LIG ",
         )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
@@ -103,11 +104,7 @@ class Modalidade:
                     "327141",
                     "327151",
                 )
-            ):  # MLN
-                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
-                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
-                itens_nv.pressf4()
-            elif (
+            ) or (
                 sap_tse in self.reposicao
                 and sap_etapa in self.etapa_reposicao
                 and sap_itens_nv
@@ -133,9 +130,10 @@ class Modalidade:
     def manut_lig_esg(self, itens_nv):
         """Módulo Ramal de Esgoto - Rem Base.
         CÓDIGO: 327042 - PE ou 327052 - SM
-        327062 - IT, 327072 - AA"""
+        327062 - IT, 327072 - AA
+        """
         print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP MANUT LIG ESG"
+            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP MANUT LIG ESG",
         )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
@@ -160,11 +158,7 @@ class Modalidade:
                     "327142",
                     "327152",
                 )
-            ):  # MLN
-                itens_nv.modifyCell(n_modalidade, "MEDICAO", True)
-                itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
-                itens_nv.pressf4()
-            elif (
+            ) or (
                 sap_tse in self.reposicao
                 and sap_etapa in self.etapa_reposicao
                 and sap_itens_nv
@@ -190,7 +184,8 @@ class Modalidade:
     def manut_rede_esg(self, itens_nv):
         """Módulo Despesa Rede de Esgoto - RB.
         CÓDIGO: 327043 - PE ou 327053 - SM
-        327063 - IT, 327073 - AA"""
+        327063 - IT, 327073 - AA
+        """
         print("Iniciando processo de Modalidade - " + "REM BASE - DESP MANUT REDE ESG")
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
@@ -245,9 +240,10 @@ class Modalidade:
     def manut_rede_agua(self, itens_nv):
         """Módulo Despesa Rede de água - RB
         CÓDIGO: 327045 - PE ou 327055 - SM
-        327065 - IT, 327075 - AA"""
+        327065 - IT, 327075 - AA
+        """
         print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP RP MAN RD AGUA"
+            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP RP MAN RD AGUA",
         )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
@@ -302,10 +298,11 @@ class Modalidade:
     def manut_lig_agua(self, itens_nv):
         """Módulo de modalidade envolvendo ramal de água e cavalete.
         CÓDIGO: 327046 - PE OU 327056 - SM
-        327066 - IT, 327076 - AA"""
+        327066 - IT, 327076 - AA
+        """
         print(
             "Iniciando processo de Modalidade - "
-            + "REM BASE - MOD DESP RP MAN LIG AGUA"
+            + "REM BASE - MOD DESP RP MAN LIG AGUA",
         )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
@@ -361,9 +358,10 @@ class Modalidade:
     def troca_de_ramal_de_agua(self, itens_nv):
         """Módulo Investimento TRA - RB.
         CÓDIGO: 327050 - PE ou 327060 - SM
-        327070 - IT, 327080 - AA"""
+        327070 - IT, 327080 - AA
+        """
         print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD INVEST TR LIG AGUA"
+            "Iniciando processo de Modalidade - " + "REM BASE - MOD INVEST TR LIG AGUA",
         )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):

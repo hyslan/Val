@@ -9,16 +9,16 @@ from openpyxl import load_workbook  # Carregar função load
 def load_worksheets():
     """Função para carregar os arquivos dos Excel e futuramente do SQL Server."""
     lista = load_workbook(
-        'sheets/lista.xlsx')  # Carregando arquivo para valorar
+        "sheets/lista.xlsx")  # Carregando arquivo para valorar
     # Tabela de materiais da Contratada
-    materiais = load_workbook('sheets/MateriaisContratada.xlsx')
+    materiais = load_workbook("sheets/MateriaisContratada.xlsx")
     # Tabela de materiais da Contratada
-    materiais_gb = load_workbook('sheets/Contratada_GB.xlsx')
-    plan_tse = load_workbook('sheets/TSE.xlsx')  # Tabela de TSE
+    materiais_gb = load_workbook("sheets/Contratada_GB.xlsx")
+    plan_tse = load_workbook("sheets/TSE.xlsx")  # Tabela de TSE
     plan_precos = load_workbook(
-        'sheets/ItensPreco.xlsx')  # Tabela Itens de preço
+        "sheets/ItensPreco.xlsx")  # Tabela Itens de preço
     plan_st_ordem = load_workbook(
-        'sheets/StatusOrdem.xlsx')  # Tabela Status da Ordem
+        "sheets/StatusOrdem.xlsx")  # Tabela Status da Ordem
     planilha = lista.active  # Planilha de Ordem
     contratada = materiais.active  # Materiais Contratada
     contratada_gb = materiais_gb.active  # Materiais Contratada
@@ -31,9 +31,9 @@ def load_worksheets():
     n_motivo3 = plan_tse["n3"]
     reposicao = plan_tse["reposicao"]
     retrabalho = plan_tse["retrabalho"]
-    coluna_contratada = 'A'
-    coluna_tse = 'A'
-    coluna_status = 'A'
+    coluna_contratada = "A"
+    coluna_tse = "A"
+    coluna_status = "A"
 
     tb_contratada = [cell.value for cell in contratada[coluna_contratada]]
     tb_contratada_gb = [
@@ -89,5 +89,5 @@ def load_worksheets():
         tb_st_usuario,
         tb_tse_pertence_ao_servico_principal,
         tb_tse_reposicao,
-        tb_tse_retrabalho
+        tb_tse_retrabalho,
     )

@@ -1,6 +1,7 @@
 # temporizador.py
 """Módulo Cronomêtro."""
 import time
+
 from rich.console import Console
 from rich.panel import Panel
 

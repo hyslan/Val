@@ -1,14 +1,16 @@
 """Módulo dos retrabalho da valoração."""
-import sys
 import datetime as dt
+import sys
+
 import pywintypes
 import rich
-from tqdm import tqdm
 from rich.console import Console
-from python.src.transact_zsbmm216 import Transacao
+from tqdm import tqdm
+
 from python.src.confere_os import consulta_os
 from python.src.excel_tbs import load_worksheets
 from python.src.sql_view import Sql
+from python.src.transact_zsbmm216 import Transacao
 
 (
     lista,
@@ -34,7 +36,7 @@ console: rich.console.Console = Console()
 
 def tag_n7(servico, session):
     num_tse_linhas = servico.RowCount
-    for n_tse in range(0, num_tse_linhas):
+    for n_tse in range(num_tse_linhas):
         servico.modifyCell(n_tse, "PAGAR", "n")
         # Retrabalho
         servico.modifyCell(n_tse, "CODIGO", "7")
@@ -83,14 +85,14 @@ def retrabalho(contrato, session):
             try:
                 servico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
                 print(f"Ordem: {ordem} em medição definitiva.")
                 ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                 ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-                lista.save('sheets/lista.xlsx')
+                lista.save("sheets/lista.xlsx")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -109,7 +111,7 @@ def retrabalho(contrato, session):
                         print(f"Data: {data_valorado}")
                         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                         ordem_obs.value = "Já Salvo"
-                        lista.save('sheets/lista.xlsx')
+                        lista.save("sheets/lista.xlsx")
                         # Incremento de Ordem.
                         int_num_lordem += 1
                         ordem = planilha.cell(
@@ -123,7 +125,7 @@ def retrabalho(contrato, session):
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                     servico = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                     )
 
             rodape = tag_n7(servico, session)
@@ -136,7 +138,7 @@ def retrabalho(contrato, session):
                 print("Foi Salvo com sucesso!")
                 selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
                 selecao_carimbo.value = "Salvo"
-                lista.save('sheets/lista.xlsx')
+                lista.save("sheets/lista.xlsx")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -144,7 +146,7 @@ def retrabalho(contrato, session):
                 print(f"Ordem: {ordem} não foi salva.")
                 selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
                 selecao_carimbo.value = "Não"
-                lista.save('sheets/lista.xlsx')
+                lista.save("sheets/lista.xlsx")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = planilha.cell(row=int_num_lordem, column=1).value
@@ -177,7 +179,7 @@ def retrabalho(contrato, session):
                     try:
                         session.findById(
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                         )
                     # pylint: disable=E1101
                     except pywintypes.com_error:
@@ -197,7 +199,7 @@ def retrabalho(contrato, session):
                             transacao.run_transacao(ordem)
                             servico = session.findById(
                                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                             )
 
                             rodape = tag_n7(servico, session)
@@ -217,7 +219,7 @@ def retrabalho(contrato, session):
                         console.print(f"Ordem: {ordem} não valorada.")
                         servico = session.findById(
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                         )
                         tag_n7(servico, session)
 

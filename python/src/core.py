@@ -3,7 +3,6 @@
 
 # pylint: disable=W0611
 import time
-from typing import Union
 
 import numpy as np
 import pywintypes
@@ -44,19 +43,23 @@ def rollback(n: int, token) -> win32com.client.CDispatch:
 
 
 @log_execution
-def estoque_virtual(contrato, n_con) -> Union[DataFrame, None]:
+def estoque_virtual(contrato, n_con) -> DataFrame | None:
     """Get the virtual stock in MBLB transaction using contrato's number.
 
     Args:
+    ----
         contrato (str): _description_
         n_con (win32com.client.CDispatch): Connection number.
         sessions (win32com.client.CDispatch): Len of Sessions active.
 
     Raises:
+    ------
         Exception: Error Message.
 
     Returns:
+    -------
         DataFrame: Pandas Dataframe with all material allocated to the 'contrato'
+
     """
     try:
         # NORTE SUL DESOBSTRUÇÃO
@@ -74,10 +77,10 @@ def estoque_virtual(contrato, n_con) -> Union[DataFrame, None]:
 
 @log_execution
 def valorator_user(
-    session, sessions, ordem, contrato, cod_mun, principal_tse, start_time, n_con
-) -> Union[str, None]:
+    session, sessions, ordem, contrato, cod_mun, principal_tse, start_time, n_con,
+) -> str | None:
     data_valorado = None
-    if not sessions.Count == 6:
+    if sessions.Count != 6:
         new_session: win32com.client.CDispatch = sap.create_session(n_con)
     else:
         new_session = session
@@ -90,12 +93,12 @@ def valorator_user(
     new_session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
     grid_historico = new_session.findById(
         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell"
+        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell",
     )
     data_valorado = grid_historico.GetCellValue(0, "DATA")
     matricula = grid_historico.GetCellValue(0, "MODIFICADO")
     total = new_session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    if not total == "":
+    if total != "":
         f_total = float(total.replace(".", "").replace(",", "."))
     else:
         f_total = 0
@@ -122,7 +125,7 @@ def valorator_user(
         except Exception as e_valorado:
             console.print(f"[i yellow]Erro no SQL de valorator_user: {e_valorado}")
 
-    if not sessions.Count == 6:
+    if sessions.Count != 6:
         con.CloseSession(new_session.ID)
 
     return data_valorado
@@ -210,9 +213,9 @@ def val(
     try:
         sessions: win32com.client.CDispatch = sap.listar_sessoes(n_con)
     except pywintypes.com_error:
-        return
+        return None
 
-    estoque_hj: Union[DataFrame, None] = estoque_virtual(contrato, n_con)
+    estoque_hj: DataFrame | None = estoque_virtual(contrato, n_con)
 
     with console.status("[bold blue]Trabalhando..."):
         # * Variáveis de Status da Ordem
@@ -241,7 +244,7 @@ def val(
                     principal_tse,
                 ) = consulta_os(ordem, session, contrato, n_con)
                 # * Consulta Status da Ordem
-                if not status_sistema == fechada:
+                if status_sistema != fechada:
                     print(f"OS: {ordem} aberta.")
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(ordem, principal_tse)
@@ -285,7 +288,7 @@ def val(
                 try:
                     tse = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                     )
                 # pylint: disable=E1101
                 except pywintypes.com_error:
@@ -316,11 +319,11 @@ def val(
                         print(f"OS: {ordem} não foi valorada.")
                         print("OS Livre para valorar.")
                         session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS"
+                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
                         ).select()
                         tse = session.findById(
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell"
+                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                         )
                     else:
                         data_valorado = valorator_user(
@@ -351,7 +354,7 @@ def val(
                     ligacao_errada,
                     profundidade_errada,
                 ) = precificador(
-                    tse, corte, relig, posicao_rede, profundidade, contrato, session
+                    tse, corte, relig, posicao_rede, profundidade, contrato, session,
                 )
                 # ! debug
                 # exit()
@@ -455,20 +458,20 @@ def val(
                             continue
                         case "Falha na chamada de procedimento remoto.":
                             console.print(
-                                "[bold red]SAPGUI has been finished strangely. :fire:"
+                                "[bold red]SAPGUI has been finished strangely. :fire:",
                             )
                             session = rollback(n_con, token)
                             continue
                         case "O servidor RPC não está disponível.":
                             console.print(
-                                "[bold red]SAPGUI was weirdly disconnected. :fire:"
+                                "[bold red]SAPGUI was weirdly disconnected. :fire:",
                             )
                             session = rollback(n_con, token)
                             continue
                         case _:
                             console.print(
                                 "[bold red underline]Aconteceu um Erro com a Val!"
-                                + f"\n Fatal Error: {errocritico}"
+                                + f"\n Fatal Error: {errocritico}",
                             )
                             console.print_exception()
                             oxe()
