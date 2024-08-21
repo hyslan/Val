@@ -5,7 +5,7 @@ from python.src.excel_tbs import load_worksheets
     *_,
     tb_tse_PertenceAoServicoPrincipal,
     tb_tse_reposicao,
-    tb_tse_Retrabalho
+    tb_tse_Retrabalho,
 ) = load_worksheets()
 
 PAGAR_NAO = "n"
@@ -109,7 +109,7 @@ class Pai:
                 continue
 
             # COMPACTAÇÃO E SELAGEM DA BASE
-            if sap_tse in ('730600', '730700'):
+            if sap_tse in ("730600", "730700"):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", codigo_despesa)
                 tse_temp_reposicao.append(sap_tse)
@@ -166,7 +166,8 @@ class Cesta(Pai):
     def suprimido_ramal_agua_abandonado(self):
         """Suprimido Ramal de água abandonado (RB) - TSE 416000,
         SUPRIMIDO RAMAL ANTERIOR - TSE 451000 e
-        SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL - TSE 416500"""
+        SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL - TSE 416500
+        """
         return self.processar_servico_cesta("supressao", CODIGO_DESPESA)
 
     def reparo_ramal_agua(self):
@@ -261,7 +262,7 @@ class Unitario(Pai):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_SIM)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
-                if sap_tse == '732000':
+                if sap_tse == "732000":
                     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                     servico_temp.modifyCell(
                         n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
@@ -274,14 +275,14 @@ class Unitario(Pai):
                 continue
 
             # BLOQUETE
-            if sap_tse in ('738000', '740000'):
+            if sap_tse in ("738000", "740000"):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 
-            if sap_tse in ('170301', '749000', '758500', '740000'):
+            if sap_tse in ("170301", "749000", "758500", "740000"):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(
                     n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
@@ -302,7 +303,7 @@ class Unitario(Pai):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_SIM)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
-                if sap_tse == '758000':
+                if sap_tse == "758000":
                     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                     servico_temp.modifyCell(
                         n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
@@ -341,7 +342,7 @@ class Unitario(Pai):
         return [], None, "cavalete", []
 
     def cavaletes_proibidos(self):
-        """ Trocar Cavalete kit"""
+        """Trocar Cavalete kit"""
         return [], "cavaletes proibidos", "cavalete", []
 
     def troca_cv_por_uma(self):
@@ -368,7 +369,8 @@ class Unitario(Pai):
 
     def tra_nv_png_agua_subst_tra_prev(self):
         """TRA Não Visível, PNG Água,
-        Substituição de Ligação água, TRA Preventivo"""
+        Substituição de Ligação água, TRA Preventivo
+        """
         return self.processar_servico_unitario("ligacao_agua")
 
     def ligacao_esgoto_avulsa(self):
@@ -387,8 +389,9 @@ class Unitario(Pai):
 
     def det_descoberto_nivelado_reg_cx_parada(self):
         """Descobrir, Trocar caixa de parada,
-         DESCOBERTA VALVULA DE REDE DE AGUA
-        TSE: 304000, 322000"""
+        DESCOBERTA VALVULA DE REDE DE AGUA
+        TSE: 304000, 322000
+        """
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(
             servico_temp, num_tse_linhas, "cx_parada")
@@ -402,7 +405,8 @@ class Unitario(Pai):
     def religacao(self):
         """Religação unitário
         TSEs: 405000, 414000, 450500, 453000,
-        455500, 463000, 465000, 466500, 467500, 475500"""
+        455500, 463000, 465000, 466500, 467500, 475500
+        """
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_sem_bloquete(
             servico_temp, num_tse_linhas, "religacao")

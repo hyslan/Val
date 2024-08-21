@@ -1,11 +1,13 @@
 # pagador.py
 """Módulo para precificar na aba itens de preço."""
-from rich.console import Console
 from rich.columns import Columns
+from rich.console import Console
 from rich.panel import Panel
+
+from python.src.cesta import cesta_dicionario
 from python.src.servicos_executados import verifica_tse
 from python.src.unitarios.controlador import Controlador
-from python.src.cesta import cesta_dicionario
+
 from .log_decorator import log_execution
 
 
@@ -26,7 +28,7 @@ def precificador(tse, corte, relig,
         list_chave_unitario,
         chave_rb_investimento,
         chave_unitario,
-        reposicao_geral
+        reposicao_geral,
     ) = verifica_tse(
         tse, contrato, session)
 
@@ -44,46 +46,46 @@ def precificador(tse, corte, relig,
             chave_rb_investimento,
             chave_unitario,
             ligacao_errada,
-            profundidade_errada
+            profundidade_errada,
         )
 
     if chave_unitario is not None and chave_unitario[0] in (
-            '253000',
-            '254000',
-            '255000',
-            '262000',
-            '263000',
-            '265000',
-            '266000',
-            '268000',
-            '269000',
-            '280000',
-            '284500',
-            '286000',
-            '502000',
-            '505000',
-            '508000',
-            '561000',
-            '565000',
-            '569000',
-            '581000',
-            '539000',
-            '539000',
-            '585000',
+            "253000",
+            "254000",
+            "255000",
+            "262000",
+            "263000",
+            "265000",
+            "266000",
+            "268000",
+            "269000",
+            "280000",
+            "284500",
+            "286000",
+            "502000",
+            "505000",
+            "508000",
+            "561000",
+            "565000",
+            "569000",
+            "581000",
+            "539000",
+            "539000",
+            "585000",
     ) and not posicao_rede:
         ligacao_errada = True
 
     if chave_unitario is not None and chave_unitario[0] in (
-            '502000',
-            '505000',
-            '508000',
-            '561000',
-            '565000',
-            '569000',
-            '581000',
-            '539000',
-            '539000',
-            '585000',
+            "502000",
+            "505000",
+            "508000",
+            "561000",
+            "565000",
+            "569000",
+            "581000",
+            "539000",
+            "539000",
+            "585000",
     ) and not profundidade:
         profundidade_errada = True
 
@@ -96,7 +98,7 @@ def precificador(tse, corte, relig,
             chave_rb_investimento,
             chave_unitario,
             ligacao_errada,
-            profundidade_errada
+            profundidade_errada,
         )
 
     console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
@@ -130,7 +132,7 @@ def precificador(tse, corte, relig,
                 identificador,
                 posicao_rede,
                 profundidade,
-                session
+                session,
             )
             seletor.executar_processo()
             etapa_unitario.append(chave_unitario[0])
@@ -143,7 +145,7 @@ def precificador(tse, corte, relig,
             chave_rb_investimento[4],
             chave_rb_investimento,
             mae,
-            session
+            session,
         )
 
     if list_chave_rb_despesa:
@@ -155,7 +157,7 @@ def precificador(tse, corte, relig,
                 chave_rb_despesa[4],
                 chave_rb_despesa,
                 mae,
-                session
+                session,
             )
 
     return (
@@ -165,5 +167,5 @@ def precificador(tse, corte, relig,
         chave_rb_investimento,
         chave_unitario,
         ligacao_errada,
-        profundidade_errada
+        profundidade_errada,
     )

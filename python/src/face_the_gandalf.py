@@ -1,18 +1,18 @@
 """Módulo de gif de bloqueio do sistema"""
+import threading
 import time
 import tkinter
 import tkinter as tk
-from typing import Generator, Any
+from collections.abc import Generator
+from typing import Any
 
-from PIL import Image, ImageTk
+import cv2
 import imageio
 import pygame
-import cv2
 import simpleaudio as sa
+from PIL import Image, ImageTk
 from PIL.ImageTk import PhotoImage
 from pydub import AudioSegment
-import threading
-
 from simpleaudio import PlayObject
 
 stop_audio = False
@@ -21,7 +21,7 @@ stop_audio = False
 def play_audio(audio_path) -> None:
     audio: AudioSegment | Generator[Any, Any, None] = AudioSegment.from_file(audio_path, format="m4a")
     play_obj: PlayObject = sa.play_buffer(audio.raw_data, num_channels=audio.channels,
-                                          bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate
+                                          bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate,
                                           )
     while play_obj.is_playing() and not stop_audio:
         time.sleep(0.1)
@@ -30,8 +30,8 @@ def play_audio(audio_path) -> None:
 
 def video():
     global stop_audio
-    video_path: str = 'media/gandalf.mp4'
-    audio_path: str = 'media/gandalf_audio.mp3'
+    video_path: str = "media/gandalf.mp4"
+    audio_path: str = "media/gandalf_audio.mp3"
     # Create object
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -55,10 +55,10 @@ def video():
             break
 
         # Show frame
-        cv2.imshow('Voce nao vai passar!', frame)
+        cv2.imshow("Voce nao vai passar!", frame)
 
         # press 'q' to exit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             stop_audio = True
             break
 
@@ -76,7 +76,7 @@ def gif():
     root: tkinter.Tk = tk.Tk()
 
     # Configuração do GIF
-    gif_path: str = 'media/gandalf.gif'
+    gif_path: str = "media/gandalf.gif"
     gif_reader: imageio.core.Format.Reader = imageio.get_reader(gif_path)
     frame_cnt: int = gif_reader.get_length()
     frames: list[PhotoImage] = [ImageTk.PhotoImage(Image.fromarray(gif_reader.get_data(i)))
@@ -84,7 +84,7 @@ def gif():
 
     # Configuração do áudio
     pygame.mixer.init()
-    audio_path: str = 'media/gandalf_shallnotpass.mp3'
+    audio_path: str = "media/gandalf_shallnotpass.mp3"
     pygame.mixer.music.load(audio_path)
 
     def update(ind):
@@ -103,7 +103,7 @@ def gif():
         root.after(100, update, ind)
 
     label: tk.Label = tk.Label(root, text="Você não vai passar!",
-                     background="black"
+                     background="black",
                      )
     label.pack()
 
@@ -114,7 +114,7 @@ def gif():
 
 def you_cant_pass(mode):
     """Function do bloqueio"""
-    if mode == 'gif':
+    if mode == "gif":
         gif()
-    if mode == 'video':
+    if mode == "video":
         video()

@@ -3,13 +3,15 @@
 import logging
 import re
 import threading
+
 import pythoncom
-import win32com.client as win32
 import pywintypes
+import win32com.client as win32
 from rich.console import Console
-from python.src import sql_view
-from python.src import sap
+
+from python.src import sap, sql_view
 from python.src.temporizador import cronometro_val
+
 from .log_decorator import log_execution
 
 # Adicionando um Lock
@@ -24,7 +26,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
     salvo = "Ajustes de valoração salvos com sucesso."
     total = session.findById(
         "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    if not total == '':
+    if total != "":
         f_total = float(total.replace(".", "").replace(",", "."))
     else:
         f_total = 0
@@ -40,7 +42,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 # pylint: disable=E1101
                 gui = win32.Dispatch(
                     pythoncom.CoGetInterfaceAndReleaseStream(
-                        session_id, pythoncom.IID_IDispatch)
+                        session_id, pythoncom.IID_IDispatch),
                 )
                 print("Salvando valoração!")
 
@@ -60,7 +62,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
             pythoncom.IID_IDispatch, session)
         # Start
         thread = threading.Thread(target=salvar_valoracao, kwargs={
-            'session_id': session_id})
+            "session_id": session_id})
         thread.start()
         # Aguarde a thread concluir
         thread.join(timeout=300)
@@ -79,7 +81,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 obs=rodape,
                 valorado="SIM", contrato=contrato, municipio=cod_mun,
                 status="VALORADA", data_valoracao=None,
-                matricula='117615', valor_medido=f_total, tempo_gasto=time_spent
+                matricula="117615", valor_medido=f_total, tempo_gasto=time_spent,
             )
             # Incremento + de Ordem.
             qtd_ordem += 1
@@ -103,12 +105,12 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 obs=rodape,
                 valorado="NÃO", contrato=contrato, municipio=cod_mun,
                 status="DISPONÍVEL", data_valoracao=None,
-                matricula='117615', valor_medido=0, tempo_gasto=time_spent)
+                matricula="117615", valor_medido=0, tempo_gasto=time_spent)
 
         logging.info(console.print(
             f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}"
             f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
-            style="bright_yellow"
+            style="bright_yellow",
         ))
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:

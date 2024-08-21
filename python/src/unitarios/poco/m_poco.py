@@ -5,10 +5,11 @@ from python.src.unitarios.localizador import btn_localizador
 
 class Poco:
     """Classe Unitária de Poço."""
+
     CODIGOS = {
-        'NIV_CX_PARADA': ("456111", ("050401", "050402", "451123")),
-        'TROCA_CX_PARADA': ("456112", ("050401", "050402", "451123")),
-        'NIVELAMENTO': ("456206", "451208", ("456207", "456207", "451208")),
+        "NIV_CX_PARADA": ("456111", ("050401", "050402", "451123")),
+        "TROCA_CX_PARADA": ("456112", ("050401", "050402", "451123")),
+        "NIVELAMENTO": ("456206", "451208", ("456207", "456207", "451208")),
     }
 
     def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
@@ -29,23 +30,23 @@ class Poco:
     def reposicoes(self, cod_reposicao: tuple) -> None:
         """Reposições dos serviços de Poço"""
         rep_com_etapa = [(x, y)
-                         for x, y in zip(self.reposicao, self.etapa_reposicao)]
+                         for x, y in zip(self.reposicao, self.etapa_reposicao, strict=False)]
 
         for pavimento in rep_com_etapa:
             operacao_rep = pavimento[1]
-            if operacao_rep == '0':
-                operacao_rep = '0010'
+            if operacao_rep == "0":
+                operacao_rep = "0010"
             # 0 é tse da reposição;
             # 1 é etapa da tse da reposição;
-            if pavimento[0] in dict_reposicao['cimentado']:
+            if pavimento[0] in dict_reposicao["cimentado"]:
                 preco_reposicao = cod_reposicao[0]
                 txt_reposicao = (
                     f"Pago 1 UN de LRP CIM  - CODIGO: {preco_reposicao}")
-            if pavimento[0] in dict_reposicao['especial']:
+            if pavimento[0] in dict_reposicao["especial"]:
                 preco_reposicao = cod_reposicao[1]
                 txt_reposicao = (
                     f"Pago 1 UN de LRP ESP  - CODIGO: {preco_reposicao}")
-            if pavimento[0] in dict_reposicao['asfalto_frio']:
+            if pavimento[0] in dict_reposicao["asfalto_frio"]:
                 preco_reposicao = cod_reposicao[2]
                 txt_reposicao = ("Pago 1 UN de LPB ASF MND LAG AVUL COMPX C"
                                  + f" - CODIGO: {preco_reposicao}")
@@ -56,7 +57,7 @@ class Poco:
             n_etapa = self.preco.GetCellValue(
                 self.preco.CurrentCellRow, "ETAPA")
 
-            if not n_etapa == operacao_rep:
+            if n_etapa != operacao_rep:
                 self.preco.pressToolbarButton("&FIND")
                 self.session.findById(
                     "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
@@ -92,7 +93,7 @@ class Poco:
         if codigo:
             print(
                 f"Iniciando processo de pagar {tipo_operacao.replace('_', ' ')}")
-            if tipo_operacao == 'NIVELAMENTO':
+            if tipo_operacao == "NIVELAMENTO":
                 self._pagar(codigo[1])
                 return
 
@@ -101,12 +102,12 @@ class Poco:
 
     def niv_cx_parada(self):
         """Método Nivelamento de Caixa de Parada"""
-        self._processar_operacao('NIV_CX_PARADA')
+        self._processar_operacao("NIV_CX_PARADA")
 
     def troca_de_caixa_de_parada(self):
         """Troca/Descobrimento de Caixa de Parada, Válvula de Rede de Água - Código 456112"""
-        self._processar_operacao('TROCA_CX_PARADA')
+        self._processar_operacao("TROCA_CX_PARADA")
 
     def nivelamento(self):
         """Nivelamentos com e sem reposição."""
-        self._processar_operacao('NIVELAMENTO')
+        self._processar_operacao("NIVELAMENTO")

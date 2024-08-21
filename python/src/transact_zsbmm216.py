@@ -2,10 +2,12 @@
 """Módulo de Contrato"""
 # Conexão SAP
 import threading
+
 import pythoncom
 import pywintypes
 import win32com.client as win32
 from rich.console import Console
+
 from python.src import sap
 
 # Adicionando um Lock
@@ -48,7 +50,8 @@ class Transacao:
 
     def run_transacao(self, ordem, tipo="individual", n_con=0):
         """Run thread ZSBMM216
-        e faz a transação a transação com o respectivo contrato."""
+        e faz a transação a transação com o respectivo contrato.
+        """
 
         def t_transacao(session_id):
             """Transação preenchida ZSBMM216 - Contrato NOVASP"""
@@ -62,7 +65,7 @@ class Transacao:
                     # pylint: disable=E1101
                     gui = win32.Dispatch(
                         pythoncom.CoGetInterfaceAndReleaseStream(
-                            session_id, pythoncom.IID_IDispatch)
+                            session_id, pythoncom.IID_IDispatch),
                     )
                     print("Iniciando Transação ZSBM216.")
                     gui.StartTransaction("ZSBMM216")
@@ -92,7 +95,7 @@ class Transacao:
                 pythoncom.IID_IDispatch, self.session)
             # Start
             thread = threading.Thread(target=t_transacao, kwargs={
-                'session_id': session_id})
+                "session_id": session_id})
             thread.start()
             # Aguarde a thread concluir
             thread.join(timeout=300)

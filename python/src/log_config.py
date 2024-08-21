@@ -1,6 +1,7 @@
 import logging
-from logging.handlers import RotatingFileHandler
 import os
+from logging.handlers import RotatingFileHandler
+
 from rich.console import Console
 
 console = Console()
@@ -20,7 +21,7 @@ def setup_logging(log_directory="logs", log_level=logging.DEBUG):
     file_handler = RotatingFileHandler(
         os.path.join(log_directory, "val_detailed_log.log"),
         maxBytes=10**6,
-        backupCount=10
+        backupCount=10,
     )
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)

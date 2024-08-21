@@ -1,21 +1,23 @@
-"""
-    Módulo de Testes unitários da aplicação.
+"""Módulo de Testes unitários da aplicação.
 """
 import argparse
+
 # val/src/test/test_main.py
 import unittest
 from unittest.mock import Mock, patch
+
 import numpy as np
 from rich.console import Console
+
 import main
+from python.src import sap
+from python.src.confere_os import consulta_os
 from python.src.core import val
 from python.src.sapador import down_sap
-import python.src.sap as sap
 from python.src.transact_zsbmm216 import Transacao
 from python.src.unitarios.controlador import Controlador
 from python.src.unitarios.ligacao_agua.m_ligacao_agua import LigacaoAgua
 from python.src.unitarios.poco.m_poco import Poco
-from python.src.confere_os import consulta_os
 from python.src.wms.consulta_estoque import estoque
 
 console = Console()
@@ -24,7 +26,7 @@ console = Console()
 class TestMain(unittest.TestCase):
     """Class representing for testing"""
 
-    @patch('argparse.ArgumentParser.parse_args')
+    @patch("argparse.ArgumentParser.parse_args")
     def test_main(self, mock_parse_args):
         """Test main function"""
         # mock_args = Mock(return_value=("0", "9", "4600041302", "alefafa"))
@@ -50,16 +52,16 @@ class TestMain(unittest.TestCase):
 
     def test_sapador(self):
         """Test download sapgui"""
-        self.assertLogs(down_sap(), level='DEBUG')
+        self.assertLogs(down_sap(), level="DEBUG")
 
     def test_sap(self):
         """Test COM SapGui module"""
-        self.assertLogs(sap.connection_object(0), level='DEBUG')
+        self.assertLogs(sap.connection_object(0), level="DEBUG")
         sessions = sap.listar_sessoes()
         self.assertGreater(len(sessions), 0, "Nenhuma sessão encontrada.")
-        self.assertLogs(sap.contar_sessoes(), level='DEBUG')
-        self.assertLogs(sap.create_session(sessions), level='DEBUG')
-        n = self.assertLogs(sap.choose_connection(), level='DEBUG')
+        self.assertLogs(sap.contar_sessoes(), level="DEBUG")
+        self.assertLogs(sap.create_session(sessions), level="DEBUG")
+        n = self.assertLogs(sap.choose_connection(), level="DEBUG")
         console.print([f"[italic]{n}"])
 
     def test_dicionario_un(self):
@@ -70,7 +72,7 @@ class TestMain(unittest.TestCase):
         seletor.executar_processo()
 
     def test_transacao(self):
-        """teste da ZSBMM216"""
+        """Teste da ZSBMM216"""
         gui = sap.choose_connection()
         guia = Transacao("4600043760", "344", "100", gui)
         guia.run_transacao("1234")
@@ -88,10 +90,10 @@ class TestMetodoPosicaoPagar(unittest.TestCase):
         self.objeto.preco.setCurrentCell = Mock()
         self.objeto.preco.pressEnter = Mock()
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_posicao_pagar(self, mock_print):
         """Testa o método _posicao_pagar"""
-        preco_tse = 'preco_tse_teste'
+        preco_tse = "preco_tse_teste"
         self.objeto._posicao_pagar(preco_tse)
         self.objeto.preco.modifyCell.assert_called_once_with(
             self.objeto.preco.CurrentCellRow, "QUANT", "1")
@@ -117,14 +119,14 @@ class TestProcessarOperacao(unittest.TestCase):
             identificador="poço",
             posicao_rede=None,
             profundidade=None,
-            session=gui
+            session=gui,
         )
         # self.objeto._pagar = Mock()
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_processar_operacao_nivelamento(self, mock_print):
         """Niv pv"""
-        tipo_operacao = 'NIVELAMENTO'
+        tipo_operacao = "NIVELAMENTO"
         codigo = self.objeto.CODIGOS.get(tipo_operacao)
         self.objeto._processar_operacao(tipo_operacao)
         mock_print.assert_called_once_with(
@@ -137,5 +139,5 @@ class TestProcessarOperacao(unittest.TestCase):
         self.objeto.nivelamento()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
