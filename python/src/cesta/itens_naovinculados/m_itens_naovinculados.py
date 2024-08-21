@@ -430,8 +430,8 @@ class Modalidade:
                     "360247",
                     "360245",
                     # MLQ
-                    "",
-                    "",
+                    "360256",  # ARTUR ALVIM
+                    "360252",  # ITAQUERA
                     # MLN
                     "360274",  # SUZANO
                     "360276",  # POÁ
