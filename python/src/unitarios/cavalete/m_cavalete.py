@@ -65,9 +65,9 @@ class Cavalete:
                 codigo = "457229"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM"
+                    self.preco.CurrentCellRow, "ITEM",
                 )
-                if item_preco in ('300', '310', '730', '1470', '4950'
+                if item_preco in ("300", "310", "730", "1470", "4950",
                                   ):
                     self.preco.modifyCell(
                         self.preco.CurrentCellRow, "QUANT", "1")
@@ -81,9 +81,9 @@ class Cavalete:
                 codigo = "457230"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM"
+                    self.preco.CurrentCellRow, "ITEM",
                 )
-                if item_preco in ('300', '310', '730', '1470', '4950'
+                if item_preco in ("300", "310", "730", "1470", "4950",
                                   ):
                     self.preco.modifyCell(
                         self.preco.CurrentCellRow, "QUANT", "1")

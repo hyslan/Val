@@ -1,7 +1,7 @@
 # controlador.py
 """Classe controladora"""
-from python.src.unitarios.dicionario import selecionar_tse
 from python.src.unitarios.base import BaseUnitario
+from python.src.unitarios.dicionario import selecionar_tse
 
 
 class Controlador(BaseUnitario):
@@ -19,13 +19,13 @@ class Controlador(BaseUnitario):
             ["ligacao_agua"],
             ["ligacao_agua_nova"],
             ["rede_agua"],
-            ["supr_restab"]
+            ["supr_restab"],
         ]
         self.identificador.remove("preservacao")
         if self.identificador in ramo_agua:
-            serv_preservacao = '456118'
+            serv_preservacao = "456118"
         else:
-            serv_preservacao = '456217'
+            serv_preservacao = "456217"
 
         preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
@@ -34,7 +34,7 @@ class Controlador(BaseUnitario):
         if preco is not None:
             num_precos_linhas = preco.RowCount
             n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(0, num_precos_linhas)):
+            for n_preco, sap_preco in enumerate(range(num_precos_linhas)):
                 sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
                 if sap_preco == serv_preservacao:
                     # Marca pagar na TSE
@@ -50,7 +50,7 @@ class Controlador(BaseUnitario):
 
     def executar_processo(self):
         """Selecionar a classe apropriada com base no código da etapa"""
-        if self.etapa in ('713000', '713500'):
+        if self.etapa in ("713000", "713500"):
             self.preserv_inter_serv()
 
         classe_unitario = selecionar_tse(self.etapa, self.corte, self.relig,

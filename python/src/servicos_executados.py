@@ -65,7 +65,7 @@ def verifica_tse(servico, contrato, session):
     chave_rb_despesa = None
     chave_rb_investimento = None
     print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
-    for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+    for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
 
@@ -184,7 +184,7 @@ def verifica_tse(servico, contrato, session):
                 break
             continue
 
-        elif sap_tse in sondagem:  # Caso Contrário, é RB - Sondagem
+        if sap_tse in sondagem or sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Sondagem
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
@@ -207,30 +207,7 @@ def verifica_tse(servico, contrato, session):
                 break
             continue
 
-        elif sap_tse in tb_tse_rem_base:  # Caso Contrário, é RB - Despesa
-            servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-            servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
-            # Coloca a tse existente na lista temporária
-            tse_temp.append(sap_tse)
-            (reposicao, tse_proibida, identificador, etapa_reposicao) = (
-                pai_dicionario.pai_servico_cesta(sap_tse, session)
-            )
-            rem_base_reposicao.append(reposicao)
-            identificador_list.append(identificador)
-            chave_rb_despesa = (
-                sap_tse,
-                etapa_pai,
-                identificador,
-                reposicao,
-                etapa_reposicao,
-            )
-            list_chave_rb_despesa.append(chave_rb_despesa)
-            pai_tse += 1
-            if tse_proibida is not None:
-                break
-            continue
-
-        elif sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
+        if sap_tse in tb_tse_invest:  # Caso Contrário, é RB - Investimento
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
             # Coloca a tse existente na lista temporária
@@ -253,7 +230,7 @@ def verifica_tse(servico, contrato, session):
                 break
             continue
 
-        elif sap_tse in desobstrucao and empresa == "4600043760":
+        if sap_tse in desobstrucao and empresa == "4600043760":
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
@@ -276,49 +253,49 @@ def verifica_tse(servico, contrato, session):
                 break
             continue
 
-        elif sap_tse in tb_tse_nexec:
+        if sap_tse in tb_tse_nexec:
             servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
             servico.modifyCell(n_tse, "CODIGO", "11")  # Não Executado
             continue
 
-        elif sap_tse in tb_tse_pertence_ao_servico_principal:
+        if sap_tse in tb_tse_pertence_ao_servico_principal:
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Pertence ao Serviço Principal
             servico.modifyCell(n_tse, "CODIGO", "3")
             continue
 
-        elif sap_tse in tb_tse_retrabalho:
+        if sap_tse in tb_tse_retrabalho:
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "7")  # Retrabalho
             continue
 
-        elif sap_tse in ("730600", "730700"):
+        if sap_tse in ("730600", "730700"):
             # Compactação e Selagem da Base.
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Pedido alterado por Iara Regina
             servico.modifyCell(n_tse, "CODIGO", "5")
             continue
 
-        elif sap_tse in ("761000", "762000"):
+        if sap_tse in ("761000", "762000"):
             # REPOSIÇÃO DE PAREDE/MURO INV.
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Pedido alterado por Iara Regina
             servico.modifyCell(n_tse, "CODIGO", "5")
             continue
 
-        elif sap_tse == "666000":
+        if sap_tse == "666000":
             # VISTORIADO LOCAL E IDENTIFICADA SITUAÇÃO
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue
 
-        elif sap_tse == "408000":
+        if sap_tse == "408000":
             # SUPRIMIDA LIG POÇO ENCERRAMENTO CONTRATO
             servico.modifyCell(n_tse, "PAGAR", "n")
             servico.modifyCell(n_tse, "CODIGO", "10")  # Serviço MOP
             continue
 
-        if sap_tse in desobstrucao and not empresa == "4600043760":
+        if sap_tse in desobstrucao and empresa != "4600043760":
             # FUMAÇA, DD/DC, LAVAGEM, TELEVISIONADO
             servico.modifyCell(n_tse, "PAGAR", "n")
             # Serviço não existe no contrato
@@ -352,13 +329,13 @@ def verifica_tse(servico, contrato, session):
     rem_base_reposicao_union = np.unique(rem_base_reposicao, axis=None)
     unitario_reposicao_flat = np.ravel(unitario_reposicao)
     reposicao_geral = np.unique(
-        np.concatenate([rem_base_reposicao_union, unitario_reposicao_flat])
+        np.concatenate([rem_base_reposicao_union, unitario_reposicao_flat]),
     )
 
     # TSEs situacionais.
     if chave_unitario is not None and pai_tse == 1:
         if chave_unitario[0] in troca_pe_cv_prev:
-            for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
                 sap_tse = servico.GetCellValue(n_tse, "TSE")
                 etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
                 # Altera todas as reposições para N3 de Troca Pé Preventivo.
@@ -376,7 +353,7 @@ def verifica_tse(servico, contrato, session):
         )
     ):
         if chave_rb_despesa[0] in sondagem:
-            for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+            for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
                 sap_tse = servico.GetCellValue(n_tse, "TSE")
                 etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
                 # Altera todas as reposições de rb para N3 de Sondagem.
@@ -386,7 +363,7 @@ def verifica_tse(servico, contrato, session):
                     servico.modifyCell(n_tse, "CODIGO", "3")
 
     if mae is True:
-        for n_tse, sap_tse in enumerate(range(0, num_tse_linhas)):
+        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
             etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
             # Altera todas as reposições de rb para investimento se tiver tra.

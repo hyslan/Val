@@ -1,7 +1,7 @@
 import logging
 from functools import wraps
-from rich.console import Console
 
+from rich.console import Console
 
 console = Console()
 logger = logging.getLogger(__name__)

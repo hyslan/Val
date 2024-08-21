@@ -1,17 +1,19 @@
 # almoxarifado.py
 """Módulo dos materiais contratada e SABESP."""
-import sys
-import pywintypes
 import pandas as pd
+import pywintypes
 from rich.console import Console
 from rich.progress import track
-from python.src.wms import corte_restab_material
-from python.src.wms import hidrometro_material
-from python.src.wms import rede_agua_material
-from python.src.wms import rede_esgoto_material
-from python.src.wms import cavalete_material
-from python.src.wms import poco_material
-from python.src.wms import materiais_contratada
+
+from python.src.wms import (
+    cavalete_material,
+    corte_restab_material,
+    hidrometro_material,
+    materiais_contratada,
+    poco_material,
+    rede_agua_material,
+    rede_esgoto_material,
+)
 
 
 class Almoxarifado:
@@ -26,7 +28,7 @@ class Almoxarifado:
                  contrato,
                  estoque,
                  posicao_rede,
-                 session
+                 session,
                  ) -> None:
         self.hidro = hidro
         # 0 - tse, 1 - etapa tse, 2 - id match case
@@ -68,14 +70,14 @@ class Almoxarifado:
                     i, "DESC_MAT")
                 sap_qtde_material = tb_materiais.GetCellValue(
                     i, "QUANT")
-                data = {'Etapa': sap_etapa_material,
-                        'Material': sap_material,
-                        'Descrição': sap_desc_material,
-                        'Quantidade': sap_qtde_material}
+                data = {"Etapa": sap_etapa_material,
+                        "Material": sap_material,
+                        "Descrição": sap_desc_material,
+                        "Quantidade": sap_qtde_material}
                 lista_data.append(data)
             df_materiais = pd.DataFrame(lista_data)
-            df_materiais['Quantidade'] = df_materiais['Quantidade'].replace(
-                ',', '.', regex=True).astype(float)
+            df_materiais["Quantidade"] = df_materiais["Quantidade"].replace(
+                ",", ".", regex=True).astype(float)
 
             return df_materiais
 
@@ -88,10 +90,10 @@ class Almoxarifado:
         print("Iniciando inspeção de materiais.")
         """Seleciona a Classe da TSE correta."""
         sondagem = [
-            '591000',
-            '567000',
-            '321000',
-            '283000'
+            "591000",
+            "567000",
+            "321000",
+            "283000",
         ]
         if self.identificador[2] in sondagem:
             materiais_contratada.materiais_contratada(
@@ -110,7 +112,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_hidrometro()
@@ -126,7 +128,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de hidrômetro.")
                     material.receita_desinclinado_hidrometro()
@@ -142,7 +144,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Cavalete.")
                     material.receita_cavalete()
@@ -158,7 +160,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de religação.")
                     material.receita_religacao()
@@ -174,7 +176,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Supressão.")
 
@@ -192,7 +194,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita "
                           + "de TRA.")
@@ -211,7 +213,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
@@ -227,7 +229,7 @@ class Almoxarifado:
                             tb_materiais,
                             self.contrato,
                             self.estoque,
-                            self.session
+                            self.session,
                         )
                         print(
                             "Aplicando a receita de hidrômetro em ligação de água nova.")
@@ -246,7 +248,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Rede de Água")
                     material.receita_reparo_de_rede_de_agua()
@@ -264,7 +266,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Ramal de Esgoto")
                     material.receita_reparo_de_ramal_de_esgoto()
@@ -282,7 +284,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
@@ -300,7 +302,7 @@ class Almoxarifado:
                         self.estoque,
                         df_materiais,
                         self.posicao_rede,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de PNG Esgoto")
                     material.png()
@@ -319,7 +321,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Nivelamento de Poço")
                     material.niv_pv_pi()
@@ -335,7 +337,7 @@ class Almoxarifado:
                         tb_materiais,
                         self.contrato,
                         self.estoque,
-                        self.session
+                        self.session,
                     )
                     print("Aplicando a receita de Caixa de Parada")
                     material.receita_caixa_de_parada()
@@ -355,9 +357,9 @@ def materiais(
     contrato,
     estoque,
     posicao_rede,
-    session
+    session,
 ):
-    '''Função dos materiais de acordo com a TSE pai.'''
+    """Função dos materiais de acordo com a TSE pai."""
     servico = Almoxarifado(
         hidro_instalado,
         operacao,
@@ -367,7 +369,7 @@ def materiais(
         contrato,
         estoque,
         posicao_rede,
-        session
+        session,
     )
     tb_materiais = servico.aba_materiais()
     df_materiais = servico.materiais_vinculados(tb_materiais)

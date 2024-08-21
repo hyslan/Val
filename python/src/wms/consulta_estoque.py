@@ -1,8 +1,10 @@
 """Módulo de consulta estoque de materiais"""
-import time
 import os
-import xlwings as xw
+import time
+
 import pandas as pd
+import xlwings as xw
+
 from python.src import sap
 
 
@@ -28,15 +30,15 @@ def estoque(session, contrato, n_con):
     materiais = pd.read_excel(caminho + f"estoque_{contrato}.XLSX",
                               sheet_name="Sheet1", usecols=["Material",
                                                             "Texto breve material",
-                                                            "Utilização livre"
-                                                            ]
+                                                            "Utilização livre",
+                                                            ],
                               )
     materiais = materiais.dropna()
-    materiais['Material'] = materiais['Material'].astype(int).astype(str)
+    materiais["Material"] = materiais["Material"].astype(int).astype(str)
     sessao = sap
     con = sessao.connection_object(n_con)
     total_sessoes = sessao.contar_sessoes(n_con)
-    if not total_sessoes == 6:
+    if total_sessoes != 6:
         try:
             print("Encerrando Sessão.")
             con.CloseSession(f"/app/con[0]/ses[{total_sessoes - 1}]")
@@ -48,7 +50,7 @@ def estoque(session, contrato, n_con):
     print("Fechando Arquivo Excel.\n")
     try:
         time.sleep(8)
-        book = xw.Book(f'estoque_{contrato}.xlsx')
+        book = xw.Book(f"estoque_{contrato}.xlsx")
         book.app.quit()
     except Exception as e:
         print(f"Erro em consulta_estoque - MS EXCEL:{e}")

@@ -1,11 +1,12 @@
 """Every second friday on the month, do this rpa for 'Retrabalho Confirmado' orders."""
-import win32com.client
 import pywintypes
 import rich.console
+import win32com.client
 from rich.console import Console
-import python.src.sap as sap
-from python.src.sapador import down_sap
+
+from python.src import sap
 from python.src.retrabalhador import retrabalho
+from python.src.sapador import down_sap
 
 console: rich.console.Console = Console()
 
@@ -25,5 +26,5 @@ def do() -> None:
     retrabalho("", session)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     do()

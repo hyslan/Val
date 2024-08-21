@@ -22,9 +22,9 @@ def qtd_correta(tb_materiais, qtde):
 
 def qtd_max(material, estoque, limite, df_materiais):
     """Query no dataset da aba materiais"""
-    if not estoque[estoque['Material'] == material].empty:
-        resultado = df_materiais[df_materiais['Material'] ==
-                                 material].query(f'`Quantidade` > {limite}')
+    if not estoque[estoque["Material"] == material].empty:
+        resultado = df_materiais[df_materiais["Material"] ==
+                                 material].query(f"`Quantidade` > {limite}")
         return resultado
-    resultado = estoque[estoque['Material'] == material].empty
+    resultado = estoque[estoque["Material"] == material].empty
     return resultado

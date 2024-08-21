@@ -9,7 +9,7 @@ class BaseUnitario(UnitarioInterface):
     def __init__(self, etapa, corte, relig,
                  reposicao, num_tse_linhas, etapa_reposicao,
                  identificador, posicao_rede, profundidade,
-                 session
+                 session,
                  ) -> None:
         self.corte = corte
         self.relig = relig
@@ -32,4 +32,4 @@ class BaseUnitario(UnitarioInterface):
         pass
 
     def _processar_operacao(self, tipo_operacao):
-        '''Processar Código de preço'''
+        """Processar Código de preço"""

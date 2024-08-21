@@ -11,7 +11,7 @@ def cesta(reposicao, etapa_reposicao, identificador, mae, session):
         etapa_reposicao,
         identificador,
         mae,
-        session
+        session,
     )
     itens_nv = rem_base.aba_nao_vinculados()
     rem_base.testa_modalidade_sap(itens_nv)

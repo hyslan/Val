@@ -1,6 +1,7 @@
 """Módulo de materiais contratada"""
-from typing import List
+
 import pywintypes
+
 from python.src.excel_tbs import load_worksheets
 from python.src.wms import lacre_material
 
@@ -35,7 +36,7 @@ def materiais_novasp(tb_materiais,
             n_material, "MATERIAL")
         sap_etapa_material = tb_materiais.GetCellValue(
             n_material, "ETAPA")
-        material_estoque = estoque[estoque['Material'] == sap_material]
+        material_estoque = estoque[estoque["Material"] == sap_material]
 
         # Verifica se está na lista tb_contratada
         if sap_material in tb_contratada:
@@ -45,25 +46,25 @@ def materiais_novasp(tb_materiais,
             continue
 
         if lacre is False:
-            if sap_material in ('50000328', '50000263'):
+            if sap_material in ("50000328", "50000263"):
                 # Remove o lacre bege antigo.
                 tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True
+                    n_material, "ELIMINADO", True,
                 )
                 lacre_material.caca_lacre(
                     tb_materiais, sap_etapa_material,
                     estoque, session)
                 lacre = True
-            if sap_material == '50001070':
+            if sap_material == "50001070":
                 lacre_material.caca_lacre(
                     tb_materiais, sap_etapa_material,
                     estoque, session)
                 lacre = True
 
-        if sap_material == '10014780':
+        if sap_material == "10014780":
             # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
             tb_materiais.modifyCheckbox(
-                n_material, "ELIMINADO", True
+                n_material, "ELIMINADO", True,
             )
 
         # --- APENAS SE ENCARREGADOS PEDIREM ---
@@ -101,21 +102,21 @@ def materiais_novasp(tb_materiais,
         #         f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")
 
         try:
-            if sap_material == '30001865' and material_estoque.empty:
+            if sap_material == "30001865" and material_estoque.empty:
                 tb_materiais.modifyCheckbox(
                     n_material, "ELIMINADO", True)
                 # Adiciona União PEAD vigente.
-                check_uniao = estoque[estoque['Material'] == '30029526']
+                check_uniao = estoque[estoque["Material"] == "30029526"]
                 if not check_uniao.empty:
                     try:
                         tb_materiais.modifyCell(
-                            ultima_linha_material, "MATERIAL", "30029526"
+                            ultima_linha_material, "MATERIAL", "30029526",
                         )
                         tb_materiais.modifyCell(
-                            ultima_linha_material, "QUANT", "1"
+                            ultima_linha_material, "QUANT", "1",
                         )
                         tb_materiais.setCurrentCell(
-                            ultima_linha_material, "QUANT"
+                            ultima_linha_material, "QUANT",
                         )
                         ultima_linha_material = ultima_linha_material + 1
                     except pywintypes.com_error:
@@ -150,20 +151,20 @@ def materiais_gb_itaquera(tb_materiais,
             continue
 
         if lacre is False:
-            if sap_material in ('50000328', '50000263'):
+            if sap_material in ("50000328", "50000263"):
                 # Remove o lacre bege antigo.
                 tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True
+                    n_material, "ELIMINADO", True,
                 )
                 lacre_material.caca_lacre(
                     tb_materiais, sap_etapa_material,
                     estoque, session)
                 lacre = True
 
-        if sap_material == '10014780':
+        if sap_material == "10014780":
             # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
             tb_materiais.modifyCheckbox(
-                n_material, "ELIMINADO", True
+                n_material, "ELIMINADO", True,
             )
 
         # if sap_material == '50000178':
@@ -221,24 +222,24 @@ def materiais_gb_itaquera(tb_materiais,
         #         f"Etapa: {sap_etapa_material} - TUBO PVC RIG PB JEI/JERI DN 100 já foi retirado.")
 
         try:
-            if sap_material in ('30001865', '30000882'):
+            if sap_material in ("30001865", "30000882"):
                 # Remove UNIAO P/TUBO PEAD DE 20 MM.
                 tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True
+                    n_material, "ELIMINADO", True,
                 )
                 tb_materiais.InsertRows(str(ultima_linha_material))
                 tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", sap_etapa_material
+                    ultima_linha_material, "ETAPA", sap_etapa_material,
                 )
                 # Adiciona União PEAD vigente.
                 tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30029526"
+                    ultima_linha_material, "MATERIAL", "30029526",
                 )
                 tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1"
+                    ultima_linha_material, "QUANT", "1",
                 )
                 tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT"
+                    ultima_linha_material, "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
         # pylint: disable=E1101
@@ -284,15 +285,15 @@ def materiais_contratada(tb_materiais, contrato, estoque, session):
             return
 
 
-def lista_materiais() -> List[str]:
+def lista_materiais() -> list[str]:
     """Retorna lista de materiais marcados como contratada."""
     contratada_list = [
-        '50000017', '50000333', '30006741', '30002033',
-        '30001023', '30004491', '30000732', '30001363',
-        '50000318', '30005788', '30002832', '30002842',
-        '30003288', '50000179', '10006345', '10006348',
-        '50000180', '30003520', '30013576', '30003675',
-        '30003758', '30007217', '50000307', '50000150',
-        '50000076', '30000880', '30007737', '30012631',
+        "50000017", "50000333", "30006741", "30002033",
+        "30001023", "30004491", "30000732", "30001363",
+        "50000318", "30005788", "30002832", "30002842",
+        "30003288", "50000179", "10006345", "10006348",
+        "50000180", "30003520", "30013576", "30003675",
+        "30003758", "30007217", "50000307", "50000150",
+        "50000076", "30000880", "30007737", "30012631",
     ]
     return contratada_list

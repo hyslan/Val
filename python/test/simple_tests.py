@@ -1,10 +1,9 @@
-import os
-import win32com.client
 import pythoncom
-import platform
+import win32com.client
+
 # -Sub Main--------------------------------------------------------------
 
-'''Função para conexão SAP'''
+"""Função para conexão SAP"""
 # pythoncom.CoInitialize()
 # sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
 
