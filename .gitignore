@@ -49,3 +49,6 @@ live_tests.ipynb
 
 # Exclude logs
 /logs
+
+# Ignore build artifacts
+dist/
