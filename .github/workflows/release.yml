@@ -1,0 +1,59 @@
+# .github/release.yml
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.1.1
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          .\venv\Scripts\activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build the project
+        run: |
+          .\venv\Scripts\activate
+          python setup.py sdist bdist_wheel
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: "Automated release for version ${{ github.ref }}"
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.2
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*.whl # Altere para o caminho correto dos seus artefatos
+          asset_name: val.whl
+          asset_content_type:
+            application/zip
+
+            # Not ready yet. Uncomment when you have tests
+    # - name: Run tests
+    #   run: |
+    #     .\venv\Scripts\activate
+    #     pytest  # Altere para o seu comando de testes
