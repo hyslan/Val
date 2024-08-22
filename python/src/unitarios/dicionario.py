@@ -1,5 +1,6 @@
 # dicionario.py
 """Módulo do Dicionário de Unitários"""
+
 # Bibliotecas
 import sys
 
@@ -12,31 +13,101 @@ from python.src.unitarios.religacao.m_religacao import Religacao
 from python.src.unitarios.supressao.m_supressao import Corte
 
 
-def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
-                   etapa_reposicao, identificador, posicao_rede,
-                   profundidade, session, preco):
+def selecionar_tse(
+    etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador, posicao_rede, profundidade, session, preco
+):
     """Dicionário de chaves para etapas de unitário."""
-    cavalete = Cavalete(etapa, corte, relig, reposicao, num_tse_linhas,
-                        etapa_reposicao, identificador, posicao_rede,
-                        profundidade, session, preco)
-    hidrometro = Hidrometro(etapa, corte, relig, reposicao, num_tse_linhas,
-                            etapa_reposicao, identificador, posicao_rede,
-                            profundidade, session, preco)
-    supressao = Corte(etapa, corte, relig, reposicao, num_tse_linhas,
-                      etapa_reposicao, identificador, posicao_rede,
-                      profundidade, session, preco)
-    religacao = Religacao(etapa, corte, relig, reposicao, num_tse_linhas,
-                          etapa_reposicao, identificador, posicao_rede,
-                          profundidade, session, preco)
-    poco = Poco(etapa, corte, relig, reposicao, num_tse_linhas,
-                etapa_reposicao, identificador, posicao_rede,
-                profundidade, session, preco)
-    ligacao_agua = LigacaoAgua(etapa, corte, relig, reposicao, num_tse_linhas,
-                               etapa_reposicao, identificador, posicao_rede,
-                               profundidade, session, preco)
-    ligacao_esgoto = LigacaoEsgoto(etapa, corte, relig, reposicao, num_tse_linhas,
-                                   etapa_reposicao, identificador, posicao_rede,
-                                   profundidade, session, preco)
+    cavalete = Cavalete(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    hidrometro = Hidrometro(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    supressao = Corte(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    religacao = Religacao(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    poco = Poco(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    ligacao_agua = LigacaoAgua(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
+    ligacao_esgoto = LigacaoEsgoto(
+        etapa,
+        corte,
+        relig,
+        reposicao,
+        num_tse_linhas,
+        etapa_reposicao,
+        identificador,
+        posicao_rede,
+        profundidade,
+        session,
+        preco,
+    )
 
     dicionario_un = {
         "134000": cavalete.instalado_lacre,
@@ -55,6 +126,7 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         "206000": hidrometro.troca_de_hidro_corretivo,
         "207000": hidrometro.troca_de_hidro_corretivo,
         "215000": hidrometro.troca_de_hidro_preventiva_agendada,
+        "216000": hidrometro.troca_de_hidro_preventiva_agendada,
         "254000": ligacao_agua.ligacao_agua,
         "262000": ligacao_agua.subst_agua,
         "263000": ligacao_agua.subst_agua,
@@ -93,13 +165,11 @@ def selecionar_tse(etapa, corte, relig, reposicao, num_tse_linhas,
         "538000": poco.nivelamento,
         "565000": ligacao_esgoto.png,
         "569000": ligacao_esgoto.tre,
-
     }
 
     if etapa in dicionario_un:
-        print(
-            f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
+        print(f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
         return dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
-    print(F"TSE {etapa} não Encontrada no Dicionário de Unitários!")
+    print(f"TSE {etapa} não Encontrada no Dicionário de Unitários!")
     sys.exit()
