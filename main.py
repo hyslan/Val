@@ -48,7 +48,18 @@ def main(args=None) -> None:
         CAVALETE, HIDROMETRO, POCO, RAMAL AGUA, RELIGACAO, SUPRESSAO
         Para desobstrução não explicite contrato ou família.
         Não esqueça de colocar a senha para iniciar o programa.
-        Opcional: habilite o Revalorar para reprocessar uma Ordem.""",
+        Opcional: habilite o Revalorar para reprocessar uma Ordem.
+        Opções:
+        1) Desvalorador
+        2) Retrabalho
+        3) N3 - Pertence ao serviço principal
+        4) TSEs pré-selecionais como 'carteira de serviços'
+        5) TSEs específicas digitadas pelo usuário
+        6) TSE específica digitada pelo usuário
+        7) Ordem específica digitada pelo usuário
+        8) Pendentes em CSV ou Excel
+        9) Por Família
+        10) Desobstrução NORTESUL""",
         epilog="Author: Hyslan Silva Cruz <hyslansilva@gmail.com>",
     )
     parser.add_argument(
