@@ -1,5 +1,6 @@
 # pai_dicionario.py
 """Módulo Dicionário Pai."""
+
 # Biblotecas
 import sys
 
@@ -62,6 +63,7 @@ def pai_servico_unitario(servico_temp, session):
         "207000": pai_unitario.hidrometro,
         "211000": pai_unitario.hidrometro_alterar_capacidade,
         "215000": pai_unitario.hidrometro,
+        "216000": pai_unitario.hidrometro,
         "253000": troca_de_ramal_agua_un,  # Inclusão
         "254000": pai_unitario.ligacao_agua_avulsa,
         "255000": troca_de_ramal_agua_un,  # Ligação Cv múltiplo
@@ -111,8 +113,7 @@ def pai_servico_unitario(servico_temp, session):
     }
 
     if servico_temp in dicionario_pai_unitario:
-        print(
-            f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
+        print(f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
         metodo = dicionario_pai_unitario[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
@@ -129,7 +130,6 @@ def pai_servico_cesta(servico_temp, session):
     pai_sondagem = pais.Sondagem(session)
     pai_invest = pais.Investimento(session)
     dicionario_pai_cesta = {
-
         "130000": pai_cesta.cavalete,
         "138000": pai_cesta.cavalete,
         "140000": pai_cesta.cavalete,
@@ -157,7 +157,6 @@ def pai_servico_cesta(servico_temp, session):
         "539000": pai_cesta.poco,
         "540000": pai_cesta.poco,
         "591000": pai_sondagem.rede_esgoto,
-
     }
 
     if servico_temp in dicionario_pai_cesta:
@@ -185,12 +184,10 @@ def pai_servico_desobstrucao(servico_temp, session):
         "585000": pai_desobstrucao.desobstrucao,
         "592000": pai_desobstrucao.desobstrucao,
         "717000": pai_desobstrucao.desobstrucao,
-
     }
 
     if servico_temp in dicionario_pai_desobstrucao:
-        print(
-            f"TSE está inclusa no Dicionário de Pai Desobstrução: {servico_temp}")
+        print(f"TSE está inclusa no Dicionário de Pai Desobstrução: {servico_temp}")
         metodo = dicionario_pai_desobstrucao[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
