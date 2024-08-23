@@ -7,7 +7,7 @@ from rich.console import Console
 console = Console()
 
 
-def setup_logging(log_directory="logs", log_level=logging.DEBUG):
+def setup_logging(log_directory="logs", log_level=logging.DEBUG) -> None:
     if not os.path.exists(log_directory):
         os.makedirs(log_directory)
 

@@ -1,5 +1,5 @@
 # excel_tbs.py by Author: Hyslan Silva Cruz
-"""Módulo de acessar arquivos .xlsx"""
+"""Módulo de acessar arquivos .xlsx."""
 # Bibliotecas
 from openpyxl import load_workbook  # Carregar função load
 

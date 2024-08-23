@@ -17,5 +17,4 @@ def cronometro_val(start_time: float, ordem: str) -> float:
                             + f"foi de: {round(execution_time, 2)} segundos."), style="italic cyan")
     console.print(Panel.fit(f"Fim da Valoração da Ordem: {
                   ordem}"), style="bold green")
-    time_spent = round(execution_time, 2)
-    return time_spent
+    return round(execution_time, 2)

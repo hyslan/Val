@@ -4,7 +4,7 @@ Materiais obrigatórios:
 * HIDRÔMETRO;
 * LACRE;
 @AUTHOR= HYSLAN SILVA CRUZ
-@YEAR= 2023
+@YEAR= 2023.
 """
 import numpy as np
 
@@ -42,17 +42,18 @@ class HidrometroMaterial:
         return self._hidro
 
     @hidro.setter
-    def hidro(self, hd):
+    def hidro(self, hd) -> None:
         if isinstance(hd, str):
             self._hidro = hd
         else:
-            raise ValueError("Wrong type, need to be string.")
+            msg = "Wrong type, need to be string."
+            raise ValueError(msg)
 
-    def _hidro_type(self):
+    def _hidro_type(self) -> str | None:
         """Tipo de hidrômetro e seu fabricante de acordo com a matrícula
         em sua primeira leitura no campo hidrômetro instalado.
         Fonte de Referência:
-        http://10.66.9.42/catalogomateriais/index.php/arquivos/pesquisa
+        http://10.66.9.42/catalogomateriais/index.php/arquivos/pesquisa.
         """
         self.hidro = self._hidro.upper()
         if self._hidro is not None:
@@ -97,7 +98,7 @@ class HidrometroMaterial:
                 return "50000025"
         return None
 
-    def _delete_row(self):
+    def _delete_row(self) -> None:
         """This line of code is used to modify a checkbox in a table.
         The 'modifyCheckbox' method is called on the 'tb_materiais' object.
         The method takes three arguments:
@@ -110,7 +111,7 @@ class HidrometroMaterial:
             self.tb_materiais.CurrentCellRow, "ELIMINADO", True)
 
     def _set_hidro(self, ultima_linha_material, etapa, cod_hidro_instalado):
-        """Set the correct hydrometer"""
+        """Set the correct hydrometer."""
         self.tb_materiais.SetCurrentCell(0, "ETAPA")
         self.tb_materiais.InsertRows(
             str(ultima_linha_material))
@@ -122,8 +123,7 @@ class HidrometroMaterial:
             ultima_linha_material, "QUANT", "1")
         self.tb_materiais.setCurrentCell(
             ultima_linha_material, "QUANT")
-        ultima_linha_material = ultima_linha_material + 1
-        return ultima_linha_material
+        return ultima_linha_material + 1
 
     def _search_hidro(self, cod_hidro_instalado, num_material_linhas, hidro_estoque):
         """Search for the hydrometer in the SAP table.
@@ -154,7 +154,6 @@ class HidrometroMaterial:
             qtd_float = float(quantidade.replace(",", "."))
 
             if qtd_float >= 2.00 and not hidro_estoque.empty:
-                print("Quantidade de hidro errada, consertando.")
                 self.tb_materiais.modifyCell(
                     self.tb_materiais.CurrentCellRow, "QUANT", "1")
                 self.tb_materiais.setCurrentCell(
@@ -185,7 +184,7 @@ class HidrometroMaterial:
 
         return True, ultima_linha_material
 
-    def receita_hidrometro(self):
+    def receita_hidrometro(self) -> None:
         """Padrão de materiais na classe Hidrômetro."""
         usr = self.session.findById("wnd[0]/usr")
         ordem = usr.findById("txtGS_HEADER-NUM_ORDEM").text
@@ -196,54 +195,46 @@ class HidrometroMaterial:
         num_material_linhas = self.tb_materiais.RowCount
         ultima_linha_material = 0
         if self._hidro is None:
-            print("Hidro não informado. Buscando no Geocall.")
             sql = sql_view.Sql(ordem, "")
             self.hidro = sql.get_new_hidro()
             if self._hidro is None:
-                print("Hidro não encontrado.")
                 return
         cod_hidro_instalado = self._hidro_type()
         hidro_estoque = self.estoque[self.estoque["Material"]
                                      == cod_hidro_instalado]
-        print(f"Cod hidro: {cod_hidro_instalado}")
 
-        if sap_material is None:
-            print("Tem hidro, mas não foi vinculado!")
-            if not hidro_estoque.empty and not lacre_estoque.empty:
-                print(f"Incluindo hidro: {cod_hidro_instalado} e lacre.")
-                self.tb_materiais.InsertRows(str(ultima_linha_material))
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.operacao,
-                )
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "50001070",
-                )
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
-                )
-                self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
-                )
-                ultima_linha_material = ultima_linha_material + 1
-                print("Lacre inserido.")
+        if sap_material is None and not hidro_estoque.empty and not lacre_estoque.empty:
+            self.tb_materiais.InsertRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.operacao,
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", "50001070",
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1",
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT",
+            )
+            ultima_linha_material = ultima_linha_material + 1
 
-                # Colocar hidrometro
-                self.tb_materiais.InsertRows(str(ultima_linha_material))
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.operacao,
-                )
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", cod_hidro_instalado,
-                )
-                self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
-                )
-                self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
-                )
-                ultima_linha_material = ultima_linha_material + 1
-                print("Hidrômetro inserido.")
-                return
+            # Colocar hidrometro
+            self.tb_materiais.InsertRows(str(ultima_linha_material))
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "ETAPA", self.operacao,
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "MATERIAL", cod_hidro_instalado,
+            )
+            self.tb_materiais.modifyCell(
+                ultima_linha_material, "QUANT", "1",
+            )
+            self.tb_materiais.setCurrentCell(
+                ultima_linha_material, "QUANT",
+            )
+            ultima_linha_material = ultima_linha_material + 1
+            return
 
         # Número da Row do Grid Materiais do SAP
         ultima_linha_material = num_material_linhas
@@ -257,7 +248,7 @@ class HidrometroMaterial:
         for n_material in range(num_material_linhas):
             sap_material = self.tb_materiais.GetCellValue(
                 n_material, "MATERIAL")
-            sap_etapa_material = self.tb_materiais.GetCellValue(
+            self.tb_materiais.GetCellValue(
                 n_material, "ETAPA")
             material_estoque = self.estoque[self.estoque["Material"]
                                             == sap_material]
@@ -289,7 +280,7 @@ class HidrometroMaterial:
             self.tb_materiais, self.operacao,
             self.estoque, self.session)
 
-    def receita_desinclinado_hidrometro(self):
+    def receita_desinclinado_hidrometro(self) -> None:
         """Padrão de materiais na classe Hidrômetro Desinclinado."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
@@ -319,7 +310,7 @@ class HidrometroMaterial:
                 # Pega valor da célula 0
                 sap_material = self.tb_materiais.GetCellValue(
                     n_material, "MATERIAL")
-                sap_etapa_material = self.tb_materiais.GetCellValue(
+                self.tb_materiais.GetCellValue(
                     n_material, "ETAPA")
                 material_estoque = self.estoque[self.estoque["Material"]
                                                 == sap_material]

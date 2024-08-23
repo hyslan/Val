@@ -1,4 +1,5 @@
-"""Módulo para interagir com o SAP GUI"""
+"""Módulo para interagir com o SAP GUI."""
+import contextlib
 import os
 import subprocess
 import time
@@ -28,7 +29,7 @@ def connection_object(n_selected) -> win32com.client.CDispatch:
 
 
 def listar_sessoes(n_selected) -> win32com.client.CDispatch:
-    """Função para listar as sessions ativas"""
+    """Função para listar as sessions ativas."""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
     sessions: win32com.client.CDispatch = con_selected.Sessions
@@ -36,7 +37,7 @@ def listar_sessoes(n_selected) -> win32com.client.CDispatch:
 
 
 def contar_sessoes(n_selected) -> int:
-    """Contar por tamanho de 1 a 6, caso for criar sessão subtrair -1"""
+    """Contar por tamanho de 1 a 6, caso for criar sessão subtrair -1."""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
     sessions: win32com.client.CDispatch = con_selected.Sessions
@@ -46,7 +47,7 @@ def contar_sessoes(n_selected) -> int:
 
 
 def create_session(n_selected: int) -> win32com.client.CDispatch:
-    """Função para criar sessões"""
+    """Função para criar sessões."""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
     sessions = con_selected.Sessions
@@ -68,7 +69,7 @@ def create_session(n_selected: int) -> win32com.client.CDispatch:
 
 
 def choose_connection(n_selected: int) -> win32com.client.CDispatch:
-    """Escolher com qual sessão trabalhar"""
+    """Escolher com qual sessão trabalhar."""
     con = get_app()
     session: win32com.client.CDispatch = con.Item(n_selected).Sessions(0)
     return session
@@ -82,14 +83,11 @@ def fechar_conexao(n_con) -> None:
 
 
 def encerrar_sap() -> None:
-    """Encerra o app SAP"""
+    """Encerra o app SAP."""
     # ? Can stop the SAP GUI without destroy the process?
     processo: str = "saplogon.exe"
-    try:
+    with contextlib.suppress(subprocess.CalledProcessError):
         subprocess.run(["taskkill", "/F", "/IM", processo], check=True)
-        print(f"O processo {processo} foi encerrado com sucesso.")
-    except subprocess.CalledProcessError:
-        print(f"Não foi possível encerrar o processo {processo}.")
 
 
 def get_connection(token: str) -> str:
@@ -114,7 +112,6 @@ def get_connection(token: str) -> str:
         '[Options]\n'
         'Reuse=-1')
     path_archive = os.getcwd() + "\\shortcut\\repeat\\tx.sap"
-    print("Saving the SAP access file...")
     with open(path_archive, "w") as s:
         s.write(sap_access)
 
@@ -125,17 +122,17 @@ def get_connection(token: str) -> str:
         time.sleep(5)
         # Verifica se o processo está em execução
         if not is_process_running("powershell.exe"):
-            print("Erro: O arquivo não foi aberto corretamente.")
-    except subprocess.CalledProcessError as e:
-        print(f"Erro ao iniciar o arquivo tx.sap: {e}")
-    except Exception as e:
-        print(f"Ocorreu um erro: {e}")
+            pass
+    except subprocess.CalledProcessError:
+        pass
+    except Exception:
+        pass
 
     return token
 
 
-def is_process_running(process_name: str):
-    """Verifica se o processo está em execução"""
+def is_process_running(process_name: str) -> bool | None:
+    """Verifica se o processo está em execução."""
     try:
         subprocess.check_output(
             f'tasklist /FI "IMAGENAME eq {process_name}"', shell=True)
@@ -145,7 +142,7 @@ def is_process_running(process_name: str):
 
 
 def get_app() -> win32com.client.CDispatch:
-    """Get the SAP GUI application
+    """Get the SAP GUI application.
 
     Returns
     -------
@@ -155,5 +152,4 @@ def get_app() -> win32com.client.CDispatch:
     pythoncom.CoInitialize()
     app: win32com.client.CDispatch = win32com.client.GetObject(
         "SAPGUI").GetScriptingEngine
-    con = app.Connections
-    return con
+    return app.Connections

@@ -7,25 +7,22 @@ from python.src.sql_view import Sql
 
 
 def pendentes_excel():
-    """Load de ordens em uma planilha expecífica"""
+    """Load de ordens em uma planilha expecífica."""
     path = os.path.join(os.getcwd(), "data")
     caminho = input(
         "Digite o nome do arquivo.\n A planilha deve conter uma coluna Ordem\n")
     file_path = os.path.join(path, caminho)
-    print("Caminho do arquivo: ", file_path)
     planilha = pd.read_excel(f"{file_path}.XLSX", dtype=str)
-    lista = planilha.to_numpy()
-    return lista
+    return planilha.to_numpy()
 
 
 def pendentes_csv():
-    """Load de ordens em uma planilha expecífica"""
+    """Load de ordens em uma planilha expecífica."""
     caminho = input(
         "Digite o caminho do arquivo csv.\n O arquivo deve conter uma coluna Ordem\n")
     planilha = pd.read_csv(str(caminho))
     planilha = planilha.reset_index()
-    lista = planilha["ORDEM"].to_list()
-    return lista
+    return planilha["ORDEM"].to_list()
 
 
 def extract_from_sql(contrato):
@@ -115,5 +112,4 @@ def extract_from_sql(contrato):
         "540000",
         "591000",
     ]
-    lista = sql.carteira_tse(contrato, carteira)
-    return lista
+    return sql.carteira_tse(contrato, carteira)

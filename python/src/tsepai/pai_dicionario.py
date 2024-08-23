@@ -8,9 +8,8 @@ from python.src.tsepai import pais
 
 
 def oh_pai(session):
-    """Aleluia Irmãos"""
-    pai = pais.Pai(session)
-    return pai
+    """Aleluia Irmãos."""
+    return pais.Pai(session)
 
 
 def preservacao_interferencia():
@@ -23,7 +22,7 @@ def preservacao_interferencia():
 
 
 def transformacao_lig():
-    """Captador da tse Transformação"""
+    """Captador da tse Transformação."""
     tse_temp_reposicao = []
     tse_proibida = "Ramo Transformação"
     identificador = "transformacao"
@@ -113,12 +112,10 @@ def pai_servico_unitario(servico_temp, session):
     }
 
     if servico_temp in dicionario_pai_unitario:
-        print(f"TSE está inclusa no Dicionário de Pai Unitário: {servico_temp}")
         metodo = dicionario_pai_unitario[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
-        print("TSE não Encontrada no Dicionário de Pai Unitário!")
         sys.exit()
     # Retorno
     return reposicao, tse_proibida, identificador, etapa_reposicao
@@ -160,12 +157,10 @@ def pai_servico_cesta(servico_temp, session):
     }
 
     if servico_temp in dicionario_pai_cesta:
-        print(f"TSE está inclusa no Dicionário de Pai Cesta: {servico_temp}")
         metodo = dicionario_pai_cesta[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
-        print("TSE não Encontrada no Dicionário de Pai Cesta!")
         sys.exit()
 
     return reposicao, tse_proibida, identificador, etapa_reposicao
@@ -173,7 +168,7 @@ def pai_servico_cesta(servico_temp, session):
 
 def pai_servico_desobstrucao(servico_temp, session):
     """Agregador de TSE de contrato NORTE SUL
-    para serviços de DD e DC
+    para serviços de DD e DC.
     """
     pai_desobstrucao = oh_pai(session)
     dicionario_pai_desobstrucao = {
@@ -187,12 +182,10 @@ def pai_servico_desobstrucao(servico_temp, session):
     }
 
     if servico_temp in dicionario_pai_desobstrucao:
-        print(f"TSE está inclusa no Dicionário de Pai Desobstrução: {servico_temp}")
         metodo = dicionario_pai_desobstrucao[servico_temp]
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
-        print("TSE não Encontrada no Dicionário de Pai Desobstrução!")
         sys.exit()
 
     return reposicao, tse_proibida, identificador, etapa_reposicao

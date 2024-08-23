@@ -1,6 +1,7 @@
 # core.py
 """Coração da Val."""
 
+import contextlib
 import sys
 import time
 
@@ -30,15 +31,12 @@ console: rich.console.Console = Console()
 
 
 def rollback(n: int, token: str) -> win32com.client.CDispatch:
-    try:
+    with contextlib.suppress(pywintypes.com_error):
         sap.fechar_conexao(n)
-    except pywintypes.com_error:
-        print("Conexão já Encerrada ou não ativa.")
 
     sap.get_connection(token)
     time.sleep(10)
     session: win32com.client.CDispatch = sap.choose_connection(n)
-    print("Sessão Recuperada.")
     return session
 
 
@@ -105,16 +103,9 @@ def valorator_user(
     data_valorado = grid_historico.GetCellValue(0, "DATA")
     matricula = grid_historico.GetCellValue(0, "MODIFICADO")
     total = new_session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    if total != "":
-        f_total = float(total.replace(".", "").replace(",", "."))
-    else:
-        f_total = 0
+    f_total = float(total.replace(".", "").replace(",", ".")) if total != "" else 0
     if data_valorado is not None:
         time_spent = cronometro_val(start_time, ordem)
-        print(f"OS: {ordem} já valorada.")
-        print(f"Data: {data_valorado}")
-        print(f"Matrícula: {matricula}")
-        print("Valor Medido: ", f_total)
         ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
         try:
             ja_valorado.valorada(
@@ -211,10 +202,8 @@ def val(
     """Sistema Val."""
     transacao: Transacao = Transacao(contrato, "100", session)
     limite_execucoes = len(pendentes_array)
-    print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     # * In case of null Df.
     if limite_execucoes == 0:
-        print("Nenhuma Ordem para Valorar.")
         return True
 
     try:
@@ -227,7 +216,7 @@ def val(
 
     with console.status("[bold blue]Trabalhando..."):
         # * Variáveis de Status da Ordem
-        valorada: str = "EXEC VALO" or "NEXE VALO"
+        valorada: str = "EXEC VALO"
         fechada: str = "LIB"
         qtd_ordem: int = 0  # Contador de ordens pagas.
         # * For NORTESUL
@@ -236,9 +225,7 @@ def val(
                 try:
                     start_time = time.time()  # Contador de tempo para valorar.
                     console.print(f"[b]Ordem atual: {ordem}")
-                    print("Verificando Status da Ordem.")
                     # Função consulta de Ordem.
-                    print("Iniciando Consulta.")
                     (
                         status_sistema,
                         status_usuario,
@@ -254,7 +241,6 @@ def val(
                     ) = consulta_os(ordem, session, empresa, n_con)
                     # * Consulta Status da Ordem
                     if status_sistema != fechada:
-                        print(f"OS: {ordem} aberta.")
                         time_spent = cronometro_val(start_time, ordem)
                         ja_valorado = sql_view.Sql(ordem, principal_tse)
                         ja_valorado.valorada(
@@ -271,7 +257,6 @@ def val(
                         continue
 
                     if revalorar is False and status_usuario == valorada:
-                        print(f"OS: {ordem} já valorada.")
                         valorator_user(
                             session,
                             sessions,
@@ -300,7 +285,6 @@ def val(
                             + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                         )
                     except pywintypes.com_error:
-                        print(f"Ordem: {ordem} em medição definitiva.")
                         time_spent = cronometro_val(start_time, ordem)
                         ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
                         ja_valorado.valorada(
@@ -324,8 +308,6 @@ def val(
                         MESSAGE_NOT_VALUED = "Não há dados para exibição."
                         rodape = session.findById("wnd[0]/sbar").Text
                         if rodape == MESSAGE_NOT_VALUED:
-                            print(f"OS: {ordem} não foi valorada.")
-                            print("OS Livre para valorar.")
                             session.findById(
                                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
                             ).select()
@@ -389,7 +371,6 @@ def val(
 
                 except Exception as errocritico:
                     console.print_exception()
-                    print(f"args do errocritico: {errocritico}")
                     try:
                         _, descricao, _, _ = errocritico.args
                         match descricao:
@@ -425,9 +406,7 @@ def val(
             try:
                 start_time = time.time()  # Contador de tempo para valorar.
                 console.print(f"[b]Ordem atual: {ordem}")
-                print("Verificando Status da Ordem.")
                 # Função consulta de Ordem.
-                print("Iniciando Consulta.")
                 (
                     status_sistema,
                     status_usuario,
@@ -443,7 +422,6 @@ def val(
                 ) = consulta_os(ordem, session, contrato, n_con)
                 # * Consulta Status da Ordem
                 if status_sistema != fechada:
-                    print(f"OS: {ordem} aberta.")
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(ordem, principal_tse)
                     ja_valorado.valorada(
@@ -459,20 +437,18 @@ def val(
                     )
                     continue
 
-                if revalorar is False:
-                    if status_usuario == valorada:
-                        print(f"OS: {ordem} já valorada.")
-                        valorator_user(
-                            session,
-                            sessions,
-                            ordem,
-                            contrato,
-                            cod_mun,
-                            principal_tse,
-                            start_time,
-                            n_con,
-                        )
-                        continue
+                if revalorar is False and status_usuario == valorada:
+                    valorator_user(
+                        session,
+                        sessions,
+                        ordem,
+                        contrato,
+                        cod_mun,
+                        principal_tse,
+                        start_time,
+                        n_con,
+                    )
+                    continue
 
                 # * Go To ZSBMM216 Transaction
                 transacao.municipio = cod_mun
@@ -490,7 +466,6 @@ def val(
                     )
                 # pylint: disable=E1101
                 except pywintypes.com_error:
-                    print(f"Ordem: {ordem} em medição definitiva.")
                     time_spent = cronometro_val(start_time, ordem)
                     ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
                     ja_valorado.valorada(
@@ -514,8 +489,6 @@ def val(
                     MESSAGE_NOT_VALUED = "Não há dados para exibição."
                     rodape = session.findById("wnd[0]/sbar").Text
                     if rodape == MESSAGE_NOT_VALUED:
-                        print(f"OS: {ordem} não foi valorada.")
-                        print("OS Livre para valorar.")
                         session.findById(
                             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
                         ).select()
@@ -540,7 +513,7 @@ def val(
                 # pylint: disable=E1101
                 except pywintypes.com_error:
                     console.print_exception()
-                    exit()
+                    sys.exit()
 
                 # * TSE e Aba Itens de preço
                 (
@@ -652,7 +625,6 @@ def val(
 
             except Exception as errocritico:
                 console.print_exception()
-                print(f"args do errocritico: {errocritico}")
                 try:
                     _, descricao, _, _ = errocritico.args
                     match descricao:

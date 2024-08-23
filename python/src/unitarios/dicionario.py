@@ -1,5 +1,5 @@
 # dicionario.py
-"""Módulo do Dicionário de Unitários"""
+"""Módulo do Dicionário de Unitários."""
 
 # Bibliotecas
 import sys
@@ -14,7 +14,7 @@ from python.src.unitarios.supressao.m_supressao import Corte
 
 
 def selecionar_tse(
-    etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador, posicao_rede, profundidade, session, preco
+    etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador, posicao_rede, profundidade, session, preco,
 ):
     """Dicionário de chaves para etapas de unitário."""
     cavalete = Cavalete(
@@ -168,8 +168,6 @@ def selecionar_tse(
     }
 
     if etapa in dicionario_un:
-        print(f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
         return dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
-    print(f"TSE {etapa} não Encontrada no Dicionário de Unitários!")
     sys.exit()

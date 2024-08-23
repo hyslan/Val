@@ -6,10 +6,7 @@ import pywintypes
 def testa_material_sap(tb_materiais):
     """Módulo de verificar materiais inclusos na ordem."""
     try:
-        sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
-        print("Tem material vinculado.")
-        return sap_material
+        return tb_materiais.GetCellValue(0, "MATERIAL")
     # pylint: disable=E1101
     except pywintypes.com_error:
-        print("Sem material vinculado.")
         return None

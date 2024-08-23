@@ -1,6 +1,5 @@
 # avatar.py
 """Módulo profile da Val."""
-from typing import Any
 
 from PIL import Image
 
@@ -27,7 +26,4 @@ def val_avatar() -> None:
     # Exibe a imagem no terminal
     for linha in range(altura_terminal):
         for coluna in range(largura_terminal):
-            pixel: Any = imagem_redimensionada.getpixel((coluna, linha))
-            caractere: str = "*" if pixel < 128 else " "
-            print(caractere, end="")
-        print()
+            imagem_redimensionada.getpixel((coluna, linha))

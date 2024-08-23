@@ -1,7 +1,7 @@
-"""Módulo de busca código de preço"""
+"""Módulo de busca código de preço."""
 
 
-def btn_localizador(preco, session, codigo):
+def btn_localizador(preco, session, codigo) -> None:
     """Objeto localizar."""
     preco.pressToolbarButton("&FIND")
     session.findById(

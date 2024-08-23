@@ -1,14 +1,14 @@
 # controlador.py
-"""Classe controladora"""
+"""Classe controladora."""
 from python.src.unitarios.base import BaseUnitario
 from python.src.unitarios.dicionario import selecionar_tse
 
 
 class Controlador(BaseUnitario):
-    """Seletor de classes de família de serviços"""
+    """Seletor de classes de família de serviços."""
 
-    def preserv_inter_serv(self):
-        """Etapa de preservação de Interferência"""
+    def preserv_inter_serv(self) -> None:
+        """Etapa de preservação de Interferência."""
         ramo_agua = [
             ["hidrometro"],
             ["cavalete"],
@@ -22,10 +22,7 @@ class Controlador(BaseUnitario):
             ["supr_restab"],
         ]
         self.identificador.remove("preservacao")
-        if self.identificador in ramo_agua:
-            serv_preservacao = "456118"
-        else:
-            serv_preservacao = "456217"
+        serv_preservacao = "456118" if self.identificador in ramo_agua else "456217"
 
         preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
@@ -41,15 +38,13 @@ class Controlador(BaseUnitario):
                     preco.modifyCell(n_preco, "QUANT", "1")
                     preco.setCurrentCell(n_preco, "QUANT")
                     preco.pressEnter()
-                    print(
-                        f"Pago 1 UN de Preservação - CODIGO: {serv_preservacao}")
                     break
 
-    def _processar_operacao(self, tipo_operacao):
-        """Processar Código de preço"""
+    def _processar_operacao(self, tipo_operacao) -> None:
+        """Processar Código de preço."""
 
-    def executar_processo(self):
-        """Selecionar a classe apropriada com base no código da etapa"""
+    def executar_processo(self) -> None:
+        """Selecionar a classe apropriada com base no código da etapa."""
         if self.etapa in ("713000", "713500"):
             self.preserv_inter_serv()
 
@@ -63,4 +58,4 @@ class Controlador(BaseUnitario):
             # Processar e pagar
             classe_unitario()
         else:
-            print("Erro: Classe não encontrada para a etapa especificada.")
+            pass

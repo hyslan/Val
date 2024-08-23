@@ -1,5 +1,5 @@
 # transact_zsbmm216.py
-"""Módulo de Contrato"""
+"""Módulo de Contrato."""
 # Conexão SAP
 import threading
 
@@ -16,7 +16,7 @@ console = Console()
 
 
 class Transacao:
-    """Classe operadora da transação 216"""
+    """Classe operadora da transação 216."""
 
     def __init__(self, contrato,
                  municipio, session) -> None:
@@ -26,35 +26,37 @@ class Transacao:
 
     @property
     def municipio(self):
-        """Getter para municipio"""
+        """Getter para municipio."""
         return self._municipio
 
     @municipio.setter
-    def municipio(self, cod):
-        """Setter for municipio"""
+    def municipio(self, cod) -> None:
+        """Setter for municipio."""
         if isinstance(cod, str):
             self._municipio = cod
         else:
-            raise ValueError("Wrong type, need to be string.")
+            msg = "Wrong type, need to be string."
+            raise ValueError(msg)
 
     @property
     def contrato(self):
         return self._contrato
 
     @contrato.setter
-    def contrato(self, cod):
+    def contrato(self, cod) -> None:
         if isinstance(cod, str):
             self._contrato = cod
         else:
-            raise ValueError("Wrong type, need to be string.")
+            msg = "Wrong type, need to be string."
+            raise ValueError(msg)
 
-    def run_transacao(self, ordem, tipo="individual", n_con=0):
+    def run_transacao(self, ordem, tipo="individual", n_con=0) -> None:
         """Run thread ZSBMM216
         e faz a transação a transação com o respectivo contrato.
         """
 
-        def t_transacao(session_id):
-            """Transação preenchida ZSBMM216 - Contrato NOVASP"""
+        def t_transacao(session_id) -> None:
+            """Transação preenchida ZSBMM216 - Contrato NOVASP."""
             nonlocal ordem
 
             # Seção Crítica - uso do Lock
@@ -67,7 +69,6 @@ class Transacao:
                         pythoncom.CoGetInterfaceAndReleaseStream(
                             session_id, pythoncom.IID_IDispatch),
                     )
-                    print("Iniciando Transação ZSBM216.")
                     gui.StartTransaction("ZSBMM216")
                     if tipo == "consulta":
                         gui.findById("wnd[0]/usr/radRB_CON").Select()
@@ -100,7 +101,6 @@ class Transacao:
             # Aguarde a thread concluir
             thread.join(timeout=300)
             if thread.is_alive():
-                print("SAP demorando mais que o esperado, encerrando.")
                 sap.fechar_conexao(n_con)
 
         except pywintypes.com_error as erro_thread216:

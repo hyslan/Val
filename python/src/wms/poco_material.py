@@ -28,7 +28,7 @@ class PocoMaterial:
         self.estoque = estoque
         self.session = session
 
-    def receita_caixa_de_parada(self):
+    def receita_caixa_de_parada(self) -> None:
         """Padrão de materiais no módulo caixa de parada e descoberto."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
@@ -71,7 +71,7 @@ class PocoMaterial:
                 self.tb_materiais, self.contrato,
                 self.estoque, self.session)
 
-    def niv_pv_pi(self):
+    def niv_pv_pi(self) -> None:
         """Material do bloco de nivelamento de PV e PI."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)

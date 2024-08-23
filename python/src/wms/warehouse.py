@@ -1,8 +1,8 @@
-"""Módulo onde ficam os materiais disponíveis do dia"""
+"""Módulo onde ficam os materiais disponíveis do dia."""
 
 
 class Materiais:
-    """Classe das bugigangas"""
+    """Classe das bugigangas."""
 
     ITENS = {
         "abracadeira_reparo": ["30008103", "30002141", "30001120",
@@ -114,95 +114,95 @@ class Materiais:
         return [item for item in itens if item in self.estoque]
 
     def obter_itens_disponiveis(self, tipo_item):
-        """Retorna os itens disponíveis no estoque"""
+        """Retorna os itens disponíveis no estoque."""
         itens = self.ITENS.get(tipo_item, [])
         return self._verificar_disponibilidade(itens)
 
     def reparador_asfaltico(self):
-        """Asfalto Frio"""
+        """Asfalto Frio."""
         return self.obter_itens_disponiveis("reparador_asfaltico")
 
 
 class Agua(Materiais):
-    """Família Água"""
+    """Família Água."""
 
     def __init__(self, estoque) -> None:
         super().__init__(estoque)
 
     def abracadeira_reparo(self):
-        """Abraçadeira de Ferro para Reparo"""
+        """Abraçadeira de Ferro para Reparo."""
         return self.obter_itens_disponiveis("abracadeira_reparo")
 
     def adaptador(self):
-        """Adaptador para PVC/FF"""
+        """Adaptador para PVC/FF."""
         return self.obter_itens_disponiveis("adaptador")
 
     def caixa_ff_tampa_articulada(self):
-        """Caixa Tampa Articulada"""
+        """Caixa Tampa Articulada."""
         return self.obter_itens_disponiveis("caixa_ff_tampa_articulada")
 
     def caixa_uma(self):
-        """Caixa UMA - Cavalete"""
+        """Caixa UMA - Cavalete."""
         return self.obter_itens_disponiveis("caixa_uma")
 
     def cap(self):
-        """CAP - Rede Água"""
+        """CAP - Rede Água."""
         return self.obter_itens_disponiveis("cap")
 
     def cavalete_kit(self):
-        """Kit Cavalete Completo"""
+        """Kit Cavalete Completo."""
         return self.obter_itens_disponiveis("cavalete_kit")
 
     def colar_tomada(self):
-        """Colar Tomada"""
+        """Colar Tomada."""
         return self.obter_itens_disponiveis("colar_tomada")
 
     def colarinho(self):
-        """Colarinho"""
+        """Colarinho."""
         return self.obter_itens_disponiveis("colarinho")
 
     def cotovelo_90(self):
-        """Cotovelo 90 graus"""
+        """Cotovelo 90 graus."""
         return self.obter_itens_disponiveis("cotovelo_90")
 
     def conexoes_metalicas(self):
-        """Conexões MET Macho/Fêmea"""
+        """Conexões MET Macho/Fêmea."""
         return self.obter_itens_disponiveis("conexoes_metalicas")
 
     def cotovelo_45(self):
-        """Cotovelo 45 graus"""
+        """Cotovelo 45 graus."""
         return self.obter_itens_disponiveis("cotovelo_45")
 
     def curva_45(self):
-        """Curva 45 graus água"""
+        """Curva 45 graus água."""
         return self.obter_itens_disponiveis("curva_45")
 
     def curva_90(self):
-        """Curva 90 graus água"""
+        """Curva 90 graus água."""
         return self.obter_itens_disponiveis("curva_90")
 
     def dispositivo_medicao(self):
-        """Dispositivo de Medição - água"""
+        """Dispositivo de Medição - água."""
         return self.obter_itens_disponiveis("dispositivo_medicao")
 
     def extremidade(self):
-        """Extremidade - água"""
+        """Extremidade - água."""
         return self.obter_itens_disponiveis("extremidade")
 
     def guarnicao(self):
-        """Guarnição água"""
+        """Guarnição água."""
         return self.obter_itens_disponiveis("guarnicao")
 
     def hidrante(self):
-        """Hidrante"""
+        """Hidrante."""
         return self.obter_itens_disponiveis("hidrante")
 
     def hidrometro(self):
-        """Hidrômetros"""
+        """Hidrômetros."""
         return self.obter_itens_disponiveis("hidrometro")
 
     def junta_agua(self):
-        """Junta para água"""
+        """Junta para água."""
         return self.obter_itens_disponiveis("junta_agua")
 
     def lacre(self):
@@ -210,112 +210,112 @@ class Agua(Materiais):
         return self.obter_itens_disponiveis("lacre")
 
     def luva_ajustavel(self):
-        """Luva Ajustável"""
+        """Luva Ajustável."""
         return self.obter_itens_disponiveis("luva_ajustavel")
 
     def luva_bipartida(self):
-        """Luva Bipartida"""
+        """Luva Bipartida."""
         return self.obter_itens_disponiveis("luva_bipartida")
 
     def luva_correr_bolsa(self):
-        """Luva de Correr com Bolsa"""
+        """Luva de Correr com Bolsa."""
         return self.obter_itens_disponiveis("luva_correr_bolsa")
 
     def luva_correr_agua(self):
-        """Luva de Correr de Água PVC"""
+        """Luva de Correr de Água PVC."""
         return self.obter_itens_disponiveis("luva_correr_agua")
 
     def luva_eletrofusao(self):
-        """Luva de Eletrofusão - Água"""
+        """Luva de Eletrofusão - Água."""
         return self.obter_itens_disponiveis("luva_eletrofusao")
 
     def luva_ff(self):
-        """Luva de ferro"""
+        """Luva de ferro."""
         return self.obter_itens_disponiveis("luva_ff")
 
     def luva_reducao_ff(self):
-        """Luva com redução de ferro"""
+        """Luva com redução de ferro."""
         return self.obter_itens_disponiveis("luva_reducao_ff")
 
     def porca(self):
-        """Porca - água"""
+        """Porca - água."""
         return self.obter_itens_disponiveis("porca")
 
     def reducao(self):
-        """Redução"""
+        """Redução."""
         return self.obter_itens_disponiveis("reducao")
 
     def registro(self):
-        """Registro"""
+        """Registro."""
         return self.obter_itens_disponiveis("registro")
 
     def suporte_adaptador_plastico(self):
-        """Suporte Adaptador Plástico p/ dispositivo"""
+        """Suporte Adaptador Plástico p/ dispositivo."""
         return self.obter_itens_disponiveis("suporte_adaptador_plastico")
 
     def tampao_agua(self):
-        """Tampão articulado - água"""
+        """Tampão articulado - água."""
         return self.obter_itens_disponiveis("tampao_agua")
 
     def te_agua(self):
-        """TE - água"""
+        """TE - água."""
         return self.obter_itens_disponiveis("te_agua")
 
     def tubete(self):
-        """Tubete"""
+        """Tubete."""
         return self.obter_itens_disponiveis("tubete")
 
     def tubo_agua(self):
-        """Tubo PEAD"""
+        """Tubo PEAD."""
         return self.obter_itens_disponiveis("tubo_agua")
 
     def uniao(self):
-        """União para PEAD"""
+        """União para PEAD."""
         return self.obter_itens_disponiveis("uniao")
 
     def valvula(self):
-        """Válvula GAV"""
+        """Válvula GAV."""
         return self.obter_itens_disponiveis("valvula")
 
 
 class Esgoto(Materiais):
-    """Família Esgoto"""
+    """Família Esgoto."""
 
     def __init__(self, estoque) -> None:
         super().__init__(estoque)
 
     def anel_vedacao_esgoto(self):
-        """Anel de Vedação PVC/FF"""
+        """Anel de Vedação PVC/FF."""
         return self.obter_itens_disponiveis("anel_vedacao_esgoto")
 
     def curva_45_esgoto(self):
-        """Curva 45 graus esgoto"""
+        """Curva 45 graus esgoto."""
         return self.obter_itens_disponiveis("curva_45_esgoto")
 
     def curva_90_esgoto(self):
-        """Curva 90 graus esgoto"""
+        """Curva 90 graus esgoto."""
         return self.obter_itens_disponiveis("curva_90_esgoto")
 
     def junta_esgoto(self):
-        """Junta para esgoto"""
+        """Junta para esgoto."""
         return self.obter_itens_disponiveis("junta_esgoto")
 
     def luva_correr_esgoto(self):
-        """Luva de Correr de Esgoto PVC"""
+        """Luva de Correr de Esgoto PVC."""
         return self.obter_itens_disponiveis("luva_correr_esgoto")
 
     def selim(self):
-        """Selim - Esgoto"""
+        """Selim - Esgoto."""
         return self.obter_itens_disponiveis("selim")
 
     def tampao_esgoto(self):
-        """Tampão articulado - esgoto"""
+        """Tampão articulado - esgoto."""
         return self.obter_itens_disponiveis("tampao_esgoto")
 
     def te_esgoto(self):
-        """TE - Esgoto"""
+        """TE - Esgoto."""
         return self.obter_itens_disponiveis("te_esgoto")
 
     def tubo_esgoto(self):
-        """Tubos PVC de Esgoto"""
+        """Tubos PVC de Esgoto."""
         return self.obter_itens_disponiveis("tubo_esgoto")

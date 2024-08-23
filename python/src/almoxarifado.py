@@ -42,23 +42,21 @@ class Almoxarifado:
         self.session = session
 
     def aba_materiais(self):
-        """Função habilita aba de materiais no sap"""
+        """Função habilita aba de materiais no sap."""
         console = Console()
         console.print("Processo de Materiais",
                       style="bold red underline", justify="center")
         self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
-        tb_materiais = self.session.findById(
+        return self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
             + "ZSBMM_VALORACAO_NAPI:9030/cntlCC_MATERIAIS/shellcont/shell")
 
-        return tb_materiais
 
     def materiais_vinculados(self, tb_materiais):
         """Retorna um DataFrame com os materiais incluídos na ordem."""
         try:
             sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
-            print("Tem material vinculado.")
             num_material_linhas = tb_materiais.RowCount
             lista_data = []
             for i in track(range(num_material_linhas), description="[yellow]Obtendo Materiais..."):
@@ -83,11 +81,9 @@ class Almoxarifado:
 
         # pylint: disable=E1101
         except pywintypes.com_error:
-            print("Sem material vinculado.")
             return None
 
-    def inspecao(self, tb_materiais, df_materiais):
-        print("Iniciando inspeção de materiais.")
+    def inspecao(self, tb_materiais, df_materiais) -> None:
         """Seleciona a Classe da TSE correta."""
         sondagem = [
             "591000",
@@ -114,7 +110,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de hidrômetro.")
                     material.receita_hidrometro()
 
                 case "desinclinado":
@@ -130,7 +125,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de hidrômetro.")
                     material.receita_desinclinado_hidrometro()
 
                 case "cavalete":
@@ -146,7 +140,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de Cavalete.")
                     material.receita_cavalete()
 
                 case "religacao":
@@ -162,7 +155,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de religação.")
                     material.receita_religacao()
 
                 case "supressao":
@@ -178,7 +170,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de Supressão.")
 
                     material.receita_supressao()
                 case "ramal_agua" | "tra":
@@ -196,8 +187,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita "
-                          + "de TRA.")
                     material.receita_tra()
 
                 case "reparo_ramal_agua" | "ligacao_agua" | "ligacao_agua_nova":
@@ -215,7 +204,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita de ramal de água")
                     material.receita_reparo_de_ramal_de_agua()
                     # Olhar hidrômetro e lacre em ligações novas.
                     if self.identificador[2] == "ligacao_agua_nova":
@@ -231,8 +219,6 @@ class Almoxarifado:
                             self.estoque,
                             self.session,
                         )
-                        print(
-                            "Aplicando a receita de hidrômetro em ligação de água nova.")
                         material.receita_hidrometro()
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
@@ -250,7 +236,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita de Rede de Água")
                     material.receita_reparo_de_rede_de_agua()
 
                 case "ligacao_esgoto":
@@ -268,7 +253,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita de Ramal de Esgoto")
                     material.receita_reparo_de_ramal_de_esgoto()
 
                 case "rede_esgoto":
@@ -286,7 +270,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita de Rede de Esgoto")
                     material.receita_reparo_de_rede_de_esgoto()
 
                 case "png_esgoto":
@@ -304,7 +287,6 @@ class Almoxarifado:
                         self.posicao_rede,
                         self.session,
                     )
-                    print("Aplicando a receita de PNG Esgoto")
                     material.png()
 
                 case "preservacao":
@@ -323,7 +305,6 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de Nivelamento de Poço")
                     material.niv_pv_pi()
 
                 case "cx_parada":
@@ -339,11 +320,9 @@ class Almoxarifado:
                         self.estoque,
                         self.session,
                     )
-                    print("Aplicando a receita de Caixa de Parada")
                     material.receita_caixa_de_parada()
 
                 case _:
-                    print("Classe não identificada.")
                     return
         return
 
@@ -358,7 +337,7 @@ def materiais(
     estoque,
     posicao_rede,
     session,
-):
+) -> None:
     """Função dos materiais de acordo com a TSE pai."""
     servico = Almoxarifado(
         hidro_instalado,

@@ -33,7 +33,7 @@ class RedeEsgotoMaterial:
         self.session = session
 
     def ramal_luva_correr(self):
-        """Saber diâmetro do ramal para luva correr"""
+        """Saber diâmetro do ramal para luva correr."""
         match self.diametro_ramal:
             case "DN_100":
                 luva_correr = "30002797"
@@ -46,14 +46,12 @@ class RedeEsgotoMaterial:
             case "DN_400":
                 luva_correr = "30005898"
             case _:
-                print("Diâmetro do ramal não informado.")
-                luva_correr = None
-                return luva_correr
+                return None
 
         return luva_correr
 
     def curva(self):
-        """Curva 90 e 45"""
+        """Curva 90 e 45."""
         match self.diametro_ramal:
             case "DN_100":
                 curva90 = "30002722"
@@ -65,7 +63,6 @@ class RedeEsgotoMaterial:
                 curva45 = "30005285"
                 curva90 = "30005148"
             case _:
-                print("Diâmetro do ramal não informado, retornando.")
                 curva45 = None
                 curva90 = None
                 return curva45, curva90
@@ -73,7 +70,7 @@ class RedeEsgotoMaterial:
         return curva45, curva90
 
     def ramal_junta(self):
-        """Saber diâmetro do ramal para junta"""
+        """Saber diâmetro do ramal para junta."""
         match self.diametro_ramal:
             case "DN_100":
                 junta_esgoto = "30002958"
@@ -87,7 +84,6 @@ class RedeEsgotoMaterial:
             case "DN_300":
                 junta_esgoto_adap = "30001529"
             case _:
-                print("Diâmetro do ramal não informado.")
                 junta_esgoto = None
                 junta_esgoto_adap = None
                 return junta_esgoto, junta_esgoto_adap
@@ -95,7 +91,7 @@ class RedeEsgotoMaterial:
         return junta_esgoto, junta_esgoto_adap
 
     def rede_junta(self):
-        """Saber diâmetro da rede para junta"""
+        """Saber diâmetro da rede para junta."""
         match self.diametro_rede:
             case "100":
                 junta_esgoto = "30002958"
@@ -109,15 +105,14 @@ class RedeEsgotoMaterial:
             case "300":
                 junta_esgoto_adap = "30001529"
             case _:
-                print("Diâmetro da rede não informado.")
                 junta_esgoto = None
                 junta_esgoto_adap = None
                 return junta_esgoto, junta_esgoto_adap
 
         return junta_esgoto, junta_esgoto_adap
 
-    def materiais_vigentes(self):
-        """Materiais com estoque"""
+    def materiais_vigentes(self) -> None:
+        """Materiais com estoque."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         if sap_material is not None:
@@ -450,7 +445,7 @@ class RedeEsgotoMaterial:
                             n_material, "ELIMINADO", True,
                         )
 
-    def receita_reparo_de_rede_de_esgoto(self):
+    def receita_reparo_de_rede_de_esgoto(self) -> None:
         """Padrão de materiais na classe CRE."""
         self.materiais_vigentes()
         # Materiais do Global.
@@ -458,7 +453,7 @@ class RedeEsgotoMaterial:
             self.tb_materiais, self.contrato,
             self.estoque, self.session)
 
-    def receita_reparo_de_ramal_de_esgoto(self):
+    def receita_reparo_de_ramal_de_esgoto(self) -> None:
         """Padrão de materiais na classe Ramal de Esgoto."""
         self.materiais_vigentes()
         # Materiais do Global.
@@ -466,8 +461,8 @@ class RedeEsgotoMaterial:
             self.tb_materiais, self.contrato,
             self.estoque, self.session)
 
-    def png(self):
-        """Método para PNG Esgoto"""
+    def png(self) -> None:
+        """Método para PNG Esgoto."""
         self.materiais_vigentes()
         # Materiais do Global.
         materiais_contratada.materiais_contratada(

@@ -1,19 +1,23 @@
-"""Módulo de gif de bloqueio do sistema"""
+"""Módulo de gif de bloqueio do sistema."""
+import sys
 import threading
 import time
 import tkinter
 import tkinter as tk
-from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import cv2
 import imageio
 import pygame
 import simpleaudio as sa
 from PIL import Image, ImageTk
-from PIL.ImageTk import PhotoImage
 from pydub import AudioSegment
 from simpleaudio import PlayObject
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from PIL.ImageTk import PhotoImage
 
 stop_audio = False
 
@@ -28,15 +32,14 @@ def play_audio(audio_path) -> None:
     play_obj.stop()
 
 
-def video():
+def video() -> None:
     global stop_audio
     video_path: str = "media/gandalf.mp4"
     audio_path: str = "media/gandalf_audio.mp3"
     # Create object
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        print("Error opening video stream or file")
-        exit()
+        sys.exit()
 
     # Get the frame rate
     fps: float = cap.get(cv2.CAP_PROP_FPS)
@@ -51,7 +54,6 @@ def video():
         # Capture frame-by-frame
         ret, frame = cap.read()
         if not ret:
-            print("Can't receive frame (stream end?). Exiting ...")
             break
 
         # Show frame
@@ -72,7 +74,7 @@ def video():
     audio_thread.join()
 
 
-def gif():
+def gif() -> None:
     root: tkinter.Tk = tk.Tk()
 
     # Configuração do GIF
@@ -87,8 +89,8 @@ def gif():
     audio_path: str = "media/gandalf_shallnotpass.mp3"
     pygame.mixer.music.load(audio_path)
 
-    def update(ind):
-        """Update dos frames"""
+    def update(ind) -> None:
+        """Update dos frames."""
         frame: PhotoImage = frames[ind]
         label.configure(image=frame)
         ind += 1
@@ -112,8 +114,8 @@ def gif():
     root.mainloop()
 
 
-def you_cant_pass(mode):
-    """Function do bloqueio"""
+def you_cant_pass(mode) -> None:
+    """Function do bloqueio."""
     if mode == "gif":
         gif()
     if mode == "video":

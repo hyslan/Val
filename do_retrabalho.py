@@ -1,12 +1,16 @@
 """Every second friday on the month, do this rpa for 'Retrabalho Confirmado' orders."""
+from typing import TYPE_CHECKING
+
 import pywintypes
 import rich.console
-import win32com.client
 from rich.console import Console
 
 from python.src import sap
 from python.src.retrabalhador import retrabalho
 from python.src.sapador import down_sap
+
+if TYPE_CHECKING:
+    import win32com.client
 
 console: rich.console.Console = Console()
 

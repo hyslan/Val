@@ -90,7 +90,6 @@ def precificador(tse, corte, relig,
         profundidade_errada = True
 
     if ligacao_errada or profundidade_errada is True:
-        print("Sem informação de rede.")
         return (
             tse_proibida,
             list_chave_rb_despesa,

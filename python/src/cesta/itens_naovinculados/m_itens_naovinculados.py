@@ -29,13 +29,12 @@ class Modalidade:
             justify="center",
         )
         self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-        itens_nv = self.session.findById(
+        return self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
             + "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell",
         )
-        return itens_nv
 
-    def testa_modalidade_sap(self, itens_nv):
+    def testa_modalidade_sap(self, itens_nv) -> None:
         """Tratamento de erro - Modalidade."""
         try:
             itens_nv.GetCellValue(0, "NUMERO_EXT")
@@ -44,7 +43,7 @@ class Modalidade:
         except pywintypes.com_error:
             sys.exit()
 
-    def inspetor(self, itens_nv):
+    def inspetor(self, itens_nv) -> None:
         """Selecionador de Pai Rem base."""
         match self.identificador[2]:
             case "supr_restab" | "supressao":
@@ -69,18 +68,13 @@ class Modalidade:
                 self.testa_modalidade_sap(itens_nv)
                 self.desobstrucao(itens_nv)
             case _:
-                print("TSE não identificada.")
-                print(f"TSE: {self.identificador[0]}")
                 sys.exit()
 
-    def fech_e_reab_lig(self, itens_nv):
+    def fech_e_reab_lig(self, itens_nv) -> None:
         """Módulo Religação e Supressão - Modalidade.
         CÓDIGO: 327041 - PE, 327051 - SM
-        327061 - IT, 327071 - AA
+        327061 - IT, 327071 - AA.
         """
-        print(
-            "Iniciando processo de Modalide - REM BASE - " + "MOD DESP FECH E REAB LIG ",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -127,14 +121,11 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_lig_esg(self, itens_nv):
+    def manut_lig_esg(self, itens_nv) -> None:
         """Módulo Ramal de Esgoto - Rem Base.
         CÓDIGO: 327042 - PE ou 327052 - SM
-        327062 - IT, 327072 - AA
+        327062 - IT, 327072 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP MANUT LIG ESG",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -181,12 +172,11 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_rede_esg(self, itens_nv):
+    def manut_rede_esg(self, itens_nv) -> None:
         """Módulo Despesa Rede de Esgoto - RB.
         CÓDIGO: 327043 - PE ou 327053 - SM
-        327063 - IT, 327073 - AA
+        327063 - IT, 327073 - AA.
         """
-        print("Iniciando processo de Modalidade - " + "REM BASE - DESP MANUT REDE ESG")
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -237,14 +227,11 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_rede_agua(self, itens_nv):
+    def manut_rede_agua(self, itens_nv) -> None:
         """Módulo Despesa Rede de água - RB
         CÓDIGO: 327045 - PE ou 327055 - SM
-        327065 - IT, 327075 - AA
+        327065 - IT, 327075 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP RP MAN RD AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -295,15 +282,11 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_lig_agua(self, itens_nv):
+    def manut_lig_agua(self, itens_nv) -> None:
         """Módulo de modalidade envolvendo ramal de água e cavalete.
         CÓDIGO: 327046 - PE OU 327056 - SM
-        327066 - IT, 327076 - AA
+        327066 - IT, 327076 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - "
-            + "REM BASE - MOD DESP RP MAN LIG AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -355,14 +338,11 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def troca_de_ramal_de_agua(self, itens_nv):
+    def troca_de_ramal_de_agua(self, itens_nv) -> None:
         """Módulo Investimento TRA - RB.
         CÓDIGO: 327050 - PE ou 327060 - SM
-        327070 - IT, 327080 - AA
+        327070 - IT, 327080 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD INVEST TR LIG AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -411,9 +391,8 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def desobstrucao(self, itens_nv):
-        """Módulo desobstrução para NORTESUL"""
-        print("Iniciando processo de Modalidade - " + "REM. BASE DE DESOBSTRUÇÃO")
+    def desobstrucao(self, itens_nv) -> None:
+        """Módulo desobstrução para NORTESUL."""
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")

@@ -1,10 +1,10 @@
 # base.py
-"""Base construtora de classes"""
+"""Base construtora de classes."""
 from python.src.unitarios.interfaces import UnitarioInterface
 
 
 class BaseUnitario(UnitarioInterface):
-    """Construtor comum"""
+    """Construtor comum."""
 
     def __init__(self, etapa, corte, relig,
                  reposicao, num_tse_linhas, etapa_reposicao,
@@ -25,11 +25,11 @@ class BaseUnitario(UnitarioInterface):
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
             + "ZSBMM_VALORACAO_NAPI:9020/cntlCC_ITEM_PRECO/shellcont/shell")
 
-    def processar(self):
+    def processar(self) -> None:
         pass
 
-    def pagar(self):
+    def pagar(self) -> None:
         pass
 
-    def _processar_operacao(self, tipo_operacao):
-        """Processar Código de preço"""
+    def _processar_operacao(self, tipo_operacao) -> None:
+        """Processar Código de preço."""

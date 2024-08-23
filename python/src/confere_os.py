@@ -1,5 +1,5 @@
 # ConfereOS.py
-"""Módulo de check-up no SAP"""
+"""Módulo de check-up no SAP."""
 import threading
 
 import pythoncom
@@ -52,8 +52,8 @@ def consulta_os(n_os, session, contrato, n_con):
     corte = None
     principal_tse = None
 
-    def zsbpm020(session_id):
-        """Transact 020"""
+    def zsbpm020(session_id) -> None:
+        """Transact 020."""
         nonlocal n_os
         nonlocal contrato
 
@@ -95,7 +95,6 @@ def consulta_os(n_os, session, contrato, n_con):
         # Aguarde a thread concluir
         thread.join(timeout=300)
         if thread.is_alive():
-            print("SAP demorando mais que o esperado, encerrando.")
             sap.fechar_conexao(n_con)
 
         consulta = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")

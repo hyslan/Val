@@ -1,4 +1,4 @@
-"""Módulo para visualização da view de Valoração"""
+"""Módulo para visualização da view de Valoração."""
 
 import datetime as dt
 import os
@@ -13,7 +13,7 @@ console = Console()
 
 
 class Sql:
-    """Tabela de valoração"""
+    """Tabela de valoração."""
 
     def __init__(self, ordem: str, cod_tse: str) -> None:
         load_dotenv()
@@ -39,15 +39,16 @@ class Sql:
         return self._ordem
 
     @ordem.setter
-    def ordem(self, cod):
+    def ordem(self, cod) -> None:
         if isinstance(cod, str):
             self._ordem = cod
         else:
-            raise ValueError("Wrong type, need to be string.")
+            msg = "Wrong type, need to be string."
+            raise ValueError(msg)
 
     def __check_employee(self, matricula: str) -> str:
-        """Check employee in the database:
-        [LESTE_AD\\APP_Source].tb_Dim_Funcionarios
+        r"""Check employee in the database:
+        [LESTE_AD\\APP_Source].tb_Dim_Funcionarios.
         """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
@@ -71,11 +72,10 @@ class Sql:
         df = pd.read_sql(query, cnn)
         df_array = df.to_numpy()
         cnn.close()
-        print("\nExtração de ordens feita com sucesso!")
         return df_array
 
     def tse_escolhida(self, contrato):
-        """Dados da tabela do SQL"""
+        """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         tse = ",".join([f"'{tse}'" for tse in self.cod_tse])
@@ -97,7 +97,7 @@ class Sql:
         return df_array
 
     def tse_expecifica(self, contrato):
-        """Dados da tabela do SQL"""
+        """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         resposta = input("- Val: Deseja escolher um período? \n")
@@ -122,15 +122,14 @@ class Sql:
         cnn.close()
         return df_array
 
-    def clean_duplicates(self):
+    def clean_duplicates(self) -> None:
         """Delete duplicates rows
-        Keeping only the most recent one
+        Keeping only the most recent one.
         """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
-        except Exception as errosql:
-            print(f"Erro SQL: {errosql}")
+        except Exception:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
 
@@ -157,7 +156,7 @@ class Sql:
             month_end Union[str | Date]: End month of the query
             Not Returning SABESP -> Cod: '9999999999' orders
         Returns:
-            df_array (np.ndarray): Array with the query results
+            df_array (np.ndarray): Array with the query results.
         """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
@@ -185,14 +184,13 @@ class Sql:
         valor_medido: float,
         tempo_gasto: float,
     ) -> None:
-        """Update  row valorada to
-        [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas
+        r"""Update  row valorada to
+        [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas.
         """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
-        except Exception as errosql:
-            print(f"Erro SQL: {errosql}")
+        except Exception:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
 

@@ -28,11 +28,10 @@ class CorteRestabMaterial:
         self.session = session
         self.list_contratada = materiais_contratada.lista_materiais()
 
-    def receita_religacao(self):
+    def receita_religacao(self) -> None:
         """Padrão de materiais na classe Religação."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
-        print("Religacao's recipe")
         lacre_estoque = self.estoque[
             self.estoque["Material"] == "50001070"]
         if sap_material is None and not lacre_estoque.empty:
@@ -95,7 +94,7 @@ class CorteRestabMaterial:
                 self.tb_materiais, self.operacao,
                 self.estoque, self.session)
 
-    def receita_supressao(self):
+    def receita_supressao(self) -> None:
         """Padrão de materiais para supressão."""
         materiais_receita = [
             "30029526", "10014709", "30003832", "50001070",

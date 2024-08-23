@@ -22,7 +22,7 @@ class Corte:
         profundidade,
         session,
         preco,
-    ):
+    ) -> None:
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -35,35 +35,28 @@ class Corte:
         self.identificador = identificador
         self.preco = preco
 
-    def supressao(self):
+    def supressao(self) -> None:
         """Método para definir de qual forma foi suprimida e
         pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.
         """
         try:
             if self.corte == "CAVALETE":
-                print("Iniciando processo de pagar SUPR CV - Código: 456033")
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:
                     btn_localizador(self.preco, self.session, "456033")
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print("Pago 1 UN de SUPR CV - CODIGO: 456033")
                     return
 
             if self.corte in ("RAMAL PEAD", "PASSEIO") or self.reposicao:
-                print(
-                    "Iniciando processo de pagar SUPR  RAMAL AG  S/REP - Código: 456032",
-                )
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 ramal = False
                 contador_pg = 0
                 # Function lambda com list compreenhension para matriz de reposições.
                 if self.reposicao:
-                    rep_com_etapa = [
-                        (x, y) for x, y in zip(self.reposicao, self.etapa_reposicao, strict=False)
-                    ]
+                    rep_com_etapa = list(zip(self.reposicao, self.etapa_reposicao, strict=False))
 
                     for pavimento in rep_com_etapa:
                         operacao_rep = pavimento[1]
@@ -73,22 +66,10 @@ class Corte:
                         # 1 é etapa da tse da reposição;
                         if pavimento[0] in dict_reposicao["cimentado"]:
                             preco_reposicao = str(456041)
-                            txt_reposicao = (
-                                "Pago 1 UN de LRP CIM RELIGACAO "
-                                + "DE LIGACAO SUPR - CODIGO: 456041"
-                            )
                         if pavimento[0] in dict_reposicao["especial"]:
                             preco_reposicao = str(456042)
-                            txt_reposicao = (
-                                "Pago 1 UN de LRP ESP RELIGACAO "
-                                + "DE LIGACAO SUPR - CODIGO: 456042"
-                            )
                         if pavimento[0] in dict_reposicao["asfalto_frio"]:
                             preco_reposicao = str(451043)
-                            txt_reposicao = (
-                                "Pago 1 UN de LPB ASF SUPRE  LAG COMPX C"
-                                + " - CODIGO: 456042"
-                            )
 
                         if contador_pg >= self.num_tse_linhas:
                             return
@@ -102,7 +83,6 @@ class Corte:
                                 self.preco.CurrentCellRow, "QUANT",
                             )
                             self.preco.pressEnter()
-                            print("Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456035")
                             contador_pg += 1
                             ramal = True
 
@@ -119,7 +99,6 @@ class Corte:
                                 self.preco.CurrentCellRow, "QUANT",
                             )
                             self.preco.pressEnter()
-                            print(txt_reposicao)
                             contador_pg += 1
 
                         # 1820 é módulo despesa para cimentado e especial.
@@ -136,7 +115,6 @@ class Corte:
                                     self.preco.CurrentCellRow, "QUANT",
                                 )
                                 self.preco.pressEnter()
-                                print(txt_reposicao)
                                 contador_pg += 1
 
                 if ramal is False:
@@ -145,37 +123,30 @@ class Corte:
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print("Pago 1 UN de SUPR  RAMAL AG  S/REP - CODIGO: 456032")
                     contador_pg += 1
                     ramal = True
 
                 return
 
             if self.corte in ("FERRULE", "TOMADA/FERRULE"):
-                print(
-                    "Iniciando processo de pagar SUPR  TMD AG  S/REP - Código: 456031",
-                )
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:
                     btn_localizador(self.preco, self.session, "456031")
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print("Pago 1 UN de SUPR  TMD AG  S/REP - CODIGO: 456031")
                     return
 
             if self.corte is None:
-                print("Corte não informado. \nPagando como SUPR CV.")
                 self.preco.GetCellValue(0, "NUMERO_EXT")
                 if self.preco is not None:
                     btn_localizador(self.preco, self.session, "456033")
                     self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
                     self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print("Pago 1 UN de SUPR CV - CODIGO: 456033")
                     return
 
-        except Exception as erro:
-            print(f"Na Supressão deu o erro: {erro}")
+        except Exception:
+            pass
         # Confirmação da precificação.
         self.preco.pressEnter()

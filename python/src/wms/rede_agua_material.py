@@ -37,52 +37,52 @@ class RedeAguaMaterial:
         self.list_contratada = materiais_contratada.lista_materiais()
         self.usr = session.findById("wnd[0]/usr")
 
-    def materiais_vigentes(self):
+    def materiais_vigentes(self) -> None:
         """Materiais com estoque."""
         sap_material = testa_material_sap.testa_material_sap(
             self.tb_materiais)
         # CONEXOES MET LIGACOES  FÊMEA DN 20
         con_met_femea_estoque = self.estoque[self.estoque["Material"] == "30002394"]
         # CONEXOES MET ADAP MACHO DN 20
-        con_met_macho_estoque = self.estoque[self.estoque["Material"] == "30001346"]
+        self.estoque[self.estoque["Material"] == "30001346"]
         # DISPOSITIVO MED PLASTICO DN 20
-        disp_med_plastico_estoque = self.estoque[self.estoque["Material"] == "50000178"]
+        self.estoque[self.estoque["Material"] == "50000178"]
         # REGISTRO METALICO RAMAL PREDIAL DN 20
-        reg_met_predial_dn20_estoque = self.estoque[self.estoque["Material"] == "30006747"]
+        self.estoque[self.estoque["Material"] == "30006747"]
         # COLAR TOM P/TUBO PE DE 32XDN 20 TE INTEG
-        colar_tom_tubo_pe_dn32xdn20_estoque = self.estoque[
+        self.estoque[
             self.estoque["Material"] == "30000287"]
         # COLAR TOMADA ACO INOX DN50A150 X DNR20
         colar_tom_aco_inox__dn50a150xdnr20_estoque = self.estoque[
             self.estoque["Material"] == "30004702"]
         # COLAR TOMADA ACO INOX DN200A300 X DNR20
-        colar_tom_aco_inox__dn200a300xdnr20_estoque = self.estoque[
+        self.estoque[
             self.estoque["Material"] == "30004701"]
         # COLAR TOMADA FF C.INOX DN200A300 X DNR20
-        colar_tom_ff_cinox__dn200a300xdnr20_estoque = self.estoque[
+        self.estoque[
             self.estoque["Material"] == "30004703"]
         # ABRACADEIRA FF REPARO TUBO DN75 LMIN=150
         abrac_ff_reparo_dn75_lmin150_estoque = self.estoque[self.estoque["Material"] == "30001122"]
         # ABRACADEIRA INOX REPARO TUBO DN50 L=300
         abrac_inox_reparo_dn50_l300_estoque = self.estoque[self.estoque["Material"] == "30002151"]
         # TUBO PEAD DN 20
-        tubo_pead_dn20_estoque = self.estoque[self.estoque["Material"] == "30001848"]
+        self.estoque[self.estoque["Material"] == "30001848"]
 
         if sap_material is not None:
             num_material_linhas = self.tb_materiais.RowCount
             ultima_linha_material = num_material_linhas
-            tubo_pead_dn20 = self.df_materiais[self.df_materiais["Material"] == "30001848"]
-            con_met_femea = self.df_materiais[self.df_materiais["Material"] == "30002394"]
-            con_met_macho = self.df_materiais[self.df_materiais["Material"] == "30001346"]
-            disp_med_plastico = self.df_materiais[self.df_materiais["Material"] == "50000178"]
-            reg_met_predial_dn20 = self.df_materiais[self.df_materiais["Material"] == "30006747"]
-            colar_tom_tubo_pe_dn32xdn20 = self.df_materiais[
+            self.df_materiais[self.df_materiais["Material"] == "30001848"]
+            self.df_materiais[self.df_materiais["Material"] == "30002394"]
+            self.df_materiais[self.df_materiais["Material"] == "30001346"]
+            self.df_materiais[self.df_materiais["Material"] == "50000178"]
+            self.df_materiais[self.df_materiais["Material"] == "30006747"]
+            self.df_materiais[
                 self.df_materiais["Material"] == "30000287"]
-            colar_tom_aco_inox__dn50a150xdnr20 = self.df_materiais[
+            self.df_materiais[
                 self.df_materiais["Material"] == "30004702"]
-            colar_tom_aco_inox__dn200a300xdnr20 = self.df_materiais[
+            self.df_materiais[
                 self.df_materiais["Material"] == "30004701"]
-            colar_tom_ff_cinox__dn200a300xdnr20 = self.df_materiais[
+            self.df_materiais[
                 self.df_materiais["Material"] == "30004703"]
 
             for material in self.df_materiais["Material"]:
@@ -302,7 +302,7 @@ class RedeAguaMaterial:
                             )
                             ultima_linha_material = ultima_linha_material + 1
 
-    def receita_reparo_de_rede_de_agua(self):
+    def receita_reparo_de_rede_de_agua(self) -> None:
         """Padrão de materiais na classe CRA."""
         materiais_receita = [
             "10014709",
@@ -420,7 +420,6 @@ class RedeAguaMaterial:
             self.tb_materiais)
 
         if sap_material is None:
-            print("sem material.")
             return
         material_lista: list[dict[str, str]] = []
         num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
@@ -456,7 +455,7 @@ class RedeAguaMaterial:
             self.tb_materiais, self.contrato,
             self.estoque, self.session)
 
-    def receita_tra(self):
+    def receita_tra(self) -> None:
         """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
         materiais_receita = [
             "30007896", "50001070", "30001348",
@@ -599,7 +598,7 @@ class RedeAguaMaterial:
                 self.tb_materiais, self.contrato,
                 self.estoque, self.session)
 
-    def receita_reparo_de_ramal_de_agua(self):
+    def receita_reparo_de_ramal_de_agua(self) -> None:
         """Padrão de materiais no reparo de Ligação de Água."""
         materiais_receita = [
             "30001346", "30002394", "30001848", "300029526", "10014709",

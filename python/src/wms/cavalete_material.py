@@ -31,7 +31,7 @@ class CavaleteMaterial:
         self.estoque = estoque
         self.session = session
 
-    def receita_cavalete(self):
+    def receita_cavalete(self) -> None:
         """Padrão de materiais na classe Religação.
         Segue a risca os materiais da lista materiais_receita e os da contratada,
         exclui os materiais sem estoque.

@@ -1,6 +1,6 @@
 # sap_connection.py
 # -Begin-----------------------------------------------------------------
-"""Módulo SAP"""
+"""Módulo SAP."""
 
 # -Bibliotecas--------------------------------------------------------------
 import time
@@ -22,7 +22,6 @@ def populate_sessions() -> None:
             time.sleep(5)
     try:
         token = down_sap()
-        print("Wait 20 seconds...")
         time.sleep(20)
         rise_connection(token)
 
@@ -32,7 +31,6 @@ def populate_sessions() -> None:
         console.print(
             "[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
         token = down_sap()
-        print("Wait 20 seconds...")
         time.sleep(20)
         rise_connection(token)
 # --- END

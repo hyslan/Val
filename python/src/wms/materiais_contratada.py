@@ -1,4 +1,4 @@
-"""Módulo de materiais contratada"""
+"""Módulo de materiais contratada."""
 
 import pywintypes
 
@@ -27,8 +27,8 @@ def materiais_novasp(tb_materiais,
                      num_material_linhas,
                      lacre,
                      estoque,
-                     session):
-    """Contratada NOVASP - MLG"""
+                     session) -> None:
+    """Contratada NOVASP - MLG."""
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
         # Pega valor da célula 0
@@ -118,14 +118,12 @@ def materiais_novasp(tb_materiais,
                         tb_materiais.setCurrentCell(
                             ultima_linha_material, "QUANT",
                         )
-                        ultima_linha_material = ultima_linha_material + 1
+                        ultima_linha_material + 1
                     except pywintypes.com_error:
-                        print(
-                            "Erro ao adicionar União PEAD vigente.")
+                        pass
         # pylint: disable=E1101
         except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - UNIAO P/TUBO PEAD DE 20 MM já foi retirado.")
+            pass
 
 
 def materiais_gb_itaquera(tb_materiais,
@@ -133,8 +131,8 @@ def materiais_gb_itaquera(tb_materiais,
                           lacre,
                           ultima_linha_material,
                           estoque,
-                          session):
-    """Contratada GB - MLN"""
+                          session) -> None:
+    """Contratada GB - MLN."""
     # Loop do Grid Materiais.
     for n_material in range(num_material_linhas):
         # Pega valor da célula 0
@@ -150,16 +148,15 @@ def materiais_gb_itaquera(tb_materiais,
                 n_material, "CONTRATADA", True)
             continue
 
-        if lacre is False:
-            if sap_material in ("50000328", "50000263"):
-                # Remove o lacre bege antigo.
-                tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True,
-                )
-                lacre_material.caca_lacre(
-                    tb_materiais, sap_etapa_material,
-                    estoque, session)
-                lacre = True
+        if lacre is False and sap_material in ("50000328", "50000263"):
+            # Remove o lacre bege antigo.
+            tb_materiais.modifyCheckbox(
+                n_material, "ELIMINADO", True,
+            )
+            lacre_material.caca_lacre(
+                tb_materiais, sap_etapa_material,
+                estoque, session)
+            lacre = True
 
         if sap_material == "10014780":
             # Remove REPARADOR ASFALTO MOD FX C DER/IV PMSP
@@ -244,11 +241,10 @@ def materiais_gb_itaquera(tb_materiais,
                 ultima_linha_material = ultima_linha_material + 1
         # pylint: disable=E1101
         except pywintypes.com_error:
-            print(
-                f"Etapa: {sap_etapa_material} - UNIAO P/TUBO PEAD DE 20 MM já foi retirado.")
+            pass
 
 
-def materiais_contratada(tb_materiais, contrato, estoque, session):
+def materiais_contratada(tb_materiais, contrato, estoque, session) -> None:
     """Módulo de materiais da NOVASP."""
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     # Número da Row do Grid Materiais do SAP
@@ -287,7 +283,7 @@ def materiais_contratada(tb_materiais, contrato, estoque, session):
 
 def lista_materiais() -> list[str]:
     """Retorna lista de materiais marcados como contratada."""
-    contratada_list = [
+    return [
         "50000017", "50000333", "30006741", "30002033",
         "30001023", "30004491", "30000732", "30001363",
         "50000318", "30005788", "30002832", "30002842",
@@ -296,4 +292,3 @@ def lista_materiais() -> list[str]:
         "30003758", "30007217", "50000307", "50000150",
         "50000076", "30000880", "30007737", "30012631",
     ]
-    return contratada_list

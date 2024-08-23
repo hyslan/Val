@@ -26,12 +26,9 @@ def salvar(ordem, qtd_ordem, contrato, session,
     salvo = "Ajustes de valoração salvos com sucesso."
     total = session.findById(
         "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
-    if total != "":
-        f_total = float(total.replace(".", "").replace(",", "."))
-    else:
-        f_total = 0
+    f_total = float(total.replace(".", "").replace(",", ".")) if total != "" else 0
 
-    def salvar_valoracao(session_id):
+    def salvar_valoracao(session_id) -> None:
         """Função para salvar valoração."""
         nonlocal ordem, salvo
         # Seção Crítica - uso do Lock
@@ -44,7 +41,6 @@ def salvar(ordem, qtd_ordem, contrato, session,
                     pythoncom.CoGetInterfaceAndReleaseStream(
                         session_id, pythoncom.IID_IDispatch),
                 )
-                print("Salvando valoração!")
 
                 gui.findById("wnd[0]").sendVKey(11)
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
@@ -67,7 +63,6 @@ def salvar(ordem, qtd_ordem, contrato, session,
         # Aguarde a thread concluir
         thread.join(timeout=300)
         if thread.is_alive():
-            print("SAP demorando mais que o esperado, encerrando.")
             sap.fechar_conexao(n_con)
 
         # Check the footer.
@@ -92,8 +87,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
             correspondencias = re.search(padrao, rodape)
             if correspondencias:
                 # Group 1 retira string 'material'
-                codigo_material = correspondencias.group(1)
-                print(codigo_material)
+                correspondencias.group(1)
 
             console.print(
                 f"Ordem: {ordem} não foi salva.", style="italic red")

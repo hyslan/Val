@@ -2,15 +2,12 @@
 from python.src.wms.localiza_material import btn_busca_material
 
 
-def busca_material_etapa(procura_lacre, material, etapa):
+def busca_material_etapa(procura_lacre, material, etapa) -> bool:
     """Verifica se o material e a etapa estão presentes em procura_lacre."""
-    for item in procura_lacre:
-        if item["Material"] == material and item["Etapa"] == etapa:
-            return True
-    return False
+    return any(item["Material"] == material and item["Etapa"] == etapa for item in procura_lacre)
 
 
-def caca_lacre(tb_materiais, etapa, estoque, session):
+def caca_lacre(tb_materiais, etapa, estoque, session) -> None:
     """Módulo de procurar lacres no grid de materiais."""
     num_material_linhas = tb_materiais.RowCount  # Conta as Rows
     lacre_estoque = estoque[estoque["Material"] == "50001070"]

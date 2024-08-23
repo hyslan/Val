@@ -85,7 +85,6 @@ def main(args=None) -> None:
         args: argparse.Namespace = parser.parse_args()
 
     options: str = args.option
-    print("Famílias selecionadas:", args.family)
     hora_parada: datetime.time = datetime.time(21, 50)  # Ponto de parada às 21h50min
     console: rich.console.Console = Console()
     # Avatar.

@@ -1,5 +1,5 @@
 # ServicosExecutados.py
-"""Módulo de TSE"""
+"""Módulo de TSE."""
 
 import numpy as np
 
@@ -50,7 +50,6 @@ def verifica_tse(servico, contrato, session):
     ]
     troca_pe_cv_prev = ["153000", "153500"]
     pai_tse = 0
-    print("Iniciando processo de verificação de TSE")
     # Lista temporária para armazenar as tse
     list_chave_rb_despesa = []
     list_chave_unitario = []
@@ -64,14 +63,12 @@ def verifica_tse(servico, contrato, session):
     chave_unitario = None
     chave_rb_despesa = None
     chave_rb_investimento = None
-    print(f"Qtd de linhas de serviços executados: {num_tse_linhas}")
     for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
 
         # Pulando OS com asfalto incluso.
         if sap_tse in dict_reposicao["asfalto"]:
-            print("Tem asfalto.")
             tse_proibida = "Aslfato na bagaça!"
             break
 
@@ -333,16 +330,15 @@ def verifica_tse(servico, contrato, session):
     )
 
     # TSEs situacionais.
-    if chave_unitario is not None and pai_tse == 1:
-        if chave_unitario[0] in troca_pe_cv_prev:
-            for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
-                sap_tse = servico.GetCellValue(n_tse, "TSE")
-                etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
-                # Altera todas as reposições para N3 de Troca Pé Preventivo.
-                if sap_tse in rem_base_reposicao_union:
-                    servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-                    # Pertence ao serviço Principal
-                    servico.modifyCell(n_tse, "CODIGO", "3")
+    if chave_unitario is not None and pai_tse == 1 and chave_unitario[0] in troca_pe_cv_prev:
+        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+            sap_tse = servico.GetCellValue(n_tse, "TSE")
+            etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+            # Altera todas as reposições para N3 de Troca Pé Preventivo.
+            if sap_tse in rem_base_reposicao_union:
+                servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                # Pertence ao serviço Principal
+                servico.modifyCell(n_tse, "CODIGO", "3")
 
     if (
         chave_rb_despesa is not None
@@ -351,16 +347,15 @@ def verifica_tse(servico, contrato, session):
             chave_rb_despesa is not None
             and all(tse in sondagem for tse in chave_rb_despesa[0])
         )
-    ):
-        if chave_rb_despesa[0] in sondagem:
-            for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
-                sap_tse = servico.GetCellValue(n_tse, "TSE")
-                etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
-                # Altera todas as reposições de rb para N3 de Sondagem.
-                if sap_tse in rem_base_reposicao_union:
-                    servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
-                    # Pertence ao serviço Principal
-                    servico.modifyCell(n_tse, "CODIGO", "3")
+    ) and chave_rb_despesa[0] in sondagem:
+        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+            sap_tse = servico.GetCellValue(n_tse, "TSE")
+            etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+            # Altera todas as reposições de rb para N3 de Sondagem.
+            if sap_tse in rem_base_reposicao_union:
+                servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
+                # Pertence ao serviço Principal
+                servico.modifyCell(n_tse, "CODIGO", "3")
 
     if mae is True:
         for n_tse, sap_tse in enumerate(range(num_tse_linhas)):

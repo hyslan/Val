@@ -1,3 +1,5 @@
+import contextlib
+
 import pythoncom
 import win32com.client
 
@@ -7,9 +9,6 @@ import win32com.client
 # pythoncom.CoInitialize()
 # sapguiauto: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI")
 
-try:
+with contextlib.suppress(pythoncom.com_error):
     sapguiauto = win32com.client.GetObject(
         "SapROTWR.SapROTWrapper").GetROTEntry("SAPGUI")
-    print("Objeto SAPGUI obtido com sucesso")
-except pythoncom.com_error as e:
-    print(f"Erro ao obter o objeto SAPGUI: {e}")

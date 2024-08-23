@@ -1,11 +1,11 @@
-"""Módulo de gif de bloqueio do sistema"""
+"""Módulo de gif de bloqueio do sistema."""
 import tkinter as tk
 
 import imageio
 from PIL import Image, ImageTk
 
 
-def oxe():
+def oxe() -> None:
     """Gif da Nazaré pra quando da erro na aplicação."""
     root = tk.Tk()
 
@@ -16,8 +16,8 @@ def oxe():
     frames = [ImageTk.PhotoImage(Image.fromarray(gif.get_data(i)))
               for i in range(frame_cnt)]
 
-    def update(ind):
-        """Update dos frames"""
+    def update(ind) -> None:
+        """Update dos frames."""
         frame = frames[ind]
         label.configure(image=frame)
         ind += 1
