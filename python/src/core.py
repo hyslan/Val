@@ -77,17 +77,18 @@ def estoque_virtual(contrato, n_con) -> DataFrame | None:
 
 @log_execution
 def valorator_user(
-    session,
-    sessions,
-    ordem,
-    contrato,
-    cod_mun,
-    principal_tse,
-    start_time,
-    n_con,
+    session: win32com.client.CDispatch,
+    sessions: win32com.client.CDispatch,
+    ordem: str,
+    contrato: str,
+    cod_mun: str,
+    principal_tse: str,
+    start_time: float,
+    n_con: int,
 ) -> str | None:
     data_valorado = None
-    if sessions.Count != 6:
+    max_sessions = 6
+    if sessions.Count != max_sessions:
         new_session: win32com.client.CDispatch = sap.create_session(n_con)
     else:
         new_session = session
