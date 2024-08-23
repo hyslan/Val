@@ -38,3 +38,34 @@ select = ["ALL"]
 
 [tool.ruff]
 line-length = 128
+
+[tool.flake8]
+max-line-length = 128
+ignore = ["E501"]
+exclude = [
+    "*.rs",
+    "*.md",
+    "*.txt",
+    "*.bat",
+    "*.sh",
+    "*.yml",
+    "*.yaml",
+    "*.toml",
+    "*.xlsx",
+    "*.env",
+    "*.json",
+    "*.gif",
+    "*.jpg",
+    "*.png",
+    "*.mp3",
+    "*.mp4",
+    "*.log",
+    "*.pdf",
+    "*.xml",
+    "*.js",
+    "*.gitignore",
+    ".gitattributes",
+    ".lock",
+    ".exe",
+    ".code-workspace",
+]
