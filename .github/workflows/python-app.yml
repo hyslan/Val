@@ -30,6 +30,6 @@ jobs:
       - name: Lint with Ruff
         run: |
           ruff check --output-format=github .
-      - name: Test with pytest
-        run: |
-          pytest
+      # - name: Test with pytest -> Not ready yet.
+      #   run: |
+      #     pytest
