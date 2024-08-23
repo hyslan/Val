@@ -20,7 +20,7 @@ jobs:
           pip install ruff
       - name: Analysing the code with ruff
         run: |
-          ruff check $(git ls-files '*.py') --format=github || exit 0
+          ruff check $(git ls-files '*.py') --format=github
 
       - name: Upload the linting results
         uses: actions/upload-artifact@v4.3.6

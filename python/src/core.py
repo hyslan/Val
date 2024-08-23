@@ -29,7 +29,7 @@ from .log_decorator import log_execution
 console: rich.console.Console = Console()
 
 
-def rollback(n: int, token) -> win32com.client.CDispatch:
+def rollback(n: int, token: str) -> win32com.client.CDispatch:
     try:
         sap.fechar_conexao(n)
     except pywintypes.com_error:
