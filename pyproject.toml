@@ -34,6 +34,13 @@ pyclean = "^3.0.0"
 mypy = "^1.11.1"
 ruff = "^0.6.2"
 
+[tool.poetry.group.dev.dependencies]
+poetry-types = "^0.5.1"
+
+
+[tool.poetry.group.types.dependencies]
+types-openpyxl = "^3.1.5.20240822"
+pandas-stubs = "^2.2.2.240807"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
