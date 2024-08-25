@@ -1,1 +1,1 @@
-# /src/__init__.py
+"""init file for the python package."""
