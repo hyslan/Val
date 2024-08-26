@@ -36,11 +36,17 @@ ruff = "^0.6.2"
 
 [tool.poetry.group.dev.dependencies]
 poetry-types = "^0.5.1"
+bandit = "^1.7.9"
 
 
 [tool.poetry.group.types.dependencies]
 types-openpyxl = "^3.1.5.20240822"
 pandas-stubs = "^2.2.2.240807"
+
+[tool.poetry.group.test.dependencies]
+pytest-mock = "^3.14.0"
+pytest-cov = "^5.0.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
