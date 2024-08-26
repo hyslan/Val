@@ -36,7 +36,7 @@ def down_sap() -> str:
     opt.add_experimental_option(
         "prefs",
         {
-            "download.default_directory": Path.cwd() / "shortcut",
+            "download.default_directory": str(Path.cwd() / "shortcut"),
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
         },

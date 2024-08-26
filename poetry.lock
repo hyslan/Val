@@ -2469,4 +2469,4 @@ reports = ["Jinja2", "mistune", "pdfrw"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "34cd63d72233b1ad20af16ff8e65f6e561bc06509df3b831d2c3655ddbe9cb40"
+content-hash = "b9c8916833dfc7789e63d898ab8b8817e33d79e5e384be30a0d37903f3988b33"
