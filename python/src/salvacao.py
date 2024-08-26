@@ -1,5 +1,6 @@
 # salvacao.py
 """Módulo de salvar valoração."""
+
 import logging
 import re
 import threading
@@ -20,12 +21,22 @@ console = Console()
 
 
 @log_execution
-def salvar(ordem, qtd_ordem, contrato, session,
-           principal_tse, cod_mun, start_time, n_con):
-    """Salvar e verificar se está salvando."""
+def salvar(
+    ordem: str,
+    qtd_ordem: int,
+    contrato: int,
+    session: win32.CDispatch,
+    principal_tse: str,
+    cod_mun: str,
+    start_time: float,
+    n_con: int,
+) -> int:
+    """Salvar e verificar se está salvando.
+
+    Expõe o que o RFC retornou do backend SAP Server.
+    """
     salvo = "Ajustes de valoração salvos com sucesso."
-    total = session.findById(
-        "wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
+    total = session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
     f_total = float(total.replace(".", "").replace(",", ".")) if total != "" else 0
 
     def salvar_valoracao(session_id) -> None:
@@ -38,8 +49,7 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 pythoncom.CoInitialize()
                 # pylint: disable=E1101
                 gui = win32.Dispatch(
-                    pythoncom.CoGetInterfaceAndReleaseStream(
-                        session_id, pythoncom.IID_IDispatch),
+                    pythoncom.CoGetInterfaceAndReleaseStream(session_id, pythoncom.IID_IDispatch),
                 )
 
                 gui.findById("wnd[0]").sendVKey(11)
@@ -54,11 +64,9 @@ def salvar(ordem, qtd_ordem, contrato, session,
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
-        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
-            pythoncom.IID_IDispatch, session)
+        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)
         # Start
-        thread = threading.Thread(target=salvar_valoracao, kwargs={
-            "session_id": session_id})
+        thread = threading.Thread(target=salvar_valoracao, kwargs={"session_id": session_id})
         thread.start()
         # Aguarde a thread concluir
         thread.join(timeout=300)
@@ -74,9 +82,14 @@ def salvar(ordem, qtd_ordem, contrato, session,
             ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
             ja_valorado.valorada(
                 obs=rodape,
-                valorado="SIM", contrato=contrato, municipio=cod_mun,
-                status="VALORADA", data_valoracao=None,
-                matricula="117615", valor_medido=f_total, tempo_gasto=time_spent,
+                valorado="SIM",
+                contrato=contrato,
+                municipio=cod_mun,
+                status="VALORADA",
+                data_valoracao=None,
+                matricula="117615",
+                valor_medido=f_total,
+                tempo_gasto=time_spent,
             )
             # Incremento + de Ordem.
             qtd_ordem += 1
@@ -89,27 +102,31 @@ def salvar(ordem, qtd_ordem, contrato, session,
                 # Group 1 retira string 'material'
                 correspondencias.group(1)
 
-            console.print(
-                f"Ordem: {ordem} não foi salva.", style="italic red")
+            console.print(f"Ordem: {ordem} não foi salva.", style="italic red")
             console.print(f"[bold yellow]Motivo: {rodape}")
             time_spent = cronometro_val(start_time, ordem)
-            ja_valorado = sql_view.Sql(
-                ordem=ordem, cod_tse=principal_tse)
+            ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
             ja_valorado.valorada(
                 obs=rodape,
-                valorado="NÃO", contrato=contrato, municipio=cod_mun,
-                status="DISPONÍVEL", data_valoracao=None,
-                matricula="117615", valor_medido=0, tempo_gasto=time_spent)
+                valorado="NÃO",
+                contrato=contrato,
+                municipio=cod_mun,
+                status="DISPONÍVEL",
+                data_valoracao=None,
+                matricula="117615",
+                valor_medido=0,
+                tempo_gasto=time_spent,
+            )
 
-        logging.info(console.print(
-            f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}"
-            f"\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
-            style="bright_yellow",
-        ))
+        logging.info(
+            console.print(
+                f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
+                style="bright_yellow",
+            ),
+        )
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
-        console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:",
-                      style="bold red")
-        logging.critical(f"Erro ao salvar a valoração: {salvar_erro}")
+        console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:", style="bold red")
+        logging.critical("Erro ao salvar a valoração: %s", salvar_erro)
 
-    return qtd_ordem, rodape
+    return qtd_ordem
