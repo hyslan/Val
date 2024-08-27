@@ -43,6 +43,7 @@ ipython = "^8.26.0"
 [tool.poetry.group.types.dependencies]
 types-openpyxl = "^3.1.5.20240822"
 pandas-stubs = "^2.2.2.240807"
+types-tqdm = "^4.66.0.20240417"
 
 [tool.poetry.group.test.dependencies]
 pytest-mock = "^3.14.0"
@@ -78,3 +79,6 @@ ignore = ["S603", "S607"]
 
 [tool.ruff]
 line-length = 128
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

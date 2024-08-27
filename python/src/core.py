@@ -4,7 +4,6 @@
 import contextlib
 import logging
 import time
-from typing import tuple
 
 import numpy as np
 import pywintypes
@@ -250,7 +249,7 @@ def consulta_status_ordem(
     cod_mun: str,
     sessions: win32com.client.CDispatch,
     revalorar: bool,
-) -> tuple[str, str, str, str, str, str, str, str] | True:
+) -> tuple[str, str, str, str, str, str, str, str] | bool:
     """Consulta o status de uma ordem.
 
     Args:
@@ -426,7 +425,7 @@ def process_precificador(
     cod_mun: str,
     principal_tse: str,
     start_time: float,
-) -> True | tuple[list[str], list[str], list[str]]:
+) -> bool | tuple[list[str], list[str], list[str]]:
     """Processo de precificação se aplicável.
 
     Args:
@@ -760,7 +759,8 @@ def val(
     limite_execucoes = len(pendentes_array)
     # * In case of null Df.
     if limite_execucoes == 0:
-        return
+        msg = "Nenhuma ordem para ser valorada."
+        raise ValueError(msg)
 
     try:
         sessions: win32com.client.CDispatch = sap.listar_sessoes(n_con)
