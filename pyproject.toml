@@ -37,6 +37,7 @@ ruff = "^0.6.2"
 [tool.poetry.group.dev.dependencies]
 poetry-types = "^0.5.1"
 bandit = "^1.7.9"
+ipython = "^8.26.0"
 
 
 [tool.poetry.group.types.dependencies]
