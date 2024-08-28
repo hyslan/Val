@@ -1,6 +1,6 @@
 """Módulo de testes do módulo core."""
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
@@ -9,19 +9,25 @@ from src.core import val
 
 
 @pytest.fixture
-def mock_session(mocker) -> MagicMock:
+def mock_session() -> MagicMock:
     """Mock session for testing purposes."""
-    mock_get_object = mocker.patch("src.core.win32com.client.GetObject")
-    mock_sap_gui = MagicMock()
-    mock_get_object.return_value.GetScriptingEngine.return_value.Connections = "mock_connections"
-    return mock_sap_gui
+    return MagicMock()
 
 
+# Dados de teste
 df_test = pd.DataFrame([["2425188908", "100"]], index=[0], columns=["Ordem", "COD_MUNICIPIO"])
 pendentes_array = df_test.to_numpy()
+# Parâmetros de teste
+revalorar = False
+contrato = "4600041302"
+token = ""
+n_con = 0
 
 
-def test_core_val(capsys, mock_session: MagicMock) -> None:
+@patch("src.confere_os.pythoncom.CoMarshalInterThreadInterfaceInStream")
+@patch("src.confere_os.pythoncom.CoGetInterfaceAndReleaseStream")
+@patch("src.confere_os.win32.Dispatch")
+def test_core_val(mock_dispatch, mock_get_interface, mock_marshal, capsys, mock_session: MagicMock) -> None:
     """Teste do módulo core.val.
 
     Args:
@@ -29,10 +35,13 @@ def test_core_val(capsys, mock_session: MagicMock) -> None:
         mock_session (MagicMock): Mock session for testing purposes.
 
     """
-    revalorar = False
-    contrato = "4600041302"
-    token = ""
-    n_con = 0
+    # Configurar o mock para CoMarshalInterThreadInterfaceInStream
+    mock_marshal.return_value = MagicMock()
+    # Configurar o mock para CoGetInterfaceAndReleaseStream
+    mock_get_interface.return_value = MagicMock()
+    # Configurar o mock para Dispatch
+    mock_dispatch.return_value = MagicMock()
+
     # Test case 1: Valid input
     val(pendentes_array, session=mock_session, contrato=contrato, revalorar=revalorar, token=token, n_con=n_con)
     # Capturar a Saída
@@ -42,4 +51,4 @@ def test_core_val(capsys, mock_session: MagicMock) -> None:
     # Test case 2: Empty input
     msg = "Nenhuma ordem para ser valorada."
     with pytest.raises(ValueError, match=msg):
-        val(pendentes_array=0, session=mock_session, contrato=None, revalorar=False, token="", n_con=0)
+        val(pendentes_array=[], session=mock_session, contrato=None, revalorar=False, token="", n_con=0)
