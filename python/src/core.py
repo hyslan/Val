@@ -562,7 +562,17 @@ def looping(
             style="italic yellow",
         )
 
-    def process_order(ordem: str, cod_mun: str, empresa: str, qtd_ordem: int) -> tuple[int, win32com.client.CDispatch]:
+    def process_order(
+        ordem: str,
+        cod_mun: str,
+        empresa: str,
+        qtd_ordem: int,
+        session: win32com.client.CDispatch,
+        sessions: win32com.client.CDispatch,
+        revalorar: bool,
+        token: str,
+        n_con: int,
+    ) -> tuple[int, win32com.client.CDispatch]:
         """Processa a ordem de serviço em etapas.
 
         Args:
@@ -571,6 +581,11 @@ def looping(
             cod_mun (str): Código do Município
             empresa (str): Número do contrato (contrato)
             qtd_ordem (int): qtde de ordens valoradas
+            session (win32com.client.CDispatch): Sessão do SAPGUI
+            sessions (win32com.client.CDispatch): Sessões do SAPGUI
+            revalorar (bool): Se True ignora o EXEC VALO da transação ZSBPM020
+            token (str): SSO de acesso
+            n_con (int): Número da Conexão
 
         Returns:
         -------
@@ -710,33 +725,31 @@ def looping(
     if contrato is None:
         # NORTESUL
         for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
-            qtd_ordem = process_order(
+            qtd_ordem, session = process_order(
                 ordem,
                 cod_mun,
                 empresa,
+                qtd_ordem,
                 session,
                 sessions,
-                n_con,
                 revalorar,
-                qtd_ordem,
-                estoque_hj,
                 token,
+                n_con,
             )
             count_done(qtd_ordem)
     else:
         # GLOBAIS
         for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
-            qtd_ordem = process_order(
+            qtd_ordem, session = process_order(
                 ordem,
                 cod_mun,
-                None,
+                contrato,
+                qtd_ordem,
                 session,
                 sessions,
-                n_con,
                 revalorar,
-                qtd_ordem,
-                estoque_hj,
                 token,
+                n_con,
             )
             count_done(qtd_ordem)
 
