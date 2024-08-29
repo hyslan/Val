@@ -11,25 +11,21 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import logging
 import os
 import time
 import typing
 
-import numpy as np
 import pytz
 import pywintypes
 from dotenv import load_dotenv
 from rich.console import Console
 
-from python.src import sap, sql_view
+from python.src import sap
 from python.src.avatar import val_avatar
-from python.src.core import val
-from python.src.desvalorador import desvalorador
-from python.src.etl import extract_from_sql, pendentes_csv, pendentes_excel
 from python.src.face_the_gandalf import you_cant_pass
 from python.src.log_config import setup_logging
-from python.src.osn3 import pertencedor
-from python.src.retrabalhador import retrabalho
+from python.src.process_options import process_valoration
 from python.src.sapador import down_sap
 
 if typing.TYPE_CHECKING:
@@ -40,6 +36,7 @@ if typing.TYPE_CHECKING:
 def main(args: argparse.Namespace | None = None) -> None:
     """Sistema principal da Val e inicializador do programa."""
     setup_logging()
+    logger = logging.getLogger(__name__)
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
         prog="Sistema Val",
@@ -86,132 +83,73 @@ def main(args: argparse.Namespace | None = None) -> None:
         args: argparse.Namespace = parser.parse_args()
 
     options: str = args.option
-    hora_parada: datetime.time = datetime.time(21, 50)  # Ponto de parada às 21h50min
     console: rich.console.Console = Console()
     # Avatar.
     val_avatar()
+    # Inicialização
+    hello(console)
+    load_dotenv()
 
-    while True:
-        console.print("\n[bold blue underline]Sistema Val[/bold blue underline] :smiley:", justify="full")
-        # Obtém a hora atual
-        fuso_horario_sp = pytz.timezone("America/Sao_Paulo")
-        hora_atual: datetime.time = fuso_horario_sp.localize(datetime.datetime.now()).time()
-        hora: int = hora_atual.hour
-        manha: int = 12
-        tarde: int = 18
-        saudacao = "Bom dia!" if hora < manha else "Boa tarde!" if hora < tarde else "Boa noite!"
-
-        console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
-        console.print(f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
-        load_dotenv()
-
-        if args.password != os.environ["PWD"]:
-            console.print("Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
-            you_cant_pass("video")
-            return
-
-        # * Conexão ao SAP
-        try:
-            console.print("[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
-            token = down_sap()
-            session: win32com.client.CDispatch = sap.choose_connection(args.session)
-        except pywintypes.com_error:
-            console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-            console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-            token = down_sap()
-            time.sleep(10)
-            session: win32com.client.CDispatch = sap.choose_connection(args.session)
-
-        try:
-            match options:
-                case "1":
-                    desvalorador(args.contrato, session)
-
-                case "2":
-                    retrabalho(args.contrato, session)
-
-                case "3":
-                    pertencedor(args.contrato, session)
-
-                case "4":
-                    pendentes_list: np.ndarray = extract_from_sql(args.contrato)
-                    val(pendentes_list, session, args.contrato, args.revalorar, token, args.session)
-
-                case "5":
-                    tses_existentes = sql_view.Sql("", "")
-                    console.print("\n", tses_existentes.show_tses(), style="italic blue", justify="full")
-                    tse_expec = input("- Val: Digite as TSE separadas por vírgula, por favor.\n")
-                    lista_tse = tse_expec.split(", ")
-                    pendentes = sql_view.Sql(ordem="", cod_tse=lista_tse)
-                    pendentes_array: np.ndarray = pendentes.tse_escolhida(args.contrato)
-                    val(pendentes_array, session, args.contrato, args.revalorar, token, args.session)
-
-                case "6":
-                    tses_existentes = sql_view.Sql("", "")
-                    console.print("\n", tses_existentes.show_tses(), style="italic blue", justify="full")
-                    tse_expec = input("- Val: Digite a TSE expecífica, por favor.\n")
-                    pendentes = sql_view.Sql(ordem="", cod_tse=tse_expec)
-                    pendentes_array: np.ndarray = pendentes.tse_expecifica(args.contrato)
-                    val(pendentes_array, session, args.contrato, args.revalorar, token, args.session)
-
-                case "7":
-                    ordem_expec = input(
-                        "- Val: Digite o Nº da Ordem, por favor.\n",
-                    )
-                    mun = input("Digite o Nº do Município.\n")
-                    pendentes_array: np.ndarray = np.array([[ordem_expec, mun]])
-                    val(
-                        pendentes_array,
-                        session,
-                        args.contrato,
-                        args.revalorar,
-                        token,
-                        args.session,
-                    )
-
-                case "8":
-                    ask = input("é csv?")
-                    planilha = pendentes_csv() if ask == "s" else pendentes_excel()
-                    val(planilha, session, args.contrato, args.revalorar, token, args.session)
-
-                case "9":
-                    pendentes = sql_view.Sql("", "")
-                    pendentes_array = pendentes.familia(args.family, args.contrato)
-                    val(
-                        pendentes_array,
-                        session,
-                        args.contrato,
-                        args.revalorar,
-                        token,
-                        args.session,
-                    )
-
-                case "10":
-                    pendentes = sql_view.Sql("", "")
-                    pendentes_array = pendentes.desobstrucao()
-                    val(
-                        pendentes_array,
-                        session,
-                        args.contrato,
-                        args.revalorar,
-                        token,
-                        args.session,
-                    )
-
-        except (TypeError, ValueError) as erro:
-            console.print(f":fearful: Erro Main: {erro}", style="bold red")
-            console.print_exception()
-            return
-
-        # Loop de Parada
-        if hora_atual >= hora_parada:
-            console.print("A Val foi descansar.")
-            console.print("- Val: até amanhã.")
-            return
-
-        # Encerramento
-        console.print("- Val: Valoração finalizada, encerrando. :star:")
+    if args.password != os.environ["PWD"]:
+        console.print("Senha incorreta!\n Você não vai passar!. :mage:", style="bold")
+        you_cant_pass("video")
         return
+
+    # * Conexão ao SAP
+    token, session = establish_sap_connection(args, console)
+    # * Processamento das opções
+    process_valoration(options, args, session, token, console)
+
+    # Encerramento
+    console.print("- Val: Valoração finalizada, encerrando. :star:")
+    logger.info("Valoração finalizada.")
+    return
+
+
+def establish_sap_connection(args: argparse.Namespace, console: rich.console.Console) -> tuple[str, win32com.client.CDispatch]:
+    """Obtém o token de acesso e a sessão do SAP GUI.
+
+    Args:
+    ----
+        args (argparse.Namespace): Número da Conexão.
+        console (rich.console.Console): Terminal Highligthing
+
+    Returns:
+    -------
+        tuple[str, win32com.client.CDispatch]: Token SSO e Sessão do SAP GUI.
+
+    """
+    try:
+        console.print("[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
+        token = down_sap()
+        session: win32com.client.CDispatch = sap.choose_connection(args.session)
+    except pywintypes.com_error:
+        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+        console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
+        token = down_sap()
+        time.sleep(10)
+        session: win32com.client.CDispatch = sap.choose_connection(args.session)
+    return token, session
+
+
+def hello(console: rich.console.Console) -> None:
+    """Imprime a saudação inicial do programa.
+
+    Args:
+    ----
+        console (rich.console.Console): Terminal Highligthing
+
+    """
+    console.print("\n[bold blue underline]Sistema Val[/bold blue underline] :smiley:", justify="full")
+    # Obtém a hora atual
+    fuso_horario_sp = pytz.timezone("America/Sao_Paulo")
+    hora_atual: datetime.time = fuso_horario_sp.localize(datetime.datetime.now()).time()
+    hora: int = hora_atual.hour
+    manha: int = 12
+    tarde: int = 18
+    saudacao = "Bom dia!" if hora < manha else "Boa tarde!" if hora < tarde else "Boa noite!"
+    console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
+    console.print(f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
 
 
 # -Main------------------------------------------------------------------
