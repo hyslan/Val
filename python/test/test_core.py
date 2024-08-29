@@ -27,12 +27,20 @@ n_con = 0
 @patch("src.confere_os.pythoncom.CoMarshalInterThreadInterfaceInStream")
 @patch("src.confere_os.pythoncom.CoGetInterfaceAndReleaseStream")
 @patch("src.confere_os.win32.Dispatch")
-def test_core_val(mock_dispatch, mock_get_interface, mock_marshal, capsys, mock_session: MagicMock) -> None:
+def test_core_val(
+    mock_dispatch: MagicMock,
+    mock_get_interface: MagicMock,
+    mock_marshal: MagicMock,
+    mock_session: MagicMock,
+) -> None:
     """Teste do módulo core.val.
 
     Args:
     ----
         mock_session (MagicMock): Mock session for testing purposes.
+        mock_dispatch (MagicMock): Mock for win32.Dispatch.
+        mock_get_interface (MagicMock): Mock for pythoncom.CoGetInterfaceAndReleaseStream.
+        mock_marshal (MagicMock): Mock for pythoncom.CoMarshalInterThreadInterface
 
     """
     # Configurar o mock para CoMarshalInterThreadInterfaceInStream
@@ -44,9 +52,6 @@ def test_core_val(mock_dispatch, mock_get_interface, mock_marshal, capsys, mock_
 
     # Test case 1: Valid input
     val(pendentes_array, session=mock_session, contrato=contrato, revalorar=revalorar, token=token, n_con=n_con)
-    # Capturar a Saída
-    captured = capsys.readouterr()
-    print(captured.out)
 
     # Test case 2: Empty input
     msg = "Nenhuma ordem para ser valorada."

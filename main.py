@@ -16,6 +16,7 @@ import time
 import typing
 
 import numpy as np
+import pytz
 import pywintypes
 from dotenv import load_dotenv
 from rich.console import Console
@@ -36,29 +37,29 @@ if typing.TYPE_CHECKING:
     import win32com.client
 
 
-def main(args=None) -> None:
+def main(args: argparse.Namespace | None = None) -> None:
     """Sistema principal da Val e inicializador do programa."""
     setup_logging()
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
         prog="Sistema Val",
-        description="""Sistema de valoração automática não assistida em lote.
-        Selecione uma opção de valoração e o contrato a ser utilizado. Caso deseje, escolha uma família específica.
-        Por padrão, o programa irá valoração todas as ordens pendentes das famílias:
-        CAVALETE, HIDROMETRO, POCO, RAMAL AGUA, RELIGACAO, SUPRESSAO
-        Para desobstrução não explicite contrato ou família.
-        Não esqueça de colocar a senha para iniciar o programa.
-        Opcional: habilite o Revalorar para reprocessar uma Ordem.
-        Opções:
-        1) Desvalorador
-        2) Retrabalho
-        3) N3 - Pertence ao serviço principal
-        4) TSEs pré-selecionais como 'carteira de serviços'
-        5) TSEs específicas digitadas pelo usuário
-        6) TSE específica digitada pelo usuário
-        7) Ordem específica digitada pelo usuário
-        8) Pendentes em CSV ou Excel
-        9) Por Família
+        description="""Sistema de valoração automática não assistida em lote.\n
+        Selecione uma opção de valoração e o contrato a ser utilizado. Caso deseje, escolha uma família específica.\n
+        Por padrão, o programa irá valoração todas as ordens pendentes das famílias:\n
+        CAVALETE, HIDROMETRO, POCO, RAMAL AGUA, RELIGACAO, SUPRESSAO\n
+        Para desobstrução não explicite contrato ou família.\n
+        Não esqueça de colocar a senha para iniciar o programa.\n
+        Opcional: habilite o Revalorar para reprocessar uma Ordem.\n
+        Opções:\n
+        1) Desvalorador\n
+        2) Retrabalho\n
+        3) N3 - Pertence ao serviço principal\n
+        4) TSEs pré-selecionais como 'carteira de serviços'\n
+        5) TSEs específicas digitadas pelo usuário\n
+        6) TSE específica digitada pelo usuário\n
+        7) Ordem específica digitada pelo usuário\n
+        8) Pendentes em CSV ou Excel\n
+        9) Por Família\n
         10) Desobstrução NORTESUL""",
         epilog="Author: Hyslan Silva Cruz <hyslansilva@gmail.com>",
     )
@@ -93,15 +94,13 @@ def main(args=None) -> None:
     while True:
         console.print("\n[bold blue underline]Sistema Val[/bold blue underline] :smiley:", justify="full")
         # Obtém a hora atual
-        hora_atual: datetime.time = datetime.datetime.now().time()
+        fuso_horario_sp = pytz.timezone("America/Sao_Paulo")
+        hora_atual: datetime.time = fuso_horario_sp.localize(datetime.datetime.now()).time()
         hora: int = hora_atual.hour
-        saudacao: str
-        if hora < 12:
-            saudacao = "Bom dia!"
-        elif hora < 18:
-            saudacao = "Boa tarde!"
-        else:
-            saudacao = "Boa noite!"
+        manha: int = 12
+        tarde: int = 18
+        saudacao = "Bom dia!" if hora < manha else "Boa tarde!" if hora < tarde else "Boa noite!"
+
         console.print(f"- Val: {saudacao} :star:\n- Val: Como vai você hoje?")
         console.print(f"- Val: Hora atual: {hora_atual.strftime('%H:%M:%S')} :alarm_clock:")
         load_dotenv()
