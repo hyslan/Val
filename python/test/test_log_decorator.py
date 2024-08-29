@@ -2,6 +2,8 @@
 
 import logging
 
+import pytest
+
 from src.log_decorator import log_execution
 
 
@@ -22,7 +24,7 @@ def funcao_teste(a: int, b: int) -> int:
     return a + b
 
 
-def test_funcao_teste(caplog):
+def test_funcao_teste(caplog: pytest.LogCaptureFixture) -> None:
     """Teste da função funcao_teste.
 
     Args:

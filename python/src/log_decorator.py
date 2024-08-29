@@ -1,13 +1,14 @@
 """Decorator para logar a execução de funções."""
 
 import logging
+from collections.abc import Callable
 from functools import wraps
 from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def log_execution(func) -> Any:
+def log_execution(func: Callable[..., Any]) -> Callable[..., Any]:
     """Log the execution of functions.
 
     Args:
@@ -21,7 +22,7 @@ def log_execution(func) -> Any:
     """
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Any:
+    def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> Any:
         logger.debug("Entrando em %s com args=%s e kwargs=%s", func.__name__, args, kwargs)
         try:
             result = func(*args, **kwargs)

@@ -75,7 +75,7 @@ Repository = "https://github.com/hyslan/Val"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["S603", "S607", "S101"]
+ignore = ["S603", "S607", "S101", "ANN401"]
 
 [tool.ruff]
 line-length = 128
