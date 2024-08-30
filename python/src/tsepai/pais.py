@@ -1,5 +1,13 @@
 """Módulo de seletor de tse e seus ramos."""
+
+from __future__ import annotations
+
+import typing
+
 from python.src.excel_tbs import load_worksheets
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 (
     *_,
@@ -19,7 +27,14 @@ SERVICO_N_EXISTE_CONTRATO = "10"
 class Pai:
     """Classe Pai da árvore de TSEs."""
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: CDispatch) -> None:
+        """Inicializador da classe Pai.
+
+        Args:
+        ----
+            session (CDispatch): Sessão do SapGui.
+
+        """
         self.session = session
 
     def desobstrucao(self) -> tuple[list, None, str, list]:
@@ -28,15 +43,20 @@ class Pai:
         tse_temp_reposicao = []
         return tse_temp_reposicao, None, "desobstrucao", etapa_reposicao
 
-    def get_shell(self) -> tuple[any, int]:
+    def get_shell(self) -> tuple[CDispatch, int]:
         """Adquire o controle do grid Serviço."""
         servico_temp = self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:" + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+        )
         num_tse_linhas = servico_temp.RowCount
         return servico_temp, num_tse_linhas
 
-    def processar_servico_temp(self, servico_temp, num_tse_linhas: int, identificador: str):
+    def processar_servico_temp(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Área do Loop."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -52,14 +72,17 @@ class Pai:
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_temp_unitario(self, servico_temp,
-                                        num_tse_linhas: int, identificador: str):
+    def processar_servico_temp_unitario(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Área do Loop."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -76,16 +99,18 @@ class Pai:
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_temp_cesta(self, servico_temp,
-                                     num_tse_linhas: int,
-                                     codigo_despesa: str,
-                                     identificador: str) -> tuple[list, None, str, list]:
+    def processar_servico_temp_cesta(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        codigo_despesa: str,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Área do Loop."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -103,8 +128,7 @@ class Pai:
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
             # COMPACTAÇÃO E SELAGEM DA BASE
@@ -117,8 +141,12 @@ class Pai:
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_reposicao_dependente(self, servico_temp,
-                                               num_tse_linhas, identificador):
+    def processar_servico_reposicao_dependente(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Processar serviços que acompanham juntos reposições no pagamento."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -129,16 +157,14 @@ class Pai:
 
             if sap_tse in tb_tse_reposicao:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
                 continue
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
@@ -147,11 +173,10 @@ class Pai:
 class Cesta(Pai):
     """Ramo de Rem Base."""
 
-    def processar_servico_cesta(self, identificador, codigo_despesa):
+    def processar_servico_cesta(self, identificador: str, codigo_despesa: str):
         """Processar serviços da Cesta."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas,
-                                                 codigo_despesa, identificador)
+        return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas, codigo_despesa, identificador)
 
     def cavalete(self):
         """Serviços de cavalete."""
@@ -207,8 +232,7 @@ class Investimento(Pai):
     def processar_servico_investimento(self, identificador, codigo_despesa):
         """Processar serviços de Investimento."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas,
-                                                 codigo_despesa, identificador)
+        return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas, codigo_despesa, identificador)
 
     def tra(self):
         """Troca de Ramal de Água (RB) - TSE 284000."""
@@ -257,33 +281,28 @@ class Unitario(Pai):
                 etapa_reposicao.append(etapa)
                 if sap_tse == "732000":
                     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                    servico_temp.modifyCell(
-                        n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                    servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
             # BLOQUETE
             if sap_tse in ("738000", "740000"):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 tse_temp_reposicao.append(sap_tse)
                 etapa_reposicao.append(etapa)
 
             if sap_tse in ("170301", "749000", "758500", "740000"):
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
+                servico_temp.modifyCell(n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_sem_bloquete(self, servico_temp,
-                                       num_tse_linhas, identificador):
+    def processar_servico_sem_bloquete(self, servico_temp, num_tse_linhas, identificador):
         """Processar serviços que não cotntemplam bloquete/muro."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -298,14 +317,12 @@ class Unitario(Pai):
                 etapa_reposicao.append(etapa)
                 if sap_tse == "758000":
                     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                    servico_temp.modifyCell(
-                        n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
+                    servico_temp.modifyCell(n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
                 continue
 
             if sap_tse in tb_tse_PertenceAoServicoPrincipal:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
-                servico_temp.modifyCell(
-                    n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
+                servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
             # -------- SERÁ PAGO LRP ESPECIAL
@@ -321,8 +338,7 @@ class Unitario(Pai):
     def processar_servico_unitario(self, identificador):
         """Processar serviços Unitários."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_temp_unitario(servico_temp, num_tse_linhas,
-                                                    identificador)
+        return self.processar_servico_temp_unitario(servico_temp, num_tse_linhas, identificador)
 
     def cavalete(self):
         """Serviços de unitários de cavalete."""
@@ -376,8 +392,7 @@ class Unitario(Pai):
     def tre(self):
         """Troca de Ramal de Esgoto."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_reposicao_sem_preco(
-            servico_temp, num_tse_linhas, "ligacao_esgoto")
+        return self.processar_reposicao_sem_preco(servico_temp, num_tse_linhas, "ligacao_esgoto")
 
     def det_descoberto_nivelado_reg_cx_parada(self):
         """Descobrir, Trocar caixa de parada,
@@ -385,14 +400,12 @@ class Unitario(Pai):
         TSE: 304000, 322000.
         """
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_reposicao_sem_preco(
-            servico_temp, num_tse_linhas, "cx_parada")
+        return self.processar_reposicao_sem_preco(servico_temp, num_tse_linhas, "cx_parada")
 
     def nivelamento_poco(self):
         """Nivelamento PI/PV/TL."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_reposicao_dependente(
-            servico_temp, num_tse_linhas, "poço")
+        return self.processar_servico_reposicao_dependente(servico_temp, num_tse_linhas, "poço")
 
     def religacao(self):
         """Religação unitário
@@ -400,11 +413,9 @@ class Unitario(Pai):
         455500, 463000, 465000, 466500, 467500, 475500.
         """
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_sem_bloquete(
-            servico_temp, num_tse_linhas, "religacao")
+        return self.processar_servico_sem_bloquete(servico_temp, num_tse_linhas, "religacao")
 
     def supressao(self):
         """Supressão unitário."""
         servico_temp, num_tse_linhas = self.get_shell()
-        return self.processar_servico_sem_bloquete(
-            servico_temp, num_tse_linhas, "supressao")
+        return self.processar_servico_sem_bloquete(servico_temp, num_tse_linhas, "supressao")

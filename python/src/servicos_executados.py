@@ -1,12 +1,18 @@
 # ServicosExecutados.py
 """Módulo de TSE."""
 
+from __future__ import annotations
+
+import typing
+
 import numpy as np
 
 from python.src.excel_tbs import load_worksheets
 from python.src.lista_reposicao import dict_reposicao
 from python.src.tsepai import pai_dicionario
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 (
     lista,
     materiais,
@@ -32,7 +38,22 @@ from python.src.tsepai import pai_dicionario
 ) = load_worksheets()
 
 
-def verifica_tse(servico, contrato, session):
+def verifica_tse(
+    servico: CDispatch,
+    contrato: str,
+    session: CDispatch,
+) -> tuple[
+    str,
+    int,
+    str | None,
+    list[str],
+    bool,
+    list[tuple[str, str, str, str, str]],
+    list[tuple[str, str, str, str, str]],
+    tuple[str, str, str, str, str] | None,
+    tuple[str, str, str, str, str] | None,
+    np.ndarray | None,
+]:
     """Agrupador de serviço e indexador de classes."""
     empresa, *_ = contrato
     sondagem = ["591000", "567000", "321000", "321500", "283000", "283500"]
@@ -136,11 +157,12 @@ def verifica_tse(servico, contrato, session):
             tse_proibida = "Iara não quer."
             break
 
-        # ---------- REVOGADO --------------------------------
+        """---------- REVOGADO --------------------------------
         # TROCA PÉ DE CV PREVENTIVO - Solicitado por Ivan/Estevan
         # if sap_tse in ('153000', '153500'):
         #     tse_proibida = 'Ivan não quer.'
         #     break
+        """
 
         # INSTALDO CAIXA UMA (PARTE CIVIL)
         if sap_tse == "136000":
@@ -163,9 +185,7 @@ def verifica_tse(servico, contrato, session):
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
             # pylint: disable=E1121
-            (reposicao, tse_proibida, identificador, etapa_reposicao) = (
-                pai_dicionario.pai_servico_unitario(sap_tse, session)
-            )
+            (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse, session)
             identificador_list.append(identificador)
             chave_unitario = (
                 sap_tse,
@@ -186,9 +206,7 @@ def verifica_tse(servico, contrato, session):
             servico.modifyCell(n_tse, "CODIGO", "5")  # Despesa
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            (reposicao, tse_proibida, identificador, etapa_reposicao) = (
-                pai_dicionario.pai_servico_cesta(sap_tse, session)
-            )
+            (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
             chave_rb_despesa = (
@@ -209,9 +227,7 @@ def verifica_tse(servico, contrato, session):
             servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            (reposicao, tse_proibida, identificador, etapa_reposicao) = (
-                pai_dicionario.pai_servico_cesta(sap_tse, session)
-            )
+            (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
             rem_base_reposicao.append(reposicao)
             identificador_list.append(identificador)
             chave_rb_investimento = (
@@ -233,8 +249,9 @@ def verifica_tse(servico, contrato, session):
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
             # pylint: disable=E1121
-            (reposicao, tse_proibida, identificador, etapa_reposicao) = (
-                pai_dicionario.pai_servico_desobstrucao(sap_tse, session)
+            (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_desobstrucao(
+                sap_tse,
+                session,
             )
             identificador_list.append(identificador)
             chave_rb_despesa = (
@@ -343,10 +360,7 @@ def verifica_tse(servico, contrato, session):
     if (
         chave_rb_despesa is not None
         and pai_tse == 1
-        or (
-            chave_rb_despesa is not None
-            and all(tse in sondagem for tse in chave_rb_despesa[0])
-        )
+        or (chave_rb_despesa is not None and all(tse in sondagem for tse in chave_rb_despesa[0]))
     ) and chave_rb_despesa[0] in sondagem:
         for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
@@ -366,7 +380,6 @@ def verifica_tse(servico, contrato, session):
                 servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 servico.modifyCell(n_tse, "CODIGO", "6")  # Investimento
     # Fim da condicional.
-    # sys.exit()
     servico.pressEnter()
 
     return (

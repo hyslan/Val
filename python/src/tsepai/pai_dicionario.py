@@ -2,17 +2,23 @@
 """Módulo Dicionário Pai."""
 
 # Biblotecas
+from __future__ import annotations
+
 import sys
+import typing
 
 from python.src.tsepai import pais
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
-def oh_pai(session):
+
+def oh_pai(session: CDispatch) -> pais.Pai:
     """Aleluia Irmãos."""
     return pais.Pai(session)
 
 
-def preservacao_interferencia():
+def preservacao_interferencia() -> tuple[list[str], None | str, str, list[str]]:
     """Captador da tse preservação."""
     tse_temp_reposicao = [""]
     tse_proibida = None
@@ -21,7 +27,7 @@ def preservacao_interferencia():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def transformacao_lig():
+def transformacao_lig() -> tuple[list[str], None | str, str, list[str]]:
     """Captador da tse Transformação."""
     tse_temp_reposicao = []
     tse_proibida = "Ramo Transformação"
@@ -30,7 +36,7 @@ def transformacao_lig():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def troca_de_ramal_agua_un():
+def troca_de_ramal_agua_un() -> tuple[list[str], None | str, str, list[str]]:
     """Captador da tse TRA."""
     tse_temp_reposicao = []
     tse_proibida = "TRA"
@@ -39,7 +45,7 @@ def troca_de_ramal_agua_un():
     return tse_temp_reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_unitario(servico_temp, session):
+def pai_servico_unitario(servico_temp: str, session: CDispatch) -> tuple[list[str], None | str, str, list[str]]:
     """Função condicional das chaves do dicionário unitário."""
     pai_unitario = pais.Unitario(session)
 
@@ -121,7 +127,7 @@ def pai_servico_unitario(servico_temp, session):
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_cesta(servico_temp, session):
+def pai_servico_cesta(servico_temp: str, session: CDispatch) -> tuple[list[str], None | str, str, list[str]]:
     """Função condicional das chaves do dicionário Remuneração Base."""
     pai_cesta = pais.Cesta(session)
     pai_sondagem = pais.Sondagem(session)
@@ -166,8 +172,9 @@ def pai_servico_cesta(servico_temp, session):
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
 
-def pai_servico_desobstrucao(servico_temp, session):
-    """Agregador de TSE de contrato NORTE SUL
+def pai_servico_desobstrucao(servico_temp: str, session: CDispatch) -> tuple[list[str], None | str, str, list[str]]:
+    """Agregador de TSE de contrato NORTE SUL.
+
     para serviços de DD e DC.
     """
     pai_desobstrucao = oh_pai(session)
