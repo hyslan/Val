@@ -6,15 +6,15 @@ import logging
 import typing
 
 import numpy as np
-import sql_view
 import win32com.client
 from rich.console import Console
 
-from src.core import val
-from src.desvalorador import desvalorador
-from src.etl import extract_from_sql, pendentes_csv, pendentes_excel
-from src.osn3 import pertencedor
-from src.retrabalhador import retrabalho
+from python.src.core import val
+from python.src.desvalorador import desvalorador
+from python.src.etl import extract_from_sql, pendentes_csv, pendentes_excel
+from python.src.osn3 import pertencedor
+from python.src.retrabalhador import retrabalho
+from python.src.sql_view import Sql
 
 if typing.TYPE_CHECKING:
     import argparse
@@ -61,19 +61,19 @@ def process_valoration(
                 val(pendentes_list, session, args.contrato, args.revalorar, token, args.session)
 
             case "5":
-                tses_existentes = sql_view.Sql("", "")
+                tses_existentes = Sql("", "")
                 console.print("\n", tses_existentes.show_tses(), style="italic blue", justify="full")
                 tse_expec = input("- Val: Digite as TSE separadas por vírgula, por favor.\n")
                 lista_tse = tse_expec.split(", ")
-                pendentes = sql_view.Sql(ordem="", cod_tse=lista_tse)
+                pendentes = Sql(ordem="", cod_tse=lista_tse)
                 pendentes_array: np.ndarray = pendentes.tse_escolhida(args.contrato)
                 val(pendentes_array, session, args.contrato, args.revalorar, token, args.session)
 
             case "6":
-                tses_existentes = sql_view.Sql("", "")
+                tses_existentes = Sql("", "")
                 console.print("\n", tses_existentes.show_tses(), style="italic blue", justify="full")
                 tse_expec = input("- Val: Digite a TSE expecífica, por favor.\n")
-                pendentes = sql_view.Sql(ordem="", cod_tse=tse_expec)
+                pendentes = Sql(ordem="", cod_tse=tse_expec)
                 pendentes_array: np.ndarray = pendentes.tse_expecifica(args.contrato)
                 val(pendentes_array, session, args.contrato, args.revalorar, token, args.session)
 
@@ -98,7 +98,7 @@ def process_valoration(
                 val(planilha, session, args.contrato, args.revalorar, token, args.session)
 
             case "9":
-                pendentes = sql_view.Sql("", "")
+                pendentes = Sql("", "")
                 pendentes_array = pendentes.familia(args.family, args.contrato)
                 val(
                     pendentes_array,
@@ -110,7 +110,7 @@ def process_valoration(
                 )
 
             case "10":
-                pendentes = sql_view.Sql("", "")
+                pendentes = Sql("", "")
                 pendentes_array = pendentes.desobstrucao()
                 val(
                     pendentes_array,

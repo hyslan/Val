@@ -335,6 +335,7 @@ def check_and_value_ordem(
     principal_tse: str,
     start_time: float,
     n_con: int,
+    revalorar: bool,
 ) -> bool | win32com.client.CDispatch:
     """Checa se a ordem já foi valorada.
 
@@ -379,38 +380,43 @@ def check_and_value_ordem(
         return True
 
     # * Check if the 'Ordem' was already valued.
-    try:
-        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-        message_not_valued = "Não há dados para exibição."
-        rodape = session.findById("wnd[0]/sbar").Text
-        # Livre para valorar.
-        if rodape == message_not_valued:
-            session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
-            ).select()
-            tse = session.findById(
-                "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
-            )
-        else:
-            data_valorado = valorator_user(
-                session,
-                sessions,
-                ordem,
-                contrato,
-                cod_mun,
-                principal_tse,
-                start_time,
-                n_con,
-            )
-            if data_valorado is not None:
-                return True
+    if revalorar is False:
+        try:
+            session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
+            message_not_valued = "Não há dados para exibição."
+            rodape = session.findById("wnd[0]/sbar").Text
+            # Livre para valorar.
+            if rodape == message_not_valued:
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS",
+                ).select()
+                tse = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                    "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                )
+            else:
+                data_valorado = valorator_user(
+                    session,
+                    sessions,
+                    ordem,
+                    contrato,
+                    cod_mun,
+                    principal_tse,
+                    start_time,
+                    n_con,
+                )
+                if data_valorado is not None:
+                    return True
 
-    except pywintypes.com_error:
-        console.print_exception()
-        return True
+        except pywintypes.com_error:
+            console.print_exception()
+            return True
+        else:
+            return tse
     else:
-        return tse
+        return session.findById(
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+        )
 
 
 def process_precificador(
