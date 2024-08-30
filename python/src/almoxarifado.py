@@ -1,7 +1,9 @@
 # almoxarifado.py
 """Módulo dos materiais contratada e SABESP."""
+
 import pandas as pd
 import pywintypes
+import win32com.client as win32
 from rich.console import Console
 from rich.progress import track
 
@@ -19,17 +21,33 @@ from python.src.wms import (
 class Almoxarifado:
     """Área de todos materiais obrigatórios por TSE."""
 
-    def __init__(self,
-                 hidro,
-                 operacao,
-                 identificador,
-                 diametro_ramal,
-                 diametro_rede,
-                 contrato,
-                 estoque,
-                 posicao_rede,
-                 session,
-                 ) -> None:
+    def __init__(
+        self,
+        hidro: str,
+        operacao: str,
+        identificador: tuple[str, str, str],
+        diametro_ramal: str,
+        diametro_rede: str,
+        contrato: str,
+        estoque: pd.DataFrame,
+        posicao_rede: str,
+        session: win32.CDispatch,
+    ) -> None:
+        """Inicializa a classe Almoxarifado.
+
+        Args:
+        ----
+            hidro (str): Número de Série do Hidro
+            operacao (str): Etapa Pai
+            identificador (tuple[str, str, str]): TSE, Etapa TSE, ID Match Case
+            diametro_ramal (str): Tamanho do ramal
+            diametro_rede (str): Tamanho da rede
+            contrato (str): Número do Contrato
+            estoque (pd.DataFrame): Df com o estoque do contrato
+            posicao_rede (str): Posição de PA até PO
+            session (win32.CDispatch): Sessão do SAPGUI
+
+        """
         self.hidro = hidro
         # 0 - tse, 1 - etapa tse, 2 - id match case
         self.identificador = identificador
@@ -41,49 +59,44 @@ class Almoxarifado:
         self.posicao_rede = posicao_rede
         self.session = session
 
-    def aba_materiais(self):
+    def aba_materiais(self) -> win32.CDispatch:
         """Função habilita aba de materiais no sap."""
         console = Console()
-        console.print("Processo de Materiais",
-                      style="bold red underline", justify="center")
-        self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
+        console.print("Processo de Materiais", style="bold red underline", justify="center")
+        self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM").select()
         return self.session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAO_NAPI:9030/cntlCC_MATERIAIS/shellcont/shell")
+            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABM/ssubSUB_TAB:ZSBMM_VALORACAO_NAPI:9030/cntlCC_MATERIAIS/shellcont/shell",
+        )
 
-
-    def materiais_vinculados(self, tb_materiais):
+    def materiais_vinculados(self, tb_materiais: win32.CDispatch) -> pd.DataFrame:
         """Retorna um DataFrame com os materiais incluídos na ordem."""
         try:
             sap_material = tb_materiais.GetCellValue(0, "MATERIAL")
             num_material_linhas = tb_materiais.RowCount
             lista_data = []
             for i in track(range(num_material_linhas), description="[yellow]Obtendo Materiais..."):
-                sap_material = tb_materiais.GetCellValue(
-                    i, "MATERIAL")
-                sap_etapa_material = tb_materiais.GetCellValue(
-                    i, "ETAPA")
-                sap_desc_material = tb_materiais.GetCellValue(
-                    i, "DESC_MAT")
-                sap_qtde_material = tb_materiais.GetCellValue(
-                    i, "QUANT")
-                data = {"Etapa": sap_etapa_material,
-                        "Material": sap_material,
-                        "Descrição": sap_desc_material,
-                        "Quantidade": sap_qtde_material}
+                sap_material = tb_materiais.GetCellValue(i, "MATERIAL")
+                sap_etapa_material = tb_materiais.GetCellValue(i, "ETAPA")
+                sap_desc_material = tb_materiais.GetCellValue(i, "DESC_MAT")
+                sap_qtde_material = tb_materiais.GetCellValue(i, "QUANT")
+                data = {
+                    "Etapa": sap_etapa_material,
+                    "Material": sap_material,
+                    "Descrição": sap_desc_material,
+                    "Quantidade": sap_qtde_material,
+                }
                 lista_data.append(data)
             df_materiais = pd.DataFrame(lista_data)
-            df_materiais["Quantidade"] = df_materiais["Quantidade"].replace(
-                ",", ".", regex=True).astype(float)
-
-            return df_materiais
+            df_materiais["Quantidade"] = df_materiais["Quantidade"].replace(",", ".", regex=True).astype(float)
 
         # pylint: disable=E1101
         except pywintypes.com_error:
             return None
+        else:
+            return df_materiais
 
-    def inspecao(self, tb_materiais, df_materiais) -> None:
+    # ruff: noqa: C901
+    def inspecao(self, tb_materiais: win32.CDispatch, df_materiais: pd.DataFrame) -> None:
         """Seleciona a Classe da TSE correta."""
         sondagem = [
             "591000",
@@ -92,14 +105,11 @@ class Almoxarifado:
             "283000",
         ]
         if self.identificador[2] in sondagem:
-            materiais_contratada.materiais_contratada(
-                tb_materiais, self.contrato,
-                self.estoque, self.session)
+            materiais_contratada.materiais_contratada(tb_materiais, self.contrato, self.estoque, self.session)
         else:
             match self.identificador[2]:
                 case "hidrometro":
                     material = hidrometro_material.HidrometroMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -114,7 +124,6 @@ class Almoxarifado:
 
                 case "desinclinado":
                     material = hidrometro_material.HidrometroMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -129,7 +138,6 @@ class Almoxarifado:
 
                 case "cavalete":
                     material = cavalete_material.CavaleteMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -144,7 +152,6 @@ class Almoxarifado:
 
                 case "religacao":
                     material = corte_restab_material.CorteRestabMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -159,7 +166,6 @@ class Almoxarifado:
 
                 case "supressao":
                     material = corte_restab_material.CorteRestabMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -174,7 +180,6 @@ class Almoxarifado:
                     material.receita_supressao()
                 case "ramal_agua" | "tra":
                     material = rede_agua_material.RedeAguaMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -191,7 +196,6 @@ class Almoxarifado:
 
                 case "reparo_ramal_agua" | "ligacao_agua" | "ligacao_agua_nova":
                     material = rede_agua_material.RedeAguaMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -208,7 +212,6 @@ class Almoxarifado:
                     # Olhar hidrômetro e lacre em ligações novas.
                     if self.identificador[2] == "ligacao_agua_nova":
                         material = hidrometro_material.HidrometroMaterial(
-
                             self.hidro,
                             self.operacao,
                             self.identificador,
@@ -223,7 +226,6 @@ class Almoxarifado:
 
                 case "rede_agua" | "gaxeta" | "chumbo_junta" | "valvula":
                     material = rede_agua_material.RedeAguaMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -240,7 +242,6 @@ class Almoxarifado:
 
                 case "ligacao_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -257,7 +258,6 @@ class Almoxarifado:
 
                 case "rede_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -274,7 +274,6 @@ class Almoxarifado:
 
                 case "png_esgoto":
                     material = rede_esgoto_material.RedeEsgotoMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -294,7 +293,6 @@ class Almoxarifado:
 
                 case "poço":
                     material = poco_material.PocoMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -309,7 +307,6 @@ class Almoxarifado:
 
                 case "cx_parada":
                     material = poco_material.PocoMaterial(
-
                         self.hidro,
                         self.operacao,
                         self.identificador,
@@ -328,15 +325,15 @@ class Almoxarifado:
 
 
 def materiais(
-    hidro_instalado,
-    operacao,
-    identificador,
-    diametro_ramal,
-    diametro_rede,
-    contrato,
-    estoque,
-    posicao_rede,
-    session,
+    hidro_instalado: str,
+    operacao: str,
+    identificador: tuple[str, str, str],
+    diametro_ramal: str,
+    diametro_rede: str,
+    contrato: str,
+    estoque: pd.DataFrame,
+    posicao_rede: str,
+    session: win32.CDispatch,
 ) -> None:
     """Função dos materiais de acordo com a TSE pai."""
     servico = Almoxarifado(

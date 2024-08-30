@@ -349,6 +349,7 @@ def check_and_value_ordem(
         principal_tse (str): Serviço Pai
         start_time (float): Cronometro inicial da iteração
         n_con (int): Número da Conexão
+        revalorar (bool): Se True ignora o histórico da ZSBMM216 e valora de novo
 
     Returns:
     -------
@@ -640,6 +641,7 @@ def looping(
                 principal_tse,
                 start_time,
                 n_con,
+                revalorar,
             )
             if check is True:
                 return qtd_ordem, session

@@ -1,5 +1,6 @@
 # ConfereOS.py
 """Módulo de check-up no SAP."""
+
 import threading
 
 import pythoncom
@@ -15,14 +16,15 @@ lock = threading.Lock()
 console = Console()
 
 
-def consulta_os(n_os, session, contrato, n_con):
+def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) -> tuple:
     """Função para consultar ORDEM na transação ZSBPM020.
 
     Args:
     ----
         n_os (str): Número da ordem de serviço.
-        session (win32com.client.CDispatch): Objeto de sessão SAP.
+        session (win32.CDispatch): Objeto de sessão SAP.
         contrato (str): Contrato relacionado à ordem de serviço.
+        n_con (int): Número da conexão.
 
     Returns:
     -------
@@ -52,7 +54,7 @@ def consulta_os(n_os, session, contrato, n_con):
     corte = None
     principal_tse = None
 
-    def zsbpm020(session_id) -> None:
+    def zsbpm020(session_id: pywintypes.HANDLE) -> None:
         """Transact 020."""
         nonlocal n_os
         nonlocal contrato
@@ -64,8 +66,7 @@ def consulta_os(n_os, session, contrato, n_con):
                 pythoncom.CoInitialize()
                 # pylint: disable=E1101
                 gui = win32.Dispatch(
-                    pythoncom.CoGetInterfaceAndReleaseStream(
-                        session_id, pythoncom.IID_IDispatch),
+                    pythoncom.CoGetInterfaceAndReleaseStream(session_id, pythoncom.IID_IDispatch),
                 )
                 if gui is None:
                     console.print("Não foi possível obter a sessão SAP.")
@@ -77,8 +78,7 @@ def consulta_os(n_os, session, contrato, n_con):
                 # gui.findById("wnd[0]/usr/txtS_UN_ADM-LOW").text =
                 gui.findById("wnd[0]").sendVKey(8)
             except (pywintypes.com_error, AttributeError) as transaction_error:
-                console.print(
-                    f"Erro durante a thread consulta OS: {transaction_error}")
+                console.print(f"Erro durante a thread consulta OS: {transaction_error}")
 
             finally:
                 pythoncom.CoUninitialize()
@@ -86,11 +86,9 @@ def consulta_os(n_os, session, contrato, n_con):
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
-        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
-            pythoncom.IID_IDispatch, session)
+        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)
         # Start
-        thread = threading.Thread(target=zsbpm020, kwargs={
-            "session_id": session_id})
+        thread = threading.Thread(target=zsbpm020, kwargs={"session_id": session_id})
         thread.start()
         # Aguarde a thread concluir
         thread.join(timeout=300)
@@ -106,55 +104,55 @@ def consulta_os(n_os, session, contrato, n_con):
         for n, cod_tse in enumerate(range(num_etapas_linhas)):
             cod_tse = consulta.GetCellValue(n, "ZZTSE")
             if cod_tse not in (
-                    dict_reposicao["asfalto_frio"],
-                    dict_reposicao["cimentado"],
-                    dict_reposicao["especial"],
-                    dict_reposicao["PARARELO"],
-                    dict_reposicao["SARJETA"],
-                    dict_reposicao["asfalto"],
-                    dict_reposicao["bloquete_inv"]):
+                dict_reposicao["asfalto_frio"],
+                dict_reposicao["cimentado"],
+                dict_reposicao["especial"],
+                dict_reposicao["PARARELO"],
+                dict_reposicao["SARJETA"],
+                dict_reposicao["asfalto"],
+                dict_reposicao["bloquete_inv"],
+            ):
                 principal_tse = cod_tse
 
         for n_etapa, restab in enumerate(range(num_etapas_linhas)):
-            restab = consulta.GetCellValue(
-                n_etapa, "ZZLOCAL_RELIGA")  # religação
+            restab = consulta.GetCellValue(n_etapa, "ZZLOCAL_RELIGA")  # religação
             if restab != "":
                 relig = restab
 
         for n_etapa, supressao in enumerate(range(num_etapas_linhas)):
-            supressao = consulta.GetCellValue(
-                n_etapa, "ZZLOCAL_CORTE")  # Supressão
+            supressao = consulta.GetCellValue(n_etapa, "ZZLOCAL_CORTE")  # Supressão
             if supressao != "":
                 corte = supressao
 
         for n_etapa in range(num_etapas_linhas):
             tipo_tse = consulta.GetCellValue(
-                n_etapa, "ZZTSE",
+                n_etapa,
+                "ZZTSE",
             )
             if tipo_tse in (
-                    "253000",
-                    "254000",
-                    "255000",
-                    "262000",
-                    "263000",
-                    "265000",
-                    "266000",
-                    "268000",
-                    "269000",
-                    "280000",
-                    "284500",
-                    "286000",
-                    "502000",
-                    "505000",
-                    "506000",
-                    "508000",
-                    "561000",
-                    "565000",
-                    "569000",
-                    "581000",
-                    "539000",
-                    "539000",
-                    "585000",
+                "253000",
+                "254000",
+                "255000",
+                "262000",
+                "263000",
+                "265000",
+                "266000",
+                "268000",
+                "269000",
+                "280000",
+                "284500",
+                "286000",
+                "502000",
+                "505000",
+                "506000",
+                "508000",
+                "561000",
+                "565000",
+                "569000",
+                "581000",
+                "539000",
+                "539000",
+                "585000",
             ):
                 # Posição da Rede
                 posicao_rede = consulta.GetCellValue(n_etapa, "ZZPOSICAO_REDE")
@@ -163,20 +161,21 @@ def consulta_os(n_os, session, contrato, n_con):
 
         for n_etapa in range(num_etapas_linhas):
             tipo_tse = consulta.GetCellValue(
-                n_etapa, "ZZTSE",
+                n_etapa,
+                "ZZTSE",
             )
             if tipo_tse in (
-                    "502000",
-                    "505000",
-                    "506000",
-                    "508000",
-                    "561000",
-                    "565000",
-                    "569000",
-                    "581000",
-                    "539000",
-                    "539000",
-                    "585000",
+                "502000",
+                "505000",
+                "506000",
+                "508000",
+                "561000",
+                "565000",
+                "569000",
+                "581000",
+                "539000",
+                "539000",
+                "585000",
             ):
                 # Profundidade
                 profundidade = consulta.GetCellValue(n_etapa, "ZZPROFUNDIDADE")
@@ -187,15 +186,15 @@ def consulta_os(n_os, session, contrato, n_con):
             operacao = consulta.GetCellValue(n_etapa, "VORNR")
 
         for n_etapa, hidro_colocado in enumerate(range(num_etapas_linhas)):
-            hidro_colocado = consulta.GetCellValue(
-                n_etapa, "ZZHIDROMETRO_INSTALADO")
+            hidro_colocado = consulta.GetCellValue(n_etapa, "ZZHIDROMETRO_INSTALADO")
             if hidro_colocado:
                 hidro = hidro_colocado
                 break
 
         for n_etapa in range(num_etapas_linhas):
             sap_diametro_ramal = consulta.GetCellValue(
-                n_etapa, "ZZDIAMETRO_RAMAL",
+                n_etapa,
+                "ZZDIAMETRO_RAMAL",
             )
             if sap_diametro_ramal in ("DN_100", "DN_150", "DN_200", "DN_250", "DN_300"):
                 diametro_ramal = sap_diametro_ramal
@@ -203,7 +202,8 @@ def consulta_os(n_os, session, contrato, n_con):
 
         for n_etapa in range(num_etapas_linhas):
             sap_diametro_rede = consulta.GetCellValue(
-                n_etapa, "ZZDIAMETRO_REDE",
+                n_etapa,
+                "ZZDIAMETRO_REDE",
             )
             if sap_diametro_rede in ("100", "150", "200", "250", "300"):
                 diametro_rede = sap_diametro_rede
