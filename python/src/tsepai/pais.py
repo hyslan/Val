@@ -173,55 +173,56 @@ class Pai:
 class Cesta(Pai):
     """Ramo de Rem Base."""
 
-    def processar_servico_cesta(self, identificador: str, codigo_despesa: str):
+    def processar_servico_cesta(self, identificador: str, codigo_despesa: str) -> tuple[list, None, str, list]:
         """Processar serviços da Cesta."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas, codigo_despesa, identificador)
 
-    def cavalete(self):
+    def cavalete(self) -> tuple[list, None, str, list]:
         """Serviços de cavalete."""
         return self.processar_servico_cesta("cavalete", PERTENCE_SERVICO_PRINCIPAL)
 
-    def ligacao_agua(self):
+    def ligacao_agua(self) -> tuple[list, None, str, list]:
         """Serviços de água."""
         return self.processar_servico_cesta("ligacao_agua", CODIGO_DESPESA)
 
-    def suprimido_ramal_agua_abandonado(self):
-        """Suprimido Ramal de água abandonado (RB) - TSE 416000,
+    def suprimido_ramal_agua_abandonado(self) -> tuple[list, None, str, list]:
+        """Suprimido Ramal de água abandonado (RB) - TSE 416000.
+
         SUPRIMIDO RAMAL ANTERIOR - TSE 451000 e
         SUPRIMIDO RAMAL AGUA ABAND NÃO VISIVEL - TSE 416500.
         """
         return self.processar_servico_cesta("supressao", CODIGO_DESPESA)
 
-    def reparo_ramal_agua(self):
+    def reparo_ramal_agua(self) -> tuple[list, None, str, list]:
         """Reparo de ramal de água (RB) - TSE 288000."""
         return self.processar_servico_cesta("reparo_ramal_agua", CODIGO_DESPESA)
 
-    def ligacao_esgoto(self):
+    def ligacao_esgoto(self) -> tuple[list, None, str, list]:
         """Reparo de ramal de esgoto (RB)."""
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
-    def poco(self):
+    def poco(self) -> tuple[list, None, str, list]:
         """Reconstruções/Reparos de poços (RB)."""
         return self.processar_servico_cesta("ligacao_esgoto", CODIGO_DESPESA)
 
-    def rede_agua(self):
+    def rede_agua(self) -> tuple[list, None, str, list]:
         """Reparo de Rede de Água (RB) - TSE 332000."""
         return self.processar_servico_cesta("rede_agua", CODIGO_DESPESA)
 
-    def gaxeta(self):
+    def gaxeta(self) -> tuple[list, None, str, list]:
         """Aperto de Gaxeta válvula de Rede de água (RB)."""
         return self.processar_servico_cesta("gaxeta", CODIGO_DESPESA)
 
-    def chumbo_junta(self):
+    def chumbo_junta(self) -> tuple[list, None, str, list]:
         """Rebatido Chumbo na Junta (RB) - TSE 330000."""
         return self.processar_servico_cesta("chumbo_junta", CODIGO_DESPESA)
 
-    def valvula(self):
+    def valvula(self) -> tuple[list, None, str, list]:
         """Troca de Válvula de Rede de água (RB) - TSE 325000."""
         return self.processar_servico_cesta("valvula", CODIGO_DESPESA)
 
-    def rede_esgoto(self):
+    def rede_esgoto(self) -> tuple[list, None, str, list]:
         """Reparo de Rede de Esgoto (RB) - TSE 580000."""
         return self.processar_servico_cesta("rede_esgoto", CODIGO_DESPESA)
 
@@ -229,12 +230,12 @@ class Cesta(Pai):
 class Investimento(Pai):
     """Ramo de Investimento (RB)."""
 
-    def processar_servico_investimento(self, identificador, codigo_despesa):
+    def processar_servico_investimento(self, identificador: str, codigo_despesa: str) -> tuple[list, None, str, list]:
         """Processar serviços de Investimento."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_cesta(servico_temp, num_tse_linhas, codigo_despesa, identificador)
 
-    def tra(self):
+    def tra(self) -> tuple[list, None, str, list]:
         """Troca de Ramal de Água (RB) - TSE 284000."""
         return self.processar_servico_investimento("tra", CODIGO_INVESTIMENTO)
 
@@ -242,22 +243,22 @@ class Investimento(Pai):
 class Sondagem(Pai):
     """Ramo de Sondagem Vala Seca."""
 
-    def ligacao_agua(self):
+    def ligacao_agua(self) -> tuple[list, None, str, list]:
         """Sondagem de Ramal de Água (RB) - TSE 283000."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "ligacao_agua")
 
-    def rede_agua(self):
+    def rede_agua(self) -> tuple[list, None, str, list]:
         """Sondagem de Ramal de Água (RB) - TSE 321000."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "rede_agua")
 
-    def ligacao_esgoto(self):
+    def ligacao_esgoto(self) -> tuple[list, None, str, list]:
         """Sondagem de Ramal de Água (RB) - TSE 567000."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "ligacao_esgoto")
 
-    def rede_esgoto(self):
+    def rede_esgoto(self) -> tuple[list, None, str, list]:
         """Sondagem de Ramal de Água (RB) - TSE 591000."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "rede_esgoto")
@@ -266,7 +267,12 @@ class Sondagem(Pai):
 class Unitario(Pai):
     """Ramo de serviços pagos unitariamente."""
 
-    def processar_reposicao_sem_preco(self, servico_temp, num_tse_linhas, identificador):
+    def processar_reposicao_sem_preco(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Processar serviços que não tenham como pagar as reposições."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -302,7 +308,12 @@ class Unitario(Pai):
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_sem_bloquete(self, servico_temp, num_tse_linhas, identificador):
+    def processar_servico_sem_bloquete(
+        self,
+        servico_temp: CDispatch,
+        num_tse_linhas: int,
+        identificador: str,
+    ) -> tuple[list, None, str, list]:
         """Processar serviços que não cotntemplam bloquete/muro."""
         tse_temp_reposicao = []
         etapa_reposicao = []
@@ -325,97 +336,101 @@ class Unitario(Pai):
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
-            # -------- SERÁ PAGO LRP ESPECIAL
+            """ -------- SERÁ PAGO LRP ESPECIAL
             # if sap_tse in ('738000', '740000'):
             #     servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
             #     servico_temp.modifyCell(
             #         n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
             #     tse_temp_reposicao.append(sap_tse)
             #     etapa_reposicao.append(etapa)
+            """
 
         return tse_temp_reposicao, None, identificador, etapa_reposicao
 
-    def processar_servico_unitario(self, identificador):
+    def processar_servico_unitario(self, identificador: str) -> tuple[list, None, str, list]:
         """Processar serviços Unitários."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp_unitario(servico_temp, num_tse_linhas, identificador)
 
-    def cavalete(self):
+    def cavalete(self) -> tuple[list, None, str, list]:
         """Serviços de unitários de cavalete."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "cavalete")
 
-    def lacre(self):
+    def lacre(self) -> tuple[list, None, str, list]:
         """Instalados lacres avulsos."""
         return [], None, "cavalete", []
 
-    def cavaletes_proibidos(self):
+    def cavaletes_proibidos(self) -> tuple[list, str, str, list]:
         """Trocar Cavalete kit."""
         return [], "cavaletes proibidos", "cavalete", []
 
-    def troca_cv_por_uma(self):
+    def troca_cv_por_uma(self) -> tuple[list, None, str, list]:
         """Troca de Cavalete por UMA - TSE 148000."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_reposicao_dependente(servico_temp, num_tse_linhas, "cavalete")
 
-    def hidrometro(self):
+    def hidrometro(self) -> tuple[list, None, str, list]:
         """Serviços unitários de hidrômetros."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_temp(servico_temp, num_tse_linhas, "hidrometro")
 
-    def hidrometro_alterar_capacidade(self):
+    def hidrometro_alterar_capacidade(self) -> tuple[list, str, str, list]:
         """Verificar esse serviço aí rapaz."""
         return [], "sei não ein", "desinclinado", []
 
-    def desinclinado_hidrometro(self):
+    def desinclinado_hidrometro(self) -> tuple[list, None, str, list]:
         """O hidrômetro mais barato."""
         return self.processar_servico_unitario("desinclinado")
 
-    def ligacao_agua_avulsa(self):
+    def ligacao_agua_avulsa(self) -> tuple[list, None, str, list]:
         """Ligação de água simples avulsa."""
         return self.processar_servico_unitario("ligacao_agua_nova")
 
-    def tra_nv_png_agua_subst_tra_prev(self):
-        """TRA Não Visível, PNG Água,
+    def tra_nv_png_agua_subst_tra_prev(self) -> tuple[list, None, str, list]:
+        """TRA Não Visível, PNG Água.
+
         Substituição de Ligação água, TRA Preventivo.
         """
         return self.processar_servico_unitario("ligacao_agua")
 
-    def ligacao_esgoto_avulsa(self):
+    def ligacao_esgoto_avulsa(self) -> tuple[list, None, str, list]:
         """Ligação de Esgoto."""
         return self.processar_servico_unitario("ligacao_esgoto")
 
-    def png_esgoto(self):
+    def png_esgoto(self) -> tuple[list, None, str, list]:
         """PNG Obra Esgoto."""
         return self.processar_servico_unitario("png_esgoto")
 
-    def tre(self):
+    def tre(self) -> tuple[list, None, str, list]:
         """Troca de Ramal de Esgoto."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(servico_temp, num_tse_linhas, "ligacao_esgoto")
 
-    def det_descoberto_nivelado_reg_cx_parada(self):
-        """Descobrir, Trocar caixa de parada,
+    def det_descoberto_nivelado_reg_cx_parada(self) -> tuple[list, None, str, list]:
+        """Descobrir, Trocar caixa de parada.
+
         DESCOBERTA VALVULA DE REDE DE AGUA
         TSE: 304000, 322000.
         """
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_reposicao_sem_preco(servico_temp, num_tse_linhas, "cx_parada")
 
-    def nivelamento_poco(self):
+    def nivelamento_poco(self) -> tuple[list, None, str, list]:
         """Nivelamento PI/PV/TL."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_reposicao_dependente(servico_temp, num_tse_linhas, "poço")
 
-    def religacao(self):
-        """Religação unitário
+    def religacao(self) -> tuple[list, None, str, list]:
+        """Religação unitário.
+
         TSEs: 405000, 414000, 450500, 453000,
         455500, 463000, 465000, 466500, 467500, 475500.
         """
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_sem_bloquete(servico_temp, num_tse_linhas, "religacao")
 
-    def supressao(self):
+    def supressao(self) -> tuple[list, None, str, list]:
         """Supressão unitário."""
         servico_temp, num_tse_linhas = self.get_shell()
         return self.processar_servico_sem_bloquete(servico_temp, num_tse_linhas, "supressao")
