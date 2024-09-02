@@ -1,14 +1,33 @@
 # hidrometro.py
 """Módulo Família Hidrômetro Unitário."""
+
+from __future__ import annotations
+
+import typing
+
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class Hidrometro:
     """Classe Unitária de Hidrômetro."""
 
-    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede,
-                 profundidade, session, preco) -> None:
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: str,
+        num_tse_linhas: int,
+        etapa_reposicao: str,
+        identificador: str,
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
+    ) -> None:
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
