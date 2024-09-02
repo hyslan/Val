@@ -1,14 +1,33 @@
 """Módulo Unitário de cavalete."""
+
 # cavalete.py
+from __future__ import annotations
+
+import typing
+
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class Cavalete:
     """Classe Cavalete unitário."""
 
-    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede,
-                 profundidade, session, preco) -> None:
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: str,
+        num_tse_linhas: int,
+        etapa_reposicao: str,
+        identificador: str,
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
+    ) -> None:
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -58,26 +77,34 @@ class Cavalete:
                 codigo = "457229"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM",
+                    self.preco.CurrentCellRow,
+                    "ITEM",
                 )
-                if item_preco in ("300", "310", "730", "1470", "4950",
-                                  ):
-                    self.preco.modifyCell(
-                        self.preco.CurrentCellRow, "QUANT", "1")
-                    self.preco.setCurrentCell(
-                        self.preco.CurrentCellRow, "QUANT")
+                if item_preco in (
+                    "300",
+                    "310",
+                    "730",
+                    "1470",
+                    "4950",
+                ):
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
 
             else:
                 codigo = "457230"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM",
+                    self.preco.CurrentCellRow,
+                    "ITEM",
                 )
-                if item_preco in ("300", "310", "730", "1470", "4950",
-                                  ):
-                    self.preco.modifyCell(
-                        self.preco.CurrentCellRow, "QUANT", "1")
-                    self.preco.setCurrentCell(
-                        self.preco.CurrentCellRow, "QUANT")
+                if item_preco in (
+                    "300",
+                    "310",
+                    "730",
+                    "1470",
+                    "4950",
+                ):
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()

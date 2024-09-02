@@ -2,7 +2,10 @@
 """Módulo do Dicionário de Unitários."""
 
 # Bibliotecas
+from __future__ import annotations
+
 import sys
+import typing
 
 from python.src.unitarios.cavalete.m_cavalete import Cavalete
 from python.src.unitarios.hidrometro.m_hidrometro import Hidrometro
@@ -12,9 +15,22 @@ from python.src.unitarios.poco.m_poco import Poco
 from python.src.unitarios.religacao.m_religacao import Religacao
 from python.src.unitarios.supressao.m_supressao import Corte
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
+
 
 def selecionar_tse(
-    etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador, posicao_rede, profundidade, session, preco,
+    etapa: str,
+    corte: str,
+    relig: str,
+    reposicao: str,
+    num_tse_linhas: int,
+    etapa_reposicao: str,
+    identificador: str,
+    posicao_rede: str,
+    profundidade: str,
+    session: CDispatch,
+    preco: CDispatch,
 ):
     """Dicionário de chaves para etapas de unitário."""
     cavalete = Cavalete(

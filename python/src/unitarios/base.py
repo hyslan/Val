@@ -1,16 +1,32 @@
 # base.py
 """Base construtora de classes."""
+
+from __future__ import annotations
+
+import typing
+
 from python.src.unitarios.interfaces import UnitarioInterface
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class BaseUnitario(UnitarioInterface):
     """Construtor comum."""
 
-    def __init__(self, etapa, corte, relig,
-                 reposicao, num_tse_linhas, etapa_reposicao,
-                 identificador, posicao_rede, profundidade,
-                 session,
-                 ) -> None:
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: str,
+        num_tse_linhas: int,
+        etapa_reposicao: str,
+        identificador: str,
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+    ) -> None:
         self.corte = corte
         self.relig = relig
         self.reposicao = reposicao
@@ -23,13 +39,14 @@ class BaseUnitario(UnitarioInterface):
         self.etapa = etapa
         self.preco = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAO_NAPI:9020/cntlCC_ITEM_PRECO/shellcont/shell")
+            "ZSBMM_VALORACAO_NAPI:9020/cntlCC_ITEM_PRECO/shellcont/shell",
+        )
 
     def processar(self) -> None:
-        pass
+        """Processar."""
 
     def pagar(self) -> None:
-        pass
+        """Pagar."""
 
     def _processar_operacao(self, tipo_operacao) -> None:
         """Processar Código de preço."""
