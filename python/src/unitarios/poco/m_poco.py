@@ -1,20 +1,39 @@
 """Módulo Família Poço Unitário."""
+
+from __future__ import annotations
+
+import typing
+
 from python.src.lista_reposicao import dict_reposicao
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class Poco:
     """Classe Unitária de Poço."""
 
-    CODIGOS = {
+    CODIGOS: typing.ClassVar[dict[str, tuple[str, str, tuple[str, str, str]]]] = {
         "NIV_CX_PARADA": ("456111", ("050401", "050402", "451123")),
         "TROCA_CX_PARADA": ("456112", ("050401", "050402", "451123")),
         "NIVELAMENTO": ("456206", "451208", ("456207", "456207", "451208")),
     }
 
-    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede,
-                 profundidade, session, preco) -> None:
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: str,
+        num_tse_linhas: int,
+        etapa_reposicao: str,
+        identificador: str,
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
+    ) -> None:
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -47,36 +66,29 @@ class Poco:
             # 4220 é módulo Investimento.
 
             btn_localizador(self.preco, self.session, preco_reposicao)
-            n_etapa = self.preco.GetCellValue(
-                self.preco.CurrentCellRow, "ETAPA")
+            n_etapa = self.preco.GetCellValue(self.preco.CurrentCellRow, "ETAPA")
 
             if n_etapa != operacao_rep:
                 self.preco.pressToolbarButton("&FIND")
-                self.session.findById(
-                    "wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
-                self.session.findById(
-                    "wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
+                self.session.findById("wnd[1]/usr/txtGS_SEARCH-VALUE").Text = preco_reposicao
+                self.session.findById("wnd[1]/usr/cmbGS_SEARCH-SEARCH_ORDER").key = "0"
                 self.session.findById("wnd[1]").sendVKey(0)
                 self.session.findById("wnd[1]").sendVKey(0)
                 self.session.findById("wnd[1]").sendVKey(12)
 
-            self.preco.modifyCell(
-                self.preco.CurrentCellRow, "QUANT", "1")
-            self.preco.setCurrentCell(
-                self.preco.CurrentCellRow, "QUANT")
+            self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+            self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
 
-    def _repor(self, codigos_reposicao) -> None:
+    def _repor(self, codigos_reposicao: tuple) -> None:
         if self.reposicao:
             self.reposicoes(codigos_reposicao)
 
     def _pagar(self, preco_tse: str) -> None:
         """Pagar serviço."""
         btn_localizador(self.preco, self.session, preco_tse)
-        self.preco.modifyCell(
-            self.preco.CurrentCellRow, "QUANT", "1")
-        self.preco.setCurrentCell(
-            self.preco.CurrentCellRow, "QUANT")
+        self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+        self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
         self.preco.pressEnter()
 
     def _processar_operacao(self, tipo_operacao: str) -> None:

@@ -1,9 +1,20 @@
 # supressao.py
 """Módulo Família Supressão Unitário."""
 
-# Bibliotecas
+from __future__ import annotations
+
+import logging
+import typing
+
+import pywintypes
+
 from python.src.lista_reposicao import dict_reposicao
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
+
+logger = logging.getLogger(__name__)
 
 
 class Corte:
@@ -11,17 +22,17 @@ class Corte:
 
     def __init__(
         self,
-        etapa,
-        corte,
-        relig,
-        reposicao,
-        num_tse_linhas,
-        etapa_reposicao,
-        identificador,
-        posicao_rede,
-        profundidade,
-        session,
-        preco,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: str,
+        num_tse_linhas: int,
+        etapa_reposicao: str,
+        identificador: str,
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
     ) -> None:
         self.etapa = etapa
         self.corte = corte
@@ -36,8 +47,9 @@ class Corte:
         self.preco = preco
 
     def supressao(self) -> None:
-        """Método para definir de qual forma foi suprimida e
-        pagar de acordo com as informações dadas, caso contrário,
+        """Método para definir de qual forma foi suprimida.
+
+        E pagar de acordo com as informações dadas, caso contrário,
         pagar como ramal se tiver reposição ou cavalete.
         """
         try:
@@ -77,10 +89,13 @@ class Corte:
                         if ramal is False:
                             btn_localizador(self.preco, self.session, "456032")
                             self.preco.modifyCell(
-                                self.preco.CurrentCellRow, "QUANT", "1",
+                                self.preco.CurrentCellRow,
+                                "QUANT",
+                                "1",
                             )
                             self.preco.setCurrentCell(
-                                self.preco.CurrentCellRow, "QUANT",
+                                self.preco.CurrentCellRow,
+                                "QUANT",
                             )
                             self.preco.pressEnter()
                             contador_pg += 1
@@ -89,14 +104,18 @@ class Corte:
                             # 660 é módulo despesa.
                         btn_localizador(self.preco, self.session, preco_reposicao)
                         item_preco = self.preco.GetCellValue(
-                            self.preco.CurrentCellRow, "ITEM",
+                            self.preco.CurrentCellRow,
+                            "ITEM",
                         )
                         if item_preco == "660":
                             self.preco.modifyCell(
-                                self.preco.CurrentCellRow, "QUANT", "1",
+                                self.preco.CurrentCellRow,
+                                "QUANT",
+                                "1",
                             )
                             self.preco.setCurrentCell(
-                                self.preco.CurrentCellRow, "QUANT",
+                                self.preco.CurrentCellRow,
+                                "QUANT",
                             )
                             self.preco.pressEnter()
                             contador_pg += 1
@@ -105,14 +124,18 @@ class Corte:
                         if preco_reposicao in ("456041", "456042"):
                             btn_localizador(self.preco, self.session, preco_reposicao)
                             item_preco = self.preco.GetCellValue(
-                                self.preco.CurrentCellRow, "ITEM",
+                                self.preco.CurrentCellRow,
+                                "ITEM",
                             )
                             if item_preco in ("1820", "1830", "5310", "670"):
                                 self.preco.modifyCell(
-                                    self.preco.CurrentCellRow, "QUANT", "1",
+                                    self.preco.CurrentCellRow,
+                                    "QUANT",
+                                    "1",
                                 )
                                 self.preco.setCurrentCell(
-                                    self.preco.CurrentCellRow, "QUANT",
+                                    self.preco.CurrentCellRow,
+                                    "QUANT",
                                 )
                                 self.preco.pressEnter()
                                 contador_pg += 1
@@ -146,7 +169,7 @@ class Corte:
                     self.preco.pressEnter()
                     return
 
-        except Exception:
-            pass
+        except pywintypes.com_error:
+            logger.exception("Erro no módulo de Supressão.")
         # Confirmação da precificação.
         self.preco.pressEnter()

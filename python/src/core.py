@@ -165,9 +165,9 @@ def valorator_user(
 
 @log_execution
 def inspector_materials(
-    chave_rb_investimento,
-    list_chave_rb_despesa,
-    list_chave_unitario,
+    chave_rb_investimento: list[str, str, str, list[str], list[str]] | None,
+    list_chave_rb_despesa: list[tuple[str, str, str, list[str], list[str]]] | None,
+    list_chave_unitario: list[tuple[str, str, str, list[str], list[str]]] | None,
     hidro: str,
     diametro_ramal: str,
     diametro_rede: str,
