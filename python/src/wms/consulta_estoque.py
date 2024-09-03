@@ -1,17 +1,25 @@
 """Módulo de consulta estoque de materiais."""
+
+from __future__ import annotations
+
 import contextlib
-import os
 import time
+import typing
+from pathlib import Path
 
 import pandas as pd
 import xlwings as xw
 
 from python.src import sap
 
+if typing.TYPE_CHECKING:
+    from pandas import DataFrame
+    from win32com.client import CDispatch
 
-def estoque(session, contrato, n_con):
+
+def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
     """Função para consultar estoque."""
-    caminho = os.getcwd() + "\\sheets\\"
+    caminho = Path.cwd() / "sheets"
     session.StartTransaction("MBLB")
     frame = session.findById("wnd[0]")
     frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
@@ -21,23 +29,25 @@ def estoque(session, contrato, n_con):
     grid.contextMenu()
     grid.selectContextMenuItem("&XXL")
     session.findById("wnd[1]/tbar[0]/btn[0]").press()
-    session.findById(
-        "wnd[1]/usr/ctxtDY_PATH").text = caminho
-    session.findById(
-        "wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
+    session.findById("wnd[1]/usr/ctxtDY_PATH").text = caminho
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
     session.findById("wnd[1]").sendVKey(11)  # Substituir
-    materiais = pd.read_excel(caminho + f"estoque_{contrato}.XLSX",
-                              sheet_name="Sheet1", usecols=["Material",
-                                                            "Texto breve material",
-                                                            "Utilização livre",
-                                                            ],
-                              )
+    materiais = pd.read_excel(
+        caminho + f"estoque_{contrato}.XLSX",
+        sheet_name="Sheet1",
+        usecols=[
+            "Material",
+            "Texto breve material",
+            "Utilização livre",
+        ],
+    )
     materiais = materiais.dropna()
     materiais["Material"] = materiais["Material"].astype(int).astype(str)
     sessao = sap
     con = sessao.connection_object(n_con)
     total_sessoes = sessao.contar_sessoes(n_con)
-    if total_sessoes != 6:
+    max_sessoes = 6
+    if total_sessoes != max_sessoes:
         with contextlib.suppress(Exception):
             con.CloseSession(f"/app/con[0]/ses[{total_sessoes - 1}]")
         time.sleep(3)

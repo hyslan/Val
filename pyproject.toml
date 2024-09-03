@@ -80,5 +80,12 @@ ignore = ["S603", "S607", "S101", "ANN401", "DTZ005", "FBT001", "FBT003"]
 [tool.ruff]
 line-length = 128
 
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
