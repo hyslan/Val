@@ -87,5 +87,25 @@ strict = true
 python_version = "3.12"
 strict = true
 
+[tool.pyright]
+strict = true
+include = ["**/*.py"]
+exclude = [
+    "**/__pycache__",
+    "**/.ipynb_checkpoints",
+    "**/build",
+    "**/dist",
+    "**/.venv",
+    "**/.vscode",
+    "**/.git",
+    "**/.mypy_cache",
+    "**/.pytest_cache",
+    "**/.ruff_cache",
+    "**/.tox",
+    "**/.mypy",
+]
+pythonVersion = "3.12"
+pythonPlatform = "Windows"
+
 [tool.pytest.ini_options]
 pythonpath = ["."]

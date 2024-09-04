@@ -6,6 +6,7 @@
 		}
 	],
 	"settings": {
+		"python.analysis.typeCheckingMode": "strict",
 		"notebook.formatOnSave.enabled": true,
 		"notebook.codeActionsOnSave": {
 			"notebook.source.organizeImports": "explicit",
