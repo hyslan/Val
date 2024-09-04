@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import sys
 import time
 import typing
 from pathlib import Path
@@ -30,6 +31,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
     grid.selectContextMenuItem("&XXL")
     session.findById("wnd[1]/tbar[0]/btn[0]").press()
     session.findById("wnd[1]/usr/ctxtDY_PATH").text = caminho
+    sys.exit(1)
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
     session.findById("wnd[1]").sendVKey(11)  # Substituir
     materiais = pd.read_excel(

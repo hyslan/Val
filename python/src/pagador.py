@@ -1,5 +1,10 @@
 # pagador.py
 """Módulo para precificar na aba itens de preço."""
+
+from __future__ import annotations
+
+import typing
+
 from rich.columns import Columns
 from rich.console import Console
 from rich.panel import Panel
@@ -10,11 +15,28 @@ from python.src.unitarios.controlador import Controlador
 
 from .log_decorator import log_execution
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
+
 
 @log_execution
-def precificador(tse, corte, relig,
-                 posicao_rede, profundidade, contrato,
-                 session):
+def precificador(
+    tse: CDispatch,
+    corte: str,
+    relig: str,
+    posicao_rede: str,
+    profundidade: str,
+    contrato: str,
+    session: CDispatch,
+) -> tuple[
+    None | str,
+    list[tuple[str, str, str, str, str]],
+    list[tuple[str, str, str, str, str]],
+    None | tuple[str, str, str, str, str],
+    None | tuple[str, str, str, str, str],
+    bool,
+    bool,
+]:
     """Função para apontar os itens de preço e selecionar."""
     console = Console()
     tse.GetCellValue(0, "TSE")  # Saber qual TSE é
@@ -29,16 +51,14 @@ def precificador(tse, corte, relig,
         chave_rb_investimento,
         chave_unitario,
         reposicao_geral,
-    ) = verifica_tse(
-        tse, contrato, session)
+    ) = verifica_tse(tse, contrato, session)
 
     etapa_unitario = []
     ligacao_errada = False
     profundidade_errada = False
 
     if tse_proibida is not None:
-        console.print(
-            Columns([Panel("[bold red]TSE proibida de ser valorada.")]), justify="center")
+        console.print(Columns([Panel("[bold red]TSE proibida de ser valorada.")]), justify="center")
         return (
             tse_proibida,
             list_chave_rb_despesa,
@@ -49,7 +69,10 @@ def precificador(tse, corte, relig,
             profundidade_errada,
         )
 
-    if chave_unitario is not None and chave_unitario[0] in (
+    if (
+        chave_unitario is not None
+        and chave_unitario[0]
+        in (
             "253000",
             "254000",
             "255000",
@@ -72,10 +95,15 @@ def precificador(tse, corte, relig,
             "539000",
             "539000",
             "585000",
-    ) and not posicao_rede:
+        )
+        and not posicao_rede
+    ):
         ligacao_errada = True
 
-    if chave_unitario is not None and chave_unitario[0] in (
+    if (
+        chave_unitario is not None
+        and chave_unitario[0]
+        in (
             "502000",
             "505000",
             "508000",
@@ -86,7 +114,9 @@ def precificador(tse, corte, relig,
             "539000",
             "539000",
             "585000",
-    ) and not profundidade:
+        )
+        and not profundidade
+    ):
         profundidade_errada = True
 
     if ligacao_errada or profundidade_errada is True:
@@ -101,26 +131,18 @@ def precificador(tse, corte, relig,
         )
 
     console.print(Columns([Panel(f"[b]TSE: {tse_temp}")]))
-    console.print(
-        Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
+    console.print(Columns([Panel(f"Reposição inclusa : {reposicao_geral}")]))
     if list_chave_unitario:
-        console.print(
-            Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]), style="bold magenta")
+        console.print(Columns([Panel(f"[b]Chave unitario: {list_chave_unitario}")]), style="bold magenta")
     if list_chave_rb_despesa or chave_rb_investimento:
-        console.print(
-            Columns(
-                [Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]),
-            style="bold magenta")
+        console.print(Columns([Panel(f"[b]Chave RB: {list_chave_rb_despesa}, {chave_rb_investimento}")]), style="bold magenta")
 
     if list_chave_unitario:  # Verifica se está no Conjunto Unitários
         # Aba Itens de preço
-        session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
+        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABI").select()
 
-        console.print("Processo de Precificação",
-                      style="bold red underline", justify="center")
+        console.print("Processo de Precificação", style="bold red underline", justify="center")
         for chave_unitario in list_chave_unitario:
-            # pylint: disable=E1121
             seletor = Controlador(
                 chave_unitario[0],
                 corte,
@@ -137,8 +159,7 @@ def precificador(tse, corte, relig,
             etapa_unitario.append(chave_unitario[0])
 
     if chave_rb_investimento:
-        session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         cesta_dicionario.cesta(
             chave_rb_investimento[3],
             chave_rb_investimento[4],
@@ -148,8 +169,7 @@ def precificador(tse, corte, relig,
         )
 
     if list_chave_rb_despesa:
-        session.findById(
-            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
+        session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
         for chave_rb_despesa in list_chave_rb_despesa:
             cesta_dicionario.cesta(
                 chave_rb_despesa[3],

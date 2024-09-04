@@ -54,7 +54,7 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
     corte = None
     principal_tse = None
 
-    def zsbpm020(session_id: pywintypes.HANDLE) -> None:
+    def zsbpm020(session_id: pywintypes.HANDLE) -> None:  # type: ignore
         """Transact 020."""
         nonlocal n_os
         nonlocal contrato
@@ -86,7 +86,7 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
-        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)
+        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)  # type: ignore
         # Start
         thread = threading.Thread(target=zsbpm020, kwargs={"session_id": session_id})
         thread.start()

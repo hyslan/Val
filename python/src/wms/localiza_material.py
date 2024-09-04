@@ -25,8 +25,8 @@ def qtd_correta(tb_materiais: CDispatch, qtde: str) -> None:
     tb_materiais.setCurrentCell(tb_materiais.CurrentCellRow, "QUANT")
 
 
-def qtd_max(material: str, estoque: DataFrame, limite: int, df_materiais: DataFrame) -> DataFrame:
+def qtd_max(material: str, estoque: DataFrame, limite: float, df_materiais: DataFrame) -> DataFrame:
     """Query no dataset da aba materiais."""
     if not estoque[estoque["Material"] == material].empty:
         return df_materiais[(df_materiais["Material"] == material) & (df_materiais["Quantidade"] > limite)]
-    return DataFrame(columns=["Material", "Quantidade"]).astype({"Material": object, "Quantidade": int})
+    return DataFrame(columns=["Material", "Quantidade"]).astype({"Material": object, "Quantidade": float})

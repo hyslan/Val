@@ -29,6 +29,8 @@ class RedeAguaMaterial:
         tb_materiais: CDispatch,
         contrato: str,
         estoque: DataFrame,
+        df_materiais: DataFrame,
+        posicao_rede: str,
         session: CDispatch,
     ) -> None:
         """Método de inicialização da classe Rede Água.
@@ -43,6 +45,8 @@ class RedeAguaMaterial:
             tb_materiais (CDispatch): GRID de Materiais.
             contrato (str): Número do contrato.
             estoque (DataFrame): Tabela de Estoque.
+            df_materiais (DataFrame): Tabela de Materiais do Grid Materiais SAP.
+            posicao_rede (str): Posição da Rede de PA até PO.
             session (CDispatch): Sessão do SAP.
 
         """

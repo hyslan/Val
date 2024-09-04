@@ -60,7 +60,7 @@ def test_material_no_estoque_sem_resultado(setup_data: tuple[DataFrame, DataFram
 
     """
     estoque, df_materiais = setup_data
-    resultado = qtd_max("A", estoque, 200, df_materiais)
+    resultado = qtd_max("A", estoque, 200.00, df_materiais)
     esperado = pd.DataFrame(columns=["Material", "Quantidade"]).astype({"Material": object, "Quantidade": int})
     pd.testing.assert_frame_equal(resultado, esperado)
 
@@ -75,7 +75,7 @@ def test_material_nao_no_estoque(setup_data: tuple[DataFrame, DataFrame]) -> Non
     """
     estoque, df_materiais = setup_data
     resultado = qtd_max("D", estoque, 100, df_materiais)
-    esperado = pd.DataFrame(columns=["Material", "Quantidade"]).astype({"Material": object, "Quantidade": int})
+    esperado = pd.DataFrame(columns=["Material", "Quantidade"]).astype({"Material": object, "Quantidade": float})
     pd.testing.assert_frame_equal(resultado, esperado)
 
 

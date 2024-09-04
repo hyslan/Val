@@ -148,19 +148,20 @@ class RedeEsgotoMaterial:
             ultima_linha_material = num_material_linhas
 
             for material in self.df_materiais["Material"]:
+                s_material: str = material
                 match material:
                     case [curva90]:
-                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(s_material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(self.tb_materiais, self.session, curva90)
                             localiza_material.qtd_correta(self.tb_materiais, "1")
                     case [curva45]:
-                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(s_material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(self.tb_materiais, self.session, curva45)
                             localiza_material.qtd_correta(self.tb_materiais, "1")
                     case [luva_correr]:
-                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(s_material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
                             localiza_material.btn_busca_material(self.tb_materiais, self.session, luva_correr)
                             localiza_material.qtd_correta(self.tb_materiais, "1")

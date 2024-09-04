@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 class Poco:
     """Classe Unitária de Poço."""
 
-    CODIGOS: typing.ClassVar[dict[str, tuple[str, str, tuple[str, str, str]]]] = {
+    CODIGOS: typing.ClassVar[dict[str, tuple[str, tuple[str, str, str]] | tuple[str, str, tuple[str, str, str]]]] = {
         "NIV_CX_PARADA": ("456111", ("050401", "050402", "451123")),
         "TROCA_CX_PARADA": ("456112", ("050401", "050402", "451123")),
         "NIVELAMENTO": ("456206", "451208", ("456207", "456207", "451208")),
@@ -28,7 +28,7 @@ class Poco:
         reposicao: str,
         num_tse_linhas: int,
         etapa_reposicao: str,
-        identificador: str,
+        identificador: list[str],
         posicao_rede: str,
         profundidade: str,
         session: CDispatch,
@@ -46,7 +46,7 @@ class Poco:
         self.identificador = identificador
         self.preco = preco
 
-    def reposicoes(self, cod_reposicao: tuple) -> None:
+    def reposicoes(self, cod_reposicao: tuple[str, str, str]) -> None:
         """Reposições dos serviços de Poço."""
         rep_com_etapa = list(zip(self.reposicao, self.etapa_reposicao, strict=False))
 
@@ -80,7 +80,7 @@ class Poco:
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
 
-    def _repor(self, codigos_reposicao: tuple) -> None:
+    def _repor(self, codigos_reposicao: tuple[str, str, str]) -> None:
         if self.reposicao:
             self.reposicoes(codigos_reposicao)
 
@@ -95,11 +95,13 @@ class Poco:
         codigo = self.CODIGOS.get(tipo_operacao)
         if codigo:
             if tipo_operacao == "NIVELAMENTO":
-                self._pagar(codigo[1])
+                if isinstance(codigo[1], str):
+                    self._pagar(codigo[1])
                 return
 
             self._pagar(codigo[0])
-            self._repor(codigo[1])
+            if isinstance(codigo[1], tuple):
+                self._repor(codigo[1])
 
     def niv_cx_parada(self) -> None:
         """Método Nivelamento de Caixa de Parada."""

@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 class LigacaoAgua:
     """Ramo de Ligações (Ramal) de água."""
 
-    MND: tuple[str] = ("TA", "EI", "TO", "PO")
+    MND: tuple[str, str, str, str] = ("TA", "EI", "TO", "PO")
     # Ordem da tupla: [0] -> preço s/ fornecimento, [1] -> c/ fornecimento,
     # [2] Reposições -> (Cimentado, Especial e Asfalto Frio)
     # Códigos de preço para posição de rede do serviço pai
@@ -39,12 +39,29 @@ class LigacaoAgua:
         reposicao: str,
         num_tse_linhas: int,
         etapa_reposicao: str,
-        identificador: str,
+        identificador: list[str],
         posicao_rede: str,
         profundidade: str,
         session: CDispatch,
         preco: CDispatch,
     ) -> None:
+        """Construtor comum para Ramal de água.
+
+        Args:
+        ----
+            etapa (str): Etapa pai do serviço.
+            corte (str): Supressão
+            relig (str): Restabelecimento
+            reposicao (str): Serviço complementar
+            num_tse_linhas (int): Total linhas do Grid
+            etapa_reposicao (str): Etapa complementar
+            identificador (list[str]): TSE, Etapa, Identificador para almoxarifado.py
+            posicao_rede (str): Posição da Rede
+            profundidade (str): Profundidade da rede
+            session (CDispatch): Sessão SAP
+            preco (CDispatch): Grid preço do SAP
+
+        """
         self.etapa = etapa
         self.corte = corte
         self.relig = relig

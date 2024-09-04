@@ -91,7 +91,9 @@ class Almoxarifado:
 
         # pylint: disable=E1101
         except pywintypes.com_error:
-            return None
+            return pd.DataFrame(columns=["Etapa", "Material", "Descrição", "Quantidade"]).astype(
+                {"Etapa": object, "Material": object, "Descrição": object, "Quantidade": float},
+            )
         else:
             return df_materiais
 

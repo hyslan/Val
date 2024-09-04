@@ -1,4 +1,5 @@
 """Módulo para desfazer valoração."""
+
 import sys
 
 import pywintypes
@@ -23,14 +24,13 @@ def desvalorador(contrato, session) -> None:
         except TypeError:
             sys.exit()
 
-
         # Loop para pagar as ordens da planilha do Excel
         for _ in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
             transacao.run_transacao(ordem)
             try:
                 session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                    "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
@@ -67,7 +67,6 @@ def desvalorador(contrato, session) -> None:
     except TypeError:
         return
 
-
     # Loop para pagar as ordens da planilha do Excel
     for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
         # * Go to ZSBMM216 Transaction
@@ -76,7 +75,7 @@ def desvalorador(contrato, session) -> None:
         try:
             session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
             )
         except pywintypes.com_error:
             # Incremento de Ordem.

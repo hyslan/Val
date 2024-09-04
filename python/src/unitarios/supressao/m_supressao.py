@@ -28,7 +28,7 @@ class Corte:
         reposicao: str,
         num_tse_linhas: int,
         etapa_reposicao: str,
-        identificador: str,
+        identificador: list[str],
         posicao_rede: str,
         profundidade: str,
         session: CDispatch,

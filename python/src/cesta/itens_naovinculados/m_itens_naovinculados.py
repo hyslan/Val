@@ -15,7 +15,7 @@ class Modalidade:
         self,
         reposicao: str,
         etapa_reposicao: str,
-        identificador: tuple[str, str, str],
+        identificador: tuple[str, str, str, str, str],
         mae: bool,
         session: win32.CDispatch,
     ) -> None:
@@ -46,10 +46,14 @@ class Modalidade:
             justify="center",
         )
         self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-        return self.session.findById(
+        aba = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
             "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell",
         )
+        if isinstance(aba, win32.CDispatch):
+            return aba
+        typo_msg = "O retorno não é do tipo win32.CDispatch"
+        raise TypeError(typo_msg)
 
     def testa_modalidade_sap(self, itens_nv: win32.CDispatch) -> None:
         """Tratamento de erro - Modalidade."""

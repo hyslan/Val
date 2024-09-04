@@ -43,15 +43,15 @@ def verifica_tse(
     contrato: str,
     session: CDispatch,
 ) -> tuple[
-    str,
+    list[str],
     int,
     str | None,
     list[str],
     bool,
-    list[tuple[str, str, str, str, str]],
-    list[tuple[str, str, str, str, str]],
-    tuple[str, str, str, str, str] | None,
-    tuple[str, str, str, str, str] | None,
+    list[tuple[str, str, str, list[str], list[str]]],
+    list[tuple[str, str, str, list[str], list[str]]],
+    tuple[str, str, str, list[str], list[str]] | None,
+    tuple[str, str, str, list[str], list[str]] | None,
     np.ndarray | None,
 ]:
     """Agrupador de serviço e indexador de classes."""
@@ -72,18 +72,18 @@ def verifica_tse(
     troca_pe_cv_prev = ["153000", "153500"]
     pai_tse = 0
     # Lista temporária para armazenar as tse
-    list_chave_rb_despesa = []
-    list_chave_unitario = []
-    tse_temp = []
-    identificador_list = []
-    num_tse_linhas = servico.RowCount
-    rem_base_reposicao = []
-    unitario_reposicao = []
+    list_chave_rb_despesa: list[tuple[str, str, str, list[str], list[str]]] = []
+    list_chave_unitario: list[tuple[str, str, str, list[str], list[str]]] = []
+    tse_temp: list[str] = []
+    identificador_list: list[str] = []
+    num_tse_linhas: int = servico.RowCount
+    rem_base_reposicao: list[str] = []
+    unitario_reposicao: list[str] = []
     mae: bool = False
     tse_proibida = None
-    chave_unitario = None
-    chave_rb_despesa = None
-    chave_rb_investimento = None
+    chave_unitario: tuple[str, str, str, list[str], list[str]] | None = None
+    chave_rb_despesa: tuple[str, str, str, list[str], list[str]] | None = None
+    chave_rb_investimento: tuple[str, str, str, list[str], list[str]] | None = None
     for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
@@ -194,7 +194,7 @@ def verifica_tse(
                 reposicao,
                 etapa_reposicao,
             )
-            unitario_reposicao.append(reposicao)
+            unitario_reposicao.extend(reposicao)
             list_chave_unitario.append(chave_unitario)
             pai_tse += 1
             if tse_proibida is not None:
@@ -207,7 +207,7 @@ def verifica_tse(
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
             (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
-            rem_base_reposicao.append(reposicao)
+            rem_base_reposicao.extend(reposicao)
             identificador_list.append(identificador)
             chave_rb_despesa = (
                 sap_tse,
@@ -228,7 +228,7 @@ def verifica_tse(
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
             (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_cesta(sap_tse, session)
-            rem_base_reposicao.append(reposicao)
+            rem_base_reposicao.extend(reposicao)
             identificador_list.append(identificador)
             chave_rb_investimento = (
                 sap_tse,

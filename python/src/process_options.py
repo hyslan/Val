@@ -54,7 +54,7 @@ def process_valoration(
                 retrabalho(args.contrato, session)
 
             case "3":
-                pertencedor(args.contrato, session)
+                pertencedor(args.contrato, session, args.session)
 
             case "4":
                 pendentes_list: np.ndarray = extract_from_sql(args.contrato)

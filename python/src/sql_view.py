@@ -15,7 +15,7 @@ console = Console()
 class Sql:
     """Tabela de valoração."""
 
-    def __init__(self, ordem: str, cod_tse: str) -> None:
+    def __init__(self, ordem: str, cod_tse: str | list[str]) -> None:
         load_dotenv()
         self._ordem = ordem
         self.cod_tse = cod_tse

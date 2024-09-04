@@ -10,7 +10,7 @@ from python.src.cesta.itens_naovinculados.m_itens_naovinculados import Modalidad
 def cesta(
     reposicao: str,
     etapa_reposicao: str,
-    identificador: tuple[str, str, str],
+    identificador: tuple[str, str, str, str, str],
     mae: bool,
     session: win32.CDispatch,
 ) -> Modalidade:
