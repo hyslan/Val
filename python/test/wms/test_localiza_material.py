@@ -1,3 +1,5 @@
+"""Módulo de testes do localiza_material."""
+
 import pandas as pd
 import pytest
 from pandas import DataFrame
