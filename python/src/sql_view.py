@@ -101,50 +101,65 @@ class Sql:
     def tse_escolhida(self, contrato: str) -> np.ndarray:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
-        cnn = engine.connect()
         tse = ",".join([f"'{tse}'" for tse in self.cod_tse])
         # Função desfazer valoração
         resposta = input("- Val: Deseja escolher um período? \n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
             data_inicio = input("- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input("- Val: Digite o Ano/Mês final, por favor.\n")
-            sql_command = f"SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = '{contrato}' \
-                AND MESREF >= {data_inicio} AND MESREF <= {data_fim}"
+            sql_command = sa.text(
+                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "WHERE TSE_OPERACAO_ZSCP IN :tse AND Contrato = :contrato "
+                "AND MESREF >= :datainicio AND MESREF <= :datafim",
+            )
+            with engine.connect() as cnn:
+                df = pd.read_sql(
+                    sql_command,
+                    cnn,
+                    params={"tse": tse, "contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
+                )
+                return df.to_numpy()
         else:
-            sql_command = f"SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] \
-            WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = '{contrato}'"
+            sql_command = sa.text(
+                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "WHERE TSE_OPERACAO_ZSCP IN :tse AND Contrato = :contrato",
+            )
+            with engine.connect() as cnn:
+                df = pd.read_sql(sql_command, cnn, params={"tse": tse, "contrato": contrato})
+                return df.to_numpy()
 
-        df = pd.read_sql(sql_command, cnn)
-        df_array = df.to_numpy()
-        cnn.close()
-        return df_array
-
-    def tse_expecifica(self, contrato):
+    def tse_expecifica(self, contrato: str) -> np.ndarray:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
-        cnn = engine.connect()
         resposta = input("- Val: Deseja escolher um período? \n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
             data_inicio = input("- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input("- Val: Digite o Ano/Mês final, por favor.\n")
-            sql_command = (
+            sql_command = sa.text(
                 "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                f"WHERE TSE_OPERACAO_ZSCP = '{self.cod_tse}' AND "
-                f"Contrato = '{contrato}' "
-                f"AND MESREF >= '{data_inicio}' AND MESREF <= '{data_fim}'"
+                "WHERE TSE_OPERACAO_ZSCP = :codtse AND "
+                "Contrato = :contrato "
+                "AND MESREF >= :datainicio AND MESREF <= :datafim",
             )
+            with engine.connect() as cnn:
+                df = pd.read_sql(
+                    sql_command,
+                    cnn,
+                    params={"codtse": self.cod_tse, "contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
+                )
+                df_array = df.to_numpy()
+                return df_array
         else:
-            sql_command = (
+            sql_command = sa.text(
                 "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                f"WHERE TSE_OPERACAO_ZSCP = '{self.cod_tse}' AND "
-                f"Contrato = '{contrato}'"
+                "WHERE TSE_OPERACAO_ZSCP = :codtse AND "
+                "Contrato = :contrato",
             )
 
-        df = pd.read_sql(sql_command, cnn)
-        df_array = df.to_numpy()
-        cnn.close()
-        return df_array
+        with engine.connect() as cnn:
+            df = pd.read_sql(sql_command, cnn, params={"codtse": self.cod_tse, "contrato": contrato})
+            df_array = df.to_numpy()
+            return df_array
 
     def clean_duplicates(self) -> None:
         """Delete duplicates rows
