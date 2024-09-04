@@ -16,6 +16,14 @@ class Sql:
     """Tabela de valoração."""
 
     def __init__(self, ordem: str, cod_tse: str | list[str]) -> None:
+        """Inicializa a conexão com o banco de dados.
+
+        Args:
+        ----
+            ordem (str): Número da Ordem
+            cod_tse (str | list[str]): Código da TSE
+
+        """
         load_dotenv()
         self._ordem = ordem
         self.cod_tse = cod_tse
@@ -35,46 +43,62 @@ class Sql:
         self.cnn = engine.connect()
 
     @property
-    def ordem(self):
+    def ordem(self) -> str:
+        """Get the ordem value.
+
+        Returns
+        -------
+            str: Número da Ordem
+
+        """
         return self._ordem
 
     @ordem.setter
-    def ordem(self, cod) -> None:
+    def ordem(self, cod: str) -> None:
         if isinstance(cod, str):
             self._ordem = cod
-        else:
-            msg = "Wrong type, need to be string."
-            raise ValueError(msg)
 
     def __check_employee(self, matricula: str) -> str:
-        r"""Check employee in the database:
+        r"""Check employee in the database.
+
         [LESTE_AD\\APP_Source].tb_Dim_Funcionarios.
         """
         engine = sa.create_engine(self.connection_url)
-        cnn = engine.connect()
-        query = "SELECT NomeFuncionario FROM [LESTE_AD\\APP_Source].[tb_Dim_Funcionarios] " f"WHERE Matricula = '{matricula}';"
-        df = pd.read_sql(query, cnn)
-        who: str = df.to_string(index=False)
-        cnn.close()
+        with engine.connect() as cnn:
+            query = sa.text(
+                "SELECT NomeFuncionario FROM [LESTE_AD\\APP_Source].[tb_Dim_Funcionarios] WHERE Matricula = :matricula",
+            )
+            df = pd.read_sql(query, cnn, params={"matricula": matricula})
+            who: str = df.to_string(index=False)
+
         return who
 
-    def carteira_tse(self, contrato, carteira):
+    def carteira_tse(self, contrato: str, carteira: list[str]) -> np.ndarray:
+        """Dados da tabela do SQL.
+
+        Args:
+        ----
+            contrato (str): Número do Contrato
+            carteira (list[str]): Lista do etl.py
+
+        Returns:
+        -------
+            np.ndarray: Array com os resultados da query (ordem, código do município).
+
+        """
         engine = sa.create_engine(self.connection_url)
-        cnn = engine.connect()
         carteira_str = ",".join([f"'{tse}'" for tse in carteira])
         # Queries para SQL.
-        # pylint disable=W1401
-        query = (
-            f"SELECT [Ordem], COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-            f"WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) "
-            f"AND Contrato = '{contrato}';"
-        )
-        df = pd.read_sql(query, cnn)
-        df_array = df.to_numpy()
-        cnn.close()
-        return df_array
+        with engine.connect() as cnn:
+            query = sa.text(
+                "SELECT [Ordem], COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "WHERE [TSE_OPERACAO_ZSCP] IN :carteira "
+                "AND Contrato = :contrato",
+            )
+            df = pd.read_sql(query, cnn, params={"carteira": carteira_str, "contrato": contrato})
+            return df.to_numpy()
 
-    def tse_escolhida(self, contrato):
+    def tse_escolhida(self, contrato: str) -> np.ndarray:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
