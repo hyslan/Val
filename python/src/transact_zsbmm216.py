@@ -1,7 +1,10 @@
 # transact_zsbmm216.py
 """Módulo de Contrato."""
-# Conexão SAP
+
+from __future__ import annotations
+
 import threading
+import typing
 
 import pythoncom
 import pywintypes
@@ -10,6 +13,8 @@ from rich.console import Console
 
 from python.src import sap
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 # Adicionando um Lock
 lock = threading.Lock()
 console = Console()
@@ -18,44 +23,54 @@ console = Console()
 class Transacao:
     """Classe operadora da transação 216."""
 
-    def __init__(self, contrato,
-                 municipio, session) -> None:
+    def __init__(self, contrato: str, municipio: str, session: CDispatch) -> None:
+        """Construtor de Transacao.
+
+        Args:
+        ----
+            contrato (str): Número do Contrato
+            municipio (str): Código do Município
+            session (CDispatch): Sessão do SAP
+
+        """
         self._contrato = contrato
         self.session = session
         self._municipio = municipio
 
     @property
-    def municipio(self):
+    def municipio(self) -> str:
         """Getter para municipio."""
         return self._municipio
 
     @municipio.setter
-    def municipio(self, cod) -> None:
+    def municipio(self, cod: str) -> None:
         """Setter for municipio."""
         if isinstance(cod, str):
             self._municipio = cod
-        else:
-            msg = "Wrong type, need to be string."
-            raise ValueError(msg)
 
     @property
-    def contrato(self):
+    def contrato(self) -> str:
+        """Getter for contrato.
+
+        Returns
+        -------
+            str: Número do Contrato.
+
+        """
         return self._contrato
 
     @contrato.setter
-    def contrato(self, cod) -> None:
+    def contrato(self, cod: str) -> None:
         if isinstance(cod, str):
             self._contrato = cod
-        else:
-            msg = "Wrong type, need to be string."
-            raise ValueError(msg)
 
-    def run_transacao(self, ordem, tipo="individual", n_con=0) -> None:
-        """Run thread ZSBMM216
-        e faz a transação a transação com o respectivo contrato.
+    def run_transacao(self, ordem: str, tipo: str = "individual", n_con: int = 0) -> None:
+        """Run thread ZSBMM216.
+
+        E faz a transação a transação com o respectivo contrato.
         """
 
-        def t_transacao(session_id) -> None:
+        def t_transacao(session_id: pywintypes.HANDLE) -> None:  # type: ignore
             """Transação preenchida ZSBMM216 - Contrato NOVASP."""
             nonlocal ordem
 
@@ -66,8 +81,7 @@ class Transacao:
                     pythoncom.CoInitialize()
                     # pylint: disable=E1101
                     gui = win32.Dispatch(
-                        pythoncom.CoGetInterfaceAndReleaseStream(
-                            session_id, pythoncom.IID_IDispatch),
+                        pythoncom.CoGetInterfaceAndReleaseStream(session_id, pythoncom.IID_IDispatch),
                     )
                     gui.StartTransaction("ZSBMM216")
                     if tipo == "consulta":
@@ -76,12 +90,9 @@ class Transacao:
                     # Unidade Administrativa
                     gui.findById("wnd[0]/usr/ctxtP_UND").Text = "1093"
                     # Contrato
-                    gui.findById(
-                        "wnd[0]/usr/ctxtP_CONT").Text = self.contrato
-                    gui.findById(
-                        "wnd[0]/usr/ctxtP_MUNI").Text = self._municipio  # Cidade
-                    sap_ordem = gui.findById(
-                        "wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
+                    gui.findById("wnd[0]/usr/ctxtP_CONT").Text = self.contrato
+                    gui.findById("wnd[0]/usr/ctxtP_MUNI").Text = self._municipio  # Cidade
+                    sap_ordem = gui.findById("wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
                     sap_ordem.Text = ordem
                     gui.findById("wnd[0]").SendVkey(8)  # Aperta botão F8
 
@@ -92,11 +103,9 @@ class Transacao:
         try:
             # pylint: disable=E1101
             pythoncom.CoInitialize()
-            session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(
-                pythoncom.IID_IDispatch, self.session)
+            session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, self.session)  # type: ignore
             # Start
-            thread = threading.Thread(target=t_transacao, kwargs={
-                "session_id": session_id})
+            thread = threading.Thread(target=t_transacao, kwargs={"session_id": session_id})
             thread.start()
             # Aguarde a thread concluir
             thread.join(timeout=300)

@@ -4,6 +4,7 @@ import contextlib
 import os
 import subprocess
 import time
+from pathlib import Path
 
 import pythoncom
 import pywintypes
@@ -15,7 +16,7 @@ from rich.console import Console
 console: rich.console.Console = Console()
 
 
-def reconnect(session: pywintypes.IID) -> pywintypes.HANDLE:
+def reconnect(session: pywintypes.IID) -> pywintypes.HANDLE:  # type: ignore
     """Reconectar a sessão ao SAP GUI.
 
     Args:
@@ -54,7 +55,7 @@ def contar_sessoes(n_selected: int) -> int:
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
     sessions: win32com.client.CDispatch = con_selected.Sessions
     console.print(f"[blue italic]Quantidade de sessões ativas: {sessions.Count}")
-    return sessions.Count
+    return sessions.Count  # type: ignore
 
 
 def create_session(n_selected: int) -> win32com.client.CDispatch:
@@ -77,7 +78,7 @@ def create_session(n_selected: int) -> win32com.client.CDispatch:
     else:
         session = con_selected.Children(5)
 
-    return session
+    return session  # type: ignore
 
 
 def choose_connection(n_selected: int) -> win32com.client.CDispatch:
@@ -135,20 +136,18 @@ def get_connection(token: str) -> str:
         '[Options]\n'
         'Reuse=-1'
     )
-    path_archive = os.getcwd() + "\\shortcut\\repeat\\tx.sap"
-    with open(path_archive, "w") as s:
+    path_archive = str(Path.cwd() / "/shortcut/repeat/tx.sap")
+    with Path(path_archive).open("w") as s:
         s.write(sap_access)
 
     # Execute the command
     try:
-        subprocess.run(["powershell", "start", '"' + path_archive + '"'], shell=True, check=False)
+        subprocess.run(["powershell", "start", path_archive], check=False)
         time.sleep(5)
         # Verifica se o processo está em execução
         if not is_process_running("powershell.exe"):
             pass
     except subprocess.CalledProcessError:
-        pass
-    except Exception:
         pass
 
     return token
@@ -157,10 +156,11 @@ def get_connection(token: str) -> str:
 def is_process_running(process_name: str) -> bool | None:
     """Verifica se o processo está em execução."""
     try:
-        subprocess.check_output(f'tasklist /FI "IMAGENAME eq {process_name}"', shell=True)
-        return True
+        subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {process_name}"], capture_output=True, check=False)
     except subprocess.CalledProcessError:
         return False
+    else:
+        return True
 
 
 def get_app() -> win32com.client.CDispatch:
@@ -173,4 +173,4 @@ def get_app() -> win32com.client.CDispatch:
     """
     pythoncom.CoInitialize()
     app: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI").GetScriptingEngine
-    return app.Connections
+    return app.Connections  # type: ignore

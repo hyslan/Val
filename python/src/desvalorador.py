@@ -1,6 +1,9 @@
 """Módulo para desfazer valoração."""
 
+from __future__ import annotations
+
 import sys
+import typing
 
 import pywintypes
 from tqdm import tqdm
@@ -8,8 +11,11 @@ from tqdm import tqdm
 from python.src.etl import pendentes_csv, pendentes_excel
 from python.src.transact_zsbmm216 import Transacao
 
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
-def desvalorador(contrato, session) -> None:
+
+def desvalorador(contrato: str, session: CDispatch) -> None:
     """Função desvalorador."""
     transacao = Transacao(contrato, "100", session)
     ask = input("É csv?")

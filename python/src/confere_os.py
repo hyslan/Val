@@ -84,7 +84,6 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
                 pythoncom.CoUninitialize()
 
     try:
-        # pylint: disable=E1101
         pythoncom.CoInitialize()
         session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)  # type: ignore
         # Start
@@ -101,7 +100,7 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
         # Contagem Grid
         num_etapas_linhas = consulta.RowCount
 
-        for n, cod_tse in enumerate(range(num_etapas_linhas)):
+        for n in range(num_etapas_linhas):
             cod_tse = consulta.GetCellValue(n, "ZZTSE")
             if cod_tse not in (
                 dict_reposicao["asfalto_frio"],
@@ -114,12 +113,12 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
             ):
                 principal_tse = cod_tse
 
-        for n_etapa, restab in enumerate(range(num_etapas_linhas)):
+        for n_etapa in range(num_etapas_linhas):
             restab = consulta.GetCellValue(n_etapa, "ZZLOCAL_RELIGA")  # religação
             if restab != "":
                 relig = restab
 
-        for n_etapa, supressao in enumerate(range(num_etapas_linhas)):
+        for n_etapa in range(num_etapas_linhas):
             supressao = consulta.GetCellValue(n_etapa, "ZZLOCAL_CORTE")  # Supressão
             if supressao != "":
                 corte = supressao
@@ -182,10 +181,10 @@ def consulta_os(n_os: str, session: win32.CDispatch, contrato: str, n_con: int) 
                 break
             profundidade = None
 
-        for n_etapa, operacao in enumerate(range(num_etapas_linhas)):
+        for n_etapa in range(num_etapas_linhas):
             operacao = consulta.GetCellValue(n_etapa, "VORNR")
 
-        for n_etapa, hidro_colocado in enumerate(range(num_etapas_linhas)):
+        for n_etapa in range(num_etapas_linhas):
             hidro_colocado = consulta.GetCellValue(n_etapa, "ZZHIDROMETRO_INSTALADO")
             if hidro_colocado:
                 hidro = hidro_colocado

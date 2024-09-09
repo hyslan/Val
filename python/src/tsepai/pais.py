@@ -11,9 +11,9 @@ if typing.TYPE_CHECKING:
 
 (
     *_,
-    tb_tse_PertenceAoServicoPrincipal,
+    tb_tse_n3,
     tb_tse_reposicao,
-    tb_tse_Retrabalho,
+    _,
 ) = load_worksheets()
 
 PAGAR_NAO = "n"
@@ -61,7 +61,7 @@ class Pai:
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -70,7 +70,7 @@ class Pai:
                 etapa_reposicao.append(etapa)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
@@ -87,7 +87,7 @@ class Pai:
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -97,7 +97,7 @@ class Pai:
                 etapa_reposicao.append(etapa)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
@@ -115,7 +115,7 @@ class Pai:
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -126,7 +126,7 @@ class Pai:
                 etapa_reposicao.append(etapa)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
@@ -151,7 +151,7 @@ class Pai:
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -162,7 +162,7 @@ class Pai:
                 etapa_reposicao.append(etapa)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
@@ -277,7 +277,7 @@ class Unitario(Pai):
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -290,7 +290,7 @@ class Unitario(Pai):
                     servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue
@@ -318,7 +318,7 @@ class Unitario(Pai):
         tse_temp_reposicao = []
         etapa_reposicao = []
 
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico_temp.GetCellValue(n_tse, "TSE")
             etapa = servico_temp.GetCellValue(n_tse, "ETAPA")
 
@@ -331,7 +331,7 @@ class Unitario(Pai):
                     servico_temp.modifyCell(n_tse, "CODIGO", SERVICO_N_EXISTE_CONTRATO)
                 continue
 
-            if sap_tse in tb_tse_PertenceAoServicoPrincipal:
+            if sap_tse in tb_tse_n3:
                 servico_temp.modifyCell(n_tse, "PAGAR", PAGAR_NAO)
                 servico_temp.modifyCell(n_tse, "CODIGO", PERTENCE_SERVICO_PRINCIPAL)
                 continue

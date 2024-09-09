@@ -84,7 +84,7 @@ def verifica_tse(
     chave_unitario: tuple[str, str, str, list[str], list[str]] | None = None
     chave_rb_despesa: tuple[str, str, str, list[str], list[str]] | None = None
     chave_rb_investimento: tuple[str, str, str, list[str], list[str]] | None = None
-    for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+    for n_tse in range(num_tse_linhas):
         sap_tse = servico.GetCellValue(n_tse, "TSE")
         etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
 
@@ -348,7 +348,7 @@ def verifica_tse(
 
     # TSEs situacionais.
     if chave_unitario is not None and pai_tse == 1 and chave_unitario[0] in troca_pe_cv_prev:
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
             etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
             # Altera todas as reposições para N3 de Troca Pé Preventivo.
@@ -362,7 +362,7 @@ def verifica_tse(
         and pai_tse == 1
         or (chave_rb_despesa is not None and all(tse in sondagem for tse in chave_rb_despesa[0]))
     ) and chave_rb_despesa[0] in sondagem:
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
             etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
             # Altera todas as reposições de rb para N3 de Sondagem.
@@ -372,7 +372,7 @@ def verifica_tse(
                 servico.modifyCell(n_tse, "CODIGO", "3")
 
     if mae is True:
-        for n_tse, sap_tse in enumerate(range(num_tse_linhas)):
+        for n_tse in range(num_tse_linhas):
             sap_tse = servico.GetCellValue(n_tse, "TSE")
             etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
             # Altera todas as reposições de rb para investimento se tiver tra.

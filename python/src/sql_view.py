@@ -263,8 +263,11 @@ class Sql:
             f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', "
             f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')"
         )
-        cnn.execute(sa.text(sql_command))
-        cnn.commit()
+        try:
+            cnn.execute(sa.text(sql_command))
+            cnn.commit()
+        except SQLAlchemyError:
+            logger.exception("Erro ao executar a query em Valorada.")
         cnn.close()
 
     def ordem_especifica(self, contrato: str) -> np.ndarray:

@@ -8,7 +8,7 @@ import subprocess
 import time
 from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -44,7 +44,7 @@ def down_sap() -> str:
     driver: WebDriver = webdriver.Chrome(service=s, options=opt)
     # Navegar até a página de login
     driver.get(url)
-    wait: WebDriverWait = WebDriverWait(driver, 180)
+    wait: WebDriverWait[WebDriver] = WebDriverWait(driver, 180)
     wait.until(
         ec.element_to_be_clickable(
             (
@@ -83,10 +83,10 @@ def down_sap() -> str:
     return token
 
 
-def file_downloaded(filename: str) -> Callable[[WebDriver], Literal[False] | bool]:
+def file_downloaded(filename: str) -> Callable[[WebDriver], bool]:
     """Verifica se o arquivo foi baixado completamente."""
 
-    def predicate(driver: WebDriver) -> Literal[False] | bool:
+    def predicate(driver: WebDriver) -> bool:  # noqa: ARG001
         files: list[str] = os.listdir(Path.cwd() / "shortcut")
         return any(file.endswith(filename) for file in files)
 
@@ -97,7 +97,7 @@ def is_process_running(process_name: str) -> bool | None:
     """Verifica se o processo está em execução."""
     try:
         subprocess.check_output(["tasklist", "/FI", f"IMAGENAME eq {shlex.quote(process_name)}"])
-        return True
     except subprocess.CalledProcessError:
-        pass
-    return False
+        return False
+    else:
+        return True
