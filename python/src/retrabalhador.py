@@ -1,16 +1,23 @@
 """Módulo dos retrabalho da valoração."""
+
+from __future__ import annotations
+
 import datetime as dt
-import sys
+import typing
 
 import pywintypes
-import rich
 from rich.console import Console
 from tqdm import tqdm
 
-from python.src.confere_os import consulta_os
 from python.src.excel_tbs import load_worksheets
 from python.src.sql_view import Sql
 from python.src.transact_zsbmm216 import Transacao
+
+if typing.TYPE_CHECKING:
+    import rich
+    from win32com.client import CDispatch
+
+import pytz
 
 (
     lista,
@@ -34,7 +41,19 @@ from python.src.transact_zsbmm216 import Transacao
 console: rich.console.Console = Console()
 
 
-def tag_n7(servico, session):
+def tag_n7(servico: CDispatch, session: CDispatch) -> str:
+    """Aponta N7 ao serviço.
+
+    Args:
+    ----
+        servico (CDispatch): GRID do SAP
+        session (CDispatch): Sessão do SAP
+
+    Returns:
+    -------
+        str: Rodapé
+
+    """
     num_tse_linhas = servico.RowCount
     for n_tse in range(num_tse_linhas):
         servico.modifyCell(n_tse, "PAGAR", "n")
@@ -50,167 +69,66 @@ def tag_n7(servico, session):
 # consulta os só precisa de status_sistema, status_usuario
 
 
-def retrabalho(contrato, session):
+def retrabalho(contrato: str, session: CDispatch) -> None:
     """Função Retrabalhador: N7."""
     salvo = "Ajustes de valoração salvos com sucesso."
     transacao = Transacao(contrato, "100", session)
-    revalorar = False
-    # automated
-    # sheet_csv = input("Deseja carregar a planilha xlsx ou CSV?\n")
-    sheet_csv: None = None
-    if sheet_csv:
-        resposta = input("São Ordens desvaloradas?\n")
-        if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
-            revalorar = True
-
-        limite_execucoes = planilha.max_row
-        try:
-            num_lordem = input("Insira o número da linha aqui: ")
-            int_num_lordem = int(num_lordem)
-            ordem = planilha.cell(row=int_num_lordem, column=1).value
-        except TypeError:
-            sys.exit()
-
-
-        # Loop para pagar as ordens da planilha do Excel
-        for _ in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
-            transacao.run_transacao(ordem)
-            try:
-                servico = session.findById(
-                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
-                )
-            # pylint: disable=E1101
-            except pywintypes.com_error:
-                ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-                ordem_obs.value = "MEDIÇÃO DEFINITIVA"
-                lista.save("sheets/lista.xlsx")
-                # Incremento de Ordem.
-                int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
-                continue
-
-            if revalorar is False:
-                try:
-                    session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
-                    grid_historico = session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9040/cntlCC_AJUSTES/shellcont/shell")
-                    data_valorado = grid_historico.GetCellValue(0, "DATA")
-                    if data_valorado is not None:
-                        ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-                        ordem_obs.value = "Já Salvo"
-                        lista.save("sheets/lista.xlsx")
-                        # Incremento de Ordem.
-                        int_num_lordem += 1
-                        ordem = planilha.cell(
-                            row=int_num_lordem, column=1).value
-                        continue
-
-                # pylint: disable=E1101
-                except pywintypes.com_error:
-                    session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
-                    servico = session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
-                    )
-
-            rodape = tag_n7(servico, session)
-            status_sistema, status_usuario, *_ = consulta_os(
-                ordem, session, contrato)
-
-            if status_usuario == "EXEC VALO":
-                selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-                selecao_carimbo.value = "Salvo"
-                lista.save("sheets/lista.xlsx")
-                # Incremento de Ordem.
-                int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
-            else:
-                selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
-                selecao_carimbo.value = "Não"
-                lista.save("sheets/lista.xlsx")
-                # Incremento de Ordem.
-                int_num_lordem += 1
-                ordem = planilha.cell(row=int_num_lordem, column=1).value
-        return None
 
     # SQL values
-    today = dt.date.today()
+    today = dt.datetime.now(pytz.timezone("America/Sao_Paulo")).date()
     dt_fim = today.replace(day=1) - dt.timedelta(days=1)
     dt_inicio = dt_fim.replace(day=1)
     sql = Sql("", "")
     pendentes_array = sql.retrabalho_search(dt_inicio, dt_fim)
     limite_execucoes = len(pendentes_array)
     if limite_execucoes == 0:
-        return None, True
-    if limite_execucoes == 0:
-        return None, True
+        return
 
     with console.status("[bold blue]Trabalhando..."):
         for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
+            # Setando valores para a transação
+            transacao.municipio = cod_mun
+            transacao.contrato = empresa
+            transacao.run_transacao(ordem)
+
+            console.print("Processo de Serviços Executados", style="bold red underline", justify="center")
             try:
-                # Setando valores para a transação
-                transacao.municipio = cod_mun
-                transacao.contrato = empresa
-                transacao.run_transacao(ordem)
+                session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                    "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                )
+            except pywintypes.com_error:
+                continue
 
-                console.print("Processo de Serviços Executados",
-                              style="bold red underline", justify="center")
-                try:
-                    session.findById(
-                        "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
-                    )
-                # pylint: disable=E1101
-                except pywintypes.com_error:
-                    sql.ordem = ordem
-                    sql.valorada(obs="Definitiva")
-                    continue
-
-                try:
-                    session.findById("wnd[0]").SendVkey(2)
-                    console.print("Desvalorando!")
-                    session.findById("wnd[1]/usr/btnBUTTON_1").press()
-                    ok = "Valoração desfeita com sucesso."
-                    rodape = session.findById("wnd[0]/sbar").Text  # Rodapé
-                    if ok == rodape:
-                        console.print(ok)
-                        transacao.run_transacao(ordem)
-                        servico = session.findById(
-                            "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                            + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
-                        )
-
-                        rodape = tag_n7(servico, session)
-                        if rodape == salvo:
-                            console.print(
-                                "[italic green]Foi Salvo com sucesso! :rocket:")
-                            sql.ordem = ordem
-                            sql.valorada("SIM")
-                        else:
-                            console.print(
-                                f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
-                            sql.ordem = ordem
-                            sql.valorada(obs="Não foi salvo")
-
-                # pylint: disable=E1101
-                except pywintypes.com_error:
-                    console.print(f"Ordem: {ordem} não valorada.")
+            try:
+                session.findById("wnd[0]").SendVkey(2)
+                console.print("Desvalorando!")
+                session.findById("wnd[1]/usr/btnBUTTON_1").press()
+                ok = "Valoração desfeita com sucesso."
+                rodape = session.findById("wnd[0]/sbar").Text  # Rodapé
+                if ok == rodape:
+                    console.print(ok)
+                    transacao.run_transacao(ordem)
                     servico = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                        "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
                     )
-                    tag_n7(servico, session)
 
-                # Clean Duplicates from tb_Valoradas
-                sql.clean_duplicates()
+                    rodape = tag_n7(servico, session)
+                    if rodape == salvo:
+                        console.print("[italic green]Foi Salvo com sucesso! :rocket:")
+                    else:
+                        console.print(f"Ordem: {ordem} não foi salva. :pouting_face:", style="italic yellow")
 
-            except Exception as e:
-                console.print(f"Erro dentro do For Retrabalhor: {e}")
-                console.print_exception()
-        return None
+            except pywintypes.com_error:
+                console.print(f"Ordem: {ordem} não valorada.")
+                servico = session.findById(
+                    "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
+                    "ZSBMM_VALORACAO_NAPI:9010/cntlCC_SERVICO/shellcont/shell",
+                )
+                tag_n7(servico, session)
+
+            # Clean Duplicates from tb_Valoradas
+            sql.clean_duplicates()
 
     # Fim do retrabalhador

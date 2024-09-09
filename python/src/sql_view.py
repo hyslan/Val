@@ -1,15 +1,19 @@
 """Módulo para visualização da view de Valoração."""
 
 import datetime as dt
+import logging
 import os
 
 import numpy as np
 import pandas as pd
+import pytz
 import sqlalchemy as sa
 from dotenv import load_dotenv
 from rich.console import Console
+from sqlalchemy.exc import SQLAlchemyError
 
 console = Console()
+logger = logging.getLogger(__name__)
 
 
 class Sql:
@@ -131,6 +135,7 @@ class Sql:
     def tse_expecifica(self, contrato: str) -> np.ndarray:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
+        tse = ",".join([f"'{tse}'" for tse in self.cod_tse])
         resposta = input("- Val: Deseja escolher um período? \n")
         if resposta in ("s", "S", "sim", "Sim", "SIM", "y", "Y", "yes"):
             data_inicio = input("- Val: Digite o Ano/Mês de ínicio, por favor.\n")
@@ -141,14 +146,15 @@ class Sql:
                 "Contrato = :contrato "
                 "AND MESREF >= :datainicio AND MESREF <= :datafim",
             )
+
             with engine.connect() as cnn:
                 df = pd.read_sql(
                     sql_command,
                     cnn,
-                    params={"codtse": self.cod_tse, "contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
+                    params={"codtse": tse, "contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
                 )
-                df_array = df.to_numpy()
-                return df_array
+                return df.to_numpy()
+
         else:
             sql_command = sa.text(
                 "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
@@ -156,21 +162,20 @@ class Sql:
                 "Contrato = :contrato",
             )
 
-        with engine.connect() as cnn:
-            df = pd.read_sql(sql_command, cnn, params={"codtse": self.cod_tse, "contrato": contrato})
-            df_array = df.to_numpy()
-            return df_array
+            with engine.connect() as cnn:
+                df = pd.read_sql(sql_command, cnn, params={"codtse": tse, "contrato": contrato})
+                return df.to_numpy()
 
     def clean_duplicates(self) -> None:
-        """Delete duplicates rows
+        """Delete duplicates rows.
+
         Keeping only the most recent one.
         """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
-        except Exception:
-            engine = sa.create_engine(self.connection_url)
-            cnn = engine.connect()
+        except SQLAlchemyError:
+            logger.exception("Erro ao conectar com o banco de dados em Clean Duplicates")
 
         sql_command = (
             "WITH CTE AS ("
@@ -189,24 +194,29 @@ class Sql:
         month_start: str | dt.date,
         month_end: str | dt.date,
     ) -> np.ndarray:
-        """Query for Retrabalho confirmado orders
+        """Query for Retrabalho confirmado orders.
+
+        Not Returning SABESP -> Cod: '9999999999' orders
+
         Args:
-            month_start Union[str | Date]: Start month of the query
-            month_end Union[str | Date]: End month of the query
-            Not Returning SABESP -> Cod: '9999999999' orders
+        ----
+            month_start (str | dt.date): Start month of the query
+            month_end (str | dt.date): End month of the query
+
         Returns:
+        -------
             df_array (np.ndarray): Array with the query results.
+
         """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
 
-        sql_command = (
+        sql_command = sa.text(
             "SELECT NumeroOS, ATC, CodigoContrato FROM [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] "
-            f"WHERE DataFimExecucao >= '{
-                           month_start}' AND DataFimExecucao <= '{month_end}' "
-            "AND Resultado = 'RETRABALHO CONFIRMADO' AND CodigoContrato <> '9999999999'"
+            "WHERE DataFimExecucao >= :monthstart AND DataFimExecucao <= :monthend "
+            "AND Resultado = 'RETRABALHO CONFIRMADO' AND CodigoContrato <> '9999999999'",
         )
-        df = pd.read_sql(sql_command, cnn)
+        df = pd.read_sql(sql_command, cnn, params={"monthstart": month_start, "monthend": month_end})
         df_array = df.to_numpy()
         cnn.close()
         return df_array
@@ -223,51 +233,59 @@ class Sql:
         valor_medido: float,
         tempo_gasto: float,
     ) -> None:
-        r"""Update  row valorada to
+        r"""Update  row valorada to.
+
         [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas.
         """
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
-        except Exception:
-            engine = sa.create_engine(self.connection_url)
-            cnn = engine.connect()
+        except SQLAlchemyError:
+            logger.exception("Erro ao conectar com o banco de dados em Valorada")
 
-        if matricula == "117615":
-            quem = "Val"
-        else:
-            # ? quem = self.__check_employee(matricula)
-            quem = "teste"
+        quem = "Val" if matricula == "117615" else self.__check_employee(matricula)
 
         if data_valoracao is None:
             data_valoracao = dt.datetime.now().date()
-        else:
+        elif isinstance(data_valoracao, str):
             data_valoracao = data_valoracao.replace(".", "-")
-            data_valoracao = dt.datetime.strptime(data_valoracao, "%d-%m-%Y").date()
+            data_valoracao = (
+                dt.datetime.strptime(data_valoracao, "%d-%m-%Y").astimezone(pytz.timezone("America/Sao_Paulo")).date()
+            )
 
         data_valoracao = data_valoracao.strftime("%m/%d/%Y")
 
         sql_command = (
             "INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] "
-            + "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, "
-            + "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)"
-            + f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', "
-            + f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', "
-            + f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')"
+            "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, "
+            "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)"
+            f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', "
+            f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', "
+            f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')"
         )
         cnn.execute(sa.text(sql_command))
         cnn.commit()
         cnn.close()
 
-    def ordem_especifica(self, contrato):
-        """Teste de Ordem única."""
+    def ordem_especifica(self, contrato: str) -> np.ndarray:
+        """Apenas uma ordem específica.
+
+        Args:
+        ----
+            contrato (str): Número do Contrato
+
+        Returns:
+        -------
+            np.ndarray: Array com os resultados da query (ordem, código do município).
+
+        """
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
-        sql_command = (
+        sql_command = sa.text(
             "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-            f"WHERE ORDEM = '{self.ordem!s}' AND Contrato = '{contrato}'"
+            "WHERE ORDEM = :ordem AND Contrato = :contrato'",
         )
-        df = pd.read_sql(sql_command, cnn)
+        df = pd.read_sql(sql_command, cnn, params={"ordem": self.ordem, "contrato": contrato})
         df_array = df.to_numpy()
         cnn.close()
         return df_array
@@ -279,8 +297,7 @@ class Sql:
         else:
             family_str = (
                 "'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO' "
-                # TODO: Resolve each TSE of these families below:
-                # "'REDE AGUA'"  # , 'REDE ESGOTO', 'RAMAL ESGOTO'," <- Sem tubo dn 100
+                "'REDE AGUA', 'REDE ESGOTO', 'RAMAL ESGOTO',"
             )
 
         console.print("\n [b]Família escolhida: ", family_str)
@@ -288,10 +305,10 @@ class Sql:
         cnn = engine.connect()
         # TSEs leave out the plumbing services by Iara.
         chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'," if contrato == "4600042975" else "'',"
-        sql_command = rf"""
+        sql_command = sa.text(r"""
             SELECT Ordem, COD_MUNICIPIO
             FROM [LESTE_AD\hcruz_novasp].[v_Hyslan_Valoracao]
-            WHERE FAMILIA IN ({family_str})
+            WHERE FAMILIA IN :family_str
             AND Contrato = '{contrato}'
             AND TSE_OPERACAO_ZSCP NOT IN (
                 '731000', '733000', '743000', '745000', '785000', '785500',
@@ -299,17 +316,22 @@ class Sql:
                 '315000', '532000', '564000', '588000', '590000', '709000', '700000', '593000', '253000',
                 '250000', '209000', '605000', '605000', '263000', '255000', '254000', '282000', '265000',
                 '260000', '265000', '263000', '262000', '284500', '286000', '282500',
-                {chief_iara_orders}
+                :chief_iara_orders
                 '136000', '159000', '155000');
-        """
+        """)
 
         console.print(f"\n[bold yellow]{sql_command}")
-        df = pd.read_sql(sql_command, cnn)
+        df = pd.read_sql(
+            sql_command,
+            cnn,
+            params={"family_str": family_str, "contrato": contrato, "chief_iara_orders": chief_iara_orders},
+        )
         df_array = df.to_numpy()
         cnn.close()
         return df_array
 
     def desobstrucao(self) -> np.ndarray:
+        """Desobstrução NORTESUL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = r"""
@@ -323,18 +345,18 @@ class Sql:
         cnn.close()
         return df_array
 
-    def show_family(self):
+    def show_family(self) -> str:
         """Print the family list."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = "SELECT [FAMILIA] FROM [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Parametros] \
             WHERE FAMILIA IS NOT NULL GROUP BY FAMILIA ORDER BY FAMILIA"
         df = pd.read_sql(sql_command, cnn)
-        df = df["FAMILIA"].to_string(index=False)
+        list_family = df["FAMILIA"].to_string(index=False)
         cnn.close()
-        return df
+        return list_family
 
-    def show_tses(self):
+    def show_tses(self) -> str:
         """Print the TSEs list."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
@@ -345,20 +367,18 @@ class Sql:
             "COD_TSE IS NOT NULL ORDER BY COD_TSE"
         )
         df = pd.read_sql(sql_command, cnn)
-        df = df.to_string(index=False)
+        list_tses = df.to_string(index=False)
         cnn.close()
-        return df
+        return list_tses
 
-    def get_new_hidro(self):
+    def get_new_hidro(self) -> str:
         """Get new hidro from SQL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
-        sql_command = (
-            "SELECT HidrometroInstalado FROM "
-            "[LESTE_AD\\CargaDeDados].tb_Fato_BexecHidros "
-            f"WHERE NumeroOS = '{self.ordem}'"
+        sql_command = sa.text(
+            "SELECT HidrometroInstalado FROM [LESTE_AD\\CargaDeDados].tb_Fato_BexecHidros WHERE NumeroOS = :ordem",
         )
-        df = pd.read_sql(sql_command, cnn)
-        df = df.to_string(index=False)
+        df = pd.read_sql(sql_command, cnn, params={"ordem": self.ordem})
+        hidro = df.to_string(index=False)
         cnn.close()
-        return df
+        return hidro
