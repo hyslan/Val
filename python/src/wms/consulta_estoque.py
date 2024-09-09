@@ -57,7 +57,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
         time.sleep(8)
         book = xw.Book(f"estoque_{contrato}.xlsx")
         book.app.quit()
-    except Exception:
+    except xw.XlwingsError:
         pass
 
     return materiais

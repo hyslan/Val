@@ -32,7 +32,7 @@ class Controlador(BaseUnitario):
         if preco is not None:
             num_precos_linhas = preco.RowCount
             n_preco = 0  # índice para itens de preço
-            for n_preco, sap_preco in enumerate(range(num_precos_linhas)):
+            for n_preco in range(num_precos_linhas):
                 sap_preco = preco.GetCellValue(n_preco, "NUMERO_EXT")
                 if sap_preco == serv_preservacao:
                     # Marca pagar na TSE

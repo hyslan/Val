@@ -28,6 +28,23 @@ class Cavalete:
         session: CDispatch,
         preco: CDispatch,
     ) -> None:
+        """Construtor de Cavalete.
+
+        Args:
+        ----
+            etapa (str): Etapa Pai
+            corte (str): Onde foi feita a supressão
+            relig (str): Onde foi realizado a religação
+            reposicao (str): Etapa complementar
+            num_tse_linhas (int): Count
+            etapa_reposicao (str): Etapa do serviço complementar
+            identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
+            posicao_rede (str): Posição da Rede
+            profundidade (str): Profundidade
+            session (CDispatch): Sessão do SAPGUI
+            preco (CDispatch): GRID de preço do SAP
+
+        """
         self.etapa = etapa
         self.corte = corte
         self.relig = relig

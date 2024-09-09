@@ -1,0 +1,1 @@
+"""Init de Supressão Unitário."""
