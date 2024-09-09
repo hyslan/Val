@@ -4,7 +4,7 @@
 # Bibliotecas
 from __future__ import annotations
 
-import sys
+import logging
 import typing
 
 from python.src.unitarios.cavalete.m_cavalete import Cavalete
@@ -17,6 +17,8 @@ from python.src.unitarios.supressao.m_supressao import Corte
 
 if typing.TYPE_CHECKING:
     from win32com.client import CDispatch
+
+logger = logging.getLogger(__name__)
 
 
 def selecionar_tse(
@@ -31,8 +33,28 @@ def selecionar_tse(
     profundidade: str,
     session: CDispatch,
     preco: CDispatch,
-):
-    """Dicionário de chaves para etapas de unitário."""
+) -> typing.Callable | None:
+    """Dicionário de chaves para etapas de unitário.
+
+    Args:
+    ----
+        etapa (str): Etapa pai
+        corte (str): Supressão
+        relig (str): Religação
+        reposicao (str): Serviço Complementar
+        num_tse_linhas (int): Count de linhas
+        etapa_reposicao (str): Etapa da reposição
+        identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
+        posicao_rede (str): Posição da Rede
+        profundidade (str): Profundidade
+        session (CDispatch): Sessão do SAP
+        preco (CDispatch): GRID de preços do SAP
+
+    Returns:
+    -------
+        Cavalete | Hidrometro | Corte | Religacao | Poco | LigacaoAgua | LigacaoEsgoto: Classe de Unitário Instanciada.
+
+    """
     cavalete = Cavalete(
         etapa,
         corte,
@@ -186,4 +208,5 @@ def selecionar_tse(
     if etapa in dicionario_un:
         return dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
-    sys.exit()
+    logger.error("Etapa %s não encontrada no dicionário.", etapa)
+    return None
