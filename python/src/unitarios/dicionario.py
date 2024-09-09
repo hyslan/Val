@@ -16,6 +16,8 @@ from python.src.unitarios.religacao.m_religacao import Religacao
 from python.src.unitarios.supressao.m_supressao import Corte
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Callable
+
     from win32com.client import CDispatch
 
 logger = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ def selecionar_tse(
     profundidade: str,
     session: CDispatch,
     preco: CDispatch,
-) -> typing.Callable | None:
+) -> Callable[[], None] | None:
     """Dicionário de chaves para etapas de unitário.
 
     Args:
