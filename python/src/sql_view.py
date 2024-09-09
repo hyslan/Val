@@ -3,8 +3,9 @@
 import datetime as dt
 import logging
 import os
+from typing import Any
 
-import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pytz
 import sqlalchemy as sa
@@ -77,7 +78,7 @@ class Sql:
 
         return who
 
-    def carteira_tse(self, contrato: str, carteira: list[str]) -> np.ndarray:
+    def carteira_tse(self, contrato: str, carteira: list[str]) -> npt.NDArray[Any]:
         """Dados da tabela do SQL.
 
         Args:
@@ -102,7 +103,7 @@ class Sql:
             df = pd.read_sql(query, cnn, params={"carteira": carteira_str, "contrato": contrato})
             return df.to_numpy()
 
-    def tse_escolhida(self, contrato: str) -> np.ndarray:
+    def tse_escolhida(self, contrato: str) -> npt.NDArray[Any]:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
         tse = ",".join([f"'{tse}'" for tse in self.cod_tse])
@@ -132,7 +133,7 @@ class Sql:
                 df = pd.read_sql(sql_command, cnn, params={"tse": tse, "contrato": contrato})
                 return df.to_numpy()
 
-    def tse_expecifica(self, contrato: str) -> np.ndarray:
+    def tse_expecifica(self, contrato: str) -> npt.NDArray[Any]:
         """Dados da tabela do SQL."""
         engine = sa.create_engine(self.connection_url)
         tse = ",".join([f"'{tse}'" for tse in self.cod_tse])
@@ -193,7 +194,7 @@ class Sql:
         self,
         month_start: str | dt.date,
         month_end: str | dt.date,
-    ) -> np.ndarray:
+    ) -> npt.NDArray[Any]:
         """Query for Retrabalho confirmado orders.
 
         Not Returning SABESP -> Cod: '9999999999' orders
@@ -270,7 +271,7 @@ class Sql:
             logger.exception("Erro ao executar a query em Valorada.")
         cnn.close()
 
-    def ordem_especifica(self, contrato: str) -> np.ndarray:
+    def ordem_especifica(self, contrato: str) -> npt.NDArray[Any]:
         """Apenas uma ordem específica.
 
         Args:
@@ -293,7 +294,7 @@ class Sql:
         cnn.close()
         return df_array
 
-    def familia(self, family: list[str] | None, contrato: str) -> np.ndarray:
+    def familia(self, family: list[str] | None, contrato: str) -> npt.NDArray[Any]:
         """Escolher família."""
         if family is not None:
             family_str = ",".join([f"'{f}'" for f in family])
@@ -333,7 +334,7 @@ class Sql:
         cnn.close()
         return df_array
 
-    def desobstrucao(self) -> np.ndarray:
+    def desobstrucao(self) -> npt.NDArray[Any]:
         """Desobstrução NORTESUL."""
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
