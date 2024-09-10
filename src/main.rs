@@ -25,14 +25,8 @@ fn main() {
     let contracts = [_ZCMLN, _NOVASPMLG, _ZIGURATEMLQ];
     let mut session: u32 = 0;
     let mut str_session: String = session.to_string();
-    Command::new("python")
-        .args([&"-m", "python.src.charging_sessions"])
-        .spawn()
-        .expect("failed to execute process");
 
-    print!("Iniciando as sessões das conexões...");
-    thread::sleep(Duration::from_secs(60));
-    // ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar
+    // ordem dos argumentos: session, option, contrato, familia (opcional), senha, revalorar (opcional)
     for &contract in &contracts {
         let args = vec![
             "-m",
