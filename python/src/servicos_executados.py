@@ -85,8 +85,8 @@ def verifica_tse(
     chave_rb_despesa: tuple[str, str, str, list[str], list[str]] | None = None
     chave_rb_investimento: tuple[str, str, str, list[str], list[str]] | None = None
     for n_tse in range(num_tse_linhas):
-        sap_tse = servico.GetCellValue(n_tse, "TSE")
-        etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
+        sap_tse: str = servico.GetCellValue(n_tse, "TSE")
+        etapa_pai: str = servico.GetCellValue(n_tse, "ETAPA")
 
         # Pulando OS com asfalto incluso.
         if sap_tse in dict_reposicao["asfalto"]:

@@ -30,10 +30,10 @@ def precificador(
     session: CDispatch,
 ) -> tuple[
     None | str,
-    list[tuple[str, str, str, str, str]],
-    list[tuple[str, str, str, str, str]],
-    None | tuple[str, str, str, str, str],
-    None | tuple[str, str, str, str, str],
+    list[tuple[str, str, str, list[str], list[str]]],
+    list[tuple[str, str, str, list[str], list[str]]],
+    None | tuple[str, str, str, list[str], list[str]],
+    None | tuple[str, str, str, list[str], list[str]],
     bool,
     bool,
 ]:

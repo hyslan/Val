@@ -74,19 +74,13 @@ def estoque_virtual(contrato: str, n_con: int) -> DataFrame | None:
         DataFrame: Pandas Dataframe with all material allocated to the 'contrato'
 
     """
-    try:
-        # NORTE SUL DESOBSTRUÇÃO
-        if contrato not in ("4600043760", "4600046036", "4600045267", "4600043654"):
-            new_session: win32com.client.CDispatch = sap.create_session(n_con)
-            estoque_hj: DataFrame | None = estoque(new_session, contrato, n_con)
+    # NORTE SUL DESOBSTRUÇÃO
+    if contrato not in ("4600043760", "4600046036", "4600045267", "4600043654"):
+        new_session: win32com.client.CDispatch = sap.create_session(n_con)
+        estoque_hj: DataFrame | None = estoque(new_session, contrato, n_con)
 
-    except Exception as e_estoque_v:
-        console.print(f"[b] Erro ao obter o estoque virtual: {e_estoque_v}")
-        console.print_exception()
+    if len(estoque_hj) == 0:
         estoque_hj = None
-
-    else:
-        return estoque_hj
 
 
 @log_execution
@@ -141,21 +135,18 @@ def valorator_user(
     if data_valorado is not None:
         time_spent = cronometro_val(start_time, ordem)
         ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
-        try:
-            ja_valorado.valorada(
-                valorado="SIM",
-                contrato=contrato,
-                municipio=cod_mun,
-                status="VALORADA",
-                obs="",
-                data_valoracao=data_valorado,
-                matricula=matricula,
-                valor_medido=f_total,
-                tempo_gasto=time_spent,
-            )
-            ja_valorado.clean_duplicates()
-        except Exception as e_valorado:
-            console.print(f"[i yellow]Erro no SQL de valorator_user: {e_valorado}")
+        ja_valorado.valorada(
+            valorado="SIM",
+            contrato=contrato,
+            municipio=cod_mun,
+            status="VALORADA",
+            obs="",
+            data_valoracao=data_valorado,
+            matricula=matricula,
+            valor_medido=f_total,
+            tempo_gasto=time_spent,
+        )
+        ja_valorado.clean_duplicates()
 
     if sessions.Count != max_sessions:
         con.CloseSession(new_session.ID)
@@ -165,7 +156,7 @@ def valorator_user(
 
 @log_execution
 def inspector_materials(
-    chave_rb_investimento: list[str, str, str, list[str], list[str]] | None,
+    chave_rb_investimento: tuple[str, str, str, list[str], list[str]] | None,
     list_chave_rb_despesa: list[tuple[str, str, str, list[str], list[str]]] | None,
     list_chave_unitario: list[tuple[str, str, str, list[str], list[str]]] | None,
     hidro: str,
@@ -180,7 +171,7 @@ def inspector_materials(
 
     Args:
     ----
-        chave_rb_investimento (_type_): Tupla com a chave de investimento
+        chave_rb_investimento (list[str, str, str, list[str], list[str]]): Tupla com a chave de investimento
         list_chave_rb_despesa (_type_): Lista de Tupla com a chave de despesa
         list_chave_unitario (_type_): Lista de Tupla com a chave unitária1
         hidro (str): Número de Série do hidro.
@@ -421,7 +412,7 @@ def check_and_value_ordem(
 
 
 def process_precificador(
-    tse: str,
+    tse: win32com.client.CDispatch,
     corte: str,
     relig: str,
     posicao_rede: str,
@@ -615,16 +606,18 @@ def looping(
             )
             if result is True:
                 return qtd_ordem, session
-            (
-                corte,
-                relig,
-                posicao_rede,
-                profundidade,
-                hidro,
-                diametro_ramal,
-                diametro_rede,
-                principal_tse,
-            ) = result
+
+            if isinstance(result, tuple):
+                (
+                    corte,
+                    relig,
+                    posicao_rede,
+                    profundidade,
+                    hidro,
+                    diametro_ramal,
+                    diametro_rede,
+                    principal_tse,
+                ) = result
 
             # * Go To ZSBMM216 Transaction
             transacao.contrato = empresa if contrato is None else contrato
@@ -645,29 +638,33 @@ def looping(
             )
             if check is True:
                 return qtd_ordem, session
-            tse = check
 
-            # * TSE e Aba Itens de preço
-            result_p = process_precificador(
-                tse,
-                corte,
-                relig,
-                posicao_rede,
-                profundidade,
-                contrato,
-                session,
-                ordem,
-                cod_mun,
-                principal_tse,
-                start_time,
-            )
-            if result_p is True:
-                return qtd_ordem, session
-            (
-                list_chave_rb_despesa,
-                list_chave_unitario,
-                chave_rb_investimento,
-            ) = result_p
+            if isinstance(check, win32com.client.CDispatch):
+                tse: win32com.client.CDispatch = check
+
+                # * TSE e Aba Itens de preço
+                result_p = process_precificador(
+                    tse,
+                    corte,
+                    relig,
+                    posicao_rede,
+                    profundidade,
+                    empresa,
+                    session,
+                    ordem,
+                    cod_mun,
+                    principal_tse,
+                    start_time,
+                )
+                if result_p is True:
+                    return qtd_ordem, session
+
+                if isinstance(result_p, tuple):
+                    (
+                        list_chave_rb_despesa,
+                        list_chave_unitario,
+                        chave_rb_investimento,
+                    ) = result_p
 
             # * Aba Materiais
             if contrato is not None:
@@ -727,8 +724,11 @@ def looping(
                     "Erro crítico na execução do looping: %s",
                     e_looping,
                 )
+                return qtd_ordem, session
         else:
             return qtd_ordem, session
+
+        return qtd_ordem, session
 
     if contrato is None:
         # NORTESUL
@@ -776,7 +776,9 @@ def val(
     Neste sistema, a Val irá valorar as ordens de serviço do SAP.
     Núcleo motor para instanciar o looping e seus ramos de cada iteração.
     """
-    transacao: Transacao = Transacao(contrato, "100", session)
+    if isinstance(contrato, str):
+        transacao: Transacao = Transacao(contrato, "100", session)
+
     limite_execucoes = len(pendentes_array)
     # * In case of null Df.
     if limite_execucoes == 0:

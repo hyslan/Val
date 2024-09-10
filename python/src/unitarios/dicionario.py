@@ -27,9 +27,9 @@ def selecionar_tse(
     etapa: str,
     corte: str,
     relig: str,
-    reposicao: str,
+    reposicao: list[str],
     num_tse_linhas: int,
-    etapa_reposicao: str,
+    etapa_reposicao: list[str],
     identificador: list[str],
     posicao_rede: str,
     profundidade: str,
@@ -43,9 +43,9 @@ def selecionar_tse(
         etapa (str): Etapa pai
         corte (str): Supressão
         relig (str): Religação
-        reposicao (str): Serviço Complementar
+        reposicao (list[str]): Serviço Complementar
         num_tse_linhas (int): Count de linhas
-        etapa_reposicao (str): Etapa da reposição
+        etapa_reposicao (list[str]): Etapa da reposição
         identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
         posicao_rede (str): Posição da Rede
         profundidade (str): Profundidade

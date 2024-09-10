@@ -19,9 +19,9 @@ class BaseUnitario(UnitarioInterface):
         etapa: str,
         corte: str,
         relig: str,
-        reposicao: str,
+        reposicao: list[str],
         num_tse_linhas: int,
-        etapa_reposicao: str,
+        etapa_reposicao: list[str],
         identificador: list[str],
         posicao_rede: str,
         profundidade: str,
@@ -34,9 +34,9 @@ class BaseUnitario(UnitarioInterface):
             etapa (str): Etapa pai do serviço.
             corte (str): Supressão
             relig (str): Restabelecimento
-            reposicao (str): Serviço complementar
+            reposicao (list[str]): Serviço complementar
             num_tse_linhas (int): Total linhas do Grid
-            etapa_reposicao (str): Etapa complementar
+            etapa_reposicao (list[str]): Etapa complementar
             identificador (list[str]): TSE, Etapa, Identificador para almoxarifado.py
             posicao_rede (str): Posição da Rede
             profundidade (str): Profundidade da rede

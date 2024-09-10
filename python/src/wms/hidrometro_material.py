@@ -30,7 +30,7 @@ class HidrometroMaterial:
         self,
         hidro: str,
         operacao: str,
-        identificador: tuple[str, str, str],  # Unique Array key
+        identificador: tuple[str, str, str, list[str], list[str]],  # Unique Array key
         diametro_ramal: str,
         diametro_rede: str,
         tb_materiais: CDispatch,

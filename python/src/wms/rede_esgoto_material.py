@@ -19,7 +19,7 @@ class RedeEsgotoMaterial:
         self,
         hidro: str,
         operacao: str,
-        identificador: tuple[str, str, str],
+        identificador: tuple[str, str, str, list[str], list[str]],
         diametro_ramal: str,
         diametro_rede: str,
         tb_materiais: win32.CDispatch,

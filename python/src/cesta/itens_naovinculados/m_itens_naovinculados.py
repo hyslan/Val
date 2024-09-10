@@ -13,9 +13,9 @@ class Modalidade:
 
     def __init__(
         self,
-        reposicao: str,
-        etapa_reposicao: str,
-        identificador: tuple[str, str, str, str, str],
+        reposicao: list[str],
+        etapa_reposicao: list[str],
+        identificador: tuple[str, str, str, list[str], list[str]],
         mae: bool,
         session: win32.CDispatch,
     ) -> None:
@@ -25,7 +25,7 @@ class Modalidade:
         ----
             reposicao (str): _description_
             etapa_reposicao (str): _description_
-            identificador (tuple[str, str, str]): _description_
+            identificador (tuple[str, str, str, list[str], list[str]]): TSE, Etapa, id pro match case, [] reposição, [] etapa
             mae (bool): _description_
             session (win32.CDispatch): _description_
 
