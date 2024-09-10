@@ -24,7 +24,7 @@ console = Console()
 def salvar(
     ordem: str,
     qtd_ordem: int,
-    contrato: int,
+    contrato: str,
     session: win32.CDispatch,
     principal_tse: str,
     cod_mun: str,
@@ -39,7 +39,7 @@ def salvar(
     total = session.findById("wnd[0]/usr/txtGS_HEADER-VAL_ATUAL").Text
     f_total = float(total.replace(".", "").replace(",", ".")) if total != "" else 0
 
-    def salvar_valoracao(session_id) -> None:
+    def salvar_valoracao(session_id: pywintypes.HANDLE) -> None:  # type: ignore
         """Função para salvar valoração."""
         nonlocal ordem, salvo
         # Seção Crítica - uso do Lock
@@ -64,7 +64,7 @@ def salvar(
     try:
         # pylint: disable=E1101
         pythoncom.CoInitialize()
-        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)
+        session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)  # type: ignore
         # Start
         thread = threading.Thread(target=salvar_valoracao, kwargs={"session_id": session_id})
         thread.start()

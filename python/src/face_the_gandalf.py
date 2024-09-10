@@ -12,12 +12,12 @@ import pygame
 import simpleaudio as sa
 from PIL import Image, ImageTk
 from pydub import AudioSegment
-from simpleaudio import PlayObject
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
     from PIL.ImageTk import PhotoImage
+    from simpleaudio import PlayObject
 
 stop_audio = False
 
@@ -32,10 +32,10 @@ def play_audio(audio_path: str) -> None:
     """
     audio: AudioSegment | Generator[Any, Any, None] = AudioSegment.from_file(audio_path, format="m4a")
     play_obj: PlayObject = sa.play_buffer(
-        audio.raw_data,
-        num_channels=audio.channels,
-        bytes_per_sample=audio.sample_width,
-        sample_rate=audio.frame_rate,
+        audio.raw_data,  # type: ignore
+        num_channels=audio.channels,  # type: ignore
+        bytes_per_sample=audio.sample_width,  # type: ignore
+        sample_rate=audio.frame_rate,  # type: ignore
     )
     while play_obj.is_playing() and not stop_audio:
         time.sleep(0.1)
@@ -91,7 +91,7 @@ def gif() -> None:
 
     # Configuração do GIF
     gif_path: str = "media/gandalf.gif"
-    gif_reader: imageio.core.Format.Reader = imageio.get_reader(gif_path)
+    gif_reader: imageio.core.Format.Reader = imageio.get_reader(gif_path)  # type: ignore
     frame_cnt: int = gif_reader.get_length()
     frames: list[PhotoImage] = [ImageTk.PhotoImage(Image.fromarray(gif_reader.get_data(i))) for i in range(frame_cnt)]
 
@@ -103,7 +103,7 @@ def gif() -> None:
     def update(ind: int) -> None:
         """Update dos frames."""
         frame: PhotoImage = frames[ind]
-        label.configure(image=frame)
+        label.configure(image=frame)  # type: ignore
         ind += 1
 
         if ind == 1:  # Inicia o áudio quando o primeiro quadro é exibido
