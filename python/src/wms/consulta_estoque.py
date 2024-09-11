@@ -1,58 +1,67 @@
-"""Módulo de consulta estoque de materiais"""
-import os
+"""Módulo de consulta estoque de materiais."""
+
+from __future__ import annotations
+
+import contextlib
 import time
+import typing
+from pathlib import Path
 
 import pandas as pd
+import pywintypes
 import xlwings as xw
 
 from python.src import sap
 
+if typing.TYPE_CHECKING:
+    from pandas import DataFrame
+    from win32com.client import CDispatch
 
-def estoque(session, contrato, n_con):
-    """Função para consultar estoque"""
-    caminho = os.getcwd() + "\\sheets\\"
-    session.StartTransaction("MBLB")
-    frame = session.findById("wnd[0]")
-    frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
-    print("Consultando Estoque de Materiais")
-    frame.SendVkey(8)
-    frame.sendVKey(42)  # Lista Detalhada
-    grid = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
-    grid.contextMenu()
-    grid.selectContextMenuItem("&XXL")
-    session.findById("wnd[1]/tbar[0]/btn[0]").press()
-    session.findById(
-        "wnd[1]/usr/ctxtDY_PATH").text = caminho
-    session.findById(
-        "wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
-    session.findById("wnd[1]").sendVKey(11)  # Substituir
-    print("Planilha de estoque gerada com sucesso.")
-    materiais = pd.read_excel(caminho + f"estoque_{contrato}.XLSX",
-                              sheet_name="Sheet1", usecols=["Material",
-                                                            "Texto breve material",
-                                                            "Utilização livre",
-                                                            ],
-                              )
-    materiais = materiais.dropna()
-    materiais["Material"] = materiais["Material"].astype(int).astype(str)
-    sessao = sap
-    con = sessao.connection_object(n_con)
-    total_sessoes = sessao.contar_sessoes(n_con)
-    if total_sessoes != 6:
-        try:
-            print("Encerrando Sessão.")
-            con.CloseSession(f"/app/con[0]/ses[{total_sessoes - 1}]")
-            print("Sessão Encerrada.")
-        except Exception as e:
-            print(f"Erro em consulta_estoque - Encerrar Sessão:{e}")
-        time.sleep(3)
 
-    print("Fechando Arquivo Excel.\n")
+def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
+    """Função para consultar estoque."""
+    caminho = Path.cwd() / "sheets"
+    caminho_str = str(caminho)
     try:
-        time.sleep(8)
-        book = xw.Book(f"estoque_{contrato}.xlsx")
-        book.app.quit()
-    except Exception as e:
-        print(f"Erro em consulta_estoque - MS EXCEL:{e}")
+        session.StartTransaction("MBLB")
+        frame = session.findById("wnd[0]")
+        frame.findByid("wnd[0]/usr/ctxtLIFNR-LOW").text = contrato
+        frame.SendVkey(8)
+        frame.sendVKey(42)  # Lista Detalhada
+        grid = session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell")
+        grid.contextMenu()
+        grid.selectContextMenuItem("&XXL")
+        session.findById("wnd[1]/tbar[0]/btn[0]").press()
+        session.findById("wnd[1]/usr/ctxtDY_PATH").text = caminho_str
+        session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
+        session.findById("wnd[1]").sendVKey(11)  # Substituir
+        materiais = pd.read_excel(
+            caminho.joinpath(f"estoque_{contrato}.XLSX"),
+            sheet_name="Sheet1",
+            usecols=[
+                "Material",
+                "Texto breve material",
+                "Utilização livre",
+            ],
+        )
+        materiais = materiais.dropna()
+        materiais["Material"] = materiais["Material"].astype(int).astype(str)
+        sessao = sap
+        con = sessao.connection_object(n_con)
+        total_sessoes = sessao.contar_sessoes(n_con)
+        max_sessoes = 6
+        if total_sessoes != max_sessoes:
+            with contextlib.suppress(Exception):
+                con.CloseSession(session.ID)
+            time.sleep(3)
+
+        try:
+            time.sleep(8)
+            book = xw.Book(f"estoque_{contrato}.xlsx")
+            book.app.quit()
+        except xw.XlwingsError:
+            pass
+    except pywintypes.com_error:
+        return pd.DataFrame(columns=["Material", "Texto breve material", "Utilização livre"], dtype=str)
 
     return materiais

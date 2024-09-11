@@ -1,2 +1,1 @@
-#__init__.py
-#Religacao
+"""Init de Religação Unitário."""

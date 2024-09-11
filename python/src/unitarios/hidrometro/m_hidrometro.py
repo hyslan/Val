@@ -1,14 +1,50 @@
 # hidrometro.py
 """Módulo Família Hidrômetro Unitário."""
+
+from __future__ import annotations
+
+import typing
+
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class Hidrometro:
     """Classe Unitária de Hidrômetro."""
 
-    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede,
-                 profundidade, session, preco):
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: list[str],
+        num_tse_linhas: int,
+        etapa_reposicao: list[str],
+        identificador: list[str],
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
+    ) -> None:
+        """Construtor de Supressão.
+
+        Args:
+        ----
+            etapa (str): Etapa Pai
+            corte (str): Onde foi feita a supressão
+            relig (str): Onde foi realizado a religação
+            reposicao (str): Etapa complementar
+            num_tse_linhas (int): Count
+            etapa_reposicao (str): Etapa do serviço complementar
+            identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
+            posicao_rede (str): Posição da Rede
+            profundidade (str): Profundidade
+            session (CDispatch): Sessão do SAPGUI
+            preco (CDispatch): GRID de preço do SAP
+
+        """
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -21,36 +57,29 @@ class Hidrometro:
         self.identificador = identificador
         self.preco = preco
 
-    def troca_de_hidro_preventiva_agendada(self):
-        """Troca de Hidro Preventiva - Código 456902"""
-        print(
-            "Iniciando processo de pagar TROCA DE HIDROMETRO PREVENTIVA - Código: 456902")
+    def troca_de_hidro_preventiva_agendada(self) -> None:
+        """Troca de Hidro Preventiva - Código 456902."""
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             btn_localizador(self.preco, self.session, "456902")
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de THD PREV - CODIGO: 456902")
 
-    def desinclinado_hidrometro(self):
-        """Desinclinado Hidrômetro - Código 456022"""
-        print("Iniciando processo de pagar COLOCADO HIDROMETRO NA POSIÇÃO CORRETA - Código: 456022")
+    def desinclinado_hidrometro(self) -> None:
+        """Desinclinado Hidrômetro - Código 456022."""
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             btn_localizador(self.preco, self.session, "456022")
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de DESINCL HD - CODIGO: 456022")
 
-    def troca_de_hidro_corretivo(self):
-        """Troca de Hidrômetro Corretivo - Código 456901"""
-        print("Iniciando processo de pagar TROCA DE HIDROMETRO CORRETIVO - Código: 456901")
+    def troca_de_hidro_corretivo(self) -> None:
+        """Troca de Hidrômetro Corretivo - Código 456901."""
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             btn_localizador(self.preco, self.session, "456901")
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de THD  ATE 10M3/H CORR - CODIGO: 456901")

@@ -1,19 +1,20 @@
 # interfaces.py
-"""Establish a pattern"""
+"""Establish a pattern."""
+
 from abc import ABC, abstractmethod
 
 
 class UnitarioInterface(ABC):
-    """Interface para as classes"""
+    """Interface para as classes."""
 
     @abstractmethod
-    def processar(self):
-        """Processar tse"""
+    def processar(self) -> None:
+        """Processar tse."""
 
     @abstractmethod
-    def pagar(self):
-        """Abstrato para pagar"""
+    def pagar(self) -> None:
+        """Abstrato para pagar."""
 
     @abstractmethod
-    def _processar_operacao(self, tipo_operacao):
-        """Processar operação"""
+    def _processar_operacao(self, tipo_operacao: str) -> None:
+        """Processar operação."""

@@ -1,7 +1,12 @@
+/.venv
 __pycache__/
 /.ipynb_checkpoints
+/.pytest_cache
+/.ruff_cache
+/.mypy_cache
 /.vs
 /.vscode
+/.idea
 /src/__pycache__
 # Remove caches by -m
 src/__pycache__/servicos_executados.cpython-312.pyc

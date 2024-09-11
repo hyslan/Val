@@ -1,8 +1,17 @@
 # hidrometro_material.py
 """Módulo dos materiais de família Rede de Água."""
+
+from __future__ import annotations
+
+import typing
+
 from rich.console import Console
 
 from python.src.wms import localiza_material, materiais_contratada, testa_material_sap
+
+if typing.TYPE_CHECKING:
+    from pandas import DataFrame
+    from win32com.client import CDispatch
 
 console: Console = Console()
 
@@ -10,19 +19,37 @@ console: Console = Console()
 class RedeAguaMaterial:
     """Classe de materiais de CRA."""
 
-    def __init__(self,
-                 hidro,
-                 operacao,
-                 identificador,  # Unique Array key
-                 diametro_ramal,
-                 diametro_rede,
-                 tb_materiais,
-                 contrato,
-                 estoque,
-                 df_materiais,
-                 posicao_rede,
-                 session) -> None:
+    def __init__(
+        self,
+        hidro: str,
+        operacao: str,
+        identificador: tuple[str, str, str, list[str], list[str]],  # Unique Array key
+        diametro_ramal: str,
+        diametro_rede: str,
+        tb_materiais: CDispatch,
+        contrato: str,
+        estoque: DataFrame,
+        df_materiais: DataFrame,
+        posicao_rede: str,
+        session: CDispatch,
+    ) -> None:
+        """Método de inicialização da classe Rede Água.
 
+        Args:
+        ----
+            hidro (str): Número de Série do Hidrometro.
+            operacao (str): Etapa Pai
+            identificador (tuple[str, str, str]): TSE, Etapa TSE, ID Match Case do inspector de Almoxarixado.py
+            diametro_ramal (str): Tamanho do diâmetro do ramal.
+            diametro_rede (str): Tamanho do diâmetro da rede.
+            tb_materiais (CDispatch): GRID de Materiais.
+            contrato (str): Número do contrato.
+            estoque (DataFrame): Tabela de Estoque.
+            df_materiais (DataFrame): Tabela de Materiais do Grid Materiais SAP.
+            posicao_rede (str): Posição da Rede de PA até PO.
+            session (CDispatch): Sessão do SAP.
+
+        """
         self.hidro = hidro
         self.operacao = operacao
         self.identificador = identificador
@@ -37,175 +64,124 @@ class RedeAguaMaterial:
         self.list_contratada = materiais_contratada.lista_materiais()
         self.usr = session.findById("wnd[0]/usr")
 
-    def materiais_vigentes(self):
+    def materiais_vigentes(self) -> None:
         """Materiais com estoque."""
-        sap_material = testa_material_sap.testa_material_sap(
-            self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(self.tb_materiais)
         # CONEXOES MET LIGACOES  FÊMEA DN 20
         con_met_femea_estoque = self.estoque[self.estoque["Material"] == "30002394"]
         # CONEXOES MET ADAP MACHO DN 20
-        con_met_macho_estoque = self.estoque[self.estoque["Material"] == "30001346"]
+        self.estoque[self.estoque["Material"] == "30001346"]
         # DISPOSITIVO MED PLASTICO DN 20
-        disp_med_plastico_estoque = self.estoque[self.estoque["Material"] == "50000178"]
+        self.estoque[self.estoque["Material"] == "50000178"]
         # REGISTRO METALICO RAMAL PREDIAL DN 20
-        reg_met_predial_dn20_estoque = self.estoque[self.estoque["Material"] == "30006747"]
+        self.estoque[self.estoque["Material"] == "30006747"]
         # COLAR TOM P/TUBO PE DE 32XDN 20 TE INTEG
-        colar_tom_tubo_pe_dn32xdn20_estoque = self.estoque[
-            self.estoque["Material"] == "30000287"]
+        self.estoque[self.estoque["Material"] == "30000287"]
         # COLAR TOMADA ACO INOX DN50A150 X DNR20
-        colar_tom_aco_inox__dn50a150xdnr20_estoque = self.estoque[
-            self.estoque["Material"] == "30004702"]
+        colar_tom_aco_inox__dn50a150xdnr20_estoque = self.estoque[self.estoque["Material"] == "30004702"]
         # COLAR TOMADA ACO INOX DN200A300 X DNR20
-        colar_tom_aco_inox__dn200a300xdnr20_estoque = self.estoque[
-            self.estoque["Material"] == "30004701"]
+        self.estoque[self.estoque["Material"] == "30004701"]
         # COLAR TOMADA FF C.INOX DN200A300 X DNR20
-        colar_tom_ff_cinox__dn200a300xdnr20_estoque = self.estoque[
-            self.estoque["Material"] == "30004703"]
+        self.estoque[self.estoque["Material"] == "30004703"]
         # ABRACADEIRA FF REPARO TUBO DN75 LMIN=150
         abrac_ff_reparo_dn75_lmin150_estoque = self.estoque[self.estoque["Material"] == "30001122"]
         # ABRACADEIRA INOX REPARO TUBO DN50 L=300
         abrac_inox_reparo_dn50_l300_estoque = self.estoque[self.estoque["Material"] == "30002151"]
         # TUBO PEAD DN 20
-        tubo_pead_dn20_estoque = self.estoque[self.estoque["Material"] == "30001848"]
+        self.estoque[self.estoque["Material"] == "30001848"]
 
         if sap_material is not None:
             num_material_linhas = self.tb_materiais.RowCount
             ultima_linha_material = num_material_linhas
-            tubo_pead_dn20 = self.df_materiais[self.df_materiais["Material"] == "30001848"]
-            con_met_femea = self.df_materiais[self.df_materiais["Material"] == "30002394"]
-            con_met_macho = self.df_materiais[self.df_materiais["Material"] == "30001346"]
-            disp_med_plastico = self.df_materiais[self.df_materiais["Material"] == "50000178"]
-            reg_met_predial_dn20 = self.df_materiais[self.df_materiais["Material"] == "30006747"]
-            colar_tom_tubo_pe_dn32xdn20 = self.df_materiais[
-                self.df_materiais["Material"] == "30000287"]
-            colar_tom_aco_inox__dn50a150xdnr20 = self.df_materiais[
-                self.df_materiais["Material"] == "30004702"]
-            colar_tom_aco_inox__dn200a300xdnr20 = self.df_materiais[
-                self.df_materiais["Material"] == "30004701"]
-            colar_tom_ff_cinox__dn200a300xdnr20 = self.df_materiais[
-                self.df_materiais["Material"] == "30004703"]
+            self.df_materiais[self.df_materiais["Material"] == "30001848"]
+            self.df_materiais[self.df_materiais["Material"] == "30002394"]
+            self.df_materiais[self.df_materiais["Material"] == "30001346"]
+            self.df_materiais[self.df_materiais["Material"] == "50000178"]
+            self.df_materiais[self.df_materiais["Material"] == "30006747"]
+            self.df_materiais[self.df_materiais["Material"] == "30000287"]
+            self.df_materiais[self.df_materiais["Material"] == "30004702"]
+            self.df_materiais[self.df_materiais["Material"] == "30004701"]
+            self.df_materiais[self.df_materiais["Material"] == "30004703"]
 
             for material in self.df_materiais["Material"]:
                 match material:
                     case "30002394":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30002394")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30002394")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30001346":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30001346")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30001346")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "50000178":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "50000178")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "50000178")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30006747":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30006747")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30006747")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30000287":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30000287")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30000287")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30004702":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30004702")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30004702")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30004701":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30004701")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30004701")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     case "30004703":
-                        resultado = localiza_material.qtd_max(
-                            material, self.estoque, 1, self.df_materiais)
+                        resultado = localiza_material.qtd_max(material, self.estoque, 1, self.df_materiais)
                         if not resultado.empty:
-                            localiza_material.btn_busca_material(
-                                self.tb_materiais, self.session, "30004703")
-                            localiza_material.qtd_correta(
-                                self.tb_materiais, "1")
+                            localiza_material.btn_busca_material(self.tb_materiais, self.session, "30004703")
+                            localiza_material.qtd_correta(self.tb_materiais, "1")
                     # TUBO PEAD DN20
                     case "30001848":
                         codigo = "30001848"
                         match self.posicao_rede:
                             case "PA":
-                                resultado = localiza_material.qtd_max(
-                                    material, self.estoque, 2.5, self.df_materiais)
+                                resultado = localiza_material.qtd_max(material, self.estoque, 2.5, self.df_materiais)
                                 if not resultado.empty:
-                                    localiza_material.btn_busca_material(
-                                        self.tb_materiais, self.session, codigo)
-                                    localiza_material.qtd_correta(
-                                        self.tb_materiais, "2")
+                                    localiza_material.btn_busca_material(self.tb_materiais, self.session, codigo)
+                                    localiza_material.qtd_correta(self.tb_materiais, "2")
                             case "TA":
-                                resultado = localiza_material.qtd_max(
-                                    material, self.estoque, 4.5, self.df_materiais)
+                                resultado = localiza_material.qtd_max(material, self.estoque, 4.5, self.df_materiais)
                                 if not resultado.empty:
-                                    localiza_material.btn_busca_material(
-                                        self.tb_materiais, self.session, codigo)
-                                    localiza_material.qtd_correta(
-                                        self.tb_materiais, "4")
+                                    localiza_material.btn_busca_material(self.tb_materiais, self.session, codigo)
+                                    localiza_material.qtd_correta(self.tb_materiais, "4")
                             case "EX":
-                                resultado = localiza_material.qtd_max(
-                                    material, self.estoque, 10, self.df_materiais)
+                                resultado = localiza_material.qtd_max(material, self.estoque, 10, self.df_materiais)
                                 if not resultado.empty:
-                                    localiza_material.btn_busca_material(
-                                        self.tb_materiais, self.session, codigo)
-                                    localiza_material.qtd_correta(
-                                        self.tb_materiais, "5")
+                                    localiza_material.btn_busca_material(self.tb_materiais, self.session, codigo)
+                                    localiza_material.qtd_correta(self.tb_materiais, "5")
                             case "TO":
-                                resultado = localiza_material.qtd_max(
-                                    material, self.estoque, 15, self.df_materiais)
+                                resultado = localiza_material.qtd_max(material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
-                                    localiza_material.btn_busca_material(
-                                        self.tb_materiais, self.session, codigo)
-                                    localiza_material.qtd_correta(
-                                        self.tb_materiais, "7")
+                                    localiza_material.btn_busca_material(self.tb_materiais, self.session, codigo)
+                                    localiza_material.qtd_correta(self.tb_materiais, "7")
                             case "PO":
-                                resultado = localiza_material.qtd_max(
-                                    material, self.estoque, 15, self.df_materiais)
+                                resultado = localiza_material.qtd_max(material, self.estoque, 15, self.df_materiais)
                                 if not resultado.empty:
-                                    localiza_material.btn_busca_material(
-                                        self.tb_materiais, self.session, codigo)
-                                    localiza_material.qtd_correta(
-                                        self.tb_materiais, "10")
+                                    localiza_material.btn_busca_material(self.tb_materiais, self.session, codigo)
+                                    localiza_material.qtd_correta(self.tb_materiais, "10")
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
-                sap_material = self.tb_materiais.GetCellValue(
-                    n_material, "MATERIAL")
-                sap_etapa_material = self.tb_materiais.GetCellValue(
-                    n_material, "ETAPA")
+                sap_material = self.tb_materiais.GetCellValue(n_material, "MATERIAL")
+                sap_etapa_material = self.tb_materiais.GetCellValue(n_material, "ETAPA")
 
                 match sap_material:
-
                     case "30029526":
                         if self.contrato == "4600041302":
                             # UNIÃO PLASTICA P/ TUBO PE DE 20
@@ -214,95 +190,129 @@ class RedeAguaMaterial:
                     case "30001122":
                         if abrac_ff_reparo_dn75_lmin150_estoque.empty:
                             self.tb_materiais.modifyCheckbox(
-                                n_material, "ELIMINADO", True,
+                                n_material,
+                                "ELIMINADO",
+                                True,
                             )
 
                     case "30002735":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30011136":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30005088":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
                         if not con_met_femea_estoque.empty:
-                            self.tb_materiais.InsertRows(
-                                str(ultima_linha_material))
+                            self.tb_materiais.InsertRows(str(ultima_linha_material))
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "ETAPA", sap_etapa_material,
+                                ultima_linha_material,
+                                "ETAPA",
+                                sap_etapa_material,
                             )
                             # Adiciona CONEXÕES METALICAS COTOVELO FEMEA DN 3/4.
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "MATERIAL", "30002394",
+                                ultima_linha_material,
+                                "MATERIAL",
+                                "30002394",
                             )
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "QUANT", "1",
+                                ultima_linha_material,
+                                "QUANT",
+                                "1",
                             )
                             self.tb_materiais.setCurrentCell(
-                                ultima_linha_material, "QUANT",
+                                ultima_linha_material,
+                                "QUANT",
                             )
                             ultima_linha_material = ultima_linha_material + 1
 
                     case "30004097":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30002152":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30002151":
                         if abrac_inox_reparo_dn50_l300_estoque.empty:
                             self.tb_materiais.modifyCheckbox(
-                                n_material, "ELIMINADO", True,
+                                n_material,
+                                "ELIMINADO",
+                                True,
                             )
 
                     case "30002802":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30004104":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30007931":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
 
                     case "30002202":
                         self.tb_materiais.modifyCheckbox(
-                            n_material, "ELIMINADO", True,
+                            n_material,
+                            "ELIMINADO",
+                            True,
                         )
                         if not colar_tom_aco_inox__dn50a150xdnr20_estoque.empty:
-                            self.tb_materiais.InsertRows(
-                                str(ultima_linha_material))
+                            self.tb_materiais.InsertRows(str(ultima_linha_material))
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "ETAPA", sap_etapa_material,
+                                ultima_linha_material,
+                                "ETAPA",
+                                sap_etapa_material,
                             )
                             # Adiciona COLAR TOMADA ACO INOX DN50A150 X DNR20.
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "MATERIAL", "30004702",
+                                ultima_linha_material,
+                                "MATERIAL",
+                                "30004702",
                             )
                             self.tb_materiais.modifyCell(
-                                ultima_linha_material, "QUANT", "1",
+                                ultima_linha_material,
+                                "QUANT",
+                                "1",
                             )
                             self.tb_materiais.setCurrentCell(
-                                ultima_linha_material, "QUANT",
+                                ultima_linha_material,
+                                "QUANT",
                             )
                             ultima_linha_material = ultima_linha_material + 1
 
-    def receita_reparo_de_rede_de_agua(self):
+    def receita_reparo_de_rede_de_agua(self) -> None:
         """Padrão de materiais na classe CRA."""
         materiais_receita = [
             "10014709",
@@ -416,51 +426,53 @@ class RedeAguaMaterial:
             # UNIÃO PLASTICA P/ TUBO PE DE 20
             "30029526",
         ]
-        sap_material = testa_material_sap.testa_material_sap(
-            self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(self.tb_materiais)
 
         if sap_material is None:
-            print("sem material.")
             return
         material_lista: list[dict[str, str]] = []
         num_material_linhas = self.tb_materiais.RowCount  # Conta as Rows
         # Loop do Grid Materiais.
         for n_material in range(num_material_linhas):
             # Pega valor da célula 0
-            sap_material = self.tb_materiais.GetCellValue(
-                n_material, "MATERIAL")
-            sap_etapa_material = self.tb_materiais.GetCellValue(
-                n_material, "ETAPA")
-            material_lista.append(
-                {"Material": sap_material, "Etapa": sap_etapa_material})
-            material_estoque = self.estoque[self.estoque["Material"]
-                                            == sap_material]
+            sap_material = self.tb_materiais.GetCellValue(n_material, "MATERIAL")
+            sap_etapa_material = self.tb_materiais.GetCellValue(n_material, "ETAPA")
+            material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+            material_estoque = self.estoque[self.estoque["Material"] == sap_material]
 
             console.print(f"\n{material_estoque}", style="italic green")
 
-            if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada \
-                        and sap_etapa_material == self.operacao:
+            if (
+                sap_material not in materiais_receita
+                and sap_material not in self.list_contratada
+                and sap_etapa_material == self.operacao
+            ):
                 self.tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True,
+                    n_material,
+                    "ELIMINADO",
+                    True,
                 )
             if material_estoque.empty:
                 self.tb_materiais.modifyCheckbox(
-                    n_material, "ELIMINADO", True,
+                    n_material,
+                    "ELIMINADO",
+                    True,
                 )
 
         self.materiais_vigentes()
 
         # Materiais do Global.
-        materiais_contratada.materiais_contratada(
-            self.tb_materiais, self.contrato,
-            self.estoque, self.session)
+        materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato, self.estoque, self.session)
 
-    def receita_tra(self):
+    def receita_tra(self) -> None:
         """Padrão de materiais na classe Troca de Conexão de Ligação de Água."""
         materiais_receita = [
-            "30007896", "50001070", "30001348",
-            "30006747", "50000021", "10014709",
+            "30007896",
+            "50001070",
+            "30001348",
+            "30006747",
+            "50000021",
+            "10014709",
             # --- TE DE SERVIÇO INTERGRADO DN 20 OU 32 ---
             "30008677",  # ART DN 100 P/ DE 32
             "30000211",  # ART DN 100-DE 110 X 20
@@ -484,8 +496,7 @@ class RedeAguaMaterial:
             "30002204",  # DN 100 X DNR50
             "30001080",  # DN 400 X DNR20
         ]
-        sap_material = testa_material_sap.testa_material_sap(
-            self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(self.tb_materiais)
         # CONEXOES MET LIGACOES FEMEA DN 20
         con_met_femea_dn20_estoque = self.estoque[self.estoque["Material"] == "30002394"]
         # REGISTRO METALICO RAMAL PREDIAL DN 20
@@ -495,34 +506,48 @@ class RedeAguaMaterial:
             if not con_met_femea_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1],
+                    ultima_linha_material,
+                    "ETAPA",
+                    self.identificador[1],
                 )
                 # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30002394",
+                    ultima_linha_material,
+                    "MATERIAL",
+                    "30002394",
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
+                    ultima_linha_material,
+                    "QUANT",
+                    "1",
                 )
                 self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
+                    ultima_linha_material,
+                    "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
 
             if not reg_met_predial_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1],
+                    ultima_linha_material,
+                    "ETAPA",
+                    self.identificador[1],
                 )
                 # Adiciona REGISTRO METALICO RAMAL PREDIAL DN 20.
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30006747",
+                    ultima_linha_material,
+                    "MATERIAL",
+                    "30006747",
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
+                    ultima_linha_material,
+                    "QUANT",
+                    "1",
                 )
                 self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
+                    ultima_linha_material,
+                    "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
         else:
@@ -535,94 +560,116 @@ class RedeAguaMaterial:
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
                 # Pega valor da célula 0
-                sap_material = self.tb_materiais.GetCellValue(
-                    n_material, "MATERIAL")
-                sap_etapa_material = self.tb_materiais.GetCellValue(
-                    n_material, "ETAPA")
-                material_lista.append(
-                    {"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque["Material"]
-                                                == sap_material]
+                sap_material = self.tb_materiais.GetCellValue(n_material, "MATERIAL")
+                sap_etapa_material = self.tb_materiais.GetCellValue(n_material, "ETAPA")
+                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque["Material"] == sap_material]
 
                 console.print(f"\n{material_estoque}", style="italic green")
 
-                if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada \
-                        and sap_etapa_material == self.operacao:
+                if (
+                    sap_material not in materiais_receita
+                    and sap_material not in self.list_contratada
+                    and sap_etapa_material == self.operacao
+                ):
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True,
+                        n_material,
+                        "ELIMINADO",
+                        True,
                     )
                 if material_estoque.empty:
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True,
+                        n_material,
+                        "ELIMINADO",
+                        True,
                     )
 
-            if "30002394" not in [i["Material"] for i in material_lista] \
-                    and not con_met_femea_dn20_estoque.empty:
+            if "30002394" not in [i["Material"] for i in material_lista] and not con_met_femea_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1],
+                    ultima_linha_material,
+                    "ETAPA",
+                    self.identificador[1],
                 )
                 # Adiciona CONEXOES MET LIGACOES FEMEA DN 20.
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30002394",
+                    ultima_linha_material,
+                    "MATERIAL",
+                    "30002394",
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
+                    ultima_linha_material,
+                    "QUANT",
+                    "1",
                 )
                 self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
+                    ultima_linha_material,
+                    "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
 
-            if "30006747" not in [i["Material"] for i in material_lista] \
-                    and not reg_met_predial_dn20_estoque.empty:
+            if "30006747" not in [i["Material"] for i in material_lista] and not reg_met_predial_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1],
+                    ultima_linha_material,
+                    "ETAPA",
+                    self.identificador[1],
                 )
                 # Adiciona REGISTRO METALICO RAMAL PREDIAL DN 20.
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30006747",
+                    ultima_linha_material,
+                    "MATERIAL",
+                    "30006747",
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
+                    ultima_linha_material,
+                    "QUANT",
+                    "1",
                 )
                 self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
+                    ultima_linha_material,
+                    "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
 
             self.materiais_vigentes()
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato,
-                self.estoque, self.session)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato, self.estoque, self.session)
 
-    def receita_reparo_de_ramal_de_agua(self):
+    def receita_reparo_de_ramal_de_agua(self) -> None:
         """Padrão de materiais no reparo de Ligação de Água."""
         materiais_receita = [
-            "30001346", "30002394", "30001848", "300029526", "10014709",
+            "30001346",
+            "30002394",
+            "30001848",
+            "300029526",
+            "10014709",
             "50000178",
         ]
-        sap_material = testa_material_sap.testa_material_sap(
-            self.tb_materiais)
+        sap_material = testa_material_sap.testa_material_sap(self.tb_materiais)
         tubo_pead_dn20_estoque = self.estoque[self.estoque["Material"] == "30001848"]
         if sap_material is None and not tubo_pead_dn20_estoque.empty:
             ultima_linha_material = 0
             self.tb_materiais.InsertRows(str(ultima_linha_material))
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "ETAPA", self.identificador[1],
+                ultima_linha_material,
+                "ETAPA",
+                self.identificador[1],
             )
             # Adiciona TUDO PEAD DN 20.
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "MATERIAL", "30001848",
+                ultima_linha_material,
+                "MATERIAL",
+                "30001848",
             )
             self.tb_materiais.modifyCell(
-                ultima_linha_material, "QUANT", "1",
+                ultima_linha_material,
+                "QUANT",
+                "1",
             )
             self.tb_materiais.setCurrentCell(
-                ultima_linha_material, "QUANT",
+                ultima_linha_material,
+                "QUANT",
             )
             ultima_linha_material = ultima_linha_material + 1
         else:
@@ -634,50 +681,55 @@ class RedeAguaMaterial:
 
             # Loop do Grid Materiais.
             for n_material in range(num_material_linhas):
-                sap_material = self.tb_materiais.GetCellValue(
-                    n_material, "MATERIAL")
-                sap_etapa_material = self.tb_materiais.GetCellValue(
-                    n_material, "ETAPA")
-                material_lista.append(
-                    {"Material": sap_material, "Etapa": sap_etapa_material})
-                material_estoque = self.estoque[self.estoque["Material"]
-                                                == sap_material]
+                sap_material = self.tb_materiais.GetCellValue(n_material, "MATERIAL")
+                sap_etapa_material = self.tb_materiais.GetCellValue(n_material, "ETAPA")
+                material_lista.append({"Material": sap_material, "Etapa": sap_etapa_material})
+                material_estoque = self.estoque[self.estoque["Material"] == sap_material]
 
                 if sap_material not in self.list_contratada:
-                    console.print(f"\n{material_estoque}",
-                                  style="italic green")
+                    console.print(f"\n{material_estoque}", style="italic green")
 
-                if sap_material not in materiais_receita \
-                        and sap_material not in self.list_contratada \
-                        and sap_etapa_material == self.operacao:
+                if (
+                    sap_material not in materiais_receita
+                    and sap_material not in self.list_contratada
+                    and sap_etapa_material == self.operacao
+                ):
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True,
+                        n_material,
+                        "ELIMINADO",
+                        True,
                     )
                 if material_estoque.empty and sap_material not in self.list_contratada:
                     self.tb_materiais.modifyCheckbox(
-                        n_material, "ELIMINADO", True,
+                        n_material,
+                        "ELIMINADO",
+                        True,
                     )
 
-            if "30001848" not in [i["Material"] for i in material_lista] \
-                    and not tubo_pead_dn20_estoque.empty:
+            if "30001848" not in [i["Material"] for i in material_lista] and not tubo_pead_dn20_estoque.empty:
                 self.tb_materiais.InsertRows(str(ultima_linha_material))
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "ETAPA", self.identificador[1],
+                    ultima_linha_material,
+                    "ETAPA",
+                    self.identificador[1],
                 )
                 # Adiciona TUBO PEAD DN 20 - PE 80 - 1.0 MPA.
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "MATERIAL", "30001848",
+                    ultima_linha_material,
+                    "MATERIAL",
+                    "30001848",
                 )
                 self.tb_materiais.modifyCell(
-                    ultima_linha_material, "QUANT", "1",
+                    ultima_linha_material,
+                    "QUANT",
+                    "1",
                 )
                 self.tb_materiais.setCurrentCell(
-                    ultima_linha_material, "QUANT",
+                    ultima_linha_material,
+                    "QUANT",
                 )
                 ultima_linha_material = ultima_linha_material + 1
 
             self.materiais_vigentes()
             # Materiais do Global.
-            materiais_contratada.materiais_contratada(
-                self.tb_materiais, self.contrato,
-                self.estoque, self.session)
+            materiais_contratada.materiais_contratada(self.tb_materiais, self.contrato, self.estoque, self.session)
