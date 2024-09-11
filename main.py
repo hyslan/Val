@@ -36,7 +36,7 @@ if typing.TYPE_CHECKING:
 console: rich.console.Console = Console()
 
 
-def main(arg: argparse.Namespace | None = None) -> None:
+def main() -> None:
     """Sistema principal da Val e inicializador do programa."""
     setup_logging()
     logger = logging.getLogger(__name__)
@@ -85,8 +85,7 @@ def main(arg: argparse.Namespace | None = None) -> None:
     parser.add_argument("-p", "--password", type=str, help="Digite a senha para iniciar o programa.", required=True)
     parser.add_argument("-r", "--revalorar", default=False, type=bool, help="Revalorar uma Ordem.")
 
-    if arg is None:
-        args: argparse.Namespace = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
     options: str = args.option
     # Avatar.
