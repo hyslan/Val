@@ -41,6 +41,7 @@ def salvar(
 
     def salvar_valoracao(session_id: pywintypes.HANDLE) -> None:  # type: ignore
         """Função para salvar valoração."""
+        item_vinculado_faltante = "Obrigatório marcar Medição"
         nonlocal ordem, salvo
         # Seção Crítica - uso do Lock
         with lock:
@@ -58,11 +59,13 @@ def salvar(
 
             # pylint: disable=E1101
             except pywintypes.com_error:
-                gui.findById("wnd[0]").sendVKey(11)
-                gui.findById("wnd[1]/usr/btnBUTTON_1").press()
+                rodape = session.findById("wnd[0]/sbar").Text
+                if item_vinculado_faltante in rodape:
+                    etapa_faltante = re.findall(r"\d+", rodape)
+                    console.print(f"[italic red]Etapa(s): {etapa_faltante} não foi vinculada.", style="italic red")
+                    # TODO: Implementar a lógica para vincular a etapa.
 
     try:
-        # pylint: disable=E1101
         pythoncom.CoInitialize()
         session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, session)  # type: ignore
         # Start
