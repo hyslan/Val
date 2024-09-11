@@ -6,6 +6,7 @@
 		}
 	],
 	"settings": {
+		"python.envFile": "${workspaceFolder}/.env",
 		"python.analysis.typeCheckingMode": "strict",
 		"notebook.formatOnSave.enabled": true,
 		"notebook.codeActionsOnSave": {

@@ -22,6 +22,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
+logger = logging.getLogger(__name__)
+
 
 def down_sap() -> str:
     """Baixa o .tx do SAP."""
@@ -76,9 +78,7 @@ def down_sap() -> str:
         if not is_process_running("powershell.exe"):
             pass
     except subprocess.CalledProcessError:
-        pass
-    except Exception:
-        logging.exception("")
+        logger.exception("Erro ao executar o comando de chamada do tx.sap em sapador.py")
 
     return token
 

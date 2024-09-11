@@ -13,6 +13,7 @@ import argparse
 import datetime
 import logging
 import os
+import sys
 import time
 import typing
 
@@ -32,11 +33,14 @@ if typing.TYPE_CHECKING:
     import rich.console
     import win32com.client
 
+console: rich.console.Console = Console()
 
-def main(args: argparse.Namespace | None = None) -> None:
+
+def main(arg: argparse.Namespace | None = None) -> None:
     """Sistema principal da Val e inicializador do programa."""
     setup_logging()
     logger = logging.getLogger(__name__)
+    console.print("Args Inseridos: ", sys.argv)
     # Argumentos
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
         prog="Sistema Val",
@@ -66,6 +70,7 @@ def main(args: argparse.Namespace | None = None) -> None:
         type=int,
         default=0,
         help="Número da sessão do SAP a ser utilizada.",
+        required=True,
     )
     parser.add_argument(
         "-o",
@@ -73,17 +78,17 @@ def main(args: argparse.Namespace | None = None) -> None:
         type=str,
         help="Escolha uma Opção de valoração.",
         choices=[str(i) for i in range(1, 11)],
+        required=True,
     )
     parser.add_argument("-c", "--contrato", default=None, type=str, help="Escolha o Contrato a ser utilizado.")
     parser.add_argument("-f", "--family", default=None, type=str, nargs="+", help="Escolha a Família a ser utilizada.")
-    parser.add_argument("-p", "--password", type=str, help="Digite a senha para iniciar o programa.")
+    parser.add_argument("-p", "--password", type=str, help="Digite a senha para iniciar o programa.", required=True)
     parser.add_argument("-r", "--revalorar", default=False, type=bool, help="Revalorar uma Ordem.")
 
-    if args is None:
+    if arg is None:
         args: argparse.Namespace = parser.parse_args()
 
     options: str = args.option
-    console: rich.console.Console = Console()
     # Avatar.
     val_avatar()
     # Inicialização
@@ -122,13 +127,16 @@ def establish_sap_connection(args: argparse.Namespace, console: rich.console.Con
     try:
         console.print("[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
         token = down_sap()
-        session: win32com.client.CDispatch = sap.choose_connection(args.session)
-    except pywintypes.com_error:
-        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-        console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
-        token = down_sap()
         time.sleep(10)
         session: win32com.client.CDispatch = sap.choose_connection(args.session)
+        console.print("Conexão obtida com sucesso!")
+    except pywintypes.com_error:
+        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
+        console.print("[bold cyan] Obtendo tx.sap e executando o SAP GUI\n Por favor aguarde...")
+        token = down_sap()
+        time.sleep(10)
+        session = sap.choose_connection(args.session)
+
     return token, session
 
 

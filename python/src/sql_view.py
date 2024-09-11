@@ -301,7 +301,7 @@ class Sql:
         else:
             family_str = (
                 "'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO', "
-                "'REDE AGUA', 'REDE ESGOTO', 'RAMAL ESGOTO',"
+                "'REDE AGUA', 'REDE ESGOTO', 'RAMAL ESGOTO'"
             )
 
         console.print("\n [b]Família escolhida: ", family_str)
@@ -315,6 +315,7 @@ class Sql:
             WHERE FAMILIA IN ({family_str})
             AND Contrato = :contrato
             AND [Feito?] NOT IN ('SIM', 'Num Pode', N'Sem posição de rede.', 'Definitiva')
+            OR [Feito?] IS NULL
             AND TSE_OPERACAO_ZSCP NOT IN (
                 '731000', '733000', '743000', '745000', '785000', '785500',
                 '755000', '714000', '782500', '282000', '300000', '308000', '310000', '311000', '313000',
