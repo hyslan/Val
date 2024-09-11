@@ -52,7 +52,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
         max_sessoes = 6
         if total_sessoes != max_sessoes:
             with contextlib.suppress(Exception):
-                con.CloseSession(f"/app/con[0]/ses[{total_sessoes - 1}]")
+                con.CloseSession(session.ID)
             time.sleep(3)
 
         try:

@@ -22,13 +22,13 @@ def log_execution(func: Callable[..., Any]) -> Callable[..., Any]:
     """
 
     @wraps(func)
-    def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> Any:
-        logger.debug("Entrando em %s com args=%s e kwargs=%s", func.__name__, args, kwargs)
+    def wrapper(*args: tuple[Any, ...]) -> Any:
+        logger.debug("Entrando em %s com args=%s", func.__name__, args)
         try:
-            result = func(*args, **kwargs)
+            result = func(*args)
             logger.info("Saindo de %s com resultado=%s", func.__name__, result)
         except Exception:
-            logger.exception("Erro em %s com args=%s e kwargs=%s", func.__name__, args, kwargs)
+            logger.exception("Erro em %s com args=%s", func.__name__, args)
         else:
             return result
 

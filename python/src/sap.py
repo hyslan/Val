@@ -50,7 +50,7 @@ def listar_sessoes(n_selected: int) -> win32com.client.CDispatch:
 
 
 def contar_sessoes(n_selected: int) -> int:
-    """Contar por tamanho de 1 a 6, caso for criar sessão subtrair -1."""
+    """Contar por tamanho de 1 a 6, caso for criar sessão subtrair, então: -1."""
     con = get_app()
     con_selected: win32com.client.CDispatch = con.Item(n_selected)
     sessions: win32com.client.CDispatch = con_selected.Sessions
@@ -86,6 +86,12 @@ def choose_connection(n_selected: int) -> win32com.client.CDispatch:
     con = get_app()
     session: win32com.client.CDispatch = con.Item(n_selected).Sessions(0)
     return session
+
+
+def count_connections() -> int:
+    """Contar conexões ativas."""
+    con = get_app()
+    return con.Count - 1  # type: ignore
 
 
 def fechar_conexao(n_con: int) -> None:
@@ -136,13 +142,13 @@ def get_connection(token: str) -> str:
         '[Options]\n'
         'Reuse=-1'
     )
-    path_archive = str(Path.cwd() / "/shortcut/repeat/tx.sap")
+    path_archive = str(Path.cwd() / "shortcut/repeat/tx.sap")
     with Path(path_archive).open("w") as s:
         s.write(sap_access)
 
     # Execute the command
     try:
-        subprocess.run(["powershell", "start", path_archive], check=False)
+        subprocess.run(["powershell", "start", f'"{path_archive}"'], check=False)
         time.sleep(5)
         # Verifica se o processo está em execução
         if not is_process_running("powershell.exe"):
