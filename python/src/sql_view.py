@@ -175,20 +175,19 @@ class Sql:
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
+            sql_command = (
+                "WITH CTE AS ("
+                "SELECT *,"
+                " ROW_NUMBER() OVER(PARTITION BY Ordem ORDER BY DataRegistro DESC) AS RowNumber"
+                " FROM [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas"
+                ")"
+                " DELETE FROM CTE WHERE RowNumber > 1;"
+            )
+            cnn.execute(sa.text(sql_command))
+            cnn.commit()
+            cnn.close()
         except SQLAlchemyError:
             logger.exception("Erro ao conectar com o banco de dados em Clean Duplicates")
-
-        sql_command = (
-            "WITH CTE AS ("
-            "SELECT *,"
-            " ROW_NUMBER() OVER(PARTITION BY Ordem ORDER BY DataRegistro DESC) AS RowNumber"
-            " FROM [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas"
-            ")"
-            " DELETE FROM CTE WHERE RowNumber > 1;"
-        )
-        cnn.execute(sa.text(sql_command))
-        cnn.commit()
-        cnn.close()
 
     def retrabalho_search(
         self,
@@ -241,35 +240,35 @@ class Sql:
         try:
             engine = sa.create_engine(self.connection_url)
             cnn = engine.connect()
+            quem = "Val" if matricula == "117615" else self.__check_employee(matricula)
+
+            if data_valoracao is None:
+                data_valoracao = dt.datetime.now().date()
+            elif isinstance(data_valoracao, str):
+                data_valoracao = data_valoracao.replace(".", "-")
+                data_valoracao = (
+                    dt.datetime.strptime(data_valoracao, "%d-%m-%Y").astimezone(pytz.timezone("America/Sao_Paulo")).date()
+                )
+
+            data_valoracao = data_valoracao.strftime("%m/%d/%Y")
+
+            sql_command = (
+                "INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] "
+                "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, "
+                "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)"
+                f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', "
+                f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', "
+                f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')"
+            )
+            try:
+                cnn.execute(sa.text(sql_command))
+                cnn.commit()
+            except SQLAlchemyError:
+                logger.exception("Erro ao executar a query em Valorada.")
+            finally:
+                cnn.close()
         except SQLAlchemyError:
             logger.exception("Erro ao conectar com o banco de dados em Valorada")
-
-        quem = "Val" if matricula == "117615" else self.__check_employee(matricula)
-
-        if data_valoracao is None:
-            data_valoracao = dt.datetime.now().date()
-        elif isinstance(data_valoracao, str):
-            data_valoracao = data_valoracao.replace(".", "-")
-            data_valoracao = (
-                dt.datetime.strptime(data_valoracao, "%d-%m-%Y").astimezone(pytz.timezone("America/Sao_Paulo")).date()
-            )
-
-        data_valoracao = data_valoracao.strftime("%m/%d/%Y")
-
-        sql_command = (
-            "INSERT INTO [LESTE_AD\\hcruz_novasp].[tbHyslancruz_Valoradas] "
-            "(Ordem, [VALORADO?], [POR QUEM?], Contrato, TSE, Municipio, Status, "
-            "OBS, TempoGasto, DataValoracao, Matricula, VALOR_MEDIDO)"
-            f"VALUES ('{self.ordem}', '{valorado}', '{quem}', '{contrato}', "
-            f"'{self.cod_tse}', '{municipio}', '{status}', '{obs}', "
-            f"'{tempo_gasto}', '{data_valoracao}', '{matricula}', '{valor_medido}')"
-        )
-        try:
-            cnn.execute(sa.text(sql_command))
-            cnn.commit()
-        except SQLAlchemyError:
-            logger.exception("Erro ao executar a query em Valorada.")
-        cnn.close()
 
     def ordem_especifica(self, contrato: str) -> npt.NDArray[Any]:
         """Apenas uma ordem específica.
@@ -314,8 +313,8 @@ class Sql:
             FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao]
             WHERE FAMILIA IN ({family_str})
             AND Contrato = :contrato
-            AND [Feito?] NOT IN ('SIM', 'Num Pode', N'Sem posição de rede.', 'Definitiva')
-            OR [Feito?] IS NULL
+            AND ([Feito?] NOT IN ('SIM', 'Num Pode', N'Sem posição de rede.', 'Definitiva')
+            OR [Feito?] IS NULL)
             AND TSE_OPERACAO_ZSCP NOT IN (
                 '731000', '733000', '743000', '745000', '785000', '785500',
                 '755000', '714000', '782500', '282000', '300000', '308000', '310000', '311000', '313000',
