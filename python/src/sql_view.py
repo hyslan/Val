@@ -97,10 +97,10 @@ class Sql:
         with engine.connect() as cnn:
             query = sa.text(
                 "SELECT [Ordem], COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                "WHERE [TSE_OPERACAO_ZSCP] IN :carteira "
+                f"WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) "
                 "AND Contrato = :contrato",
             )
-            df = pd.read_sql(query, cnn, params={"carteira": carteira_str, "contrato": contrato})
+            df = pd.read_sql(query, cnn, params={"contrato": contrato})
             return df.to_numpy()
 
     def tse_escolhida(self, contrato: str) -> npt.NDArray[Any]:
@@ -114,23 +114,23 @@ class Sql:
             data_fim = input("- Val: Digite o Ano/Mês final, por favor.\n")
             sql_command = sa.text(
                 "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                "WHERE TSE_OPERACAO_ZSCP IN :tse AND Contrato = :contrato "
+                f"WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = :contrato "
                 "AND MESREF >= :datainicio AND MESREF <= :datafim",
             )
             with engine.connect() as cnn:
                 df = pd.read_sql(
                     sql_command,
                     cnn,
-                    params={"tse": tse, "contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
+                    params={"contrato": contrato, "datainicio": data_inicio, "datafim": data_fim},
                 )
                 return df.to_numpy()
         else:
             sql_command = sa.text(
                 "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
-                "WHERE TSE_OPERACAO_ZSCP IN :tse AND Contrato = :contrato",
+                f"WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = :contrato",
             )
             with engine.connect() as cnn:
-                df = pd.read_sql(sql_command, cnn, params={"tse": tse, "contrato": contrato})
+                df = pd.read_sql(sql_command, cnn, params={"contrato": contrato})
                 return df.to_numpy()
 
     def tse_expecifica(self, contrato: str) -> npt.NDArray[Any]:
@@ -300,7 +300,7 @@ class Sql:
             family_str = ",".join([f"'{f}'" for f in family])
         else:
             family_str = (
-                "'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO' "
+                "'CAVALETE', 'HIDROMETRO', 'POCO', 'RAMAL AGUA', 'RELIGACAO', 'SUPRESSAO', "
                 "'REDE AGUA', 'REDE ESGOTO', 'RAMAL ESGOTO',"
             )
 
@@ -309,11 +309,11 @@ class Sql:
         cnn = engine.connect()
         # TSEs leave out the plumbing services by Iara.
         chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'," if contrato == "4600042975" else "'',"
-        sql_command = sa.text(r"""
+        sql_command = sa.text(f"""
             SELECT Ordem, COD_MUNICIPIO
-            FROM [LESTE_AD\hcruz_novasp].[v_Hyslan_Valoracao]
-            WHERE FAMILIA IN :family_str
-            AND Contrato = '{contrato}'
+            FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao]
+            WHERE FAMILIA IN ({family_str})
+            AND Contrato = :contrato
             AND [Feito?] NOT IN ('SIM', 'Num Pode', N'Sem posição de rede.', 'Definitiva')
             AND TSE_OPERACAO_ZSCP NOT IN (
                 '731000', '733000', '743000', '745000', '785000', '785500',
@@ -321,7 +321,7 @@ class Sql:
                 '315000', '532000', '564000', '588000', '590000', '709000', '700000', '593000', '253000',
                 '250000', '209000', '605000', '605000', '263000', '255000', '254000', '282000', '265000',
                 '260000', '265000', '263000', '262000', '284500', '286000', '282500',
-                :chief_iara_orders
+                {chief_iara_orders}
                 '136000', '159000', '155000');
         """)
 
@@ -329,7 +329,7 @@ class Sql:
         df = pd.read_sql(
             sql_command,
             cnn,
-            params={"family_str": family_str, "contrato": contrato, "chief_iara_orders": chief_iara_orders},
+            params={"contrato": contrato},
         )
         df_array = df.to_numpy()
         cnn.close()
