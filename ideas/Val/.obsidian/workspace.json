@@ -18,8 +18,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "276dbf671f2be4c7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Novas Instâncias da Val.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "ef034d2a9a1e5f44",
@@ -107,6 +120,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Novas Instâncias da Val.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -123,6 +137,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Novas Instâncias da Val.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -144,7 +159,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Novas Instâncias da Val.md"
+              }
             }
           },
           {
@@ -173,8 +190,9 @@
       "obsidian-importer:Open Importer": false
     }
   },
-  "active": "b1155a46200ea64f",
+  "active": "276dbf671f2be4c7",
   "lastOpenFiles": [
+    "Novas Instâncias da Val.md",
     "SAPGUI.md",
     "Val.md",
     "tb_valoradas.md",

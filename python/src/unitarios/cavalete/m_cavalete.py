@@ -1,14 +1,50 @@
-"""Módulo Unitário de cavalete"""
+"""Módulo Unitário de cavalete."""
+
 # cavalete.py
+from __future__ import annotations
+
+import typing
+
 from python.src.unitarios.localizador import btn_localizador
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 
 class Cavalete:
-    """Classe Cavalete unitário"""
+    """Classe Cavalete unitário."""
 
-    def __init__(self, etapa, corte, relig, reposicao, num_tse_linhas,
-                 etapa_reposicao, identificador, posicao_rede,
-                 profundidade, session, preco):
+    def __init__(
+        self,
+        etapa: str,
+        corte: str,
+        relig: str,
+        reposicao: list[str],
+        num_tse_linhas: int,
+        etapa_reposicao: list[str],
+        identificador: list[str],
+        posicao_rede: str,
+        profundidade: str,
+        session: CDispatch,
+        preco: CDispatch,
+    ) -> None:
+        """Construtor de Cavalete.
+
+        Args:
+        ----
+            etapa (str): Etapa Pai
+            corte (str): Onde foi feita a supressão
+            relig (str): Onde foi realizado a religação
+            reposicao (str): Etapa complementar
+            num_tse_linhas (int): Count
+            etapa_reposicao (str): Etapa do serviço complementar
+            identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
+            posicao_rede (str): Posição da Rede
+            profundidade (str): Profundidade
+            session (CDispatch): Sessão do SAPGUI
+            preco (CDispatch): GRID de preço do SAP
+
+        """
         self.etapa = etapa
         self.corte = corte
         self.relig = relig
@@ -21,9 +57,8 @@ class Cavalete:
         self.identificador = identificador
         self.preco = preco
 
-    def instalado_lacre(self):
-        """Método Instalado Lacre Diversos"""
-        print("Iniciando processo de pagar LACRHD - Código: 456021")
+    def instalado_lacre(self) -> None:
+        """Método Instalado Lacre Diversos."""
         codigo = "456021"
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
@@ -31,11 +66,9 @@ class Cavalete:
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de LACRHD - CODIGO: 456021")
 
-    def troca_pe_cv_prev(self):
-        """Método Troca de Pé de Cavalete Preventivo"""
-        print("Iniciando processo de pagar ADC  TRC PREV PE CV - Código: 456856")
+    def troca_pe_cv_prev(self) -> None:
+        """Método Troca de Pé de Cavalete Preventivo."""
         codigo = "456856"
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
@@ -43,52 +76,52 @@ class Cavalete:
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de ADC  TRC PREV PE CV - CODIGO: 456856")
 
-    def troca_cv_kit(self):
-        """Método Troca de cavalete KIT"""
-        print("Iniciando processo de pagar TROCA DE CAVALETE (KIT)  - Código: 456011")
+    def troca_cv_kit(self) -> None:
+        """Método Troca de cavalete KIT."""
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             btn_localizador(self.preco, self.session, "456011")
             self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
             self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
             self.preco.pressEnter()
-            print("Pago 1 UN de TCV SF - CODIGO: 456011")
 
-    def troca_cv_por_uma(self):
-        """Método Troca de Cavalete Preventivo"""
-        print("Iniciando processo de pagar SUBST CV POR UMA")
+    def troca_cv_por_uma(self) -> None:
+        """Método Troca de Cavalete Preventivo."""
         self.preco.GetCellValue(0, "NUMERO_EXT")
         if self.preco is not None:
             if self.reposicao:
                 codigo = "457229"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM",
+                    self.preco.CurrentCellRow,
+                    "ITEM",
                 )
-                if item_preco in ("300", "310", "730", "1470", "4950",
-                                  ):
-                    self.preco.modifyCell(
-                        self.preco.CurrentCellRow, "QUANT", "1")
-                    self.preco.setCurrentCell(
-                        self.preco.CurrentCellRow, "QUANT")
+                if item_preco in (
+                    "300",
+                    "310",
+                    "730",
+                    "1470",
+                    "4950",
+                ):
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print(
-                        "Pago 1 UN de SUBST CV POR UMA C/REP PASS - CODIGO: 457229")
 
             else:
                 codigo = "457230"
                 btn_localizador(self.preco, self.session, codigo)
                 item_preco = self.preco.GetCellValue(
-                    self.preco.CurrentCellRow, "ITEM",
+                    self.preco.CurrentCellRow,
+                    "ITEM",
                 )
-                if item_preco in ("300", "310", "730", "1470", "4950",
-                                  ):
-                    self.preco.modifyCell(
-                        self.preco.CurrentCellRow, "QUANT", "1")
-                    self.preco.setCurrentCell(
-                        self.preco.CurrentCellRow, "QUANT")
+                if item_preco in (
+                    "300",
+                    "310",
+                    "730",
+                    "1470",
+                    "4950",
+                ):
+                    self.preco.modifyCell(self.preco.CurrentCellRow, "QUANT", "1")
+                    self.preco.setCurrentCell(self.preco.CurrentCellRow, "QUANT")
                     self.preco.pressEnter()
-                    print(
-                        "Pago 1 UN de SUBST CV POR UMA S/REP - CODIGO: 457230")

@@ -1,6 +1,7 @@
 # reposicao.py
-"""Módulo agrupador de reposições"""
-dict_reposicao = {
+"""Módulo agrupador de reposições."""
+
+dict_reposicao: dict[str, list[str] | str] = {
     "asfalto_frio": [
         "732000",  # REPOSIÇÃO DE ASFALTO A FRIO
         "734000",  # REPOR ASFALTO A FRIO INV
@@ -11,17 +12,15 @@ dict_reposicao = {
         "764000",  # REPOSIÇÃO DE PA CIMENTADO
         "764500",  # REPOSIÇÃO DE PA CIMENTADO INV
         "770000",  # REPOSIÇÃO DE PO CIMENTADO
-        "770500", 	# REPOSIÇÃO DE PO CIMENTADO INV
+        "770500",  # REPOSIÇÃO DE PO CIMENTADO INV
     ],
     "especial": [
         "767000",  # REPOSIÇÃO DE PA ESPECIAL
         "767500",  # REPOSIÇÃO DE PA ESPECIAL INV
         "773500",  # REPOSIÇÃO DE PO ESPECIAL INV
     ],
-    "PARARELO": "758000"  # REPOSIÇÃO DE PARALELO
-    ,
-    "SARJETA": "782000"  # REPOSIÇÃO DE SARJETA
-    ,
+    "PARARELO": "758000",  # REPOSIÇÃO DE PARALELO
+    "SARJETA": "782000",  # REPOSIÇÃO DE SARJETA
     "asfalto": [
         "731000",  # REPOSIÇÃO DE ASFALTO
         "733000",  # REPOSIÇÃO DE ASFALTO INV

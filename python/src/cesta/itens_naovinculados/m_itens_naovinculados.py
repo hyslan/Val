@@ -1,9 +1,8 @@
 # m_itens_naovinculados.py
 """Módulo para aba modalidade."""
 
-import sys
-
 import pywintypes
+import win32com.client as win32
 from rich.console import Console
 
 console = Console()
@@ -12,7 +11,25 @@ console = Console()
 class Modalidade:
     """Aba de Modalidade para Remuneração Base."""
 
-    def __init__(self, reposicao, etapa_reposicao, identificador, mae, session) -> None:
+    def __init__(
+        self,
+        reposicao: list[str],
+        etapa_reposicao: list[str],
+        identificador: tuple[str, str, str, list[str], list[str]],
+        mae: bool,
+        session: win32.CDispatch,
+    ) -> None:
+        """Método Construtor de Modalidade.
+
+        Args:
+        ----
+            reposicao (str): _description_
+            etapa_reposicao (str): _description_
+            identificador (tuple[str, str, str, list[str], list[str]]): TSE, Etapa, id pro match case, [] reposição, [] etapa
+            mae (bool): _description_
+            session (win32.CDispatch): _description_
+
+        """
         self.reposicao = reposicao
         self.etapa_reposicao = etapa_reposicao
         # O identificador é uma tupla com três variáveis:
@@ -21,7 +38,7 @@ class Modalidade:
         self.mae = mae
         self.session = session
 
-    def aba_nao_vinculados(self):
+    def aba_nao_vinculados(self) -> win32.CDispatch:
         """Abrir aba de itens não vinculados."""
         console.print(
             "Processo de Itens não vinculados",
@@ -29,22 +46,26 @@ class Modalidade:
             justify="center",
         )
         self.session.findById("wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV").select()
-        itens_nv = self.session.findById(
+        aba = self.session.findById(
             "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABV/ssubSUB_TAB:"
-            + "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell",
+            "ZSBMM_VALORACAO_NAPI:9035/cntlCC_ITNS_NVINCRB/shellcont/shell",
         )
-        return itens_nv
+        if isinstance(aba, win32.CDispatch):
+            return aba
+        typo_msg = "O retorno não é do tipo win32.CDispatch"
+        raise TypeError(typo_msg)
 
-    def testa_modalidade_sap(self, itens_nv):
+    def testa_modalidade_sap(self, itens_nv: win32.CDispatch) -> None:
         """Tratamento de erro - Modalidade."""
         try:
             itens_nv.GetCellValue(0, "NUMERO_EXT")
-            return
         # pylint: disable=E1101
         except pywintypes.com_error:
-            sys.exit()
+            return
+        else:
+            return
 
-    def inspetor(self, itens_nv):
+    def inspetor(self, itens_nv: win32.CDispatch) -> None:
         """Selecionador de Pai Rem base."""
         match self.identificador[2]:
             case "supr_restab" | "supressao":
@@ -69,18 +90,14 @@ class Modalidade:
                 self.testa_modalidade_sap(itens_nv)
                 self.desobstrucao(itens_nv)
             case _:
-                print("TSE não identificada.")
-                print(f"TSE: {self.identificador[0]}")
-                sys.exit()
+                return
 
-    def fech_e_reab_lig(self, itens_nv):
+    def fech_e_reab_lig(self, itens_nv: win32.CDispatch) -> None:
         """Módulo Religação e Supressão - Modalidade.
+
         CÓDIGO: 327041 - PE, 327051 - SM
-        327061 - IT, 327071 - AA
+        327061 - IT, 327071 - AA.
         """
-        print(
-            "Iniciando processo de Modalide - REM BASE - " + "MOD DESP FECH E REAB LIG ",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -127,14 +144,12 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_lig_esg(self, itens_nv):
+    def manut_lig_esg(self, itens_nv: win32.CDispatch) -> None:
         """Módulo Ramal de Esgoto - Rem Base.
+
         CÓDIGO: 327042 - PE ou 327052 - SM
-        327062 - IT, 327072 - AA
+        327062 - IT, 327072 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP MANUT LIG ESG",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -181,12 +196,12 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_rede_esg(self, itens_nv):
+    def manut_rede_esg(self, itens_nv: win32.CDispatch) -> None:
         """Módulo Despesa Rede de Esgoto - RB.
+
         CÓDIGO: 327043 - PE ou 327053 - SM
-        327063 - IT, 327073 - AA
+        327063 - IT, 327073 - AA.
         """
-        print("Iniciando processo de Modalidade - " + "REM BASE - DESP MANUT REDE ESG")
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -237,14 +252,12 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_rede_agua(self, itens_nv):
-        """Módulo Despesa Rede de água - RB
+    def manut_rede_agua(self, itens_nv: win32.CDispatch) -> None:
+        """Módulo Despesa Rede de água - RB.
+
         CÓDIGO: 327045 - PE ou 327055 - SM
-        327065 - IT, 327075 - AA
+        327065 - IT, 327075 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD DESP RP MAN RD AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -295,15 +308,12 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def manut_lig_agua(self, itens_nv):
+    def manut_lig_agua(self, itens_nv: win32.CDispatch) -> None:
         """Módulo de modalidade envolvendo ramal de água e cavalete.
+
         CÓDIGO: 327046 - PE OU 327056 - SM
-        327066 - IT, 327076 - AA
+        327066 - IT, 327076 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - "
-            + "REM BASE - MOD DESP RP MAN LIG AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -355,14 +365,12 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def troca_de_ramal_de_agua(self, itens_nv):
+    def troca_de_ramal_de_agua(self, itens_nv: win32.CDispatch) -> None:
         """Módulo Investimento TRA - RB.
+
         CÓDIGO: 327050 - PE ou 327060 - SM
-        327070 - IT, 327080 - AA
+        327070 - IT, 327080 - AA.
         """
-        print(
-            "Iniciando processo de Modalidade - " + "REM BASE - MOD INVEST TR LIG AGUA",
-        )
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")
@@ -411,9 +419,8 @@ class Modalidade:
                 itens_nv.SetCurrentCell(n_modalidade, "MEDICAO")
                 itens_nv.pressf4()
 
-    def desobstrucao(self, itens_nv):
-        """Módulo desobstrução para NORTESUL"""
-        print("Iniciando processo de Modalidade - " + "REM. BASE DE DESOBSTRUÇÃO")
+    def desobstrucao(self, itens_nv: win32.CDispatch) -> None:
+        """Módulo desobstrução para NORTESUL."""
         num_modalidade_linhas = itens_nv.RowCount
         for n_modalidade in range(num_modalidade_linhas):
             sap_itens_nv = itens_nv.GetCellValue(n_modalidade, "NUMERO_EXT")

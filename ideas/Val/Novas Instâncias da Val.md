@@ -1,0 +1,1 @@
+Não podem sobrepor conexões já ativas, caso contrário gera exceção no COM SAP e derruba todas as instâncias da Val. Tempo Médio para alta quantidade de ordens é por volta de 11h.

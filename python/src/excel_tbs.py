@@ -1,12 +1,12 @@
 # excel_tbs.py by Author: Hyslan Silva Cruz
-"""Módulo de acessar arquivos .xlsx"""
+"""Módulo de acessar arquivos .xlsx."""
 # Bibliotecas
 from openpyxl import load_workbook  # Carregar função load
 
 # Área do Excel
 
 
-def load_worksheets():
+def load_worksheets() -> tuple:
     """Função para carregar os arquivos dos Excel e futuramente do SQL Server."""
     lista = load_workbook(
         "sheets/lista.xlsx")  # Carregando arquivo para valorar

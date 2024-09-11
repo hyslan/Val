@@ -1,5 +1,9 @@
 """Módulo dos N3 da valoração."""
+
+from __future__ import annotations
+
 import sys
+import typing
 
 import pywintypes
 from tqdm import tqdm
@@ -8,6 +12,9 @@ from python.src.confere_os import consulta_os
 from python.src.etl import pendentes_csv
 from python.src.excel_tbs import load_worksheets
 from python.src.transact_zsbmm216 import Transacao
+
+if typing.TYPE_CHECKING:
+    from win32com.client import CDispatch
 
 (
     lista,
@@ -29,8 +36,8 @@ from python.src.transact_zsbmm216 import Transacao
 ) = load_worksheets()
 
 
-def pertencedor(contrato, session):
-    """Função N3"""
+def pertencedor(contrato: str, session: CDispatch, n_con: int) -> None:
+    """Função N3."""
     transacao = Transacao(contrato, "100", session)
     revalorar = False
     resposta = input("São Ordens desvaloradas?")
@@ -41,30 +48,24 @@ def pertencedor(contrato, session):
     if ask == "s":
         csv = pendentes_csv()
         limite_execucoes = len(csv)
-        print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
         try:
             num_lordem = input("Insira o número da linha aqui: ")
             int_num_lordem = int(num_lordem)
             ordem = csv[int_num_lordem]
         except TypeError:
-            print("Entrada inválida. Digite um número inteiro válido.")
             sys.exit()
 
-        print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
 
         # Loop para pagar as ordens da planilha do Excel
-        for num_lordem in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
-            print(f"Linha atual: {int_num_lordem}.")
-            print(f"Ordem atual: {ordem}")
+        for _ in tqdm(range(int_num_lordem, limite_execucoes), ncols=100):
             transacao.run_transacao(ordem)
             try:
                 servico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
+                    "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                 )
             # pylint: disable=E1101
             except pywintypes.com_error:
-                print(f"Ordem: {ordem} em medição definitiva.")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = csv[int_num_lordem]
@@ -76,11 +77,9 @@ def pertencedor(contrato, session):
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
                     grid_historico = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                        "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
                     data_valorado = grid_historico.GetCellValue(0, "DATA")
                     if data_valorado is not None:
-                        print(f"OS: {ordem} já valorada.")
-                        print(f"Data: {data_valorado}")
                         # Incremento de Ordem.
                         int_num_lordem += 1
                         ordem = csv[int_num_lordem]
@@ -88,12 +87,11 @@ def pertencedor(contrato, session):
 
                 # pylint: disable=E1101
                 except pywintypes.com_error:
-                    print("OS Livre para valorar.")
                     session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                     servico = session.findById(
                         "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                        + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
+                        "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                     )
 
             num_tse_linhas = servico.RowCount
@@ -103,57 +101,45 @@ def pertencedor(contrato, session):
                 servico.modifyCell(n_tse, "CODIGO", "3")
 
             servico.pressEnter()
-            print("Salvando valoração!")
             session.findById("wnd[0]").sendVKey(11)
             session.findById("wnd[1]/usr/btnBUTTON_1").press()
 
-            status_sistema, status_usuario, *_ = consulta_os(
-                ordem, session, contrato)
-            print("Verificando se Ordem foi valorada.")
+            _, status_usuario, *_ = consulta_os(
+                ordem, session, contrato, n_con)
             if status_usuario == "EXEC VALO":
-                print(f"Status da Ordem: {status_sistema}, {status_usuario}")
-                print("Foi Salvo com sucesso!")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = csv[int_num_lordem]
             else:
-                print(f"Ordem: {ordem} não foi salva.")
                 # Incremento de Ordem.
                 int_num_lordem += 1
                 ordem = csv[int_num_lordem]
 
         # Fim dos N3
-        print("- Val: Pertencedor concluído.")
         return
 
     # Casos de planilha Excel, arrumar.
     limite_execucoes = planilha.max_row
-    print(f"Quantidade de ordens incluídas na lista: {limite_execucoes}")
     try:
         num_lordem = input("Insira o número da linha aqui: ")
         int_num_lordem = int(num_lordem)
         ordem = planilha.cell(row=int_num_lordem, column=1).value
     except TypeError:
-        print("Entrada inválida. Digite um número inteiro válido.")
         sys.exit()
 
-    print(f"Ordem selecionada: {ordem} , Linha: {int_num_lordem}")
 
     # Loop para pagar as ordens da planilha do Excel
-    for num_lordem in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
+    for _ in tqdm(range(int_num_lordem, limite_execucoes + 1), ncols=100):
         selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
         ordem_obs = planilha.cell(row=int_num_lordem, column=4)
-        print(f"Linha atual: {int_num_lordem}.")
-        print(f"Ordem atual: {ordem}")
         transacao.run_transacao(ordem)
         try:
             servico = session.findById(
                 "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
+                "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
             )
         # pylint: disable=E1101
         except pywintypes.com_error:
-            print(f"Ordem: {ordem} em medição definitiva.")
             ordem_obs = planilha.cell(row=int_num_lordem, column=4)
             ordem_obs.value = "MEDIÇÃO DEFINITIVA"
             lista.save("sheets/lista.xlsx")
@@ -168,11 +154,9 @@ def pertencedor(contrato, session):
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA").select()
                 grid_historico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABA/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
+                    "ZSBMM_VALORACAOINV:9040/cntlCC_AJUSTES/shellcont/shell")
                 data_valorado = grid_historico.GetCellValue(0, "DATA")
                 if data_valorado is not None:
-                    print(f"OS: {ordem} já valorada.")
-                    print(f"Data: {data_valorado}")
                     ordem_obs = planilha.cell(row=int_num_lordem, column=4)
                     ordem_obs.value = "Já Salvo"
                     lista.save("sheets/lista.xlsx")
@@ -183,12 +167,11 @@ def pertencedor(contrato, session):
 
             # pylint: disable=E1101
             except pywintypes.com_error:
-                print("OS Livre para valorar.")
                 session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS").select()
                 servico = session.findById(
                     "wnd[0]/usr/tabsTAB_ITENS_PRECO/tabpTABS/ssubSUB_TAB:"
-                    + "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
+                    "ZSBMM_VALORACAOINV:9010/cntlCC_SERVICO/shellcont/shell",
                 )
 
         num_tse_linhas = servico.RowCount
@@ -198,16 +181,12 @@ def pertencedor(contrato, session):
             servico.modifyCell(n_tse, "CODIGO", "3")
 
         servico.pressEnter()
-        print("Salvando valoração!")
         session.findById("wnd[0]").sendVKey(11)
         session.findById("wnd[1]/usr/btnBUTTON_1").press()
 
-        status_sistema, status_usuario, *_ = consulta_os(
-            ordem, session, contrato)
-        print("Verificando se Ordem foi valorada.")
+        _, status_usuario, *_ = consulta_os(
+            ordem, session, contrato, n_con)
         if status_usuario == "EXEC VALO":
-            print(f"Status da Ordem: {status_sistema}, {status_usuario}")
-            print("Foi Salvo com sucesso!")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Salvo"
             lista.save("sheets/lista.xlsx")
@@ -215,7 +194,6 @@ def pertencedor(contrato, session):
             int_num_lordem += 1
             ordem = planilha.cell(row=int_num_lordem, column=1).value
         else:
-            print(f"Ordem: {ordem} não foi salva.")
             selecao_carimbo = planilha.cell(row=int_num_lordem, column=2)
             selecao_carimbo.value = "Não"
             lista.save("sheets/lista.xlsx")
@@ -224,4 +202,3 @@ def pertencedor(contrato, session):
             ordem = planilha.cell(row=int_num_lordem, column=1).value
 
     # Fim dos N3
-    print("- Val: Pertencedor concluído.")

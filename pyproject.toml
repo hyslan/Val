@@ -34,6 +34,21 @@ pyclean = "^3.0.0"
 mypy = "^1.11.1"
 ruff = "^0.6.2"
 
+[tool.poetry.group.dev.dependencies]
+poetry-types = "^0.5.1"
+bandit = "^1.7.9"
+ipython = "^8.26.0"
+
+
+[tool.poetry.group.types.dependencies]
+types-openpyxl = "^3.1.5.20240822"
+pandas-stubs = "^2.2.2.240807"
+types-tqdm = "^4.66.0.20240417"
+
+[tool.poetry.group.test.dependencies]
+pytest-mock = "^3.14.0"
+pytest-cov = "^5.0.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -60,6 +75,55 @@ Repository = "https://github.com/hyslan/Val"
 
 [tool.ruff.lint]
 select = ["ALL"]
+ignore = [
+    "S603",
+    "S607",
+    "S101",
+    "ANN401",
+    "DTZ005",
+    "FBT001",
+    "FBT003",
+    "PGH003",
+    "PD901",
+    "PLR0915",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "C901",
+    "D203",
+    "D213",
+    "S608",
+]
 
 [tool.ruff]
 line-length = 128
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.pyright]
+strict = true
+include = ["**/*.py"]
+exclude = [
+    "**/__pycache__",
+    "**/.ipynb_checkpoints",
+    "**/build",
+    "**/dist",
+    "**/.venv",
+    "**/.vscode",
+    "**/.git",
+    "**/.mypy_cache",
+    "**/.pytest_cache",
+    "**/.ruff_cache",
+    "**/.tox",
+    "**/.mypy",
+]
+pythonVersion = "3.12"
+pythonPlatform = "Windows"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

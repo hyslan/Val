@@ -1,8 +1,11 @@
 # dicionario.py
-"""Módulo do Dicionário de Unitários"""
+"""Módulo do Dicionário de Unitários."""
 
 # Bibliotecas
-import sys
+from __future__ import annotations
+
+import logging
+import typing
 
 from python.src.unitarios.cavalete.m_cavalete import Cavalete
 from python.src.unitarios.hidrometro.m_hidrometro import Hidrometro
@@ -12,11 +15,48 @@ from python.src.unitarios.poco.m_poco import Poco
 from python.src.unitarios.religacao.m_religacao import Religacao
 from python.src.unitarios.supressao.m_supressao import Corte
 
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from win32com.client import CDispatch
+
+logger = logging.getLogger(__name__)
+
 
 def selecionar_tse(
-    etapa, corte, relig, reposicao, num_tse_linhas, etapa_reposicao, identificador, posicao_rede, profundidade, session, preco
-):
-    """Dicionário de chaves para etapas de unitário."""
+    etapa: str,
+    corte: str,
+    relig: str,
+    reposicao: list[str],
+    num_tse_linhas: int,
+    etapa_reposicao: list[str],
+    identificador: list[str],
+    posicao_rede: str,
+    profundidade: str,
+    session: CDispatch,
+    preco: CDispatch,
+) -> Callable[[], None] | None:
+    """Dicionário de chaves para etapas de unitário.
+
+    Args:
+    ----
+        etapa (str): Etapa pai
+        corte (str): Supressão
+        relig (str): Religação
+        reposicao (list[str]): Serviço Complementar
+        num_tse_linhas (int): Count de linhas
+        etapa_reposicao (list[str]): Etapa da reposição
+        identificador (list[str]): TSE, Etapa, id match case do almoxarifado.py
+        posicao_rede (str): Posição da Rede
+        profundidade (str): Profundidade
+        session (CDispatch): Sessão do SAP
+        preco (CDispatch): GRID de preços do SAP
+
+    Returns:
+    -------
+        Cavalete | Hidrometro | Corte | Religacao | Poco | LigacaoAgua | LigacaoEsgoto: Classe de Unitário Instanciada.
+
+    """
     cavalete = Cavalete(
         etapa,
         corte,
@@ -168,8 +208,7 @@ def selecionar_tse(
     }
 
     if etapa in dicionario_un:
-        print(f"Etapa está inclusa no Dicionário de Unitários: {etapa}")
         return dicionario_un[etapa]
         # Chama o método de uma classe dentro do Dicionário
-    print(f"TSE {etapa} não Encontrada no Dicionário de Unitários!")
-    sys.exit()
+    logger.error("Etapa %s não encontrada no dicionário.", etapa)
+    return None
