@@ -46,9 +46,7 @@ def salvar(
         # Seção Crítica - uso do Lock
         with lock:
             try:
-                # pylint: disable=E1101
                 pythoncom.CoInitialize()
-                # pylint: disable=E1101
                 gui = win32.Dispatch(
                     pythoncom.CoGetInterfaceAndReleaseStream(session_id, pythoncom.IID_IDispatch),
                 )
@@ -57,13 +55,12 @@ def salvar(
                 gui.findById("wnd[1]/usr/btnBUTTON_1").press()
                 # Rodapé
 
-            # pylint: disable=E1101
             except pywintypes.com_error:
                 rodape = session.findById("wnd[0]/sbar").Text
                 if item_vinculado_faltante in rodape:
                     etapa_faltante = re.findall(r"\d+", rodape)
                     console.print(f"[italic red]Etapa(s): {etapa_faltante} não foi vinculada.", style="italic red")
-                    # TODO: Implementar a lógica para vincular a etapa.
+                    # TODO(Hyslan): Implementar a lógica para vincular a etapa.
 
     try:
         pythoncom.CoInitialize()
