@@ -1,23 +1,48 @@
+[tool.poetry]
+package-mode = false
+name = "Val"
+version = "0.1.0"
+description = "Val is a Python library for data validation for Sabesp's SAP orders."
+authors = ["Hyslan Silva Cruz <hyslansilva@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/hyslan/Val"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.2"
+openpyxl = "^3.1.5"
+pywin32 = "^306"
+sqlalchemy = "^2.0.32"
+pyodbc = "^5.1.0"
+numpy = "^2.1.0"
+xlwings = "^0.32.1"
+pygame = "^2.6.0"
+imageio = "^2.35.1"
+simpleaudio = "^1.0.4"
+opencv-python = "^4.10.0.84"
+pillow = "^10.4.0"
+pydub = "^0.25.1"
+rich = "^13.7.1"
+tqdm = "^4.66.5"
+selenium = "^4.23.1"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^8.3.2"
+pyclean = "^3.0.0"
+mypy = "^1.11.1"
+ruff = "^0.6.2"
+
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "Val"
 dynamic = ["version"]
-dependencies = [
-    "numpy",
-    "pandas",
-    "jupyter",
-    "ipython",
-    "pytest",
-    "mypy",
-    "openpyxl",
-    "xlwings",
-    "rich",
-    "sqlalchemy",
-]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
+
 authors = [{ name = "Hyslan Silva Cruz", email = "hyslansilva@gmail.com" }]
 description = "Val is a Python library for data validation for Sabesp's SAP orders."
 readme = "README.md"
@@ -38,4 +63,3 @@ select = ["ALL"]
 
 [tool.ruff]
 line-length = 128
-

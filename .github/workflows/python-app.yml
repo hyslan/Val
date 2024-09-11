@@ -22,14 +22,16 @@ jobs:
         uses: actions/setup-python@v5.1.1
         with:
           python-version: "3.12"
-      - name: Install dependencies
+      - name: Install Poetry
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+          pip install poetry
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Lint with Ruff
         run: |
           ruff check --output-format=github .
       # - name: Test with pytest -> Not ready yet.
       #   run: |
-      #     pytest
+      #     poetry run pytest --maxfail=1 --disable-warnings -q
