@@ -77,9 +77,7 @@ class Transacao:
             # Seção Crítica - uso do Lock
             with lock:
                 try:
-                    # pylint: disable=E1101
                     pythoncom.CoInitialize()
-                    # pylint: disable=E1101
                     gui = win32.Dispatch(
                         pythoncom.CoGetInterfaceAndReleaseStream(session_id, pythoncom.IID_IDispatch),
                     )
@@ -101,7 +99,6 @@ class Transacao:
                     console.print_exception(show_locals=True)
 
         try:
-            # pylint: disable=E1101
             pythoncom.CoInitialize()
             session_id = pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, self.session)  # type: ignore
             # Start

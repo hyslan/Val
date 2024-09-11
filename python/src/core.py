@@ -356,21 +356,40 @@ def check_and_value_ordem(
         )
     # Tem casos de unidade Administrativa antiga (340,344,348)
     except pywintypes.com_error:
+        rodape = session.findById("wnd[0]/sbar").Text
+        bug = "não pertence a unidade"
+        definitiva = "medição definitiva"
         time_spent = cronometro_val(start_time, ordem)
         ja_valorado = sql_view.Sql(ordem=ordem, cod_tse=principal_tse)
-        ja_valorado.valorada(
-            valorado="SIM",
-            contrato=contrato,
-            municipio=cod_mun,
-            # Open zsbmm216 and get the date of the last valuation.
-            status="DEFINITIVA",
-            obs="",
-            data_valoracao=None,
-            matricula="",
-            valor_medido=0,
-            tempo_gasto=time_spent,
-        )
-        ja_valorado.clean_duplicates()
+        if bug in rodape:
+            ja_valorado.valorada(
+                valorado="NÃO",
+                contrato=contrato,
+                municipio=cod_mun,
+                status="BUG",
+                obs="Unidade Administrativa Antiga.",
+                data_valoracao=None,
+                matricula="117615",
+                valor_medido=0,
+                tempo_gasto=time_spent,
+            )
+            ja_valorado.clean_duplicates()
+
+        if definitiva in rodape:
+            ja_valorado.valorada(
+                valorado="SIM",
+                contrato=contrato,
+                municipio=cod_mun,
+                # Open zsbmm216 and get the date of the last valuation.
+                status="DEFINITIVA",
+                obs="",
+                data_valoracao=None,
+                matricula="",
+                valor_medido=0,
+                tempo_gasto=time_spent,
+            )
+            ja_valorado.clean_duplicates()
+
         return True
 
     # * Check if the 'Ordem' was already valued.
