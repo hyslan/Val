@@ -106,6 +106,7 @@ def main() -> None:
 
     # Encerramento
     console.print("- Val: Valoração finalizada, encerrando. :star:")
+    sap.fechar_conexao(args.session)
     logger.info("Valoração finalizada.")
     return
 
@@ -127,14 +128,31 @@ def establish_sap_connection(args: argparse.Namespace, console: rich.console.Con
         console.print("[i cyan] Conectando ao SAP GUI e obtendo token de acesso...")
         token = down_sap()
         time.sleep(10)
-        session: win32com.client.CDispatch = sap.choose_connection(args.session)
+        count_conexoes = sap.count_connections()
+        session = None
+
+        while count_conexoes < args.session:
+            if count_conexoes == args.session:
+                console.print(f"[bold green] Termo de conexão {args.session} atingido, obtendo conexão...")
+                session = sap.choose_connection(args.session)
+                break
+
+            console.print(f"[bold yellow] Termo de conexão {args.session} não atingido, obtendo nova conexão...")
+            token = sap.get_connection(token)
+            time.sleep(10)
+            count_conexoes = sap.count_connections()
+
+        if session is None:
+            session = sap.choose_connection(args.session)
+
+        if session is None:
+            msg = "Erro ao obter a sessão do SAP GUI."
+            raise RuntimeError(msg)
+
         console.print("Conexão obtida com sucesso!")
-    except pywintypes.com_error:
-        console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
-        console.print("[bold cyan] Obtendo tx.sap e executando o SAP GUI\n Por favor aguarde...")
-        token = down_sap()
-        time.sleep(10)
-        session = sap.choose_connection(args.session)
+    except pywintypes.com_error as con_error:
+        msg = "Erro inesperado ao conectar ao SAP GUI."
+        raise RuntimeError(msg) from con_error
 
     return token, session
 
