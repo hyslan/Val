@@ -122,7 +122,11 @@ def pai_servico_unitario(servico_temp: str, session: CDispatch) -> tuple[list[st
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
-        sys.exit()
+        reposicao: list[str] = []
+        tse_proibida: None | str = "TSE não vinculada."
+        identificador: str = ""
+        etapa_reposicao: list[str] = []
+        return reposicao, tse_proibida, identificador, etapa_reposicao
     # Retorno
     return reposicao, tse_proibida, identificador, etapa_reposicao
 
@@ -167,7 +171,11 @@ def pai_servico_cesta(servico_temp: str, session: CDispatch) -> tuple[list[str],
         # Chama o método de uma classe dentro do Dicionário
         reposicao, tse_proibida, identificador, etapa_reposicao = metodo()
     else:
-        sys.exit()
+        reposicao: list[str] = []
+        tse_proibida: None | str = "TSE não vinculada."
+        identificador: str = ""
+        etapa_reposicao: list[str] = []
+        return reposicao, tse_proibida, identificador, etapa_reposicao
 
     return reposicao, tse_proibida, identificador, etapa_reposicao
 

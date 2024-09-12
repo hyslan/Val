@@ -184,7 +184,6 @@ def verifica_tse(
             servico.modifyCell(n_tse, "PAGAR", "s")  # Marca pagar na TSE
             # Coloca a tse existente na lista temporária
             tse_temp.append(sap_tse)
-            # pylint: disable=E1121
             (reposicao, tse_proibida, identificador, etapa_reposicao) = pai_dicionario.pai_servico_unitario(sap_tse, session)
             identificador_list.append(identificador)
             chave_unitario = (
