@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class Sql:
-    """Tabela de valoração."""
+    """Classe de interação com SQL Server."""
 
     def __init__(self, ordem: str, cod_tse: str | list[str]) -> None:
         """Inicializa a conexão com o banco de dados.

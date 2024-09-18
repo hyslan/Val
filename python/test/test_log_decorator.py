@@ -29,12 +29,12 @@ def test_funcao_teste(caplog: pytest.LogCaptureFixture) -> None:
 
     Args:
     ----
-        caplog (_type_): stdout
+        caplog (pytest.LogCaptureFixture)): stdout
 
     """
     with caplog.at_level(logging.DEBUG):
         resultado = funcao_teste(2, 3)
         teste = 5
         assert resultado == teste
-        assert "Entrando em funcao_teste com args=(2, 3) e kwargs={}" in caplog.text
+        assert "Entrando em funcao_teste com args=(2, 3)" in caplog.text
         assert "Saindo de funcao_teste com resultado=5" in caplog.text

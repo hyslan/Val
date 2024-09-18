@@ -365,6 +365,7 @@ def verifica_tse(
             sap_tse = servico.GetCellValue(n_tse, "TSE")
             etapa_pai = servico.GetCellValue(n_tse, "ETAPA")
             # Altera todas as reposições de rb para N3 de Sondagem.
+            # TODO (Hyslan): Alterar para N5 e itens não vinculados.
             if sap_tse in rem_base_reposicao_union:
                 servico.modifyCell(n_tse, "PAGAR", "n")  # Cesta
                 # Pertence ao serviço Principal
