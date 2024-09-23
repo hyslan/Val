@@ -88,7 +88,7 @@ class Transacao:
                     # Unidade Administrativa
                     gui.findById("wnd[0]/usr/ctxtP_UND").Text = "1093"
                     # Contrato
-                    gui.findById("wnd[0]/usr/ctxtP_CONT").Text = self.contrato
+                    gui.findById("wnd[0]/usr/ctxtP_CONT").Text = self._contrato
                     gui.findById("wnd[0]/usr/ctxtP_MUNI").Text = self._municipio  # Cidade
                     sap_ordem = gui.findById("wnd[0]/usr/ctxtP_ORDEM")  # Campo ordem
                     sap_ordem.Text = ordem

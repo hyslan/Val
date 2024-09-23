@@ -17,7 +17,10 @@ from python.src.wms import (
     rede_esgoto_material,
 )
 
+from .log_decorator import log_execution
 
+
+@log_execution
 class Almoxarifado:
     """Área de todos materiais obrigatórios por TSE."""
 

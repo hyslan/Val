@@ -212,9 +212,11 @@ class Sql:
         cnn = engine.connect()
 
         sql_command = sa.text(
-            "SELECT NumeroOS, ATC, CodigoContrato FROM [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] "
-            "WHERE DataFimExecucao >= :monthstart AND DataFimExecucao <= :monthend "
-            "AND Resultado = 'RETRABALHO CONFIRMADO' AND CodigoContrato <> '9999999999'",
+            "SELECT BEXEC.NumeroOS, BEXEC.ATC, BEXEC.CodigoContrato FROM [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] AS BEXEC "
+            "JOIN [LESTE_AD\\CargaDeDados].[tb_Fato_Bexec] AS RETRAB "
+            "ON BEXEC.NumeroOS = RETRAB.NumeroOS "
+            "WHERE BEXEC.DataFimExecucao >= :monthstart AND BEXEC.DataFimExecucao <= :monthend "
+            "AND BEXEC.CodigoContrato <> '9999999999' AND RETRAB.CodigoResultado = '951000'",
         )
         df = pd.read_sql(sql_command, cnn, params={"monthstart": month_start, "monthend": month_end})
         df_array = df.to_numpy()

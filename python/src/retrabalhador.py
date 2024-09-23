@@ -9,7 +9,6 @@ import pywintypes
 from rich.console import Console
 from tqdm import tqdm
 
-from python.src.excel_tbs import load_worksheets
 from python.src.sql_view import Sql
 from python.src.transact_zsbmm216 import Transacao
 
@@ -18,25 +17,6 @@ if typing.TYPE_CHECKING:
     from win32com.client import CDispatch
 
 import pytz
-
-(
-    lista,
-    _,
-    _,
-    _,
-    planilha,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    tb_tse_un,
-    tb_tse_rem_base,
-    _,
-    tb_tse_invest,
-    *_,
-) = load_worksheets()
 
 console: rich.console.Console = Console()
 
