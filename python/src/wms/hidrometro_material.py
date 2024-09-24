@@ -10,17 +10,23 @@ Materiais obrigatórios:
 
 from __future__ import annotations
 
+import logging
 import typing
 
 import numpy as np
+from rich.console import Console
 
 from python.src import sql_view
+from python.src.log_decorator import log_execution
 from python.src.wms import lacre_material, materiais_contratada, testa_material_sap
 from python.src.wms.localiza_material import btn_busca_material
 
 if typing.TYPE_CHECKING:
     from pandas import DataFrame
     from win32com.client import CDispatch
+
+logger = logging.getLogger(__name__)
+console = Console()
 
 
 class HidrometroMaterial:
@@ -150,9 +156,10 @@ class HidrometroMaterial:
         self.tb_materiais.modifyCell(ultima_linha_material, "MATERIAL", cod_hidro_instalado)
         self.tb_materiais.modifyCell(ultima_linha_material, "QUANT", "1")
         self.tb_materiais.setCurrentCell(ultima_linha_material, "QUANT")
+        logger.info("Em _set_hidro Adicionado Hidrômetro: %s", cod_hidro_instalado)
         return ultima_linha_material + 1
 
-    def _search_hidro(self, cod_hidro_instalado: str, num_material_linhas: int, hidro_estoque: DataFrame) -> tuple[bool, int]:
+    def _search_hidro(self, cod_hidro_instalado: str, num_material_linhas: int, hidro_estoque: DataFrame) -> int:
         """Search for the hydrometer in the SAP table.
 
         If the hydrometer is not found, it is added to the table.
@@ -198,8 +205,11 @@ class HidrometroMaterial:
         if not hidro_estoque.empty and cod_hidro_instalado not in sap_hidro[:, 0]:
             ultima_linha_material = self._set_hidro(ultima_linha_material, self.operacao, cod_hidro_instalado)
 
-        return True, ultima_linha_material
+        logger.info("Em _search_hidro cod_hidro_instalado: %s", cod_hidro_instalado)
+        logger.info("Hidrômetro no SAP: %s", sap_hidro)
+        return ultima_linha_material
 
+    @log_execution
     def receita_hidrometro(self) -> None:
         """Padrão de materiais na classe Hidrômetro."""
         usr = self.session.findById("wnd[0]/usr")
@@ -209,14 +219,23 @@ class HidrometroMaterial:
         num_material_linhas = self.tb_materiais.RowCount
         ultima_linha_material = 0
         if self._hidro is None:
-            sql = sql_view.Sql(ordem, "")
+            console.print("Hidrômetro não informado, buscando no banco de dados.")
+            sql = sql_view.Sql(ordem, self.identificador[0])
             self.hidro = sql.get_new_hidro()
+            logger.warning("Hidrômetro não informado, buscando no banco de dados: %s", self.hidro)
             if self._hidro is None:
                 return
         cod_hidro_instalado = self._hidro_type()
         if cod_hidro_instalado is None:
+            console.print("Tipo de Hidrômetro não encontrado em _hidro_type.")
+            logger.error("Tipo de Hidrômetro não encontrado em _hidro_type.")
             return
+
         hidro_estoque = self.estoque[self.estoque["Material"] == cod_hidro_instalado]
+        if hidro_estoque.empty:
+            console.print(f"Hidrômetro {cod_hidro_instalado} sem estoque.")
+            logger.error("Hidrômetro %s sem estoque.", cod_hidro_instalado)
+            return
 
         if sap_material is None and not hidro_estoque.empty and not lacre_estoque.empty:
             self.tb_materiais.InsertRows(str(ultima_linha_material))
@@ -263,14 +282,12 @@ class HidrometroMaterial:
                 "QUANT",
             )
             ultima_linha_material = ultima_linha_material + 1
+            logger.info("Sem materiais no GRID - Hidrômetro adicionado: %s", cod_hidro_instalado)
             return
 
         # Número da Row do Grid Materiais do SAP
         ultima_linha_material = num_material_linhas
-        # Variável para controlar se o hidrômetro já foi adicionado
-        hidro_adicionado = False
-
-        hidro_adicionado, ultima_linha_material = self._search_hidro(cod_hidro_instalado, num_material_linhas, hidro_estoque)
+        ultima_linha_material = self._search_hidro(cod_hidro_instalado, num_material_linhas, hidro_estoque)
 
         # Loop do Grid Materiais.
         for n_material in range(num_material_linhas):
@@ -293,7 +310,7 @@ class HidrometroMaterial:
                     True,
                 )
             # Material not in stock.
-            if material_estoque.empty:
+            if material_estoque.empty and sap_material not in (cod_hidro_instalado, "50001070"):
                 self.tb_materiais.modifyCheckbox(
                     n_material,
                     "ELIMINADO",

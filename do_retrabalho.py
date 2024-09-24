@@ -26,7 +26,7 @@ def do() -> None:
         console.print("[bold cyan] Ops! o SAP Gui não está aberto.")
         console.print("[bold cyan] Executando o SAP GUI\n Por favor aguarde...")
         down_sap()
-        session: win32com.client.CDispatch = sap.choose_connection(0)
+        session = sap.choose_connection(0)
 
     retrabalho("", session)
 
