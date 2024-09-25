@@ -77,7 +77,7 @@ def desvalorador(contrato: str, session: CDispatch) -> None:
         return
 
     # Loop para pagar as ordens da planilha do Excel
-    for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
+    for ordem, cod_mun, empresa in tqdm(pendentes_array[int_num_lordem:], ncols=100):
         # * Go to ZSBMM216 Transaction
         transacao.contrato = empresa
         transacao.municipio = cod_mun
