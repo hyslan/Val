@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import contextlib
+import logging
+import sys
 import time
 import typing
 from pathlib import Path
@@ -13,6 +15,7 @@ import xlwings as xw
 
 from python.src import sap
 
+logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     from pandas import DataFrame
     from win32com.client import CDispatch
@@ -35,6 +38,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
         session.findById("wnd[1]/usr/ctxtDY_PATH").text = caminho_str
         session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = f"estoque_{contrato}.XLSX"
         session.findById("wnd[1]").sendVKey(11)  # Substituir
+        time.sleep(2)
         materiais = pd.read_excel(
             caminho.joinpath(f"estoque_{contrato}.XLSX"),
             sheet_name="Sheet1",
@@ -62,6 +66,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
         except xw.XlwingsError:
             pass
     except pywintypes.com_error:
-        return pd.DataFrame(columns=["Material", "Texto breve material", "Utilização livre"], dtype=str)
+        logger.exception("Erro ao consultar estoque.")
+        sys.exit(1)
 
     return materiais
