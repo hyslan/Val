@@ -238,7 +238,7 @@ class Sql:
         [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas.
         """
         try:
-            engine = sa.create_engine(self.connection_url)
+            engine = sa.create_engine(self.connection_url, echo=True)
             cnn = engine.connect()
             quem = "Val" if matricula == "117615" else self.__check_employee(matricula)
 
