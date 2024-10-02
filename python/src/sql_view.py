@@ -88,7 +88,7 @@ class Sql:
 
         Returns:
         -------
-            np.ndarray: Array com os resultados da query (ordem, código do município).
+            np.ndarray: Array com os resultados da query (ordem, código do município e código do contrato).
 
         """
         engine = sa.create_engine(self.connection_url)
@@ -96,7 +96,7 @@ class Sql:
         # Queries para SQL.
         with engine.connect() as cnn:
             query = sa.text(
-                "SELECT [Ordem], COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "SELECT [Ordem], COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                 f"WHERE [TSE_OPERACAO_ZSCP] IN ({carteira_str}) "
                 "AND Contrato = :contrato",
             )
@@ -113,7 +113,7 @@ class Sql:
             data_inicio = input("- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input("- Val: Digite o Ano/Mês final, por favor.\n")
             sql_command = sa.text(
-                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "SELECT Ordem, COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                 f"WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = :contrato "
                 "AND MESREF >= :datainicio AND MESREF <= :datafim",
             )
@@ -126,7 +126,7 @@ class Sql:
                 return df.to_numpy()
         else:
             sql_command = sa.text(
-                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "SELECT Ordem, COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                 f"WHERE TSE_OPERACAO_ZSCP IN ({tse}) AND Contrato = :contrato",
             )
             with engine.connect() as cnn:
@@ -142,7 +142,7 @@ class Sql:
             data_inicio = input("- Val: Digite o Ano/Mês de ínicio, por favor.\n")
             data_fim = input("- Val: Digite o Ano/Mês final, por favor.\n")
             sql_command = sa.text(
-                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "SELECT Ordem, COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                 "WHERE TSE_OPERACAO_ZSCP = :codtse AND "
                 "Contrato = :contrato "
                 "AND MESREF >= :datainicio AND MESREF <= :datafim",
@@ -158,7 +158,7 @@ class Sql:
 
         else:
             sql_command = sa.text(
-                "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+                "SELECT Ordem, COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
                 "WHERE TSE_OPERACAO_ZSCP = :codtse AND "
                 "Contrato = :contrato",
             )
@@ -240,7 +240,7 @@ class Sql:
         [LESTE_AD\\hcruz_novasp].tbHyslancruz_Valoradas.
         """
         try:
-            engine = sa.create_engine(self.connection_url)
+            engine = sa.create_engine(self.connection_url, echo=True)
             cnn = engine.connect()
             quem = "Val" if matricula == "117615" else self.__check_employee(matricula)
 
@@ -287,7 +287,7 @@ class Sql:
         engine = sa.create_engine(self.connection_url)
         cnn = engine.connect()
         sql_command = sa.text(
-            "SELECT Ordem, COD_MUNICIPIO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
+            "SELECT Ordem, COD_MUNICIPIO, CONTRATO FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao] "
             "WHERE ORDEM = :ordem AND Contrato = :contrato'",
         )
         df = pd.read_sql(sql_command, cnn, params={"ordem": self.ordem, "contrato": contrato})
@@ -311,7 +311,7 @@ class Sql:
         # TSEs leave out the plumbing services by Iara.
         chief_iara_orders = "'534200', '534300', '537000', '537100', '538000'," if contrato == "4600042975" else "'',"
         sql_command = sa.text(f"""
-            SELECT Ordem, COD_MUNICIPIO
+            SELECT Ordem, COD_MUNICIPIO, CONTRATO
             FROM [LESTE_AD\\hcruz_novasp].[v_Hyslan_Valoracao]
             WHERE FAMILIA IN ({family_str})
             AND Contrato = :contrato
