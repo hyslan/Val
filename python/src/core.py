@@ -3,6 +3,7 @@
 
 import contextlib
 import logging
+import sys
 import time
 
 import numpy as np
@@ -641,7 +642,7 @@ def looping(
                 ) = result
 
                 # * Go To ZSBMM216 Transaction
-                transacao.contrato = empresa if contrato is None else contrato
+                transacao.contrato = empresa
                 transacao.municipio = cod_mun
                 transacao.run_transacao(ordem)
 
@@ -752,36 +753,19 @@ def looping(
 
         return qtd_ordem, session
 
-    if contrato is None:
-        # NORTESUL
-        for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
-            qtd_ordem, session = process_order(
-                ordem,
-                cod_mun,
-                empresa,
-                qtd_ordem,
-                session,
-                sessions,
-                revalorar,
-                token,
-                n_con,
-            )
-            count_done(qtd_ordem)
-    else:
-        # GLOBAIS
-        for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
-            qtd_ordem, session = process_order(
-                ordem,
-                cod_mun,
-                contrato,
-                qtd_ordem,
-                session,
-                sessions,
-                revalorar,
-                token,
-                n_con,
-            )
-            count_done(qtd_ordem)
+    for ordem, cod_mun, empresa in tqdm(pendentes_array, ncols=100):
+        qtd_ordem, session = process_order(
+            ordem,
+            cod_mun,
+            empresa,
+            qtd_ordem,
+            session,
+            sessions,
+            revalorar,
+            token,
+            n_con,
+        )
+        count_done(qtd_ordem)
 
 
 @log_execution
@@ -811,6 +795,10 @@ def val(
 
     if contrato is not None:
         estoque_hj: DataFrame | None = estoque_virtual(contrato, n_con)
+        if isinstance(estoque_hj, DataFrame) and estoque_hj.empty or estoque_hj is None:
+            console.print("[bold red]Erro! Estoque Virtual Vazio.")
+            logger.error("Estoque Virtual Vazio.")
+            sys.exit(1)
     else:
         estoque_hj = None
 

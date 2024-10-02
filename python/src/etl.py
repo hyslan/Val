@@ -24,7 +24,7 @@ def pendentes_excel() -> np.ndarray:
 def pendentes_csv() -> list:
     """Load de ordens em uma planilha expecífica."""
     caminho = input("Digite o caminho do arquivo csv.\n O arquivo deve conter uma coluna Ordem\n")
-    planilha = pd.read_csv(str(caminho))
+    planilha = pd.read_csv(str(caminho), dtype=str)
     planilha = planilha.reset_index()
     return planilha["ORDEM"].to_list()
 

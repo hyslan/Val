@@ -6,6 +6,7 @@ import sys
 import typing
 
 import pywintypes
+from rich.console import Console
 from tqdm import tqdm
 
 from python.src.etl import pendentes_csv, pendentes_excel
@@ -13,6 +14,8 @@ from python.src.transact_zsbmm216 import Transacao
 
 if typing.TYPE_CHECKING:
     from win32com.client import CDispatch
+
+console = Console()
 
 
 def desvalorador(contrato: str, session: CDispatch) -> None:
@@ -74,8 +77,9 @@ def desvalorador(contrato: str, session: CDispatch) -> None:
         return
 
     # Loop para pagar as ordens da planilha do Excel
-    for ordem, cod_mun in tqdm(pendentes_array, ncols=100):
+    for ordem, cod_mun, empresa in tqdm(pendentes_array[int_num_lordem:], ncols=100):
         # * Go to ZSBMM216 Transaction
+        transacao.contrato = empresa
         transacao.municipio = cod_mun
         transacao.run_transacao(ordem)
         try:
@@ -85,6 +89,7 @@ def desvalorador(contrato: str, session: CDispatch) -> None:
             )
         except pywintypes.com_error:
             # Incremento de Ordem.
+            console.print("[bold red]Erro na execução da ordem. Pode ser definitiva.")
             int_num_lordem += 1
             continue
 
@@ -92,9 +97,11 @@ def desvalorador(contrato: str, session: CDispatch) -> None:
             session.findById("wnd[0]").SendVkey(2)
             session.findById("wnd[1]/usr/btnBUTTON_1").press()
             int_num_lordem += 1
+            console.print(f"[bold green]Ordem: {ordem} Valoração desfeita com sucesso.")
         except pywintypes.com_error:
             # Incremento de Ordem.
             int_num_lordem += 1
+            console.print(f"[bold red]Erro na Desvaloração da ordem: {ordem} ")
             continue
 
     # Fim da desvaloração
