@@ -1,6 +1,7 @@
 """Módulo para interagir com o SAP GUI."""
 
 import contextlib
+import logging
 import os
 import subprocess
 import time
@@ -14,6 +15,7 @@ from dotenv import load_dotenv
 from rich.console import Console
 
 console: rich.console.Console = Console()
+logger = logging.getLogger(__name__)
 
 
 def reconnect(session: pywintypes.IID) -> pywintypes.HANDLE:  # type: ignore
@@ -180,3 +182,23 @@ def get_app() -> win32com.client.CDispatch:
     pythoncom.CoInitialize()
     app: win32com.client.CDispatch = win32com.client.GetObject("SAPGUI").GetScriptingEngine
     return app.Connections  # type: ignore
+
+
+def keep_session_active(n_selected: int, token: str) -> None:
+    """Keep the session active."""
+    session = create_session(n_selected)
+    while True:
+        try:
+            session.findById("wnd[0]").sendVKey(0)
+        except pywintypes.com_error:
+            logger.exception("Conexão COM SAP caiu!!!")
+            console.print("COM SAP falhou, reconectando...", style="bold red")
+            get_connection(token)
+            time.sleep(10)
+            while n_selected < count_connections():
+                get_connection(token)
+                time.sleep(10)
+            session = create_session(n_selected)
+            console.print("Reconectado com sucesso!!!", style="bold green")
+
+        time.sleep(2)
