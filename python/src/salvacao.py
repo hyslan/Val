@@ -17,6 +17,7 @@ from .log_decorator import log_execution
 
 # Adicionando um Lock
 lock = threading.Lock()
+logger = logging.getLogger(__name__)
 console = Console()
 
 
@@ -57,6 +58,13 @@ def salvar(
 
             except pywintypes.com_error:
                 rodape = session.findById("wnd[0]/sbar").Text
+                logger.exception(
+                    "Erro ao salvar na Ordem: %s, municipio: %s, contrato: %s \n Mensagem: %s",
+                    ordem,
+                    cod_mun,
+                    contrato,
+                    rodape,
+                )
                 if item_vinculado_faltante in rodape:
                     etapa_faltante = re.findall(r"\d+", rodape)
                     console.print(f"[italic red]Etapa(s): {etapa_faltante} não foi vinculada.", style="italic red")
@@ -118,15 +126,18 @@ def salvar(
                 tempo_gasto=time_spent,
             )
 
-        logging.info(
-            console.print(
-                f"Estado da Ordem: {ordem}\nMunicípio: {cod_mun}\nContrato{contrato}\nTSE:{principal_tse}\nStatus:{rodape}",
-                style="bright_yellow",
-            ),
+        logger.info(
+            "Estado da Ordem: %s \nMunicípio: %s \nContrato: %s \nTSE: %s \nStatus: %s",
+            ordem,
+            cod_mun,
+            contrato,
+            principal_tse,
+            rodape,
         )
+
         ja_valorado.clean_duplicates()
     except pywintypes.com_error as salvar_erro:
         console.print(f"Erro na parte de salvar: {salvar_erro} :pouting_face:", style="bold red")
-        logging.critical("Erro ao salvar a valoração: %s", salvar_erro)
+        logger.critical("Erro ao salvar a valoração: %s", salvar_erro)
 
     return qtd_ordem

@@ -3,6 +3,7 @@
 
 import contextlib
 import logging
+import sys
 import time
 
 import numpy as np
@@ -794,6 +795,10 @@ def val(
 
     if contrato is not None:
         estoque_hj: DataFrame | None = estoque_virtual(contrato, n_con)
+        if isinstance(estoque_hj, DataFrame) and estoque_hj.empty or estoque_hj is None:
+            console.print("[bold red]Erro! Estoque Virtual Vazio.")
+            logger.error("Estoque Virtual Vazio.")
+            sys.exit(1)
     else:
         estoque_hj = None
 
