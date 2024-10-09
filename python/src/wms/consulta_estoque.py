@@ -63,7 +63,7 @@ def estoque(session: CDispatch, contrato: str, n_con: int) -> DataFrame:
             time.sleep(8)
             book = xw.Book(f"estoque_{contrato}.xlsx")
             book.app.quit()
-        except xw.XlwingsError:
+        except pywintypes.com_error:  # Para computadores sem Excel instalado
             pass
     except pywintypes.com_error:
         logger.exception("Erro ao consultar estoque.")
